@@ -73,14 +73,30 @@ void ExampleServiceRPC::request(
     ChannelRPCRequester::shared_pointer const & channelRPCRequester,
     epics::pvData::PVStructure::shared_pointer const & pvArgument)
 {
+    
+    StructureConstPtr archiverStructure = ArchiverStructure(*getFieldCreate());
+    PVStructure::shared_pointer pvResult(getPVDataCreate()->createPVStructure(NULL, archiverStructure));
+    
     String builder;    
     pvArgument->toString(&builder);
     std::cout << builder << std::endl;
 
-    AutoPtr<Index> index(new AutoIndex());
+    PVValueArray<std::string> * pvNames = (PVValueArray<std::string> * )
+        pvArgument->getScalarArrayField("names", pvString);
     
-    StructureConstPtr archiverStructure = ArchiverStructure(*getFieldCreate());
-    PVStructure::shared_pointer pvResult(getPVDataCreate()->createPVStructure(NULL, archiverStructure));
+    if(pvNames == NULL)
+    {
+        printf("names is NULL and this return won't be confusing...\n");
+        channelRPCRequester->requestDone(Status::OK, pvResult);
+    }
+
+    //std::vector<std::string> names(pvNames->getLength());
+
+    StringArrayData namesData;
+
+    pvNames->get(0, pvNames->getLength(), &namesData);
+
+    AutoPtr<Index> index(new AutoIndex());
     
     std::vector<double> values;
     PVValueArray<double> * pvValues = (PVValueArray<double> * )
@@ -91,28 +107,33 @@ void ExampleServiceRPC::request(
     index->open(indexName, true);
     double delta = 1.0;
     const epicsTime start;
-    const stdString name = "SR-DI-DCCT-01:SIGNAL";
-    AutoPtr<DataReader> reader(ReaderFactory::create(*index, ReaderFactory::Raw, delta));
-
-    const RawValue::Data *data = reader->find(name, &start);
-
-    while(true)
+    for(int n = 0; n < pvNames->getLength(); n++)
     {
-        if(data == 0)
+        printf("name = %s\n", namesData.data[n].c_str());
+
+        const stdString name = namesData.data[n].c_str();
+        AutoPtr<DataReader> reader(ReaderFactory::create(*index, ReaderFactory::Raw, delta));
+        
+        const RawValue::Data *data = reader->find(name, &start);
+        
+        while(true)
         {
-            break;
+            if(data == 0)
+            {
+                break;
+            }
+            double value;
+            RawValue::getDouble(reader->getType(), reader->getCount(), data, value, 0);
+            values.push_back(value);
+            data = reader->next();
         }
-        double value;
-        RawValue::getDouble(reader->getType(), reader->getCount(), data, value, 0);
-        values.push_back(value);
-        data = reader->next();
+        
+        pvValues->put(0, values.size(), &values[0], 0);
+        // so only do one name for now
+        channelRPCRequester->requestDone(Status::OK, pvResult);
+        break;
+
     }
-
-    pvValues->put(0, values.size(), &values[0], 0);
-    channelRPCRequester->requestDone(Status::OK, pvResult);
-
-
-
 }
 
 }}
