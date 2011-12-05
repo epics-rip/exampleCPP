@@ -12,37 +12,19 @@
 #include <pv/convert.h>
 #include <pv/event.h>
 
+#include <epicsTime.h>
+
 using namespace std;
 using namespace std::tr1;
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 
+#include "types.hpp"
+
 #define DEFAULT_TIMEOUT 3.0
 
 double timeOut = DEFAULT_TIMEOUT;
 bool terseMode = false;
-
-template<typename T> T * copyToArray(std::vector<T> & fields)
-{
-    T * fields2 = new T[fields.size()];
-    std::copy(fields.begin(), fields.end(), fields2);
-    return fields2;
-}
-
-StructureConstPtr ArchiverClientStructure(FieldCreate & factory)
-{
-    std::vector<FieldConstPtr> fields;
-    fields.push_back(factory.createScalar("key", epics::pvData::pvLong));
-    fields.push_back(factory.createScalarArray("names", epics::pvData::pvString));
-    fields.push_back(factory.createScalar("t0secs", epics::pvData::pvLong));
-    fields.push_back(factory.createScalar("t0nano", epics::pvData::pvLong));
-    fields.push_back(factory.createScalar("t1secs", epics::pvData::pvLong));
-    fields.push_back(factory.createScalar("t1nano", epics::pvData::pvLong));
-    fields.push_back(factory.createScalar("how", epics::pvData::pvLong));
-    fields.push_back(factory.createScalar("count", epics::pvData::pvLong));
-    return factory.createStructure(
-        "ArchiverValues", fields.size(), copyToArray(fields));
-}
 
 void usage ()
 {
@@ -232,13 +214,27 @@ int main (int argc, char *argv[])
 
     StructureConstPtr archiverStructure = ArchiverClientStructure(*getFieldCreate());
     PVStructure::shared_pointer pvRequest(getPVDataCreate()->createPVStructure(NULL, archiverStructure));
+    
     /* yawn */
     PVValueArray<std::string> * pvNames = (PVValueArray<std::string> * )
         pvRequest->getScalarArrayField("names", pvString);
     pvNames->put(0, values.size(), &values[0], 0);
-    
-    SET_LOG_LEVEL(debug ? logLevelDebug : logLevelError);
 
+    pvRequest->getStringField("index")->put("/extra2/archdata/11_30/index");
+    pvRequest->getLongField("count")->put(1000);
+
+    PVStructure * pvt0 = pvRequest->getStructureField("t0");
+    PVStructure * pvt1 = pvRequest->getStructureField("t1");
+
+    epicsTimeStamp t1 = epicsTime::getCurrent();
+    epicsTimeStamp t0 = epicsTime::getCurrent() - 60 * 60 * 24 * 30;
+
+    pvt0->getLongField("secPastEpoch")->put(t0.secPastEpoch);
+    pvt1->getLongField("secPastEpoch")->put(t1.secPastEpoch);
+
+    printf("%p %p\n", pvt0, pvt1);
+
+    SET_LOG_LEVEL(debug ? logLevelDebug : logLevelError);
 
     ClientFactory::start();
     ChannelProvider::shared_pointer provider = getChannelAccess()->getProvider("pvAccess");
@@ -266,18 +262,22 @@ int main (int argc, char *argv[])
                 std::cout << "connected" << std::endl;
                 if (allOK)
                 {
-                    rpcRequesterImpl->resetEvent();
-                    channelRPC->request(pvRequest, false);
-                    allOK &= rpcRequesterImpl->waitUntilDone(timeOut);
-                    if (allOK)
+                    for(int n = 0; n < 100; n++)
                     {
-                        String s;
-                        rpcRequesterImpl->pvResponse->toString(&s);
-                        std::cout << s << std::endl;
-                    }
-                    else
-                    {
-                        std::cout << "Error" << std::endl;
+                        printf("requesting\n");
+                        rpcRequesterImpl->resetEvent();
+                        channelRPC->request(pvRequest, false);
+                        allOK &= rpcRequesterImpl->waitUntilDone(timeOut);
+                        if (allOK)
+                        {
+                            String s;
+                            rpcRequesterImpl->pvResponse->toString(&s);
+                            std::cout << s << "  round : " << n << std::endl;
+                        }
+                        else
+                        {
+                            std::cout << "Error" << std::endl;
+                        }
                     }
                 }
             }
