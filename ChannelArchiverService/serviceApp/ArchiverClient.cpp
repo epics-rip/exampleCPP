@@ -212,7 +212,7 @@ int main (int argc, char *argv[])
         values.push_back(argv[optind]);       /* Copy values from command line */
 
 
-    StructureConstPtr archiverStructure = ArchiverClientStructure(*getFieldCreate());
+    StructureConstPtr archiverStructure = ArchiverClientStructure("ArchiverQuery", *getFieldCreate());
     PVStructure::shared_pointer pvRequest(getPVDataCreate()->createPVStructure(NULL, archiverStructure));
     
     /* yawn */
@@ -222,17 +222,16 @@ int main (int argc, char *argv[])
 
     pvRequest->getStringField("index")->put("/extra2/archdata/11_30/index");
     pvRequest->getLongField("count")->put(1000);
+    pvRequest->getIntField("how")->put(ARCHIVER_HOW_STATISTICS);
 
     PVStructure * pvt0 = pvRequest->getStructureField("t0");
     PVStructure * pvt1 = pvRequest->getStructureField("t1");
-
+    
     epicsTimeStamp t1 = epicsTime::getCurrent();
     epicsTimeStamp t0 = epicsTime::getCurrent() - 60 * 60 * 24 * 30;
-
-    pvt0->getLongField("secPastEpoch")->put(t0.secPastEpoch);
+    
+    pvt0->getLongField("secPastEpoch")->put(691486300);
     pvt1->getLongField("secPastEpoch")->put(t1.secPastEpoch);
-
-    printf("%p %p\n", pvt0, pvt1);
 
     SET_LOG_LEVEL(debug ? logLevelDebug : logLevelError);
 
