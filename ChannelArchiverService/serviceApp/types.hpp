@@ -55,6 +55,15 @@ template<class T> std::string toString(T st)
     return s;
 }
 
+StructureConstPtr alarmStructure(const char * name, FieldCreate & factory)
+{
+    std::vector<FieldConstPtr> fields;
+    fields.push_back(factory.createScalar("severity", pvInt));
+    fields.push_back(factory.createScalar("status", pvInt));
+    return factory.createStructure(
+        name, fields.size(), copyToArray(fields));
+}
+
 StructureConstPtr timeStampStructure(const char * name, FieldCreate & factory)
 {
     std::vector<FieldConstPtr> fields;
@@ -81,11 +90,12 @@ StructureConstPtr MYScalarTransposedArray(const char * name, ScalarType st, Fiel
     fields.push_back(factory.createScalarArray("names", pvString));
     // values
     fields.push_back(factory.createScalarArray("value", st));
-    fields.push_back(factory.createScalarArray("status", pvInt));
-    fields.push_back(factory.createScalarArray("severity", pvInt));
+    //fields.push_back(factory.createScalarArray("status", pvInt));
+    //fields.push_back(factory.createScalarArray("severity", pvInt));
     // fields.push_back(factory.createScalarArray("secPastEpoch", pvLong));
     // fields.push_back(factory.createScalarArray("nsec", pvInt));
     fields.push_back(factory.createStructureArray("timeStamp", timeStampStructure("timeStamp", factory)));
+    fields.push_back(factory.createStructureArray("alarm", alarmStructure("alarm", factory)));
     return factory.createStructure(name, fields.size(), copyToArray(fields));
 }
 
@@ -101,13 +111,13 @@ StructureConstPtr MYScalarTransposedStatisticsArray(const char * name, ScalarTyp
     fields.push_back(factory.createScalarArray("meanValue", pvDouble));
     fields.push_back(factory.createScalarArray("stdDev", pvDouble));
     fields.push_back(factory.createScalarArray("N", pvInt));
-    // alarm
-    fields.push_back(factory.createScalarArray("status", pvInt));
-    fields.push_back(factory.createScalarArray("severity", pvInt));
+    //fields.push_back(factory.createScalarArray("status", pvInt));
+    //fields.push_back(factory.createScalarArray("severity", pvInt));
     // timestamp
     // fields.push_back(factory.createScalarArray("secPastEpoch", pvLong));
     // fields.push_back(factory.createScalarArray("nsec", pvInt));
     fields.push_back(factory.createStructureArray("timeStamp", timeStampStructure("timeStamp", factory)));
+    fields.push_back(factory.createStructureArray("alarm", alarmStructure("alarm", factory)));
     return factory.createStructure(name, fields.size(), copyToArray(fields));
 }
 

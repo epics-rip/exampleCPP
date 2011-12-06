@@ -203,7 +203,6 @@ void QueryStats(ChannelRPCRequester::shared_pointer const & channelRPCRequester,
                 stdDev.push_back(N > 0 ? sqrt(N * sumSq - sum * sum) / N: 0);
                 stat.push_back(maxStatus);
                 sevr.push_back(maxSeverity);
-                sevr.push_back(maxSeverity);
                 Ns.push_back(N);
                 c += 1;
                 
@@ -246,20 +245,36 @@ void QueryStats(ChannelRPCRequester::shared_pointer const & channelRPCRequester,
         copyToScalarArray(lowValue, pvResult, "lowValue");
         copyToScalarArray(meanValue, pvResult, "meanValue");
         copyToScalarArray(stdDev, pvResult, "stdDev");
-        copyToScalarArray(stat, pvResult, "status");
-        copyToScalarArray(sevr, pvResult, "severity");
+        //copyToScalarArray(stat, pvResult, "status");
+        //copyToScalarArray(sevr, pvResult, "severity");
         copyToScalarArray(Ns, pvResult, "N");
         
         // fill in the timestamp array
-        PVStructureArray * ts = pvResult->getStructureArrayField("timeStamp");
-        ts->append(secPastEpoch.size());
-        ts->setLength(secPastEpoch.size());
-        StructureArrayData sa;
-        ts->get(0, ts->getLength(), &sa);
-        for(size_t n = 0; n < secPastEpoch.size(); n++)
         {
-            sa.data[n]->getLongField("secPastEpoch")->put(secPastEpoch[n]);
-            sa.data[n]->getIntField("nsec")->put(nsec[n]);
+            PVStructureArray * ts = pvResult->getStructureArrayField("timeStamp");
+            ts->append(secPastEpoch.size());
+            ts->setLength(secPastEpoch.size());
+            StructureArrayData sa;
+            ts->get(0, ts->getLength(), &sa);
+            for(size_t n = 0; n < secPastEpoch.size(); n++)
+            {
+                sa.data[n]->getLongField("secPastEpoch")->put(secPastEpoch[n]);
+                sa.data[n]->getIntField("nsec")->put(nsec[n]);
+            }
+        }
+        
+        // fill in the alarm array
+        {
+            PVStructureArray * ts = pvResult->getStructureArrayField("alarm");
+            ts->append(stat.size());
+            ts->setLength(stat.size());
+            StructureArrayData sa;
+            ts->get(0, ts->getLength(), &sa);
+            for(size_t n = 0; n < stat.size(); n++)
+            {
+                sa.data[n]->getIntField("status")->put(stat[n]);
+                sa.data[n]->getIntField("severity")->put(sevr[n]);
+            }
         }
         
         // so only do one name for now
