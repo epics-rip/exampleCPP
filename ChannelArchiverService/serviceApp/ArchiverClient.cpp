@@ -222,7 +222,7 @@ int main (int argc, char *argv[])
 
     pvRequest->getStringField("index")->put("/extra2/archdata/11_30/index");
     pvRequest->getLongField("count")->put(1000);
-    pvRequest->getIntField("how")->put(ARCHIVER_HOW_STATISTICS);
+    pvRequest->getIntField("how")->put(ARCHIVER_HOW_RAW);
 
     PVStructure * pvt0 = pvRequest->getStructureField("t0");
     PVStructure * pvt1 = pvRequest->getStructureField("t1");

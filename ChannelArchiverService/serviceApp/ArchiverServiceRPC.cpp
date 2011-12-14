@@ -56,6 +56,11 @@ void ExampleServiceRPC::destroy()
     printf("ExampleServiceRPC::destroy()\n");
 }
 
+void LabelTable(PVStructure::shared_pointer pvResult)
+{
+    // fill in string[] labels
+}
+
 void QueryRaw(ChannelRPCRequester::shared_pointer const & channelRPCRequester, 
               std::string & indexName, std::vector<std::string> & names, 
               const epicsTimeStamp & t0, const epicsTimeStamp & t1, int how, int64_t count)
@@ -63,14 +68,16 @@ void QueryRaw(ChannelRPCRequester::shared_pointer const & channelRPCRequester,
 
     PVStructure::shared_pointer pvResult(
         getPVDataCreate()->createPVStructure(
-            NULL, MYScalarTransposedArray(
-                "MYScalarTransposedArray", epics::pvData::pvDouble, *getFieldCreate())));
-                                              
+            NULL, MYArchiverTable(
+                "MYArchiverTable", *getFieldCreate(), 0)));
+    LabelTable(pvResult);
+    
     std::vector<double> values;
     std::vector<int64_t> secPastEpoch;
     std::vector<int> nsec;
     std::vector<int> stats;
     std::vector<int> sevrs;
+    std::vector<std::string> dates;
 
     AutoPtr<Index> index(new AutoIndex());
     index->open(indexName.c_str(), true);
@@ -81,8 +88,6 @@ void QueryRaw(ChannelRPCRequester::shared_pointer const & channelRPCRequester,
     
     for(size_t n = 0; n < names.size(); n++)
     {
-        printf("name = %s\n", names[n].c_str());
-
         const stdString name = names[n].c_str();
 
         // QUERY
@@ -97,6 +102,14 @@ void QueryRaw(ChannelRPCRequester::shared_pointer const & channelRPCRequester,
             double value;
             RawValue::getDouble(reader->getType(), reader->getCount(), data, value, 0);
             epicsTimeStamp t = RawValue::getTime(data);
+            epicsTime tm(t);
+            
+            char buf[1024];
+            buf[0] = '\0';
+            buf[sizeof(buf)-1] = '\0';
+            tm.strftime(buf, sizeof(buf)-1, "%c");
+            dates.push_back(buf);
+            
             int status = RawValue::getStat(data);
             int severity = RawValue::getSevr(data);
 
@@ -111,8 +124,9 @@ void QueryRaw(ChannelRPCRequester::shared_pointer const & channelRPCRequester,
         }
         
         // PACK
-        //copyToScalarArray(secPastEpoch, pvResult, "secPastEpoch");
-        //copyToScalarArray(nsec, pvResult, "nsec");
+        copyToScalarArray(secPastEpoch, pvResult, "secPastEpoch");
+        copyToScalarArray(nsec, pvResult, "nsec");
+        copyToScalarArray(dates, pvResult, "date");
         copyToScalarArray(values, pvResult, "value");
         copyToScalarArray(stats, pvResult, "status");
         copyToScalarArray(sevrs, pvResult, "severity");
@@ -120,7 +134,7 @@ void QueryRaw(ChannelRPCRequester::shared_pointer const & channelRPCRequester,
         // so only do one name for now
         channelRPCRequester->requestDone(Status::OK, pvResult);
         break;
-    
+        
     }
 }
 

@@ -137,3 +137,25 @@ StructureConstPtr ArchiverClientStructure(const char * name, FieldCreate & facto
     return factory.createStructure(
         name, fields.size(), copyToArray(fields));
 }
+
+StructureConstPtr MYArchiverTable(const char * name, FieldCreate & factory, int stats = 0)
+{
+    std::vector<FieldConstPtr> fields;
+    fields.push_back(factory.createScalarArray("labels", pvString));
+    fields.push_back(factory.createScalarArray("value", pvDouble));
+    fields.push_back(factory.createScalarArray("secPastEpoch", pvLong));
+    fields.push_back(factory.createScalarArray("nsec", pvInt));
+    fields.push_back(factory.createScalarArray("date", pvString));
+    fields.push_back(factory.createScalarArray("status", pvInt));
+    fields.push_back(factory.createScalarArray("severity", pvInt));
+    // optional stats
+    if(stats)
+    {
+        fields.push_back(factory.createScalarArray("high", pvDouble));
+        fields.push_back(factory.createScalarArray("low", pvDouble));
+        fields.push_back(factory.createScalarArray("mean", pvDouble));
+        fields.push_back(factory.createScalarArray("stdDev", pvDouble));
+        fields.push_back(factory.createScalarArray("N", pvInt));
+    }
+    return factory.createStructure(name, fields.size(), copyToArray(fields));
+}
