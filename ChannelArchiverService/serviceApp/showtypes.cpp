@@ -23,12 +23,7 @@ using namespace epics::pvAccess;
 
 int main()
 {
-    /*
-    std::cout << toString(MYScalarTransposedStatisticsArray("MYScalarTransposedStatisticsArray", pvDouble, *getFieldCreate())) << std::endl;
-    std::cout << toString(MYScalarTransposedArray("MYScalarTransposedArray", pvDouble, *getFieldCreate())) << std::endl;
-    */
-    std::cout << toString(MYArchiverTable("MYArchiverTable", *getFieldCreate(), 0)) << std::endl;
-    std::cout << toString(MYArchiverTable("MYArchiverTableStats", *getFieldCreate(), 1)) << std::endl;
-    std::cout << toString(ArchiverClientStructure("ArchiverQuery", *getFieldCreate())) << std::endl;
+    std::cout << toString(MYArchiverTable("MYArchiverTable", *getFieldCreate())) << std::endl;
+    std::cout << toString(MYArchiverQuery("MYArchiverQuery", *getFieldCreate())) << std::endl;
     return 0;
 }

@@ -36,8 +36,8 @@ int main(int argc,char *argv[])
 {
     PVServiceChannelCTX::shared_pointer myCTX
         = PVServiceChannelCTX::shared_pointer(new PVServiceChannelCTX());
-    ExampleServiceRPC::shared_pointer example
-        = ExampleServiceRPC::shared_pointer(new ExampleServiceRPC());
+    ArchiverServiceRPC::shared_pointer example
+        = ArchiverServiceRPC::shared_pointer(new ArchiverServiceRPC());
     ServiceChannelRPC::shared_pointer serviceChannelRPC
         = ServiceChannelRPC::shared_pointer(
             new ServiceChannelRPC("serviceRPC",example));

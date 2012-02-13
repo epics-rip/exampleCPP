@@ -26,14 +26,8 @@ TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
 
 # EPICS_BASE usually appears last so other apps can override stuff:
 
-EPICS_BASE=/dls_sw/epics/R3.14.11/base
-
-PVDATA=$(TOP)/../../pvDataCPP
-PVACCESS=$(TOP)/../../pvAccessCPP
-PVIOC=$(TOP)/../../pvIOCCPP
-# NT=/home/mrk/hg/alphaCPP/normativeTypes
-ARCHIVER=/home/jr76/archiver/trunk
-
 # Set RULES here if you want to take build rules from somewhere
 # other than EPICS_BASE:
 #RULES=/path/to/epics/support/module/rules/x-y
+
+-include $(TOP)/configure/RELEASE.local

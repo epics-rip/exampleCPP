@@ -21,24 +21,6 @@ using namespace epics::pvAccess;
 
 #include "types.hpp"
 
-#define DEFAULT_TIMEOUT 3.0
-
-double timeOut = DEFAULT_TIMEOUT;
-bool terseMode = false;
-
-void usage ()
-{
-    fprintf (stderr, "\nUsage: pvrpc [options] <PV name> <values>...\n\n"
-    "  -h: Help: Print this message\n"
-    "options:\n"
-    "  -w <sec>:          Wait time, specifies timeout, default is %f second(s)\n"
-    "  -t:                Terse mode - print only value, without name\n"
-    "  -d:                Enable debug output"
-    "\nExample: pvrpc example001 1.234 10 test\n\n"
-             , DEFAULT_TIMEOUT);
-}
-
-
 class ChannelRPCRequesterImpl : public ChannelRPCRequester
 {
     auto_ptr<Event> m_event;
@@ -120,12 +102,6 @@ public:
         {
             m_event.signal();
         }
-        /*
-        else if (connectionState != Channel::DESTROYED)
-        {
-            std::cout << "[" << channel->getChannelName() << "] channel state change: "  << Channel::ConnectionStateNames[connectionState] << std::endl;
-        }
-        */
     }
     
     bool waitUntilConnected(double timeOut)
@@ -134,112 +110,22 @@ public:
     }
 };
 
-/*+**************************************************************************
- *
- * Function:	main
- *
- * Description:	pvrpc main()
- * 		Evaluate command line options, set up CA, connect the
- * 		channels, print the data as requested
- *
- * Arg(s) In:	[options] <pv-name> <values>...
- *
- * Arg(s) Out:	none
- *
- * Return(s):	Standard return code (0=success, 1=error)
- *
- **************************************************************************-*/
+/*
+  PrintRPCget is boilerplate for blocking RPC get
+*/
 
-int main (int argc, char *argv[])
+void PrintRPCget(string pvName, PVStructure::shared_pointer pvRequest)
 {
-    int opt;                    /* getopt() current option */
-    bool debug = false;
 
-    setvbuf(stdout,NULL,_IOLBF,BUFSIZ);    /* Set stdout to line buffering */
+    double timeOut = 3.0;
 
-    while ((opt = getopt(argc, argv, ":hr:w:t")) != -1) {
-        switch (opt) {
-        case 'h':               /* Print usage */
-            usage();
-            return 0;
-        case 'w':               /* Set CA timeout value */
-            if(epicsScanDouble(optarg, &timeOut) != 1)
-            {
-                fprintf(stderr, "'%s' is not a valid timeout value "
-                        "- ignored. ('cainfo -h' for help.)\n", optarg);
-                timeOut = DEFAULT_TIMEOUT;
-            }
-            break;
-        case 't':               /* Terse mode */
-            terseMode = true;
-            break;
-        case 'd':               /* Debug log level */
-            debug = true;
-            break;
-        case '?':
-            fprintf(stderr,
-                    "Unrecognized option: '-%c'. ('pvrpc -h' for help.)\n",
-                    optopt);
-            return 1;
-        case ':':
-            fprintf(stderr,
-                    "Option '-%c' requires an argument. ('pvrpc -h' for help.)\n",
-                    optopt);
-            return 1;
-        default :
-            usage();
-            return 1;
-        }
-    }
-
-    if (argc <= optind)
-    {
-        fprintf(stderr, "No pv name specified. ('pvrpc -h' for help.)\n");
-        return 1;
-    }
-    string pvName = argv[optind++];
-    
-
-    int nVals = argc - optind;       /* Remaining arg list are PV names */
-    if (nVals < 1)
-    {
-        fprintf(stderr, "No value(s) specified. ('pvrpc -h' for help.)\n");
-        return 1;
-    }
-
-    vector<string> values;     /* Array of values */
-    for (int n = 0; optind < argc; n++, optind++)
-        values.push_back(argv[optind]);       /* Copy values from command line */
-
-
-    StructureConstPtr archiverStructure = ArchiverClientStructure("ArchiverQuery", *getFieldCreate());
-    PVStructure::shared_pointer pvRequest(getPVDataCreate()->createPVStructure(NULL, archiverStructure));
-    
-    /* yawn */
-    PVValueArray<std::string> * pvNames = (PVValueArray<std::string> * )
-        pvRequest->getScalarArrayField("names", pvString);
-    pvNames->put(0, values.size(), &values[0], 0);
-
-    pvRequest->getStringField("index")->put("/extra2/archdata/11_30/index");
-    pvRequest->getLongField("count")->put(1000);
-    pvRequest->getIntField("how")->put(ARCHIVER_HOW_RAW);
-
-    PVStructure * pvt0 = pvRequest->getStructureField("t0");
-    PVStructure * pvt1 = pvRequest->getStructureField("t1");
-    
-    epicsTimeStamp t1 = epicsTime::getCurrent();
-    epicsTimeStamp t0 = epicsTime::getCurrent() - 60 * 60 * 24 * 30;
-    
-    pvt0->getLongField("secPastEpoch")->put(691486300);
-    pvt1->getLongField("secPastEpoch")->put(t1.secPastEpoch);
-
-    SET_LOG_LEVEL(debug ? logLevelDebug : logLevelError);
+    SET_LOG_LEVEL(logLevelDebug);
 
     ClientFactory::start();
     ChannelProvider::shared_pointer provider = getChannelAccess()->getProvider("pvAccess");
-
+    
     bool allOK = true;
-
+    
     try
     {
         do
@@ -261,22 +147,24 @@ int main (int argc, char *argv[])
                 std::cout << "connected" << std::endl;
                 if (allOK)
                 {
-                    for(int n = 0; n < 100; n++)
+                    rpcRequesterImpl->resetEvent();
+                    channelRPC->request(pvRequest, false);
+                    allOK &= rpcRequesterImpl->waitUntilDone(timeOut);
+                    if (allOK)
                     {
-                        printf("requesting\n");
-                        rpcRequesterImpl->resetEvent();
-                        channelRPC->request(pvRequest, false);
-                        allOK &= rpcRequesterImpl->waitUntilDone(timeOut);
-                        if (allOK)
+                        
+                        if(rpcRequesterImpl->pvResponse == NULL)
                         {
-                            String s;
-                            rpcRequesterImpl->pvResponse->toString(&s);
-                            std::cout << s << "  round : " << n << std::endl;
+                            std::cout << "Error: null response" << std::endl;
                         }
                         else
                         {
-                            std::cout << "Error" << std::endl;
+                            std::cout << toString(rpcRequesterImpl->pvResponse) << std::endl;
                         }
+                    }
+                    else
+                    {
+                        std::cout << "Error" << std::endl;
                     }
                 }
             }
@@ -301,6 +189,31 @@ int main (int argc, char *argv[])
     }
         
     ClientFactory::stop();
-
-    return allOK ? 0 : 1;
+    
 }
+
+int main (int argc, char *argv[])
+{
+    
+    char * index = "/home/jr76/epics4/cpp/exampleCPP/ChannelArchiverService/data/index";
+    
+    // create request type and instance
+    StructureConstPtr archiverStructure = MYArchiverQuery("MYArchiverQuery", *getFieldCreate());
+    PVStructure::shared_pointer pvRequest(getPVDataCreate()->createPVStructure(NULL, archiverStructure));
+
+    // set request
+    pvRequest->getStringField("name")->put("fred");
+    pvRequest->getStringField("index")->put(index);
+    pvRequest->getLongField("count")->put(20);
+    pvRequest->getLongField("t0secPastEpoch")->put(496169402);
+    
+    string pvName = "serviceRPC";
+
+    std::cout << toString(pvRequest) << std::endl;
+
+    PrintRPCget(pvName, pvRequest);
+    
+    return 0;
+
+}
+

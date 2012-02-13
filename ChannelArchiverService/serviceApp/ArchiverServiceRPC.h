@@ -1,11 +1,6 @@
-/* exampleRPCService.h */
-/**
- * Copyright - See the COPYRIGHT that is included with this distribution.
- * EPICS pvDataCPP is distributed subject to a Software License Agreement found
- * in file LICENSE that is included with this distribution.
- */
-#ifndef EXAMPLE_RPCSERVICE_H
-#define EXAMPLE_RPCSERVICE_H
+#ifndef ARCHIVER_RPCSERVICE_H
+#define ARCHIVER_RPCSERVICE_H
+
 #include <string>
 #include <cstring>
 #include <stdexcept>
@@ -13,29 +8,24 @@
 
 #include <pv/service.h>
 
-namespace epics { namespace pvIOC { 
+class ArchiverServiceRPC;
 
-class ExampleServiceRPC;
-
-class ExampleServiceRPC :
-  public virtual ServiceRPC,
-  public std::tr1::enable_shared_from_this<ExampleServiceRPC>
+class ArchiverServiceRPC : public epics::pvIOC::ServiceRPC,
+  public std::tr1::enable_shared_from_this<ArchiverServiceRPC>
 {
 public:
-    POINTER_DEFINITIONS(ExampleServiceRPC);
-    ExampleServiceRPC();
-    virtual ~ExampleServiceRPC();
+    POINTER_DEFINITIONS(ArchiverServiceRPC);
+    ArchiverServiceRPC();
+    virtual ~ArchiverServiceRPC();
     virtual void destroy();
     virtual void request(
         epics::pvAccess::ChannelRPCRequester::shared_pointer const & channelRPCRequester,
         epics::pvData::PVStructure::shared_pointer const & pvArgument);
 private:
-    ExampleServiceRPC::shared_pointer getPtrSelf()
+    ArchiverServiceRPC::shared_pointer getPtrSelf()
     {
         return shared_from_this();
     }
 };
 
-}}
-
-#endif  /* EXAMPLE_RPCSERVICE_H */
+#endif

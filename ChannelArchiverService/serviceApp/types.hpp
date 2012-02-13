@@ -1,8 +1,4 @@
-enum
-{
-    ARCHIVER_HOW_RAW = 0,
-    ARCHIVER_HOW_STATISTICS = 1
-};
+/* types.hpp - template helpers for pvData */
 
 /* Map Type to pvData Type Identifier through specialization */
 
@@ -55,90 +51,21 @@ template<class T> std::string toString(T st)
     return s;
 }
 
-StructureConstPtr alarmStructure(const char * name, FieldCreate & factory)
-{
-    std::vector<FieldConstPtr> fields;
-    fields.push_back(factory.createScalar("severity", pvInt));
-    fields.push_back(factory.createScalar("status", pvInt));
-    return factory.createStructure(
-        name, fields.size(), copyToArray(fields));
-}
-
-StructureConstPtr timeStampStructure(const char * name, FieldCreate & factory)
-{
-    std::vector<FieldConstPtr> fields;
-    fields.push_back(factory.createScalar("secPastEpoch", pvLong));
-    fields.push_back(factory.createScalar("nsec", pvInt));
-    return factory.createStructure(
-        name, fields.size(), copyToArray(fields));
-}
-
-StructureConstPtr ArchiverStructure(const char * name, FieldCreate & factory)
-{
-    std::vector<FieldConstPtr> fields;
-    fields.push_back(factory.createScalarArray("values", pvDouble));
-    fields.push_back(factory.createScalarArray("secPastEpoch", pvLong));
-    fields.push_back(factory.createScalarArray("nsec", pvInt));
-    return factory.createStructure(name, fields.size(), copyToArray(fields));
-}
-
-StructureConstPtr MYScalarTransposedArray(const char * name, ScalarType st, FieldCreate & factory)
-{
-    std::vector<FieldConstPtr> fields;
-    // NTTable
-    fields.push_back(factory.createScalar("typeIdentifier", pvLong));
-    fields.push_back(factory.createScalarArray("names", pvString));
-    // values
-    fields.push_back(factory.createScalarArray("value", st));
-    //fields.push_back(factory.createScalarArray("status", pvInt));
-    //fields.push_back(factory.createScalarArray("severity", pvInt));
-    // fields.push_back(factory.createScalarArray("secPastEpoch", pvLong));
-    // fields.push_back(factory.createScalarArray("nsec", pvInt));
-    fields.push_back(factory.createStructureArray("timeStamp", timeStampStructure("timeStamp", factory)));
-    fields.push_back(factory.createStructureArray("alarm", alarmStructure("alarm", factory)));
-    return factory.createStructure(name, fields.size(), copyToArray(fields));
-}
-
-StructureConstPtr MYScalarTransposedStatisticsArray(const char * name, ScalarType st, FieldCreate & factory)
-{
-    std::vector<FieldConstPtr> fields;
-    // NTTable
-    fields.push_back(factory.createScalar("typeIdentifier", pvLong));
-    fields.push_back(factory.createScalarArray("names", pvString));
-    // decimated
-    fields.push_back(factory.createScalarArray("highValue", pvDouble));
-    fields.push_back(factory.createScalarArray("lowValue", pvDouble));
-    fields.push_back(factory.createScalarArray("meanValue", pvDouble));
-    fields.push_back(factory.createScalarArray("stdDev", pvDouble));
-    fields.push_back(factory.createScalarArray("N", pvInt));
-    //fields.push_back(factory.createScalarArray("status", pvInt));
-    //fields.push_back(factory.createScalarArray("severity", pvInt));
-    // timestamp
-    // fields.push_back(factory.createScalarArray("secPastEpoch", pvLong));
-    // fields.push_back(factory.createScalarArray("nsec", pvInt));
-    fields.push_back(factory.createStructureArray("timeStamp", timeStampStructure("timeStamp", factory)));
-    fields.push_back(factory.createStructureArray("alarm", alarmStructure("alarm", factory)));
-    return factory.createStructure(name, fields.size(), copyToArray(fields));
-}
-
-StructureConstPtr ArchiverClientStructure(const char * name, FieldCreate & factory)
+StructureConstPtr MYArchiverQuery(const char * name, FieldCreate & factory)
 {
     std::vector<FieldConstPtr> fields;
 
-    fields.push_back(factory.createScalar("typeIdentifier", pvLong));
     fields.push_back(factory.createScalar("index", pvString));
-    fields.push_back(factory.createScalarArray("names", pvString));
-    
-    fields.push_back(timeStampStructure("t0", factory));
-    fields.push_back(timeStampStructure("t1", factory));
-
-    fields.push_back(factory.createScalar("how", pvInt));
+    fields.push_back(factory.createScalar("name", pvString));
+    fields.push_back(factory.createScalar("t0secPastEpoch", pvLong));
+    fields.push_back(factory.createScalar("t0nsec", pvInt));
     fields.push_back(factory.createScalar("count", pvLong));
+
     return factory.createStructure(
         name, fields.size(), copyToArray(fields));
 }
 
-StructureConstPtr MYArchiverTable(const char * name, FieldCreate & factory, int stats = 0)
+StructureConstPtr MYArchiverTable(const char * name, FieldCreate & factory)
 {
     std::vector<FieldConstPtr> fields;
     fields.push_back(factory.createScalarArray("labels", pvString));
@@ -148,14 +75,5 @@ StructureConstPtr MYArchiverTable(const char * name, FieldCreate & factory, int 
     fields.push_back(factory.createScalarArray("date", pvString));
     fields.push_back(factory.createScalarArray("status", pvInt));
     fields.push_back(factory.createScalarArray("severity", pvInt));
-    // optional stats
-    if(stats)
-    {
-        fields.push_back(factory.createScalarArray("high", pvDouble));
-        fields.push_back(factory.createScalarArray("low", pvDouble));
-        fields.push_back(factory.createScalarArray("mean", pvDouble));
-        fields.push_back(factory.createScalarArray("stdDev", pvDouble));
-        fields.push_back(factory.createScalarArray("N", pvInt));
-    }
     return factory.createStructure(name, fields.size(), copyToArray(fields));
 }
