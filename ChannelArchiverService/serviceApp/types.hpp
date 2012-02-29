@@ -55,7 +55,6 @@ StructureConstPtr MYArchiverQuery(const char * name, FieldCreate & factory)
 {
     std::vector<FieldConstPtr> fields;
 
-    fields.push_back(factory.createScalar("index", pvString));
     fields.push_back(factory.createScalar("name", pvString));
     fields.push_back(factory.createScalar("t0secPastEpoch", pvLong));
     fields.push_back(factory.createScalar("t0nsec", pvInt));

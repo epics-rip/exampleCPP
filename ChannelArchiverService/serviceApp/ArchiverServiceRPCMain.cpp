@@ -34,13 +34,22 @@ using namespace epics::pvIOC;
 
 int main(int argc,char *argv[])
 {
+    if(argc < 3)
+    {
+        cerr << "usage: ArchiverServiceRPC index channel" << endl;
+        exit(1);
+    }
+
+    char * index = argv[1];
+    char * channel = argv[2];
+
     PVServiceChannelCTX::shared_pointer myCTX
         = PVServiceChannelCTX::shared_pointer(new PVServiceChannelCTX());
     ArchiverServiceRPC::shared_pointer example
-        = ArchiverServiceRPC::shared_pointer(new ArchiverServiceRPC());
+        = ArchiverServiceRPC::shared_pointer(new ArchiverServiceRPC(index));
     ServiceChannelRPC::shared_pointer serviceChannelRPC
         = ServiceChannelRPC::shared_pointer(
-            new ServiceChannelRPC("serviceRPC",example));
+            new ServiceChannelRPC(channel, example));
     cout << "serviceRPC\n";
     string str;
     while(true) {

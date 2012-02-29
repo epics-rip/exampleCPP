@@ -195,22 +195,19 @@ void PrintRPCget(string pvName, PVStructure::shared_pointer pvRequest)
 int main (int argc, char *argv[])
 {
     
-    char * index = "/home/jr76/epics4/cpp/exampleCPP/ChannelArchiverService/data/index";
-    
     // create request type and instance
     StructureConstPtr archiverStructure = MYArchiverQuery("MYArchiverQuery", *getFieldCreate());
     PVStructure::shared_pointer pvRequest(getPVDataCreate()->createPVStructure(NULL, archiverStructure));
 
     // set request
     pvRequest->getStringField("name")->put("fred");
-    pvRequest->getStringField("index")->put(index);
     pvRequest->getLongField("count")->put(20);
     pvRequest->getLongField("t0secPastEpoch")->put(496169402);
     
     string pvName = "serviceRPC";
-
+    
     std::cout << toString(pvRequest) << std::endl;
-
+    
     PrintRPCget(pvName, pvRequest);
     
     return 0;

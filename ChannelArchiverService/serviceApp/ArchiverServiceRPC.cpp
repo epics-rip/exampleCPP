@@ -29,7 +29,6 @@ using namespace epics::pvAccess;
 
 #include "types.hpp"
 
-ArchiverServiceRPC::ArchiverServiceRPC() {}
 ArchiverServiceRPC::~ArchiverServiceRPC() {}
 void ArchiverServiceRPC::destroy() {}
 
@@ -63,9 +62,9 @@ std::string getDate(epicsTime t)
 /**
  * Queries the EPICS R-Tree Channel Archiver, returning raw samples
  */
-void QueryRaw(ChannelRPCRequester::shared_pointer const & channelRPCRequester,
+void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & channelRPCRequester,
               epics::pvData::PVStructure::shared_pointer const & pvArgument,
-              std::string & indexName, std::string & name, 
+              std::string & name, 
               const epicsTimeStamp & t0, int64_t count)
 {
     std::cout << "Begin Query" << std::endl;
@@ -94,7 +93,7 @@ void QueryRaw(ChannelRPCRequester::shared_pointer const & channelRPCRequester,
     
     try
     {
-        index->open(indexName.c_str(), true);
+        index->open(indexFilename.c_str(), true);
     }
     catch(GenericException & e)
     {
@@ -177,13 +176,12 @@ void ArchiverServiceRPC::request(
 
     /* Unpack the request type */
 
-    std::string indexName = pvArgument->getStringField("index")->get();
     epicsTimeStamp t0;
     t0.secPastEpoch = pvArgument->getLongField("t0secPastEpoch")->get();
     t0.nsec = pvArgument->getIntField("t0nsec")->get();
     int64_t count = pvArgument->getLongField("count")->get();
     std::string name = pvArgument->getStringField("name")->get();
     
-    return QueryRaw(channelRPCRequester, pvArgument, indexName, name, t0, count);
+    return QueryRaw(channelRPCRequester, pvArgument, name, t0, count);
 
 }
