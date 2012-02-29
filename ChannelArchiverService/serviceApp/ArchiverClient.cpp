@@ -204,7 +204,7 @@ int main (int argc, char *argv[])
     pvRequest->getLongField("count")->put(20);
     pvRequest->getLongField("t0secPastEpoch")->put(496169402);
     
-    string pvName = "serviceRPC";
+    string pvName = "archiveRPC";
     
     std::cout << toString(pvRequest) << std::endl;
     

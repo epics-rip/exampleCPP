@@ -50,7 +50,7 @@ int main(int argc,char *argv[])
     ServiceChannelRPC::shared_pointer serviceChannelRPC
         = ServiceChannelRPC::shared_pointer(
             new ServiceChannelRPC(channel, example));
-    cout << "serviceRPC\n";
+    cout << channel << endl;
     string str;
     while(true) {
         cout << "Type exit to stop: \n";

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+TOP=$(dirname $0)
+
+$TOP/bin/$EPICS_HOST_ARCH/ArchiverClient
+
