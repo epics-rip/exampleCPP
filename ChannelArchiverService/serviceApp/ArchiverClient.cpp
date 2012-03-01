@@ -201,8 +201,9 @@ int main (int argc, char *argv[])
 
     // set request
     pvRequest->getStringField("name")->put("fred");
-    pvRequest->getLongField("count")->put(20);
+    //pvRequest->getLongField("count")->put(20);
     pvRequest->getLongField("t0secPastEpoch")->put(496169402);
+    pvRequest->getLongField("t1secPastEpoch")->put(600000000); // forever
     
     string pvName = "archiveRPC";
     

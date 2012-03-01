@@ -65,7 +65,7 @@ std::string getDate(epicsTime t)
 void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & channelRPCRequester,
               epics::pvData::PVStructure::shared_pointer const & pvArgument,
               std::string & name, 
-              const epicsTimeStamp & t0, int64_t count)
+              const epicsTimeStamp & t0, const epicsTimeStamp & t1, int64_t count)
 {
     std::cout << "Begin Query" << std::endl;
 
@@ -103,6 +103,7 @@ void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & ch
     }
 
     const epicsTime start = t0;
+    const epicsTime end = t1;
 
     /* Create a Database Cursor */
 
@@ -114,15 +115,23 @@ void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & ch
 
     /* Fill the table */
 
-    for(int c = 0; c < count; c++)
+    for(int64_t c = 0; c < count; c++)
     {
         if(data == 0)
         {
             break;
         }
         double value;
+        
+        /* missing support for waveforms and strings */
+
         RawValue::getDouble(reader->getType(), reader->getCount(), data, value, 0);
         epicsTimeStamp t = RawValue::getTime(data);
+
+        if(end < t)
+        {
+            break;
+        }
             
         dates.push_back(getDate(t));
             
@@ -176,12 +185,14 @@ void ArchiverServiceRPC::request(
 
     /* Unpack the request type */
 
-    epicsTimeStamp t0;
+    epicsTimeStamp t0, t1;
     t0.secPastEpoch = pvArgument->getLongField("t0secPastEpoch")->get();
     t0.nsec = pvArgument->getIntField("t0nsec")->get();
-    int64_t count = pvArgument->getLongField("count")->get();
+    t1.secPastEpoch = pvArgument->getLongField("t1secPastEpoch")->get();
+    t1.nsec = pvArgument->getIntField("t1nsec")->get();
     std::string name = pvArgument->getStringField("name")->get();
-    
-    return QueryRaw(channelRPCRequester, pvArgument, name, t0, count);
+    //int64_t count = pvArgument->getLongField("count")->get();
+    int64_t count = 1000000000; // limit to 1e9 results for now, count will become an optional parameter
+    return QueryRaw(channelRPCRequester, pvArgument, name, t0, t1, count);
 
 }

@@ -58,7 +58,9 @@ StructureConstPtr MYArchiverQuery(const char * name, FieldCreate & factory)
     fields.push_back(factory.createScalar("name", pvString));
     fields.push_back(factory.createScalar("t0secPastEpoch", pvLong));
     fields.push_back(factory.createScalar("t0nsec", pvInt));
-    fields.push_back(factory.createScalar("count", pvLong));
+    fields.push_back(factory.createScalar("t1secPastEpoch", pvLong));
+    fields.push_back(factory.createScalar("t1nsec", pvInt));
+    //fields.push_back(factory.createScalar("count", pvLong));
 
     return factory.createStructure(
         name, fields.size(), copyToArray(fields));

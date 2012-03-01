@@ -26,7 +26,9 @@ private:
     void QueryRaw(epics::pvAccess::ChannelRPCRequester::shared_pointer const & channelRPCRequester,
                   epics::pvData::PVStructure::shared_pointer const & pvArgument,
                   std::string & name, 
-                  const epicsTimeStamp & t0, int64_t count);
+                  const epicsTimeStamp & t0,
+                  const epicsTimeStamp & t1,
+                  int64_t count);
     ArchiverServiceRPC::shared_pointer getPtrSelf()
     {
         return shared_from_this();
