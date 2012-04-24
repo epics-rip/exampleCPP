@@ -1,3 +1,9 @@
+/**
+ * Copyright - See the COPYRIGHT that is included with this distribution.
+ * EPICS exampleCPP is distributed subject to a Software License Agreement found
+ * in file LICENSE that is included with this distribution.
+ */
+
 #include <cstddef>
 #include <cstdlib>
 #include <cstddef>
@@ -24,10 +30,14 @@
 
 #include <ArchiverServiceRPC.h>
 
+
+#include "types.hpp"
+
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 
-#include "types.hpp"
+namespace channelArchiverService
+{
 
 ArchiverServiceRPC::~ArchiverServiceRPC() {}
 void ArchiverServiceRPC::destroy() {}
@@ -73,8 +83,8 @@ void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & ch
 
     PVStructure::shared_pointer pvResult(
         getPVDataCreate()->createPVStructure(
-            NULL, MYArchiverTable(
-                "MYArchiverTable", *getFieldCreate())));
+            NULL, ArchiverTable(
+                "ArchiverTable", *getFieldCreate())));
 
     LabelTable(pvResult);
 
@@ -112,6 +122,14 @@ void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & ch
     /* Seek to the first sample at or before 'start' for the named channel */
 
     const RawValue::Data *data = reader->find(stdString(name.c_str()), &start);
+
+    /* find returns the reading immediately before start, unless start date is
+       before first reading in archive, so skip to next.*/
+    if((data != 0) && (RawValue::getTime(data) < start))
+    {
+        data = reader->next();
+    }
+ 
 
     /* Fill the table */
 
@@ -173,7 +191,7 @@ void ArchiverServiceRPC::request(
     /* Check the request type by comparing the schemas */
     
     std::string typeString = toString(pvArgument->getStructure());
-    std::string schema = toString(MYArchiverQuery("MYArchiverQuery", *getFieldCreate()));
+    std::string schema = toString(ArchiverQuery("ArchiverQuery", *getFieldCreate()));
 
     if(typeString != schema)
     {
@@ -194,5 +212,7 @@ void ArchiverServiceRPC::request(
     //int64_t count = pvArgument->getLongField("count")->get();
     int64_t count = 1000000000; // limit to 1e9 results for now, count will become an optional parameter
     return QueryRaw(channelRPCRequester, pvArgument, name, t0, t1, count);
+
+}
 
 }

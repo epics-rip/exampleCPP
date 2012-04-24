@@ -15,6 +15,8 @@ ArchiverServiceRPC_LIBS += pvIOC pvAccess pvData Com Storage Tools
 
 PROD_HOST += ArchiverClient
 ArchiverClient_SRCS += ArchiverClient.cpp
+ArchiverClient_SRCS += ServiceClient.cpp
+ArchiverClient_SRCS += ArchiverClientResponseHandler.cpp
 ArchiverClient_LIBS += pvAccess pvData Com
 
 include $(TOP)/configure/RULES

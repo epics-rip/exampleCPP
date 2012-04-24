@@ -1,3 +1,9 @@
+/**
+ * Copyright - See the COPYRIGHT that is included with this distribution.
+ * EPICS exampleCPP is distributed subject to a Software License Agreement found
+ * in file LICENSE that is included with this distribution.
+ */
+
 #include <iostream>
 #include <pv/clientFactory.h>
 
@@ -23,7 +29,7 @@ using namespace epics::pvAccess;
 
 int main()
 {
-    std::cout << toString(MYArchiverTable("MYArchiverTable", *getFieldCreate())) << std::endl;
-    std::cout << toString(MYArchiverQuery("MYArchiverQuery", *getFieldCreate())) << std::endl;
+    std::cout << toString(ArchiverTable("ArchiverTable", *getFieldCreate())) << std::endl;
+    std::cout << toString(ArchiverQuery("ArchiverQuery", *getFieldCreate())) << std::endl;
     return 0;
 }

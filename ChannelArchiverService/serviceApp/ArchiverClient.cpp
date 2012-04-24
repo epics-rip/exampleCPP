@@ -1,217 +1,204 @@
+/**
+ * Copyright - See the COPYRIGHT that is included with this distribution.
+ * EPICS exampleCPP is distributed subject to a Software License Agreement found
+ * in file LICENSE that is included with this distribution.
+ */
+
+#include <algorithm>
+#include <cstdio>
+#include <fstream>
+#include <iomanip>
 #include <iostream>
-#include <pv/clientFactory.h>
-
-#include <stdio.h>
-#include <epicsStdlib.h>
-#include <epicsGetopt.h>
-#include <pv/logger.h>
-
-#include <vector>
+#include <sstream>
 #include <string>
+#include <vector>
 
-#include <pv/convert.h>
-#include <pv/event.h>
 
+#include <epicsGetopt.h>
+#include <epicsStdlib.h>
 #include <epicsTime.h>
 
-using namespace std;
-using namespace std::tr1;
-using namespace epics::pvData;
-using namespace epics::pvAccess;
+#include <RawValue.h>
+
+#include <pv/pvData.h>
+
 
 #include "types.hpp"
 
-class ChannelRPCRequesterImpl : public ChannelRPCRequester
-{
-    auto_ptr<Event> m_event;
-    public:
-    shared_ptr<epics::pvData::PVStructure> pvResponse;
-    ChannelRPCRequesterImpl(String channelName) 
-    {
-        resetEvent();
-    }
 
-    virtual void channelRPCConnect (const epics::pvData::Status &status, ChannelRPC::shared_pointer const &channelRPC)
-    {
-        m_event->signal();
-    }
 
-    virtual void requestDone (const epics::pvData::Status &status, epics::pvData::PVStructure::shared_pointer const &pvResponse)
-    {
-        this->pvResponse = pvResponse;
-        m_event->signal();
-    }
 
-    virtual String getRequesterName()
-    {
-        return "ChannelRPCRequesterImpl";
-    };
+#include "ArchiverClientResponseHandler.h"
+#include "ServiceClient.h"
 
-    virtual void message(String message,MessageType messageType)
-    {
-        std::cout << "[" << getRequesterName() << "] message(" << message << ", " << messageTypeName[messageType] << ")" << std::endl;
-    }
 
-    void resetEvent()
-    {
-        m_event.reset(new Event());
-    }
+using namespace std::tr1;
+using namespace epics::pvData;
+using std::string;
 
-    bool waitUntilDone(double timeOut)
-    {
-        return m_event->wait(timeOut);
-    }
-};
-
-class ChannelRequesterImpl : public ChannelRequester
-{
-private:
-    Event m_event;    
-    
-public:
-    
-    virtual String getRequesterName()
-    {
-        return "ChannelRequesterImpl";
-    };
-
-    virtual void message(String message,MessageType messageType)
-    {
-        std::cout << "[" << getRequesterName() << "] message(" << message << ", " << messageTypeName[messageType] << ")" << std::endl;
-    }
-
-    virtual void channelCreated(const epics::pvData::Status& status, Channel::shared_pointer const & channel)
-    {
-        if (status.isSuccess())
-        {
-            // show warning
-            if (!status.isOK())
-            {
-                std::cout << "[" << channel->getChannelName() << "] channel create: " << status.toString() << std::endl;
-            }
-        }
-        else
-        {
-            std::cout << "[" << channel->getChannelName() << "] failed to create a channel: " << status.toString() << std::endl;
-        }
-    }
-
-    virtual void channelStateChange(Channel::shared_pointer const & channel, Channel::ConnectionState connectionState)
-    {
-        if (connectionState == Channel::CONNECTED)
-        {
-            m_event.signal();
-        }
-    }
-    
-    bool waitUntilConnected(double timeOut)
-    {
-        return m_event.wait(timeOut);
-    }
-};
-
-/*
-  PrintRPCget is boilerplate for blocking RPC get
-*/
-
-void PrintRPCget(string pvName, PVStructure::shared_pointer pvRequest)
+namespace epics
 {
 
-    double timeOut = 3.0;
+namespace channelArchiverService
+{
 
-    SET_LOG_LEVEL(logLevelDebug);
+PVStructure::shared_pointer createArchiverQueryRequest(string channel, int64_t t0secPastEpoch, int64_t t1secPastEpoch)
+{
+    StructureConstPtr archiverStructure = ArchiverQuery("ArchiverQuery", *getFieldCreate());
+    PVStructure::shared_pointer queryRequest(getPVDataCreate()->createPVStructure(NULL, archiverStructure));
 
-    ClientFactory::start();
-    ChannelProvider::shared_pointer provider = getChannelAccess()->getProvider("pvAccess");
-    
-    bool allOK = true;
-    
-    try
+    // Set request.
+    queryRequest->getStringField("name")->put(channel);
+    queryRequest->getLongField("t0secPastEpoch")->put(t0secPastEpoch);
+    queryRequest->getLongField("t1secPastEpoch")->put(t1secPastEpoch); 
+    return queryRequest;
+}
+
+FormatParameters makeFormatParameters(string displayedFields, string filename, int precision, string options, string title)
+{
+    FormatParameters parameters;
+
+    for (size_t i = 0; i < displayedFields.length();++i)
     {
-        do
+        char fieldChar = displayedFields[i];
+        switch(fieldChar) 
         {
-            // first connect
-            shared_ptr<ChannelRequesterImpl> channelRequesterImpl(new ChannelRequesterImpl()); 
-            Channel::shared_pointer channel = provider->createChannel(pvName, channelRequesterImpl);
-            
-            if (channelRequesterImpl->waitUntilConnected(timeOut))
-            {
-                shared_ptr<ChannelRPCRequesterImpl> rpcRequesterImpl(new ChannelRPCRequesterImpl(channel->getChannelName()));
-                
-                // A PVStructure is sent at ChannelRPC connect time but we don't use it, so send an empty one
-                PVStructure::shared_pointer nothing(
-                    new PVStructure(NULL, getFieldCreate()->createStructure("nothing", 0, NULL)));
+        case 't': 
+            parameters.displayedFields.push_back(REAL_TIME);            
+            break;
 
-                ChannelRPC::shared_pointer channelRPC = channel->createChannelRPC(rpcRequesterImpl, nothing);
-                allOK &= rpcRequesterImpl->waitUntilDone(timeOut);
-                std::cout << "connected" << std::endl;
-                if (allOK)
-                {
-                    rpcRequesterImpl->resetEvent();
-                    channelRPC->request(pvRequest, false);
-                    allOK &= rpcRequesterImpl->waitUntilDone(timeOut);
-                    if (allOK)
-                    {
-                        
-                        if(rpcRequesterImpl->pvResponse == NULL)
-                        {
-                            std::cout << "Error: null response" << std::endl;
-                        }
-                        else
-                        {
-                            std::cout << toString(rpcRequesterImpl->pvResponse) << std::endl;
-                        }
-                    }
-                    else
-                    {
-                        std::cout << "Error" << std::endl;
-                    }
-                }
-            }
-            else
-            {
-                allOK = false;
-                channel->destroy();
-                std::cout << "[" << channel->getChannelName() << "] connection timeout" << std::endl;
-                break;
-            }
+        case 'v':
+            parameters.displayedFields.push_back(VALUE);   
+            break;
+
+        case 'D':
+            parameters.displayedFields.push_back(DATE); 
+            break;
+
+        case 'A':
+           parameters.displayedFields.push_back(ALARM); 
+           break;
+
+        case 's':
+            parameters.displayedFields.push_back(SECONDS_PAST_EPOCH); 
+            break;
+
+        case 'n':
+            parameters.displayedFields.push_back(NANO_SECONDS); 
+            break;
+
+        case 'S':
+            parameters.displayedFields.push_back(STATUS);
+            break;
+
+        case 'V':
+            parameters.displayedFields.push_back(SEVERITY); 
+            break;
+
+        default:
+            break; 
         }
-        while (false);
-    } catch (std::out_of_range& oor) {
-        allOK = false;
-        std::cout << "parse error: not enough of values" << std::endl;
-    } catch (std::exception& ex) {
-        allOK = false;
-        std::cout << ex.what() << std::endl;
-    } catch (...) {
-        allOK = false;
-        std::cout << "unknown exception caught" << std::endl;
     }
-        
-    ClientFactory::stop();
-    
+
+    parameters.appendToFile = (options.find("a") != string::npos);
+    parameters.format  = FormatParameters::DEFAULT;
+    parameters.prefix = "#";
+
+    if (options.find("n") != string::npos)
+    {
+        parameters.title = title;
+    }
+
+    parameters.printColumnTitles = (options.find("t") != string::npos);
+
+    if (options.find("x") != string::npos)
+    {
+        std::cout << "scientific format" << std::endl;
+        parameters.format = FormatParameters::SCIENTIFIC;     
+    }
+    else if (options.find("d") != string::npos)
+    {
+        std::cout << "fixed point" << std::endl;
+        parameters.format = FormatParameters::FIXED_POINT;     
+    }
+    else
+    {
+        std::cout << "default format" << std::endl;
+    }
+    parameters.precision = precision;
+    parameters.filename  = filename;
+
+    return parameters;
+}
+
+}
+
 }
 
 int main (int argc, char *argv[])
 {
-    
-    // create request type and instance
-    StructureConstPtr archiverStructure = MYArchiverQuery("MYArchiverQuery", *getFieldCreate());
-    PVStructure::shared_pointer pvRequest(getPVDataCreate()->createPVStructure(NULL, archiverStructure));
+    using namespace  epics::channelArchiverService;
 
-    // set request
-    pvRequest->getStringField("name")->put("fred");
-    //pvRequest->getLongField("count")->put(20);
-    pvRequest->getLongField("t0secPastEpoch")->put(496169402);
-    pvRequest->getLongField("t1secPastEpoch")->put(600000000); // forever
+    const int minArgs = 8;
+    if (argc < minArgs)
+    {
+        std::cerr << "argc:"     << argc << std::endl;
+        std::cerr << "Error: Too few arguments to ArchiverClient (" 
+                  << argc-1 << "). " << minArgs-1 << "+ expected." << std::endl;
+        return 1;
+    }
+
+    //  Get supplied service name for archiver service.
+    string serviceName = argv[1];
+    std::cout << "service:" << serviceName << std::endl;
+
+
+    //  Get parameters for the archiver query.
+    string channel = argv[2];
+    int64_t t0     = atol(argv[3]);
+    int64_t t1     = atol(argv[4]);
+
+    std::cout << "channel:"  << channel << std::endl;
+    std::cout << "start:"    << t0 << std::endl;
+    std::cout << "end:"      << t1 << std::endl;
+
+
+    //  Create query and send to archiver service.
+    PVStructure::shared_pointer queryRequest = createArchiverQueryRequest(channel, t0, t1);
+
+    std::cout << "Query:" << std::endl;        
+    std::cout << toString(queryRequest) << std::endl;
+
+    double timeOut = 3.0;
     
-    string pvName = "archiveRPC";
-    
-    std::cout << toString(pvRequest) << std::endl;
-    
-    PrintRPCget(pvName, pvRequest);
+    PVStructure::shared_pointer queryResponse
+        = epics::serviceClient::SendRequest(serviceName, queryRequest, timeOut);
+
+
+    if (queryResponse == NULL)
+    {
+        std::cout << "Error: Request failed." << std::endl;
+        return 1;
+    }
+    else
+    {
+        //  Get format parameters for the archiver response.
+        string displayedFields = string(argv[5]);
+        string options         = string(argv[6]);
+        int    precision       = atoi(argv[7]);
+        string filename        = (argc < 9) ? "" : argv[8];
+
+        std::cout << "displayed fields: " << displayedFields << std::endl;
+        std::cout << "output file: "      << filename        << std::endl; 
+        std::cout << "precision: "        << precision       << std::endl;
+        std::cout << "options: "          << options         << std::endl;  
+
+        FormatParameters parameters = makeFormatParameters(displayedFields, filename, precision, options, channel);
+
+
+        handleResponse(queryResponse, parameters);
+    }
     
     return 0;
-
 }
 

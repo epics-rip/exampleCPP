@@ -1,0 +1,338 @@
+#!/bin/bash
+#!-*- sh -*-
+#
+# Copyright: See the COPYRIGHT that is included with this distribution.
+#            EPICS exampleCPP is distributed subject to a Software License Agreement found
+#            in file LICENSE that is included with this distribution.
+#
+# Abs: gethist queries the Channel Archive Server for the data for the channel 
+#      specified between two dates and times and outputs the data according to
+#      supplied formatting options
+#
+# Rem: gethist creates an Archiver Client which is a simple example of an EPICS
+#      v4 RPC service client, which gets archived data from the Archiver Service,
+#      a simple example of a v4 RPC service.
+# 
+#
+# Usage: see help (gethist -h or gethist --help) for options                   
+# 
+# ----------------------------------------------------------------------------
+# Auth: Dave Hickin (david.hickin@diamond.ac.uk)
+# ============================================================================
+
+
+TOP=$(dirname $0)
+
+
+Error()
+{
+    echo "Error: $@" >&2;
+    usage
+    exit 1;
+}
+
+
+usage()
+{
+cat << EOF
+Usage
+    gethist [OPTIONS] channel...
+    gethist [-h|--help]
+    see gethist --help for details
+
+EOF
+}
+
+
+showhelp()
+{
+cat << EOF
+Name
+    gethist
+
+EOF
+
+usage
+
+cat << EOF
+
+Options
+    Mandatory arguments to long options are mandatory for short options too.
+
+    -h,--help              display help
+    -s,--start=START_TIME  query archive for results starting from START_TIME
+    -e,--end=END_TIME      query archive for results up to END_TIME
+    -f,--file=FILENAME     output results of archiver query to file named
+                           FILENAME
+    -n,--title             print channel name, preceeded by #, before results
+    -t,--headers           print column headers, preceeded by #, before results
+                           after channel name, if printed.   
+    -x,--scientific        results of archiver query request outputted using
+                           scientific (i.e. exponent/mantissa) format 
+    -d,--fixed             results of archiver query request outputted using
+                           scientific (i.e. exponent/mantissa) format
+    -p,--precision=PREC    results of archiver query request given to precision
+                           PREC
+                           Default value is 6.
+    -o, --fields           specifies which fields to output, in which order 
+
+Description
+    gethist queries the Channel Archive Server for the data for the channel 
+    specified by channel argument between the -s,--start and -e,--end flags.
+    The format for the start and end parameters is that of the date -d command.
+    The defaults are "1 hour ago" for start and "now" for the end.
+
+    The data returned by the archive server is outputted in columns, formatted 
+    according to the -x,--scientific, -d,--fixed and -p/--precision options. 
+    For the fixed option, the precision specifies the number of decimal places.
+    For scientific it specifies the number of decimal places of the mantissa.
+    The default is neither scientific nor fixed formatting. In this case the
+    value is formatted as fixed or scientific, the format being value-dependent.
+
+    If the -n,--title option is selcted the channel name, preceeded by'#', is 
+    outputted before the archived values. If the -t,--header option is selected
+    the column name, preceeded by'#', is outputted before the values.
+
+    The choice of fields and the order in which they are outputted can be
+    selected by the -o,--field option. The argument for this option consist of
+    a sequence of characters representing the possible fields
+    t    floting point time, in seconds, past EPICS epoch
+    v    the archived value
+    D    the date and time string of the archived value
+    A    A string based on the alarm status and severity 
+    s    seconds past EPICS epoch
+    n    nanoseconds
+    S    The alarm status, as an integer
+    V    The alarm severity, as an integer
+
+    Output by default goes to the standard output along with any logging
+    information. It can be directed to a file using the -f,--file option. 
+    Logging information will still be outputted to standard out.
+EOF
+
+exit 0
+}
+
+
+EPICS_EPOCH=631152000
+
+CHANNEL=
+START_ARG="1 hour ago"
+END_ARG="now"
+FILE=
+PRECISION=6
+
+OPTIONS=
+
+DISPLAYED_FIELDS="tvDA"
+
+
+process_shortopts()
+{
+#echo args: $@
+
+while getopts :hs:e:f:ao:p:dxnt OPTION
+do
+    case $OPTION in
+    h) #echo h
+       showhelp
+       ;;
+
+    s) #echo s
+       START_ARG="$OPTARG"
+       ;;
+
+    e) #echo e
+       END_ARG="$OPTARG"
+       ;;
+
+    f) #echo f
+       FILE="$OPTARG"
+       ;;
+
+    a) #echo a
+       OPTIONS+="a"
+       ;;
+
+    o) #echo o
+       DISPLAYED_FIELDS="$OPTARG"
+       ;;
+
+    p) #echo p
+       PRECISION="$OPTARG"
+       ;;
+
+    x) #echo x
+       OPTIONS+="x"
+       ;;
+
+    d) #echo d
+       OPTIONS+="d"
+       ;;
+
+    n) #echo n
+       OPTIONS+="n"
+       ;;
+
+    t) #echo t
+       OPTIONS+="t"
+       ;;
+
+    ?) #echo "?"
+	   Error invalid option or missing argument ;;
+    esac
+done
+shift $((OPTIND-1))
+
+
+#check channel supllied
+(($# > 0))  ||  Error "no channel supplied"
+
+CHANNEL="$1"
+
+if [ "$CHANNEL" = "" ]
+then
+    Error "no channel supplied"
+fi
+
+
+# Convert start time supplied to seconds past EPICS epoch
+# and check validity
+UNIX_START=$(date -d "$START_ARG" '+%s')
+
+if [ "$?" -ne 0 ]  || ! [[ "$UNIX_START" =~ "[0-9+]" ]]
+then
+    echo $UNIX_START
+    Error "Invalid UNIX start time"
+#else
+    #echo "Valid UNIX start time $UNIX_START"
+fi
+
+
+
+
+
+START=$((UNIX_START-EPICS_EPOCH))
+
+
+# Convert end time supplied to seconds past EPICS epoch
+# and check validity
+UNIX_END=$(date -d "$END_ARG" '+%s')
+
+if [ "$?" -ne 0 ]  || ! [[ "$UNIX_END" =~ "[0-9+]" ]]
+then
+    echo $UNIX_END
+    Error "Invalid UNIX end time"
+#else
+#    echo "Valid UNIX end time $UNIX_END"
+fi
+
+END=$((UNIX_END-EPICS_EPOCH))
+
+
+
+
+
+
+#check compatibility of options and supply default if required
+if [[ "$OPTIONS" =~ "d" ]] && [[ "$OPTIONS" =~ "x" ]]
+then
+    Error "Fixed-point and scientific options incomaptible"
+fi
+
+if [ "$OPTIONS" = "" ]
+then
+    OPTIONS="_"
+fi
+
+
+
+#echo "channel $CHANNEL from $START to $END $FILE"
+#echo "precision is $PRECISION"
+#echo "options are $OPTIONS"
+#echo "filename is $FILE"
+#echo 
+
+
+# change this to query an archive service of a different name
+SERVICE="archiveRPC"
+
+$TOP/bin/$EPICS_HOST_ARCH/ArchiverClient $SERVICE $CHANNEL $START $END $DISPLAYED_FIELDS $OPTIONS $PRECISION $FILE
+shift
+
+if ! [[ "$OPTIONS" =~ "a" ]]
+then
+    OPTIONS+="a"
+fi
+
+
+for CHANNEL in "$@"; do
+    $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient $SERVICE $CHANNEL $START $END $DISPLAYED_FIELDS $OPTIONS $PRECISION $FILE
+done
+}
+
+
+process()
+{
+    arg=("$@")
+
+    # convert long opts to short opts
+    for i in $(seq 0 $((${#arg[@]}-1)))
+    do
+        ARG=${arg[$i]} 
+        if [[ "$ARG" =~ ^-- ]]
+        then
+            case $ARG in
+            --help)
+                NEW_ARG="-h";;
+
+            --start )
+                NEW_ARG="-s";;
+
+            --end )
+                NEW_ARG="-e";;
+
+            --file )
+                NEW_ARG="-a";;
+
+            --append )
+                NEW_ARG="-f";;
+
+            --fields )
+                NEW_ARG="-o";;
+ 
+            --scientific )
+                NEW_ARG="-x";;
+
+            --fixed )
+                NEW_ARG="-d";;
+
+            --precision )
+                NEW_ARG="-p";;
+
+            --title )
+                NEW_ARG="-n";;
+
+            --headers )
+                NEW_ARG="-t";;
+            *)
+                Error "Illegal long option $ARG"
+                ;;            
+           esac
+           arg[$i]="$NEW_ARG"
+        else
+            NEW_ARG="$ARG"
+        fi
+        #echo $ARG $NEW_ARG
+        #arg[$i]="$NEW_ARG"
+    done
+    
+    process_shortopts "${arg[@]}"
+}
+
+
+
+process "$@"
+
+
+

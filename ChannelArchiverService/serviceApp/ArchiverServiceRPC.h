@@ -1,3 +1,10 @@
+/**
+ * Copyright - See the COPYRIGHT that is included with this distribution.
+ * EPICS exampleCPP is distributed subject to a Software License Agreement found
+ * in file LICENSE that is included with this distribution.
+ */
+
+
 #ifndef ARCHIVER_RPCSERVICE_H
 #define ARCHIVER_RPCSERVICE_H
 
@@ -7,6 +14,9 @@
 #include <memory>
 
 #include <pv/service.h>
+
+namespace channelArchiverService
+{
 
 class ArchiverServiceRPC;
 
@@ -34,5 +44,7 @@ private:
         return shared_from_this();
     }
 };
+
+}
 
 #endif

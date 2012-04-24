@@ -1,5 +1,9 @@
 /*ArchiverServiceRPCMain.cpp */
-
+/**
+ * Copyright - See the COPYRIGHT that is included with this distribution.
+ * EPICS exampleCPP is distributed subject to a Software License Agreement found
+ * in file LICENSE that is included with this distribution.
+ */
 /* Author: Marty Kraimer */
 
 #include <cstddef>
@@ -25,6 +29,7 @@
 
 #include <pv/pvDatabase.h>
 #include <pv/pvServiceProvider.h>
+
 #include <ArchiverServiceRPC.h>
 
 using namespace std;
@@ -34,6 +39,8 @@ using namespace epics::pvIOC;
 
 int main(int argc,char *argv[])
 {
+    using namespace  channelArchiverService;
+
     if(argc < 3)
     {
         cerr << "usage: ArchiverServiceRPC index channel" << endl;
