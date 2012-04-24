@@ -135,7 +135,7 @@ RequestResponseHandler(const FormatParameters & parameters)
 {
 }
 
-void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
+int handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
 {
     //  Handle each of the fields in the archiver query response in turn.
 
@@ -153,6 +153,11 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     StringArrayData datesArrayData;
 
     int datesLength = dates->get(0, dates->getLength(), &datesArrayData);
+    if (datesLength != valuesLength)
+    {
+        cerr << "Data invalid: Date and Value lengths don't match." << endl;
+        return 1;  
+    }
 
     vector<string>  dateStrings;
     dataArrayToVectorOfStrings(dateStrings , datesArrayData, datesLength);
@@ -161,7 +166,13 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     //  Seconds.
     PVLongArray * secPastEpochs = (PVLongArray *)pvResponse->getScalarArrayField("secPastEpoch", pvLong);
     LongArrayData secPastEpochsArrayData;
+
     int secPastEpochsLength = secPastEpochs->get(0, secPastEpochs->getLength(), &secPastEpochsArrayData);
+    if (secPastEpochsLength != valuesLength)
+    {
+        cerr << "Data invalid: Secs past epoch and Value lengths don't match." << endl;
+        return 1;  
+    }
 
     vector<string> secPastEpochStrings;
     dataArrayToVectorOfStrings(secPastEpochStrings, secPastEpochsArrayData, secPastEpochsLength);
@@ -171,6 +182,11 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     PVIntArray * nsecs = (PVIntArray *)pvResponse->getScalarArrayField("nsec", pvInt);
     IntArrayData nsecsArrayData;
     int nsecsLength = nsecs->get(0, nsecs->getLength(), &nsecsArrayData);
+    if (nsecsLength != valuesLength)
+    {
+        cerr << "Data invalid: nsecs past epoch and Value lengths don't match." << endl;
+        return 1;  
+    }
 
     vector<string> nsecStrings;
     dataArrayToVectorOfStrings(nsecStrings, nsecsArrayData, nsecsLength);
@@ -196,6 +212,11 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     PVIntArray * statuses = (PVIntArray *)pvResponse->getScalarArrayField("status", pvInt);
     IntArrayData statusesArrayData;
     int statusesLength = statuses->get(0, statuses->getLength(), &statusesArrayData);
+    if (statusesLength != valuesLength)
+    {
+        cerr << "Data invalid: Alarm Status and Value lengths don't match." << endl;
+        return 1;  
+    }
 
     vector<string> statusStrings;
     dataArrayToVectorOfStrings(statusStrings, statusesArrayData, statusesLength, FormatParameters::HEX);
@@ -205,6 +226,11 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     PVIntArray * severities = (PVIntArray *)pvResponse->getScalarArrayField("severity", pvInt);
     IntArrayData severitiesArrayData;
     int severitiesLength = severities->get(0, severities->getLength(), &severitiesArrayData);
+    if (severitiesLength != valuesLength)
+    {
+        cerr << "Data invalid: Alarm Severity and Value lengths don't match." << endl;
+        return 1;  
+    }
 
     vector<string> severityStrings;
     dataArrayToVectorOfStrings(severityStrings, severitiesArrayData, severitiesLength, FormatParameters::HEX);
@@ -381,7 +407,9 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     if (outputToFile)
     {
         outfile.close();
-    }
+    }  
+
+    return 0;
 }
 
 
@@ -393,10 +421,10 @@ private:
 /*
   Handle response
 */
-void handleResponse(PVStructure::shared_pointer response, const FormatParameters & parameters)
+int handleResponse(PVStructure::shared_pointer response, const FormatParameters & parameters)
 {
    RequestResponseHandler handler(parameters);
-   handler.handle(response);
+   return handler.handle(response);
 }
 
 }

@@ -49,7 +49,7 @@ struct FormatParameters
 /*
   Handle response
 */
-void handleResponse(epics::pvData::PVStructure::shared_pointer response, const FormatParameters & parameters);
+int handleResponse(epics::pvData::PVStructure::shared_pointer response, const FormatParameters & parameters);
 
 
 }

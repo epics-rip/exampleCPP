@@ -191,9 +191,7 @@ int main (int argc, char *argv[])
         FormatParameters parameters = makeFormatParameters(displayedFields, filename, precision, options, channel);
 
 
-        handleResponse(queryResponse, parameters);
+        return handleResponse(queryResponse, parameters);
     }
-    
-    return 0;
 }
 
