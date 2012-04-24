@@ -113,18 +113,13 @@ FormatParameters makeFormatParameters(string displayedFields, string filename, i
 
     if (options.find("x") != string::npos)
     {
-        std::cout << "scientific format" << std::endl;
         parameters.format = FormatParameters::SCIENTIFIC;     
     }
     else if (options.find("d") != string::npos)
     {
-        std::cout << "fixed point" << std::endl;
         parameters.format = FormatParameters::FIXED_POINT;     
     }
-    else
-    {
-        std::cout << "default format" << std::endl;
-    }
+
     parameters.precision = precision;
     parameters.filename  = filename;
 

@@ -94,6 +94,7 @@ template <typename A>
 void dataArrayToVectorOfStrings(vector<string> & strings, const A & arrayData, int length,
                                const FormatParameters::Format format = FormatParameters::DEFAULT, int precision = 6)
 {
+    strings.reserve(strings.size() + length);
     ostringstream oss;
 
     switch(format)
@@ -142,11 +143,8 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     PVDoubleArray * values = (PVDoubleArray *)pvResponse->getScalarArrayField("value", pvDouble);
     DoubleArrayData valuesArrayData;
     int valuesLength = values->get(0, values->getLength(), &valuesArrayData);
-    //std::cout << "\nvalue(" << valuesLength << ")" << std::endl;
 
     vector<string> valueStrings;
-    valueStrings.reserve(valuesLength);
-
     dataArrayToVectorOfStrings(valueStrings, valuesArrayData, valuesLength, m_parameters.format, m_parameters.precision);
 
 
@@ -155,10 +153,8 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     StringArrayData datesArrayData;
 
     int datesLength = dates->get(0, dates->getLength(), &datesArrayData);
-    //std::cout << "date(" << datesLength << ")" << std::endl;
 
     vector<string>  dateStrings;
-    dateStrings.reserve(datesLength);
     dataArrayToVectorOfStrings(dateStrings , datesArrayData, datesLength);
 
 
@@ -166,11 +162,8 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     PVLongArray * secPastEpochs = (PVLongArray *)pvResponse->getScalarArrayField("secPastEpoch", pvLong);
     LongArrayData secPastEpochsArrayData;
     int secPastEpochsLength = secPastEpochs->get(0, secPastEpochs->getLength(), &secPastEpochsArrayData);
-    //std::cout << "secPastEpoch(" << secPastEpochsLength << "): " << std::endl;
 
     vector<string> secPastEpochStrings;
-    secPastEpochStrings.reserve(secPastEpochsLength);
-
     dataArrayToVectorOfStrings(secPastEpochStrings, secPastEpochsArrayData, secPastEpochsLength);
 
 
@@ -178,18 +171,14 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     PVIntArray * nsecs = (PVIntArray *)pvResponse->getScalarArrayField("nsec", pvInt);
     IntArrayData nsecsArrayData;
     int nsecsLength = nsecs->get(0, nsecs->getLength(), &nsecsArrayData);
-    //std::cout << "nsec(" << nsecsLength << ")" << std::endl;
 
     vector<string> nsecStrings;
-    nsecStrings.reserve(nsecsLength);
-
     dataArrayToVectorOfStrings(nsecStrings, nsecsArrayData, nsecsLength);
 
 
     //  Real time in seconds.
     int realTimeLength = min(secPastEpochsLength, nsecsLength);
     vector<string> realTimeStrings;
-    nsecStrings.reserve(valuesLength);
 
     {
         ostringstream oss;
@@ -207,11 +196,8 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     PVIntArray * statuses = (PVIntArray *)pvResponse->getScalarArrayField("status", pvInt);
     IntArrayData statusesArrayData;
     int statusesLength = statuses->get(0, statuses->getLength(), &statusesArrayData);
-    //std::cout << "status(" << statusesLength << ")" << std::endl;
 
     vector<string> statusStrings;
-    statusStrings.reserve(statusesLength);
-
     dataArrayToVectorOfStrings(statusStrings, statusesArrayData, statusesLength, FormatParameters::HEX);
 
 
@@ -219,11 +205,8 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     PVIntArray * severities = (PVIntArray *)pvResponse->getScalarArrayField("severity", pvInt);
     IntArrayData severitiesArrayData;
     int severitiesLength = severities->get(0, severities->getLength(), &severitiesArrayData);
-    //std::cout << "severity(" << severitiesLength << ")" << std::endl;
 
     vector<string> severityStrings;
-    severityStrings.reserve(severitiesLength);
-
     dataArrayToVectorOfStrings(severityStrings, severitiesArrayData, severitiesLength, FormatParameters::HEX);
 
 
@@ -232,7 +215,6 @@ void handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     vector<string> alarmStrings;
     alarmStrings.reserve(alarmStringsLength);
 
-    //std::cout << "alarm string (" << alarmStringsLength << ")" << std::endl;
     for (int i = 0; i < valuesLength; ++i)
     {     
         string alarmString = MakeAlarmString(statusesArrayData.data[i], severitiesArrayData.data[i]);
