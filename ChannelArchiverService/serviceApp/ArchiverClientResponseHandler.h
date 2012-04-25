@@ -3,6 +3,8 @@
  * EPICS exampleCPP is distributed subject to a Software License Agreement found
  * in file LICENSE that is included with this distribution.
  */
+#ifndef ARCHIVERCLIENTRESPONSEHANDLER_H
+#define ARCHIVERCLIENTRESPONSEHANDLER_H
 
 #include <string>
 
@@ -34,7 +36,6 @@ struct FormatParameters
         HEX
     };
 
-    //std::string displayedFields;
     std::vector<ArchiverField> displayedFields;
     std::string filename;
     std::string title;
@@ -46,12 +47,19 @@ struct FormatParameters
 };
 
 
-/*
-  Handle response
-*/
-int handleResponse(epics::pvData::PVStructure::shared_pointer response, const FormatParameters & parameters);
+/**
+ * Handles the response from the archive service, according to supplied parameters.
+ *
+ * @param  response         The response sent by service.
+ * @param  parameters       Parameters for the handling the request.
+ * @return Status of the call, 0 indicates success, non-zero inidicates failure.
+ */
+int handleResponse(epics::pvData::PVStructure::shared_pointer response,
+    const FormatParameters & parameters);
 
 
 }
 
 }
+
+#endif

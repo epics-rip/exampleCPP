@@ -4,6 +4,9 @@
  * in file LICENSE that is included with this distribution.
  */
 
+#ifndef SERVICECLIENT_H
+#define SERVICECLIENT_H
+
 #include <string>
 
 #include <pv/pvData.h>
@@ -49,3 +52,7 @@ namespace serviceClient
 }
 
 }
+
+#endif
+
+

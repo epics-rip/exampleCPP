@@ -5,8 +5,8 @@
  */
 
 
-#ifndef ARCHIVER_RPCSERVICE_H
-#define ARCHIVER_RPCSERVICE_H
+#ifndef ARCHIVERSERVICERPC_H
+#define ARCHIVERSERVICERPC_H
 
 #include <string>
 #include <cstring>
