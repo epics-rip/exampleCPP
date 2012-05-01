@@ -31,7 +31,7 @@
 #include <ArchiverServiceRPC.h>
 
 
-#include "types.hpp"
+#include "types.h"
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;

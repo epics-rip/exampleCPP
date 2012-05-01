@@ -25,7 +25,7 @@ using namespace std::tr1;
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 
-#include "types.hpp"
+#include "types.h"
 
 int main()
 {

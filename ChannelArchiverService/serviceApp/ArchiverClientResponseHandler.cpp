@@ -31,7 +31,7 @@ using namespace std::tr1;
 using namespace epics::pvData;
 
 
-#include "types.hpp"
+#include "types.h"
 
 #include "ArchiverClientResponseHandler.h"
 
