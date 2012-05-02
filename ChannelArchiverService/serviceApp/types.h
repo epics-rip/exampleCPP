@@ -1,7 +1,7 @@
 #ifndef CHANNELARCHIVERSERVICE_TYPES_H
 #define CHANNELARCHIVERSERVICE_TYPES_H
 
-/* types.hpp - template helpers for pvData */
+/* types.h - template helpers for pvData */
 /**
  * Copyright - See the COPYRIGHT that is included with this distribution.
  * EPICS exampleCPP is distributed subject to a Software License Agreement found
@@ -101,7 +101,6 @@ epics::pvData::StructureConstPtr ArchiverTable(const char * name, epics::pvData:
     fields.push_back(factory.createScalarArray("value", epics::pvData::pvDouble));
     fields.push_back(factory.createScalarArray("secPastEpoch", epics::pvData::pvLong));
     fields.push_back(factory.createScalarArray("nsec", epics::pvData::pvInt));
-    fields.push_back(factory.createScalarArray("date", epics::pvData::pvString));
     fields.push_back(factory.createScalarArray("status", epics::pvData::pvInt));
     fields.push_back(factory.createScalarArray("severity", epics::pvData::pvInt));
     return factory.createStructure(name, fields.size(), copyToArray(fields));

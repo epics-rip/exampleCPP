@@ -89,6 +89,27 @@ std::string MakeAlarmString(short status, short severity)
 }
 
 
+/**
+ * Converts an epicsTime to a date string
+ */
+std::string getDate(epicsTime t)
+{
+    char buf[1024];
+    buf[0] = '\0';
+    buf[sizeof(buf)-1] = '\0';
+    t.strftime(buf, sizeof(buf)-1, "%c");
+    return buf;
+}
+
+/**
+ * Converts secs past epoch and nsecs to a date string
+ */
+std::string getDate(int64_t secsPastEpoch, int32_t nsecs)
+{
+    epicsTimeStamp ts = { static_cast<epicsUInt32>(secsPastEpoch), static_cast<epicsUInt32>(nsecs)};
+    epicsTime t(ts);
+    return getDate(t);
+}
 
 template <typename A>
 void dataArrayToVectorOfStrings(vector<string> & strings, const A & arrayData, int length,
@@ -148,21 +169,6 @@ int handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     dataArrayToVectorOfStrings(valueStrings, valuesArrayData, valuesLength, m_parameters.format, m_parameters.precision);
 
 
-    //  Dates.
-    PVStringArray * dates = (PVStringArray *)pvResponse->getScalarArrayField("date", pvString);
-    StringArrayData datesArrayData;
-
-    int datesLength = dates->get(0, dates->getLength(), &datesArrayData);
-    if (datesLength != valuesLength)
-    {
-        cerr << "Data invalid: Date and Value lengths don't match." << endl;
-        return 1;  
-    }
-
-    vector<string>  dateStrings;
-    dataArrayToVectorOfStrings(dateStrings , datesArrayData, datesLength);
-
-
     //  Seconds.
     PVLongArray * secPastEpochs = (PVLongArray *)pvResponse->getScalarArrayField("secPastEpoch", pvLong);
     LongArrayData secPastEpochsArrayData;
@@ -195,6 +201,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
     //  Real time in seconds.
     int realTimeLength = min(secPastEpochsLength, nsecsLength);
     vector<string> realTimeStrings;
+    realTimeStrings.reserve(realTimeLength);
 
     {
         ostringstream oss;
@@ -205,6 +212,17 @@ int handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
             realTimeStrings.push_back(oss.str());
             oss.str("");
         }
+    }
+
+    //  Dates.
+    vector<string> dateStrings;
+    int dateLength = min(secPastEpochsLength, nsecsLength);
+    dateStrings.reserve(dateLength);
+
+    for (int i = 0; i < dateLength; ++i)
+    {     
+        string dateString = getDate(secPastEpochsArrayData.data[i], nsecsArrayData.data[i]);
+        dateStrings.push_back(dateString);
     }
 
 

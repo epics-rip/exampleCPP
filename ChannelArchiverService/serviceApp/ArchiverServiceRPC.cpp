@@ -51,22 +51,9 @@ void LabelTable(PVStructure::shared_pointer pvResult)
     labels.push_back("value");
     labels.push_back("secPastEpoch");
     labels.push_back("nsec");
-    labels.push_back("date");
     labels.push_back("status");
     labels.push_back("severity");
     copyToScalarArray(labels, pvResult, "labels");
-}
-
-/**
- * Converts an epicsTime to a date string
- */
-std::string getDate(epicsTime t)
-{
-    char buf[1024];
-    buf[0] = '\0';
-    buf[sizeof(buf)-1] = '\0';
-    t.strftime(buf, sizeof(buf)-1, "%c");
-    return buf;
 }
 
 /**
@@ -95,7 +82,6 @@ void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & ch
     std::vector<int> nsec;
     std::vector<int> stats;
     std::vector<int> sevrs;
-    std::vector<std::string> dates;
 
     /* Open the Index */
 
@@ -151,8 +137,6 @@ void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & ch
             break;
         }
             
-        dates.push_back(getDate(t));
-            
         int status = RawValue::getStat(data);
         int severity = RawValue::getSevr(data);
 
@@ -168,10 +152,9 @@ void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & ch
         
     /* Pack the table into the pvStructure using some STL helper functions */
 
+    copyToScalarArray(values, pvResult, "value");
     copyToScalarArray(secPastEpoch, pvResult, "secPastEpoch");
     copyToScalarArray(nsec, pvResult, "nsec");
-    copyToScalarArray(dates, pvResult, "date");
-    copyToScalarArray(values, pvResult, "value");
     copyToScalarArray(stats, pvResult, "status");
     copyToScalarArray(sevrs, pvResult, "severity");
 
@@ -209,8 +192,7 @@ void ArchiverServiceRPC::request(
     t1.secPastEpoch = pvArgument->getLongField("t1secPastEpoch")->get();
     t1.nsec = pvArgument->getIntField("t1nsec")->get();
     std::string name = pvArgument->getStringField("name")->get();
-    //int64_t count = pvArgument->getLongField("count")->get();
-    int64_t count = 1000000000; // limit to 1e9 results for now, count will become an optional parameter
+    int64_t count = 1000000000; // limit to 1e9 results for now
     return QueryRaw(channelRPCRequester, pvArgument, name, t0, t1, count);
 
 }
