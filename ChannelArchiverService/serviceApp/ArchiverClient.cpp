@@ -42,6 +42,14 @@ namespace epics
 namespace channelArchiverService
 {
 
+/**
+ * Creates the request to be sent to the archiver service for data between
+ * start and end times for channel name.
+ *
+ * @param  channel          The name of the channel to query for.
+ * @param  t0secPastEpoch   The seconds past epoch of the start time.
+ * @return t1secPastEpoch   The seconds past epoch of the end time.
+ */
 PVStructure::shared_pointer createArchiverQueryRequest(string channel, int64_t t0secPastEpoch, int64_t t1secPastEpoch)
 {
     StructureConstPtr archiverStructure = ArchiverQuery("ArchiverQuery", *getFieldCreate());
@@ -54,6 +62,16 @@ PVStructure::shared_pointer createArchiverQueryRequest(string channel, int64_t t
     return queryRequest;
 }
 
+/**
+ * Creates the parameter object for the handling of the archiver service response
+ * from the parameters supplied to the application.
+ *
+ * @param  displayedFields  string encoding the fields to be displayed.
+ * @param  filename         The name of the file to output results to.
+ * @param  precision        The precision to be used in formatting the value field.
+ * @param  options          String encoding the options according to which response is handled.
+ * @return title            The title to be used in the output.
+ */
 FormatParameters makeFormatParameters(string displayedFields, string filename, int precision, string options, string title)
 {
     FormatParameters parameters;

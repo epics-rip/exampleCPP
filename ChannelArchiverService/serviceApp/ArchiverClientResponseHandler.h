@@ -13,7 +13,9 @@ namespace epics
 
 namespace channelArchiverService
 {
-
+/**
+ * Fields outputted by Channel Archiver client
+ */
 enum ArchiverField 
 {
     REAL_TIME,
@@ -26,8 +28,14 @@ enum ArchiverField
     SEVERITY
 };
 
+/**
+ * Parameters according to which the results of the archiver query will be handled.
+ */
 struct FormatParameters
 {
+    /**
+     * Options for formatting a field.
+     */
     enum Format
     {
         DEFAULT,
@@ -48,11 +56,11 @@ struct FormatParameters
 
 
 /**
- * Handles the response from the archive service, according to supplied parameters.
+ * Handles the response from the archiver service, according to supplied parameters.
  *
  * @param  response         The response sent by service.
  * @param  parameters       Parameters for the handling the request.
- * @return Status of the call, 0 indicates success, non-zero inidicates failure.
+ * @return Status of the call, 0 indicates success, non-zero indicates failure.
  */
 int handleResponse(epics::pvData::PVStructure::shared_pointer response,
     const FormatParameters & parameters);

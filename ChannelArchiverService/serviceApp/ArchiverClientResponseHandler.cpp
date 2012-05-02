@@ -41,7 +41,13 @@ namespace epics
 namespace channelArchiverService
 {
 
-
+/**
+ * Converts an epics alarm status and severity to a string, including
+ * archiver special severities.
+ *
+ * @param  status       Alarm status.
+ * @param  severity     Alarm severity. 
+ */
 std::string MakeAlarmString(short status, short severity)
 {
     std::string result;
@@ -91,6 +97,9 @@ std::string MakeAlarmString(short status, short severity)
 
 /**
  * Converts an epicsTime to a date string
+ *
+ * @param  t  the time to convert. 
+ * @return The date string.
  */
 std::string getDate(epicsTime t)
 {
@@ -103,6 +112,10 @@ std::string getDate(epicsTime t)
 
 /**
  * Converts secs past epoch and nsecs to a date string
+ *
+ * @param  secsPastEpoch seconds past EPICS epoch. 
+ * @param  nsecs         nanseconds after second.
+ * @return The date string.
  */
 std::string getDate(int64_t secsPastEpoch, int32_t nsecs)
 {
@@ -111,6 +124,15 @@ std::string getDate(int64_t secsPastEpoch, int32_t nsecs)
     return getDate(t);
 }
 
+/**
+ * Converts data from array data object to strings according to format parameters 
+ * and adds to vector of strings 
+ *
+ * @param  strings    Array of strings to add to. 
+ * @param  arrayData  The array data to add.
+ * @param  format     Format used to convert data to string. 
+ * @param  precision  Precision used in formating when converting data to string. 
+ */
 template <typename A>
 void dataArrayToVectorOfStrings(vector<string> & strings, const A & arrayData, int length,
                                const FormatParameters::Format format = FormatParameters::DEFAULT, int precision = 6)
@@ -146,22 +168,34 @@ void dataArrayToVectorOfStrings(vector<string> & strings, const A & arrayData, i
 
 
 
-
+/**
+ * Class to perform the handling of the response from the archive service.
+ */
 class RequestResponseHandler
 {
 public:
-
+/**
+ * Constructor.
+ *
+ * @param  parameters       Parameters for the handling the request.
+ */
 RequestResponseHandler(const FormatParameters & parameters)
 : m_parameters(parameters)
 {
 }
 
-int handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
+/**
+ * Handles the response from the archive service, according to supplied parameters.
+ *
+ * @param  response         The response sent by service.
+ * @return Status of the call, 0 indicates success, non-zero indicates failure.
+ */
+int handle(shared_ptr<epics::pvData::PVStructure> response)
 {
     //  Handle each of the fields in the archiver query response in turn.
 
     //  Values.
-    PVDoubleArray * values = (PVDoubleArray *)pvResponse->getScalarArrayField("value", pvDouble);
+    PVDoubleArray * values = (PVDoubleArray *)response->getScalarArrayField("value", pvDouble);
     DoubleArrayData valuesArrayData;
     int valuesLength = values->get(0, values->getLength(), &valuesArrayData);
 
@@ -170,7 +204,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
 
 
     //  Seconds.
-    PVLongArray * secPastEpochs = (PVLongArray *)pvResponse->getScalarArrayField("secPastEpoch", pvLong);
+    PVLongArray * secPastEpochs = (PVLongArray *)response->getScalarArrayField("secPastEpoch", pvLong);
     LongArrayData secPastEpochsArrayData;
 
     int secPastEpochsLength = secPastEpochs->get(0, secPastEpochs->getLength(), &secPastEpochsArrayData);
@@ -185,7 +219,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
 
 
     //  Nanoseconds.
-    PVIntArray * nsecs = (PVIntArray *)pvResponse->getScalarArrayField("nsec", pvInt);
+    PVIntArray * nsecs = (PVIntArray *)response->getScalarArrayField("nsec", pvInt);
     IntArrayData nsecsArrayData;
     int nsecsLength = nsecs->get(0, nsecs->getLength(), &nsecsArrayData);
     if (nsecsLength != valuesLength)
@@ -227,7 +261,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
 
 
     //  Alarm status.
-    PVIntArray * statuses = (PVIntArray *)pvResponse->getScalarArrayField("status", pvInt);
+    PVIntArray * statuses = (PVIntArray *)response->getScalarArrayField("status", pvInt);
     IntArrayData statusesArrayData;
     int statusesLength = statuses->get(0, statuses->getLength(), &statusesArrayData);
     if (statusesLength != valuesLength)
@@ -241,7 +275,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> pvResponse)
 
 
     //  Alarm severity.
-    PVIntArray * severities = (PVIntArray *)pvResponse->getScalarArrayField("severity", pvInt);
+    PVIntArray * severities = (PVIntArray *)response->getScalarArrayField("severity", pvInt);
     IntArrayData severitiesArrayData;
     int severitiesLength = severities->get(0, severities->getLength(), &severitiesArrayData);
     if (severitiesLength != valuesLength)
