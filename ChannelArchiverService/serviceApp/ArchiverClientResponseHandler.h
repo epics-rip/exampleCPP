@@ -16,7 +16,7 @@ namespace channelArchiverService
 /**
  * Fields outputted by Channel Archiver client
  */
-enum ArchiverField 
+enum OutputField 
 {
     REAL_TIME,
     VALUE,
@@ -46,7 +46,7 @@ struct FormatParameters
         HEX
     };
 
-    std::vector<ArchiverField> displayedFields;
+    std::vector<OutputField> outputtedFields;
     std::string filename;
     std::string title;
     std::string prefix;

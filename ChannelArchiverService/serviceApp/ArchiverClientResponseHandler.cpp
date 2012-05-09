@@ -339,9 +339,9 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
 
     if (m_parameters.printColumnTitles)
     {
-        for (size_t i = 0; i < m_parameters.displayedFields.size(); ++i)
+        for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
         {
-            ArchiverField field = m_parameters.displayedFields[i];
+            OutputField field = m_parameters.outputtedFields[i];
             string columnTitle = m_parameters.prefix;
             columnTitle += columnTitles[field];
             maxWidths[field] = std::max(maxWidths[field], columnTitle.length());
@@ -366,9 +366,9 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
 
     for (int j = 0; j < valuesLength; ++j) 
     {
-        for (size_t i = 0; i < m_parameters.displayedFields.size(); ++i)
+        for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
         {
-            ArchiverField field = m_parameters.displayedFields[i];
+            OutputField field = m_parameters.outputtedFields[i];
 
             out << setw(maxWidths[field])      << alignments[field]
                 << outputFieldValues[field][j]   << columnSpace;   

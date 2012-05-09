@@ -66,51 +66,51 @@ PVStructure::shared_pointer createArchiverQueryRequest(string channel, int64_t t
  * Creates the parameter object for the handling of the archiver service response
  * from the parameters supplied to the application.
  *
- * @param  displayedFields  string encoding the fields to be displayed.
+ * @param  outputtedFields  string encoding the fields to be outputted.
  * @param  filename         The name of the file to output results to.
  * @param  precision        The precision to be used in formatting the value field.
  * @param  options          String encoding the options according to which response is handled.
  * @return title            The title to be used in the output.
  */
-FormatParameters makeFormatParameters(string displayedFields, string filename, int precision, string options, string title)
+FormatParameters makeFormatParameters(string outputtedFields, string filename, int precision, string options, string title)
 {
     FormatParameters parameters;
 
-    for (size_t i = 0; i < displayedFields.length();++i)
+    for (size_t i = 0; i < outputtedFields.length();++i)
     {
-        char fieldChar = displayedFields[i];
+        char fieldChar = outputtedFields[i];
         switch(fieldChar) 
         {
         case 't': 
-            parameters.displayedFields.push_back(REAL_TIME);            
+            parameters.outputtedFields.push_back(REAL_TIME);            
             break;
 
         case 'v':
-            parameters.displayedFields.push_back(VALUE);   
+            parameters.outputtedFields.push_back(VALUE);   
             break;
 
         case 'D':
-            parameters.displayedFields.push_back(DATE); 
+            parameters.outputtedFields.push_back(DATE); 
             break;
 
         case 'A':
-           parameters.displayedFields.push_back(ALARM); 
+           parameters.outputtedFields.push_back(ALARM); 
            break;
 
         case 's':
-            parameters.displayedFields.push_back(SECONDS_PAST_EPOCH); 
+            parameters.outputtedFields.push_back(SECONDS_PAST_EPOCH); 
             break;
 
         case 'n':
-            parameters.displayedFields.push_back(NANO_SECONDS); 
+            parameters.outputtedFields.push_back(NANO_SECONDS); 
             break;
 
         case 'S':
-            parameters.displayedFields.push_back(STATUS);
+            parameters.outputtedFields.push_back(STATUS);
             break;
 
         case 'V':
-            parameters.displayedFields.push_back(SEVERITY); 
+            parameters.outputtedFields.push_back(SEVERITY); 
             break;
 
         default:
@@ -196,17 +196,17 @@ int main (int argc, char *argv[])
     else
     {
         //  Get format parameters for the archiver response.
-        string displayedFields = string(argv[5]);
+        string outputtedFields = string(argv[5]);
         string options         = string(argv[6]);
         int    precision       = atoi(argv[7]);
         string filename        = (argc < 9) ? "" : argv[8];
 
-        std::cout << "displayed fields: " << displayedFields << std::endl;
+        std::cout << "outputted fields: " << outputtedFields << std::endl;
         std::cout << "output file: "      << filename        << std::endl; 
         std::cout << "precision: "        << precision       << std::endl;
         std::cout << "options: "          << options         << std::endl;  
 
-        FormatParameters parameters = makeFormatParameters(displayedFields, filename, precision, options, channel);
+        FormatParameters parameters = makeFormatParameters(outputtedFields, filename, precision, options, channel);
 
 
         return handleResponse(queryResponse, parameters);
