@@ -31,6 +31,7 @@
 #include "ArchiverClientResponseHandler.h"
 #include "ServiceClient.h"
 
+#define VERBOSE_DEBUG 0
 
 using namespace std::tr1;
 using namespace epics::pvData;
@@ -163,18 +164,18 @@ int main (int argc, char *argv[])
 
     //  Get supplied service name for archiver service.
     string serviceName = argv[1];
-    std::cout << "service:" << serviceName << std::endl;
-
 
     //  Get parameters for the archiver query.
     string channel = argv[2];
     int64_t t0     = atol(argv[3]);
     int64_t t1     = atol(argv[4]);
 
+#if VERBOSE_DEBUG
+    std::cout << "service:" << serviceName << std::endl;
     std::cout << "channel:"  << channel << std::endl;
     std::cout << "start:"    << t0 << std::endl;
     std::cout << "end:"      << t1 << std::endl;
-
+#endif
 
     //  Create query and send to archiver service.
     PVStructure::shared_pointer queryRequest = createArchiverQueryRequest(channel, t0, t1);
@@ -201,10 +202,12 @@ int main (int argc, char *argv[])
         int    precision       = atoi(argv[7]);
         string filename        = (argc < 9) ? "" : argv[8];
 
+#if VERBOSE_DEBUG
         std::cout << "outputted fields: " << outputtedFields << std::endl;
         std::cout << "output file: "      << filename        << std::endl; 
         std::cout << "precision: "        << precision       << std::endl;
         std::cout << "options: "          << options         << std::endl;  
+#endif
 
         FormatParameters parameters = makeFormatParameters(outputtedFields, filename, precision, options, channel);
 
