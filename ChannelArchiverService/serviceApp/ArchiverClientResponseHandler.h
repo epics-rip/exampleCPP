@@ -28,6 +28,8 @@ enum ArchiverField
     SEVERITY
 };
 
+const int NUMBER_OF_FIELDS = SEVERITY+1;
+
 /**
  * Parameters according to which the results of the archiver query will be handled.
  */

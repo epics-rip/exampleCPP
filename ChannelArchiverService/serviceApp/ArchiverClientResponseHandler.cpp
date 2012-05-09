@@ -167,7 +167,6 @@ void dataArrayToVectorOfStrings(vector<string> & strings, const A & arrayData, i
 }
 
 
-
 /**
  * Class to perform the handling of the response from the archive service.
  */
@@ -192,6 +191,8 @@ RequestResponseHandler(const FormatParameters & parameters)
  */
 int handle(shared_ptr<epics::pvData::PVStructure> response)
 {
+    vector<string> outputFieldValues[NUMBER_OF_FIELDS];
+
     //  Handle each of the fields in the archiver query response in turn.
 
     //  Values.
@@ -199,8 +200,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
     DoubleArrayData valuesArrayData;
     int valuesLength = values->get(0, values->getLength(), &valuesArrayData);
 
-    vector<string> valueStrings;
-    dataArrayToVectorOfStrings(valueStrings, valuesArrayData, valuesLength, m_parameters.format, m_parameters.precision);
+    dataArrayToVectorOfStrings(outputFieldValues[VALUE], valuesArrayData, valuesLength, m_parameters.format, m_parameters.precision);
 
 
     //  Seconds.
@@ -214,8 +214,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
         return 1;  
     }
 
-    vector<string> secPastEpochStrings;
-    dataArrayToVectorOfStrings(secPastEpochStrings, secPastEpochsArrayData, secPastEpochsLength);
+    dataArrayToVectorOfStrings(outputFieldValues[SECONDS_PAST_EPOCH], secPastEpochsArrayData, secPastEpochsLength);
 
 
     //  Nanoseconds.
@@ -228,13 +227,12 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
         return 1;  
     }
 
-    vector<string> nsecStrings;
-    dataArrayToVectorOfStrings(nsecStrings, nsecsArrayData, nsecsLength);
+    dataArrayToVectorOfStrings(outputFieldValues[NANO_SECONDS], nsecsArrayData, nsecsLength);
 
 
     //  Real time in seconds.
     int realTimeLength = min(secPastEpochsLength, nsecsLength);
-    vector<string> realTimeStrings;
+    vector<string> & realTimeStrings = outputFieldValues[REAL_TIME];
     realTimeStrings.reserve(realTimeLength);
 
     {
@@ -249,7 +247,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
     }
 
     //  Dates.
-    vector<string> dateStrings;
+    vector<string> & dateStrings = outputFieldValues[DATE];
     int dateLength = min(secPastEpochsLength, nsecsLength);
     dateStrings.reserve(dateLength);
 
@@ -270,8 +268,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
         return 1;  
     }
 
-    vector<string> statusStrings;
-    dataArrayToVectorOfStrings(statusStrings, statusesArrayData, statusesLength, FormatParameters::HEX);
+    dataArrayToVectorOfStrings(outputFieldValues[STATUS], statusesArrayData, statusesLength, FormatParameters::HEX);
 
 
     //  Alarm severity.
@@ -284,13 +281,12 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
         return 1;  
     }
 
-    vector<string> severityStrings;
-    dataArrayToVectorOfStrings(severityStrings, severitiesArrayData, severitiesLength, FormatParameters::HEX);
+    dataArrayToVectorOfStrings(outputFieldValues[SEVERITY], severitiesArrayData, severitiesLength, FormatParameters::HEX);
 
 
     //  Alarm string.
     int alarmStringsLength = std::min(secPastEpochsLength, nsecsLength);
-    vector<string> alarmStrings;
+    vector<string> & alarmStrings = outputFieldValues[ALARM];
     alarmStrings.reserve(alarmStringsLength);
 
     for (int i = 0; i < valuesLength; ++i)
@@ -319,137 +315,63 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
         out << m_parameters.prefix << m_parameters.title << std::endl;
     }
 
-    size_t maxWidthValue         = maxWidth(valueStrings);
-    size_t maxWidthSecPastEpoch  = maxWidth(secPastEpochStrings);
-    size_t maxWidthnsec          = maxWidth(nsecStrings);
-    size_t maxWidthRealTime      = maxWidth(realTimeStrings);
-    size_t maxWidthDatesStrings  = maxWidth(dateStrings);
-    size_t maxWidthAlarmStrings  = maxWidth(alarmStrings);
-    size_t maxWidthStatus        = maxWidth(statusStrings);
-    size_t maxWidthSeverity      = maxWidth(severityStrings);
+
+    size_t maxWidths[NUMBER_OF_FIELDS];
+    for (int i = 0; i < NUMBER_OF_FIELDS; ++i)
+    {
+        maxWidths[i] = maxWidth(outputFieldValues[i]);
+    }
 
     string columnSpace = "  ";
 
 
     //  Print column headers if required.    
+    const string columnTitles[] = {
+        "timePastEpoch(s)",
+        "value",
+        "Date",
+        "Alarm",
+        "secsPastEpoch",
+        "nsecs",
+        "Status",
+        "Severity"
+    };
+
     if (m_parameters.printColumnTitles)
     {
-        String columnTitle;
-
         for (size_t i = 0; i < m_parameters.displayedFields.size(); ++i)
         {
             ArchiverField field = m_parameters.displayedFields[i];
-            switch(field) 
-            {
-            case REAL_TIME:
-                columnTitle = m_parameters.prefix;
-                columnTitle += "timePastEpoch(s)";
-                maxWidthRealTime = std::max(maxWidthRealTime, columnTitle.length());
-                out << setw(maxWidthRealTime)     << left << columnTitle << columnSpace;                
-                break;
-
-            case VALUE:
-                columnTitle = m_parameters.prefix;
-                columnTitle += "value";
-                maxWidthValue = std::max(maxWidthValue, columnTitle.length());
-                out << setw(maxWidthValue)        << left << columnTitle << columnSpace;   
-                break;
-
-            case DATE:
-                columnTitle   = m_parameters.prefix;
-                columnTitle  += "Date";
-                maxWidthDatesStrings = std::max(maxWidthDatesStrings, columnTitle.length());
-                out << setw(maxWidthDatesStrings) << left << columnTitle << columnSpace;   
-                break;
-
-            case ALARM:
-                columnTitle = m_parameters.prefix;
-                columnTitle += "Alarm";
-                maxWidthAlarmStrings = std::max(maxWidthAlarmStrings, columnTitle.length());
-                out << setw(maxWidthAlarmStrings) << left << columnTitle << columnSpace;   
-                break;
-
-            case SECONDS_PAST_EPOCH:
-                columnTitle = m_parameters.prefix;
-                columnTitle += "secsPastEpoch";
-                maxWidthSecPastEpoch = std::max(maxWidthSecPastEpoch, columnTitle.length());
-                out << setw(maxWidthSecPastEpoch) << left << columnTitle << columnSpace;  
-                break;
-
-            case NANO_SECONDS:
-                columnTitle = m_parameters.prefix;
-                columnTitle += "nsecs";
-                maxWidthnsec = std::max(maxWidthnsec, columnTitle.length());
-                out << setw(maxWidthnsec) << left << columnTitle << columnSpace;  
-                break;
-
-            case STATUS:
-                columnTitle = m_parameters.prefix;
-                columnTitle += "Status";
-                maxWidthStatus = std::max(maxWidthStatus, columnTitle.length());
-                out << setw(maxWidthStatus) << left << columnTitle << columnSpace;  
-                break;
-
-            case SEVERITY:
-                columnTitle = m_parameters.prefix;
-                columnTitle += "Severity";
-                maxWidthSeverity = std::max(maxWidthSeverity, columnTitle.length());
-                out << setw(maxWidthSeverity) << left << columnTitle << columnSpace;  
-                break;
-           }
+            string columnTitle = m_parameters.prefix;
+            columnTitle += columnTitles[field];
+            maxWidths[field] = std::max(maxWidths[field], columnTitle.length());
+            out << setw(maxWidths[field]) << left << columnTitle << columnSpace; 
         }
         out << "\n";
     }
 
 
     //  Output archive data values. 
+    typedef ios_base & (*align_t)(ios_base &);
+    const align_t alignments[] = {
+        right,
+        right,
+        left,
+        left,
+        right,
+        right, 
+        right,
+        right
+    }; 
+
     for (int j = 0; j < valuesLength; ++j) 
     {
         for (size_t i = 0; i < m_parameters.displayedFields.size(); ++i)
         {
             ArchiverField field = m_parameters.displayedFields[i];
-            switch(field) 
-            {
-            case REAL_TIME:
-                out << setw(maxWidthRealTime)      << right
-                    << realTimeStrings[j]          << columnSpace;                
-                break;
 
-            case VALUE:
-                out << setw(maxWidthValue)         << right
-                    << valueStrings[j]             << columnSpace;
-                break;
-
-            case DATE:
-                out << setw(maxWidthDatesStrings)  <<  left
-                    << dateStrings[j]              << columnSpace;
-                break;
-
-            case ALARM:
-                out << setw(maxWidthAlarmStrings)  <<  left
-                    << alarmStrings[j]             << columnSpace;
-                break;
-
-            case SECONDS_PAST_EPOCH:
-               out << setw(maxWidthSecPastEpoch)  << right
-                   << secPastEpochStrings[j]      << columnSpace;
-               break;
-
-            case NANO_SECONDS:
-                out << setw(maxWidthnsec)          << right
-                    << nsecStrings[j]              << columnSpace;
-                break;
-
-            case STATUS:
-                out << setw(maxWidthStatus)        << right
-                    << statusStrings[j]            << columnSpace;
-                break;
-
-            case SEVERITY:
-                out << setw(maxWidthSeverity)      << right
-                    << severityStrings[j]          << columnSpace;
-                break;
-           }
+            out << setw(maxWidths[field])      << alignments[field]
+                << outputFieldValues[field][j]   << columnSpace;   
         }
         out << "\n";
     }
