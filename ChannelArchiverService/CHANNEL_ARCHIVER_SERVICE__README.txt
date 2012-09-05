@@ -80,16 +80,21 @@ The following are also valid
 
 
 
-FILES THAT COMPRISE THE HELLOWORLD EXAMPLE
+FILES THAT COMPRISE THE CHANNEL ARCHIVER EXAMPLE
 ------------------------------------------
-HelloServiceFactory.java          Java source code of the server side of the example
-HelloClient.java                  Java source code of the client side of the example
-helloClientRunner                 A unix (bash) executable script to run the client side 
-helloServerRunner                 A unix (bash) executable script to run the server side 
-helloService.xml                  The EPICS V4 record database which personifies 
-                                  the hello service.
-helloWorld_setup.bash             A unix (bash) source script which initializes the 
-                                  runtime environment (as written, for both client and server).
+
+ArchiverServiceRPC.h/cpp                  C++ source code of the server side of the example
+ArchiverServiceRPCMain.cpp                C++ source code of the server side of the example
+ArchiverClient.cpp                        C++ source code of the client side of the example
+ArchiverClientResponseHandler.h/cpp       C++ source code of the client for handling the response from server 
+ServiceClient.h/cpp                       C++ source code of the client for handling the response from server
+showtypes.cpp                             C++ source code of application that shows request and response types
+types.h                                   C++ source code of types common to client and server
+
+start_server                              bash script to start server
+gethist                                   bash script to query service
+
+data                                      directory containing sample Channel Archiver data
 
 PREREQUISITES
 -------------
@@ -157,10 +162,10 @@ http://www.slac.stanford.edu/grp/lcls/controls/global/sw/epics/extensions/Channe
 
 EXECUTION
 ---------
-This section describes how you start server and client sides of the hello Service. 
+This section describes how you start server and client sides of the Channel Archiver Service. 
 Start the server side first.
 
-To start the Hello World server
+To start the Channel Archiver server
 -------------------------------
  * cd to the directory containing start_server
 
@@ -173,13 +178,13 @@ To start the Hello World server
 
  * Start the server in one terminal 
 
-   E.g. % ./helloServerRunner
+   E.g. % ./start_server
   
  * Terminate the server with a SIGTERM (like CTRL-C in its process window) 
    or by typing "exit" - after you've tested it with the client below of course.
    
    
-To run a Hello World Client
+To run a Channel Archiver Service Client
 ---------------------------
 
  * In another window from the server:
