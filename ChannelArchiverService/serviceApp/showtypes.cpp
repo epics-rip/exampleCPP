@@ -29,7 +29,7 @@ using namespace epics::pvAccess;
 
 int main()
 {
-    std::cout << toString(ArchiverTable("ArchiverTable", *getFieldCreate())) << std::endl;
-    std::cout << toString(ArchiverQuery("ArchiverQuery", *getFieldCreate())) << std::endl;
+    std::cout << toString(ArchiverTable(*getFieldCreate())) << std::endl;
+    std::cout << toString(ArchiverQuery(*getFieldCreate())) << std::endl;
     return 0;
 }

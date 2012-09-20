@@ -53,9 +53,9 @@ class ChannelRPCRequesterImpl : public ChannelRPCRequester
         return "ChannelRPCRequesterImpl";
     };
 
-    virtual void message(String message, MessageType messageType)
+    virtual void message(String const &  message, MessageType messageType)
     {
-        std::cout << "[" << getRequesterName() << "] message(" << message << ", " << messageTypeName[messageType] << ")" << std::endl;
+        std::cout << "[" << getRequesterName() << "] message(" << message << ", " << getMessageTypeName(messageType) << ")" << std::endl;
     }
 
     void resetEvent()
@@ -81,9 +81,9 @@ public:
         return "ChannelRequesterImpl";
     };
 
-    virtual void message(String message, MessageType messageType)
+    virtual void message(String const & message, MessageType messageType)
     {
-        std::cout << "[" << getRequesterName() << "] message(" << message << ", " << messageTypeName[messageType] << ")" << std::endl;
+        std::cout << "[" << getRequesterName() << "] message(" << message << ", " << getMessageTypeName(messageType) << ")" << std::endl;
     }
 
     virtual void channelCreated(const epics::pvData::Status& status, Channel::shared_pointer const & channel)
@@ -197,8 +197,10 @@ PVStructure::shared_pointer SendRequest(string serviceName, PVStructure::shared_
 PVStructure::shared_pointer SendRequest(string serviceName, PVStructure::shared_pointer request, double timeOut)
 {
     // A PVStructure is sent at ChannelRPC connect time but we aren't going to use it, so send an empty one
+    StringArray fieldNames;
+    FieldConstPtrArray fields;
     PVStructure::shared_pointer nothing(
-        new PVStructure(NULL, getFieldCreate()->createStructure("nothing", 0, NULL)));
+        new PVStructure(getFieldCreate()->createStructure(fieldNames, fields)));
 
     return SendRequest(serviceName, nothing, request, timeOut);
 }

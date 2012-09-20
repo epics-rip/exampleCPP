@@ -10,6 +10,9 @@
 
 /* Map Type to pvData Type Identifier through specialization */
 
+#include "pv/pvIntrospect.h"
+#include "pv/pvData.h"
+
 namespace {
 
 template<class T> epics::pvData::ScalarType getScalarType()
@@ -33,7 +36,7 @@ template<typename T> void copyToScalarArray(
     std::vector<T> & x, epics::pvData::PVStructure::shared_pointer & pvArgument, const char * name)
 {
     epics::pvData::ScalarType st = getScalarType<T>();
-    ((epics::pvData::PVValueArray<T> *)pvArgument->getScalarArrayField(name, st))->put(0, x.size(), &x[0], 0);
+    std::tr1::static_pointer_cast<epics::pvData::PVValueArray<T> >(pvArgument->getScalarArrayField(name, st))->put(0, x.size(), &x[0], 0);
 }
 
 template<typename T> void copyFromScalarArray(
@@ -80,30 +83,50 @@ size_t maxWidth(const T & t)
 
 
 
-epics::pvData::StructureConstPtr ArchiverQuery(const char * name, epics::pvData::FieldCreate & factory)
+epics::pvData::StructureConstPtr ArchiverQuery(epics::pvData::FieldCreate & factory)
 {
-    std::vector<epics::pvData::FieldConstPtr> fields;
+    using namespace epics::pvData;
 
-    fields.push_back(factory.createScalar("name", epics::pvData::pvString));
-    fields.push_back(factory.createScalar("t0secPastEpoch", epics::pvData::pvLong));
-    fields.push_back(factory.createScalar("t0nsec", epics::pvData::pvInt));
-    fields.push_back(factory.createScalar("t1secPastEpoch", epics::pvData::pvLong));
-    fields.push_back(factory.createScalar("t1nsec", epics::pvData::pvInt));
+    FieldConstPtrArray fields;
+    StringArray names;
 
-    return factory.createStructure(
-        name, fields.size(), copyToArray(fields));
+    fields.push_back(factory.createScalar(epics::pvData::pvString));
+    fields.push_back(factory.createScalar(epics::pvData::pvLong));
+    fields.push_back(factory.createScalar(epics::pvData::pvInt));
+    fields.push_back(factory.createScalar(epics::pvData::pvLong));
+    fields.push_back(factory.createScalar(epics::pvData::pvInt));
+
+    names.push_back("name");
+    names.push_back("t0secPastEpoch");
+    names.push_back("t0nsec");
+    names.push_back("t1secPastEpoch");
+    names.push_back("t1nsec");
+
+    return factory.createStructure(names, fields);
 }
 
-epics::pvData::StructureConstPtr ArchiverTable(const char * name, epics::pvData::FieldCreate & factory)
+epics::pvData::StructureConstPtr ArchiverTable(epics::pvData::FieldCreate & factory)
 {
-    std::vector<epics::pvData::FieldConstPtr> fields;
-    fields.push_back(factory.createScalarArray("labels", epics::pvData::pvString));
-    fields.push_back(factory.createScalarArray("value", epics::pvData::pvDouble));
-    fields.push_back(factory.createScalarArray("secPastEpoch", epics::pvData::pvLong));
-    fields.push_back(factory.createScalarArray("nsec", epics::pvData::pvInt));
-    fields.push_back(factory.createScalarArray("status", epics::pvData::pvInt));
-    fields.push_back(factory.createScalarArray("severity", epics::pvData::pvInt));
-    return factory.createStructure(name, fields.size(), copyToArray(fields));
+    using namespace epics::pvData;
+    
+    FieldConstPtrArray fields;
+    StringArray names;
+
+    names.push_back("labels");
+    names.push_back("value");
+    names.push_back("secPastEpoch");
+    names.push_back("nsec");
+    names.push_back("status");
+    names.push_back("severity");
+
+    fields.push_back(factory.createScalarArray(epics::pvData::pvString));
+    fields.push_back(factory.createScalarArray(epics::pvData::pvDouble));
+    fields.push_back(factory.createScalarArray(epics::pvData::pvLong));
+    fields.push_back(factory.createScalarArray(epics::pvData::pvInt));
+    fields.push_back(factory.createScalarArray(epics::pvData::pvInt));
+    fields.push_back(factory.createScalarArray(epics::pvData::pvInt));
+
+    return factory.createStructure(names, fields);
 }
 
 }

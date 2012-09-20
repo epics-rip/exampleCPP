@@ -27,7 +27,6 @@
 #include <pv/pvAccess.h>
 #include <pv/serverContext.h>
 
-#include <pv/pvDatabase.h>
 #include <pv/pvServiceProvider.h>
 
 #include <ArchiverServiceRPC.h>

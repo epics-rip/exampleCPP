@@ -53,8 +53,8 @@ namespace channelArchiverService
  */
 PVStructure::shared_pointer createArchiverQueryRequest(string channel, int64_t t0secPastEpoch, int64_t t1secPastEpoch)
 {
-    StructureConstPtr archiverStructure = ArchiverQuery("ArchiverQuery", *getFieldCreate());
-    PVStructure::shared_pointer queryRequest(getPVDataCreate()->createPVStructure(NULL, archiverStructure));
+    StructureConstPtr archiverStructure = ArchiverQuery(*getFieldCreate());
+    PVStructure::shared_pointer queryRequest(getPVDataCreate()->createPVStructure(archiverStructure));
 
     // Set request.
     queryRequest->getStringField("name")->put(channel);

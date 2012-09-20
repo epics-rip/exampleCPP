@@ -69,9 +69,7 @@ void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & ch
     /* Create the result pvStructure */
 
     PVStructure::shared_pointer pvResult(
-        getPVDataCreate()->createPVStructure(
-            NULL, ArchiverTable(
-                "ArchiverTable", *getFieldCreate())));
+        getPVDataCreate()->createPVStructure(ArchiverTable(*getFieldCreate())));
 
     LabelTable(pvResult);
 
@@ -160,7 +158,7 @@ void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & ch
 
     std::cout << "End Query" << std::endl;
         
-    channelRPCRequester->requestDone(Status::OK, pvResult);
+    channelRPCRequester->requestDone(Status::Ok, pvResult);
 
 }
 
@@ -174,7 +172,7 @@ void ArchiverServiceRPC::request(
     /* Check the request type by comparing the schemas */
     
     std::string typeString = toString(pvArgument->getStructure());
-    std::string schema = toString(ArchiverQuery("ArchiverQuery", *getFieldCreate()));
+    std::string schema = toString(ArchiverQuery(*getFieldCreate()));
 
     if(typeString != schema)
     {

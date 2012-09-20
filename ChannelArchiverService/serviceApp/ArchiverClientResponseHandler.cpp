@@ -158,7 +158,7 @@ void dataArrayToVectorOfStrings(vector<string> & strings, const A & arrayData, i
         oss << hex;
         break;
     }
-    for (int i = arrayData.offset; i < arrayData.offset + length; ++i)
+    for (size_t i = arrayData.offset; i < arrayData.offset + length; ++i)
     {
         oss << arrayData.data[i];
         strings.push_back(oss.str());
@@ -196,18 +196,18 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
     //  Handle each of the fields in the archiver query response in turn.
 
     //  Values.
-    PVDoubleArray * values = (PVDoubleArray *)response->getScalarArrayField("value", pvDouble);
+    PVDoubleArrayPtr values = std::tr1::static_pointer_cast<epics::pvData::PVDoubleArray>(response->getScalarArrayField("value", pvDouble));
     DoubleArrayData valuesArrayData;
-    int valuesLength = values->get(0, values->getLength(), &valuesArrayData);
+    int valuesLength = values->get(0, values->getLength(), valuesArrayData);
 
     dataArrayToVectorOfStrings(outputFieldValues[VALUE], valuesArrayData, valuesLength, m_parameters.format, m_parameters.precision);
 
 
     //  Seconds.
-    PVLongArray * secPastEpochs = (PVLongArray *)response->getScalarArrayField("secPastEpoch", pvLong);
+    PVLongArrayPtr secPastEpochs = std::tr1::static_pointer_cast<epics::pvData::PVLongArray>(response->getScalarArrayField("secPastEpoch", pvLong));
     LongArrayData secPastEpochsArrayData;
 
-    int secPastEpochsLength = secPastEpochs->get(0, secPastEpochs->getLength(), &secPastEpochsArrayData);
+    int secPastEpochsLength = secPastEpochs->get(0, secPastEpochs->getLength(), secPastEpochsArrayData);
     if (secPastEpochsLength != valuesLength)
     {
         cerr << "Data invalid: Secs past epoch and Value lengths don't match." << endl;
@@ -218,9 +218,9 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
 
 
     //  Nanoseconds.
-    PVIntArray * nsecs = (PVIntArray *)response->getScalarArrayField("nsec", pvInt);
+    PVIntArrayPtr nsecs = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(response->getScalarArrayField("nsec", pvInt));
     IntArrayData nsecsArrayData;
-    int nsecsLength = nsecs->get(0, nsecs->getLength(), &nsecsArrayData);
+    int nsecsLength = nsecs->get(0, nsecs->getLength(), nsecsArrayData);
     if (nsecsLength != valuesLength)
     {
         cerr << "Data invalid: nsecs past epoch and Value lengths don't match." << endl;
@@ -259,9 +259,9 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
 
 
     //  Alarm status.
-    PVIntArray * statuses = (PVIntArray *)response->getScalarArrayField("status", pvInt);
+    PVIntArrayPtr statuses = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(response->getScalarArrayField("status", pvInt));
     IntArrayData statusesArrayData;
-    int statusesLength = statuses->get(0, statuses->getLength(), &statusesArrayData);
+    int statusesLength = statuses->get(0, statuses->getLength(), statusesArrayData);
     if (statusesLength != valuesLength)
     {
         cerr << "Data invalid: Alarm Status and Value lengths don't match." << endl;
@@ -272,9 +272,9 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
 
 
     //  Alarm severity.
-    PVIntArray * severities = (PVIntArray *)response->getScalarArrayField("severity", pvInt);
+    PVIntArrayPtr severities = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(response->getScalarArrayField("severity", pvInt));
     IntArrayData severitiesArrayData;
-    int severitiesLength = severities->get(0, severities->getLength(), &severitiesArrayData);
+    int severitiesLength = severities->get(0, severities->getLength(), severitiesArrayData);
     if (severitiesLength != valuesLength)
     {
         cerr << "Data invalid: Alarm Severity and Value lengths don't match." << endl;
