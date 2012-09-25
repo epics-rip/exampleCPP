@@ -46,6 +46,15 @@ struct FormatParameters
         HEX
     };
 
+    FormatParameters()
+      : prefix("#"),
+        format(DEFAULT),
+        precision(6),
+        appendToFile(false),
+        printColumnTitles(false)
+    {
+    }
+
     std::vector<OutputField> outputtedFields;
     std::string filename;
     std::string title;

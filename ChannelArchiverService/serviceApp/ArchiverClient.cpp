@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -64,155 +65,180 @@ PVStructure::shared_pointer createArchiverQueryRequest(string channel, int64_t t
 }
 
 /**
- * Creates the parameter object for the handling of the archiver service response
- * from the parameters supplied to the application.
+ * Converts the input string encoding the fields to be outpuuted into a
+ * vector output field enums.
  *
- * @param  outputtedFields  string encoding the fields to be outputted.
- * @param  filename         The name of the file to output results to.
- * @param  precision        The precision to be used in formatting the value field.
- * @param  options          String encoding the options according to which response is handled.
- * @return title            The title to be used in the output.
+ * @param  inString         The input string encoding the fields to be displayed.
+ * @param  fields           The result containing fields to be displayed.
  */
-FormatParameters makeFormatParameters(string outputtedFields, string filename, int precision, string options, string title)
+void makeOutputtedFields(string inString, std::vector<OutputField> & fields)
 {
-    FormatParameters parameters;
-
-    for (size_t i = 0; i < outputtedFields.length();++i)
+    for (size_t i = 0; i < inString.length();++i)
     {
-        char fieldChar = outputtedFields[i];
+        char fieldChar = inString[i];
         switch(fieldChar) 
         {
         case 't': 
-            parameters.outputtedFields.push_back(REAL_TIME);            
+            fields.push_back(REAL_TIME);            
             break;
 
         case 'v':
-            parameters.outputtedFields.push_back(VALUE);   
+            fields.push_back(VALUE);   
             break;
 
         case 'D':
-            parameters.outputtedFields.push_back(DATE); 
+            fields.push_back(DATE); 
             break;
 
         case 'A':
-           parameters.outputtedFields.push_back(ALARM); 
+           fields.push_back(ALARM); 
            break;
 
         case 's':
-            parameters.outputtedFields.push_back(SECONDS_PAST_EPOCH); 
+            fields.push_back(SECONDS_PAST_EPOCH); 
             break;
 
         case 'n':
-            parameters.outputtedFields.push_back(NANO_SECONDS); 
+            fields.push_back(NANO_SECONDS); 
             break;
 
         case 'S':
-            parameters.outputtedFields.push_back(STATUS);
+            fields.push_back(STATUS);
             break;
 
         case 'V':
-            parameters.outputtedFields.push_back(SEVERITY); 
+            fields.push_back(SEVERITY); 
             break;
 
         default:
             break; 
         }
     }
-
-    parameters.appendToFile = (options.find("a") != string::npos);
-    parameters.format  = FormatParameters::DEFAULT;
-    parameters.prefix = "#";
-
-    if (options.find("n") != string::npos)
-    {
-        parameters.title = title;
-    }
-
-    parameters.printColumnTitles = (options.find("t") != string::npos);
-
-    if (options.find("x") != string::npos)
-    {
-        parameters.format = FormatParameters::SCIENTIFIC;     
-    }
-    else if (options.find("d") != string::npos)
-    {
-        parameters.format = FormatParameters::FIXED_POINT;     
-    }
-
-    parameters.precision = precision;
-    parameters.filename  = filename;
-
-    return parameters;
 }
 
 }
 
 }
+
 
 int main (int argc, char *argv[])
 {
     using namespace  epics::channelArchiverService;
+  
+    int opt;
 
-    const int minArgs = 8;
-    if (argc < minArgs)
+    string serviceName;
+    int64_t t0     = 0;
+    int64_t t1     = std::numeric_limits<int64_t>::max();
+
+    FormatParameters parameters; 
+    bool printChannelName = false;
+    string outputtedFields;
+
+    while ((opt = getopt(argc, argv, ":S:s:e:f:ao:p:dxnt")) != -1)
     {
-        std::cerr << "argc:"     << argc << std::endl;
-        std::cerr << "Error: Too few arguments to ArchiverClient (" 
-                  << argc-1 << "). " << minArgs-1 << "+ expected." << std::endl;
-        return 1;
+        switch (opt)
+        {
+            case 'S':
+                serviceName = optarg;
+                break;
+
+            case 's':
+                t0 = atoi(optarg);
+                break;
+
+            case 'e':
+                t1 = atoi(optarg);
+                break;
+
+            case 'f':
+                parameters.filename = optarg;
+                break;
+
+            case 'a':
+                parameters.appendToFile = true;
+                break;
+
+            case 'o':
+                outputtedFields = optarg;
+                break;
+
+            case 'p':
+                parameters.precision = atoi(optarg);
+                break;
+
+            case 'd':
+                parameters.format = FormatParameters::FIXED_POINT;
+                break;
+
+            case 'x':
+                parameters.format = FormatParameters::SCIENTIFIC; 
+                break;
+
+            case 'n':
+                printChannelName = true; 
+                break;
+
+            case 't':
+                parameters.printColumnTitles = true; 
+                break;
+
+            case '?':
+                std::cerr << "illegal option" << std::endl;
+                break;
+        }
     }
-
-    //  Get supplied service name for archiver service.
-    string serviceName = argv[1];
-
-    //  Get parameters for the archiver query.
-    string channel = argv[2];
-    int64_t t0     = atol(argv[3]);
-    int64_t t1     = atol(argv[4]);
 
 #if VERBOSE_DEBUG
     std::cout << "service:" << serviceName << std::endl;
-    std::cout << "channel:"  << channel << std::endl;
     std::cout << "start:"    << t0 << std::endl;
     std::cout << "end:"      << t1 << std::endl;
 #endif
 
-    //  Create query and send to archiver service.
-    PVStructure::shared_pointer queryRequest = createArchiverQueryRequest(channel, t0, t1);
+    makeOutputtedFields(outputtedFields, parameters.outputtedFields);
 
-    std::cout << "Query:" << std::endl;        
-    std::cout << toString(queryRequest) << std::endl;
-
-    double timeOut = 3.0;
-    
-    PVStructure::shared_pointer queryResponse
-        = epics::serviceClient::SendRequest(serviceName, queryRequest, timeOut);
-
-
-    if (queryResponse == NULL)
+    if (optind >= argc)
     {
-        std::cout << "Error: Request failed." << std::endl;
-        return 1;
+        std::cerr << "Error: Too few arguments to ArchiverClient" << std::endl;
+        return 1;    
     }
-    else
+
+    for (int i = optind; i < argc; ++i)
     {
-        //  Get format parameters for the archiver response.
-        string outputtedFields = string(argv[5]);
-        string options         = string(argv[6]);
-        int    precision       = atoi(argv[7]);
-        string filename        = (argc < 9) ? "" : argv[8];
+        string channel = argv[optind];
 
 #if VERBOSE_DEBUG
-        std::cout << "outputted fields: " << outputtedFields << std::endl;
-        std::cout << "output file: "      << filename        << std::endl; 
-        std::cout << "precision: "        << precision       << std::endl;
-        std::cout << "options: "          << options         << std::endl;  
+        std::cout << "channel:"  << channel << std::endl;
 #endif
 
-        FormatParameters parameters = makeFormatParameters(outputtedFields, filename, precision, options, channel);
+        std::cout << channel << std::endl;
+        if (printChannelName)
+        {
+            parameters.title = channel;
+        }
 
+        //  Create query and send to archiver service.
+        PVStructure::shared_pointer queryRequest = createArchiverQueryRequest(channel, t0, t1);
 
-        return handleResponse(queryResponse, parameters);
+        std::cout << "Query:" << std::endl;        
+        std::cout << toString(queryRequest) << std::endl;
+
+        double timeOut = 3.0;
+    
+        PVStructure::shared_pointer queryResponse
+             = epics::serviceClient::SendRequest(serviceName, queryRequest, timeOut);
+
+        if (queryResponse == NULL)
+        {
+            std::cout << "Error: Request failed." << std::endl;
+        }
+        else
+        {
+            handleResponse(queryResponse, parameters);
+        }
+
+        parameters.appendToFile = true; 
     }
+ 
+    return 0;
 }
-
