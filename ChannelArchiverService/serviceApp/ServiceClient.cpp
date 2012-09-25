@@ -55,7 +55,7 @@ class ChannelRPCRequesterImpl : public ChannelRPCRequester
 
     virtual void message(String const &  message, MessageType messageType)
     {
-        std::cout << "[" << getRequesterName() << "] message(" << message << ", " << getMessageTypeName(messageType) << ")" << std::endl;
+        std::cerr << "[" << getRequesterName() << "] message(" << message << ", " << getMessageTypeName(messageType) << ")" << std::endl;
     }
 
     void resetEvent()
@@ -83,7 +83,7 @@ public:
 
     virtual void message(String const & message, MessageType messageType)
     {
-        std::cout << "[" << getRequesterName() << "] message(" << message << ", " << getMessageTypeName(messageType) << ")" << std::endl;
+        std::cerr << "[" << getRequesterName() << "] message(" << message << ", " << getMessageTypeName(messageType) << ")" << std::endl;
     }
 
     virtual void channelCreated(const epics::pvData::Status& status, Channel::shared_pointer const & channel)
@@ -93,12 +93,12 @@ public:
             // show warning
             if (!status.isOK())
             {
-                std::cout << "[" << channel->getChannelName() << "] channel create: " << status.toString() << std::endl;
+                std::cerr << "[" << channel->getChannelName() << "] channel create: " << status.toString() << std::endl;
             }
         }
         else
         {
-            std::cout << "[" << channel->getChannelName() << "] failed to create a channel: " << status.toString() << std::endl;
+            std::cerr << "[" << channel->getChannelName() << "] failed to create a channel: " << status.toString() << std::endl;
         }
     }
 
@@ -129,8 +129,6 @@ PVStructure::shared_pointer SendRequest(string serviceName, PVStructure::shared_
 {
     PVStructure::shared_pointer response;
 
-    SET_LOG_LEVEL(logLevelDebug);
-
     ClientFactory::start();
     ChannelProvider::shared_pointer provider = getChannelAccess()->getProvider("pvAccess");
     
@@ -150,7 +148,7 @@ PVStructure::shared_pointer SendRequest(string serviceName, PVStructure::shared_
 
                 ChannelRPC::shared_pointer channelRPC = channel->createChannelRPC(rpcRequesterImpl, connectionStructure);
                 allOK &= rpcRequesterImpl->waitUntilDone(timeOut);
-                std::cout << "connected" << std::endl;
+                //std::cout << "connected" << std::endl;
                 if (allOK)
                 {
                     rpcRequesterImpl->resetEvent();
@@ -162,7 +160,7 @@ PVStructure::shared_pointer SendRequest(string serviceName, PVStructure::shared_
                     }
                     else
                     {
-                        std::cout << "Error" << std::endl;
+                        std::cerr << "Error" << std::endl;
                     }
                 }
             }
@@ -170,20 +168,20 @@ PVStructure::shared_pointer SendRequest(string serviceName, PVStructure::shared_
             {
                 allOK = false;
                 channel->destroy();
-                std::cout << "[" << channel->getChannelName() << "] connection timeout" << std::endl;
+                std::cerr << "[" << channel->getChannelName() << "] connection timeout" << std::endl;
                 break;
             }
         }
         while (false);
     } catch (std::out_of_range& oor) {
         allOK = false;
-        std::cout << "parse error: not enough values" << std::endl;
+        std::cerr << "parse error: not enough values" << std::endl;
     } catch (std::exception& ex) {
         allOK = false;
-        std::cout << ex.what() << std::endl;
+        std::cerr << ex.what() << std::endl;
     } catch (...) {
         allOK = false;
-        std::cout << "unknown exception caught" << std::endl;
+        std::cerr << "unknown exception caught" << std::endl;
     }
         
     ClientFactory::stop();

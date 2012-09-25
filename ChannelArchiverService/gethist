@@ -66,7 +66,10 @@ Options
                            FILENAME
     -n,--title             print channel name, preceeded by #, before results
     -t,--headers           print column headers, preceeded by #, before results
-                           after channel name, if printed.   
+                           after channel name, if printed.
+    -q,--quiet             supress all output to standard out except archive
+                           data.
+    -v,--verbose           output verbose logging information.    
     -x,--scientific        results of archiver query request outputted using
                            scientific (i.e. exponent/mantissa) format 
     -d,--fixed             results of archiver query request outputted using
@@ -83,13 +86,13 @@ Description
     The defaults are "1 hour ago" for start and "now" for the end.
 
     The data returned by the archive server is outputted in columns, formatted 
-    according to the -x,--scientific, -d,--fixed and -p/--precision options. 
+    according to the -x,--scientific, -d,--fixed and -p,--precision options. 
     For the fixed option, the precision specifies the number of decimal places.
     For scientific it specifies the number of decimal places of the mantissa.
     The default is neither scientific nor fixed formatting. In this case the
     value is formatted as fixed or scientific, the format being value-dependent.
 
-    If the -n,--title option is selcted the channel name, preceeded by'#', is 
+    If the -n,--title option is selected the channel name, preceeded by'#', is 
     outputted before the archived values. If the -t,--header option is selected
     the column name, preceeded by'#', is outputted before the values.
 
@@ -131,7 +134,7 @@ process_shortopts()
 {
 #echo args: $@
 
-while getopts :hs:e:f:ao:p:dxnt OPTION
+while getopts :hs:e:f:ao:p:dxntqv OPTION
 do
     case $OPTION in
     h) #echo h
@@ -176,6 +179,14 @@ do
 
     t) #echo t
        OPTIONS+="t"
+       ;;
+
+    q) #echo q
+       OPTIONS+="q"
+       ;;
+
+    v) #echo v
+       OPTIONS+="v"
        ;;
 
     ?) #echo "?"
@@ -327,6 +338,12 @@ process()
 
             --headers )
                 NEW_ARG="-t";;
+
+            --quiet )
+                NEW_ARG="-q";;
+
+            --verbose )
+                NEW_ARG="-v";;
             *)
                 Error "Illegal long option $ARG"
                 ;;            

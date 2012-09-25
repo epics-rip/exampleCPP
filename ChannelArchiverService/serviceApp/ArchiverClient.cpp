@@ -22,7 +22,7 @@
 #include <RawValue.h>
 
 #include <pv/pvData.h>
-
+#include <pv/logger.h>
 
 #include "types.h"
 
@@ -31,8 +31,6 @@
 
 #include "ArchiverClientResponseHandler.h"
 #include "ServiceClient.h"
-
-#define VERBOSE_DEBUG 0
 
 using namespace std::tr1;
 using namespace epics::pvData;
@@ -43,6 +41,13 @@ namespace epics
 
 namespace channelArchiverService
 {
+
+enum DebugLevel
+{
+    QUIET,
+    NORMAL,
+    VERBOSE
+};
 
 /**
  * Creates the request to be sent to the archiver service for data between
@@ -116,11 +121,50 @@ void makeOutputtedFields(string inString, std::vector<OutputField> & fields)
     }
 }
 
+
+
+/**
+ * Display help for ArchiverClient.
+ *
+ */
+void showHelp()
+{
+    std::cout << "ArchiverClient [OPTIONS] channel...\n"
+              << "ArchiverClient -h\n\n";
+
+    std::cout << "Queries a Channel Archive Server for the data for the channel\n\n"; 
+
+    std::cout << "Options:\n"
+      << "-h              display help\n"
+      << "-S=SERVICE      query SERVICE for results\n" 
+      << "-s= START_TIME  query archive for results starting from START_TIME\n"
+      << "                in seconds after EPICS epoch\n"
+      << "-e=END_TIME     query archive for results up to END_TIME\n"
+      << "                in seconds after EPICS epoch\n"
+      << "-f= FILENAME    output results of archiver query to file named FILENAME\n"
+      << "-n              print channel name, preceeded by #, before results\n"
+      << "-t              print column headers, preceeded by #, before results\n"
+      << "                after channel name, if printed.\n"
+      << "-q              supress all output to standard out except for archive data.\n"
+      << "-v              output verbose logging information.\n"  
+      << "-x              results of archiver query request outputted using\n"
+      << "                scientific (i.e. exponent/mantissa) format"
+      << "-d              results of archiver query request outputted using\n"
+      << "                scientific (i.e. exponent/mantissa) format\n"
+      << "-p=PREC         results of archiver query request given to precision PREC\n"
+      << "                Default value is 6.\n"
+      << "-o              specifies which fields to output, in which order"
+      << std::endl;
 }
 
 }
 
+}
 
+/**
+ * Channel Archiver Service Client main.
+ *
+ */ 
 int main (int argc, char *argv[])
 {
     using namespace  epics::channelArchiverService;
@@ -134,11 +178,16 @@ int main (int argc, char *argv[])
     FormatParameters parameters; 
     bool printChannelName = false;
     string outputtedFields;
+    DebugLevel debugLevel = NORMAL;
 
-    while ((opt = getopt(argc, argv, ":S:s:e:f:ao:p:dxnt")) != -1)
+    while ((opt = getopt(argc, argv, ":hS:s:e:f:ao:p:dxntqv")) != -1)
     {
         switch (opt)
         {
+            case 'h':
+                showHelp();
+                return 0;
+
             case 'S':
                 serviceName = optarg;
                 break;
@@ -183,17 +232,23 @@ int main (int argc, char *argv[])
                 parameters.printColumnTitles = true; 
                 break;
 
+            case 'q':
+                debugLevel = QUIET; 
+                break;
+
+            case 'v':
+                debugLevel = VERBOSE; 
+                break;
+
             case '?':
                 std::cerr << "illegal option" << std::endl;
                 break;
         }
     }
 
-#if VERBOSE_DEBUG
-    std::cout << "service:" << serviceName << std::endl;
-    std::cout << "start:"    << t0 << std::endl;
-    std::cout << "end:"      << t1 << std::endl;
-#endif
+    epics::pvAccess::pvAccessSetLogLevel((debugLevel == QUIET) ? epics::pvAccess::logLevelOff
+                                                               : (debugLevel == NORMAL) ? epics::pvAccess::logLevelInfo
+                                                                                        : epics::pvAccess::logLevelDebug);
 
     makeOutputtedFields(outputtedFields, parameters.outputtedFields);
 
@@ -207,11 +262,12 @@ int main (int argc, char *argv[])
     {
         string channel = argv[optind];
 
-#if VERBOSE_DEBUG
-        std::cout << "channel:"  << channel << std::endl;
-#endif
+        if (debugLevel != QUIET)
+        {
+            std::cout << "Querying " << serviceName << " (channel: "  << channel
+                      << "  start: " << t0 << "  end: " << t1  << ")..." << std::endl;
+        }
 
-        std::cout << channel << std::endl;
         if (printChannelName)
         {
             parameters.title = channel;
@@ -220,8 +276,11 @@ int main (int argc, char *argv[])
         //  Create query and send to archiver service.
         PVStructure::shared_pointer queryRequest = createArchiverQueryRequest(channel, t0, t1);
 
-        std::cout << "Query:" << std::endl;        
-        std::cout << toString(queryRequest) << std::endl;
+        if (debugLevel == VERBOSE)
+        {
+            std::cout << "Query:" << std::endl;        
+            std::cout << toString(queryRequest) << std::endl;
+        }
 
         double timeOut = 3.0;
     
@@ -230,11 +289,66 @@ int main (int argc, char *argv[])
 
         if (queryResponse == NULL)
         {
-            std::cout << "Error: Request failed." << std::endl;
+            std::cerr << "Error: Request failed." << std::endl;
         }
         else
         {
-            handleResponse(queryResponse, parameters);
+            if (debugLevel != QUIET)
+            {
+                std::cout << "Request successful. Processing results..." << std::endl;
+            }
+
+            if (debugLevel == VERBOSE)
+            {
+                std::cout << "Processings with parameters" << std::endl;
+
+                if (parameters.filename != "")
+                {
+                    std::cout << "out file: " << parameters.filename
+                              << (parameters.appendToFile ? " (append)" : " (overwrite)")
+                              << std::endl;
+                }
+                std::cout << "precision:"      << parameters.precision << std::endl;
+                std::cout << "format: ";
+                switch (parameters.format)
+                {
+                case FormatParameters::SCIENTIFIC:
+                    std::cout << "scientific";
+                    break;
+
+                case FormatParameters::FIXED_POINT:
+                    std::cout << "fixed point";
+
+                case FormatParameters::DEFAULT:
+                    break;
+
+                default:
+                    std::cout << "?";          
+                    break;
+                }
+                std::cout << std::endl;
+                std::cout << "Output fields: " << outputtedFields << std::endl;
+            }
+
+            int result = handleResponse(queryResponse, parameters);
+
+            if (debugLevel != QUIET)
+            {
+                if (result == 0)
+                {
+                    std::cout << "Done. ";
+                    if (parameters.filename != "")
+                    {
+                        std::cout << "Results " << (parameters.appendToFile ? "appended" : "written")
+                                  << " to " <<  parameters.filename << ".";
+                    }
+                    std::cout << std::endl;
+                }
+                else
+                {
+                    std::cout << "Processing unsuccessful." << std::endl;
+                }
+            }
         }
 
         parameters.appendToFile = true; 
