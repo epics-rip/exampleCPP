@@ -257,7 +257,14 @@ fi
 # change this to query an archive service of a different name
 SERVICE="archiveRPC"
 
-$TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S $SERVICE -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION -f $FILE $CHANNEL
+
+if [[ "$FILE" = "" ]]
+then
+    $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  "$CHANNEL"
+else
+    $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION -f "$FILE" "$CHANNEL"
+fi
+
 shift
 
 if ! [[ "$OPTIONS" =~ "a" ]]
@@ -267,7 +274,12 @@ fi
 
 
 for CHANNEL in "$@"; do
-    $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S $SERVICE -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION -f $FILE $CHANNEL
+    if [[ "$FILE" = "" ]]
+    then
+        $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  "$CHANNEL"
+    else
+        $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION -f "$FILE" "$CHANNEL"
+    fi
 done
 }
 
