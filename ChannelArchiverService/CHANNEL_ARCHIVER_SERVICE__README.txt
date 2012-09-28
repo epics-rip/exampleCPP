@@ -100,12 +100,6 @@ PREREQUISITES
 -------------
 
 EPICS V4 components:
-1. common  - for source/pvCommon_setup.bash
-2. pvAccessJava - for PVAccess 
-3. pvDataJava   - for PVData 
-4. pvIOCJava    - for JavaIOC rpc
-5. pvService    - for xmls that define a service
-6. exampleJava      - for the example java classes and config files.
 
 1. EPICS 3 Base          - for a large number of EPICS types
 2. pvDataCPP             - for PVData 

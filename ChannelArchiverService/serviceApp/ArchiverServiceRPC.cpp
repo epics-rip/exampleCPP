@@ -176,8 +176,8 @@ void ArchiverServiceRPC::request(
 
     if(typeString != schema)
     {
-        std::cout << "Type checking, wanted:" << std::endl << typeString << std::endl;
-        std::cout << "Type checking, got:" << std::endl << schema << std::endl;
+        std::cout << "Type checking, wanted:" << std::endl << schema << std::endl;
+        std::cout << "Type checking, got:" << std::endl << typeString << std::endl;
         channelRPCRequester->requestDone(Status(Status::STATUSTYPE_ERROR, "type mismatch"), pvArgument);
         return;
     }
