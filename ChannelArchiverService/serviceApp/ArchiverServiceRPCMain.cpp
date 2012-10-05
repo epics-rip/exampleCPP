@@ -49,8 +49,8 @@ int main(int argc,char *argv[])
     char * index = argv[1];
     char * channel = argv[2];
 
-    PVServiceChannelCTX::shared_pointer myCTX
-        = PVServiceChannelCTX::shared_pointer(new PVServiceChannelCTX());
+    PVServiceChannelCTX::shared_pointer pvServiceChannelCTX
+        = PVServiceChannelCTX::getPVServiceChannelCTX();
     ArchiverServiceRPC::shared_pointer example
         = ArchiverServiceRPC::shared_pointer(new ArchiverServiceRPC(index));
     ServiceChannelRPC::shared_pointer serviceChannelRPC
