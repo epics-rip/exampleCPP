@@ -4,10 +4,6 @@ include $(TOP)/configure/CONFIG
 
 USR_SYS_LIBS += expat
 
-PROD_HOST += showtypes
-showtypes_SRCS += showtypes.cpp
-showtypes_LIBS += pvIOC pvAccess pvData Com Storage Tools
-
 PROD_HOST += ArchiverServiceRPC
 ArchiverServiceRPC_SRCS += ArchiverServiceRPCMain.cpp
 ArchiverServiceRPC_SRCS += ArchiverServiceRPC.cpp

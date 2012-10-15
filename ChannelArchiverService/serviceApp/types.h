@@ -81,6 +81,13 @@ size_t maxWidth(const T & t)
 	return maxWidth;
 }
 
+const std::string ntTableStr = "uri:ev4:nt/2012/pwd:NTTable";
+const std::string ntURIStr = "uri:ev4:nt/2012/pwd:NTURI";
+
+const std::string nameStr  = "name";
+const std::string startStr = "start";
+const std::string endStr   = "end";
+const std::string countStr = "count";
 
 
 epics::pvData::StructureConstPtr ArchiverQuery(epics::pvData::FieldCreate & factory)
@@ -91,16 +98,35 @@ epics::pvData::StructureConstPtr ArchiverQuery(epics::pvData::FieldCreate & fact
     StringArray names;
 
     fields.push_back(factory.createScalar(epics::pvData::pvString));
-    fields.push_back(factory.createScalar(epics::pvData::pvLong));
-    fields.push_back(factory.createScalar(epics::pvData::pvInt));
-    fields.push_back(factory.createScalar(epics::pvData::pvLong));
-    fields.push_back(factory.createScalar(epics::pvData::pvInt));
 
-    names.push_back("name");
-    names.push_back("t0secPastEpoch");
-    names.push_back("t0nsec");
-    names.push_back("t1secPastEpoch");
-    names.push_back("t1nsec");
+    fields.push_back(factory.createScalar(epics::pvData::pvString));
+    fields.push_back(factory.createScalar(epics::pvData::pvString));
+
+    names.push_back(nameStr);
+    names.push_back(startStr);
+    names.push_back(endStr);
+
+    return factory.createStructure(names, fields);
+}
+
+epics::pvData::StructureConstPtr ArchiverTableValues(epics::pvData::FieldCreate & factory)
+{
+    using namespace epics::pvData;
+    
+    FieldConstPtrArray fields;
+    StringArray names;
+
+    names.push_back("value");
+    names.push_back("secPastEpoch");
+    names.push_back("nsec");
+    names.push_back("status");
+    names.push_back("severity");
+
+    fields.push_back(factory.createScalarArray(epics::pvData::pvDouble));
+    fields.push_back(factory.createScalarArray(epics::pvData::pvLong));
+    fields.push_back(factory.createScalarArray(epics::pvData::pvInt));
+    fields.push_back(factory.createScalarArray(epics::pvData::pvInt));
+    fields.push_back(factory.createScalarArray(epics::pvData::pvInt));
 
     return factory.createStructure(names, fields);
 }
@@ -114,20 +140,14 @@ epics::pvData::StructureConstPtr ArchiverTable(epics::pvData::FieldCreate & fact
 
     names.push_back("labels");
     names.push_back("value");
-    names.push_back("secPastEpoch");
-    names.push_back("nsec");
-    names.push_back("status");
-    names.push_back("severity");
 
     fields.push_back(factory.createScalarArray(epics::pvData::pvString));
-    fields.push_back(factory.createScalarArray(epics::pvData::pvDouble));
-    fields.push_back(factory.createScalarArray(epics::pvData::pvLong));
-    fields.push_back(factory.createScalarArray(epics::pvData::pvInt));
-    fields.push_back(factory.createScalarArray(epics::pvData::pvInt));
-    fields.push_back(factory.createScalarArray(epics::pvData::pvInt));
+    fields.push_back(ArchiverTableValues(factory));
 
-    return factory.createStructure(names, fields);
+    return factory.createStructure("uri:ev4:nt/2012/pwd:NTTable", names, fields);
 }
+
+
 
 }
 

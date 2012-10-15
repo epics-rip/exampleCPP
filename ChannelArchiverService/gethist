@@ -266,7 +266,7 @@ fi
 
 
 # change this to query an archive service of a different name
-SERVICE="archiveRPC"
+SERVICE="archiveService"
 
 
 if [[ "$FILE" = "" ]]

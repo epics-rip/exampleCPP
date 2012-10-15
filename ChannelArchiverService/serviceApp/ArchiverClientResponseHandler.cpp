@@ -193,10 +193,12 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
 {
     vector<string> outputFieldValues[NUMBER_OF_FIELDS];
 
+    PVStructurePtr responseValues = response->getStructureField("value");
+
     //  Handle each of the fields in the archiver query response in turn.
 
     //  Values.
-    PVDoubleArrayPtr values = std::tr1::static_pointer_cast<epics::pvData::PVDoubleArray>(response->getScalarArrayField("value", pvDouble));
+    PVDoubleArrayPtr values = std::tr1::static_pointer_cast<epics::pvData::PVDoubleArray>(responseValues->getScalarArrayField("value", pvDouble));
     DoubleArrayData valuesArrayData;
     int valuesLength = values->get(0, values->getLength(), valuesArrayData);
 
@@ -204,7 +206,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
 
 
     //  Seconds.
-    PVLongArrayPtr secPastEpochs = std::tr1::static_pointer_cast<epics::pvData::PVLongArray>(response->getScalarArrayField("secPastEpoch", pvLong));
+    PVLongArrayPtr secPastEpochs = std::tr1::static_pointer_cast<epics::pvData::PVLongArray>(responseValues->getScalarArrayField("secPastEpoch", pvLong));
     LongArrayData secPastEpochsArrayData;
 
     int secPastEpochsLength = secPastEpochs->get(0, secPastEpochs->getLength(), secPastEpochsArrayData);
@@ -218,7 +220,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
 
 
     //  Nanoseconds.
-    PVIntArrayPtr nsecs = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(response->getScalarArrayField("nsec", pvInt));
+    PVIntArrayPtr nsecs = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(responseValues->getScalarArrayField("nsec", pvInt));
     IntArrayData nsecsArrayData;
     int nsecsLength = nsecs->get(0, nsecs->getLength(), nsecsArrayData);
     if (nsecsLength != valuesLength)
@@ -259,7 +261,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
 
 
     //  Alarm status.
-    PVIntArrayPtr statuses = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(response->getScalarArrayField("status", pvInt));
+    PVIntArrayPtr statuses = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(responseValues->getScalarArrayField("status", pvInt));
     IntArrayData statusesArrayData;
     int statusesLength = statuses->get(0, statuses->getLength(), statusesArrayData);
     if (statusesLength != valuesLength)
@@ -272,7 +274,7 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
 
 
     //  Alarm severity.
-    PVIntArrayPtr severities = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(response->getScalarArrayField("severity", pvInt));
+    PVIntArrayPtr severities = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(responseValues->getScalarArrayField("severity", pvInt));
     IntArrayData severitiesArrayData;
     int severitiesLength = severities->get(0, severities->getLength(), severitiesArrayData);
     if (severitiesLength != valuesLength)

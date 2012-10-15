@@ -150,11 +150,13 @@ void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & ch
         
     /* Pack the table into the pvStructure using some STL helper functions */
 
-    copyToScalarArray(values, pvResult, "value");
-    copyToScalarArray(secPastEpoch, pvResult, "secPastEpoch");
-    copyToScalarArray(nsec, pvResult, "nsec");
-    copyToScalarArray(stats, pvResult, "status");
-    copyToScalarArray(sevrs, pvResult, "severity");
+    PVStructure::shared_pointer resultValues = pvResult->getStructureField("value");    
+
+    copyToScalarArray(values, resultValues, "value");
+    copyToScalarArray(secPastEpoch, resultValues, "secPastEpoch");
+    copyToScalarArray(nsec, resultValues, "nsec");
+    copyToScalarArray(stats, resultValues, "status");
+    copyToScalarArray(sevrs, resultValues, "severity");
 
     std::cout << "End Query" << std::endl;
         
@@ -169,28 +171,52 @@ void ArchiverServiceRPC::request(
     
     std::cout << toString(pvArgument) << std::endl;
 
-    /* Check the request type by comparing the schemas */
-    
-    std::string typeString = toString(pvArgument->getStructure());
-    std::string schema = toString(ArchiverQuery(*getFieldCreate()));
+    /* Unpack the request type */
+    std::string name;
+    int64_t start = 0;
+    int64_t end   = 0xFFFFFFFF;
+    int64_t count = 1000000000; // limit to 1e9 values unless other number specified
 
-    if(typeString != schema)
+    epics::pvData::PVString::shared_pointer const & pathField = pvArgument->getStringField("path");
+    epics::pvData::PVStructure::shared_pointer const & queryField = pvArgument->getStructureField("query");
+
+    bool isNTQuery = (pathField != NULL) && (queryField != NULL);
+
+    epics::pvData::PVStructure::shared_pointer const & query = isNTQuery ? queryField : pvArgument; 
+
+    if ((query->getSubField(nameStr) != NULL) && (query->getStringField(nameStr) != NULL))
     {
-        std::cout << "Type checking, wanted:" << std::endl << schema << std::endl;
-        std::cout << "Type checking, got:" << std::endl << typeString << std::endl;
-        channelRPCRequester->requestDone(Status(Status::STATUSTYPE_ERROR, "type mismatch"), pvArgument);
+        name = query->getStringField(nameStr)->get();
+    }
+        
+    if ((query->getSubField(startStr) != NULL) && (query->getStringField(startStr) != NULL))
+    {
+        start = atol((query->getStringField(startStr)->get()).c_str());
+    }
+
+    if ((query->getSubField(endStr) != NULL) && (query->getStringField(endStr) != NULL))
+    {
+        end = atol((query->getStringField(endStr)->get()).c_str());
+    }
+
+    if ((query->getSubField(countStr) != NULL) && (query->getStringField(countStr) != NULL))
+    {
+        count = atol((query->getStringField(countStr)->get()).c_str());
+    }
+
+    if (name == "")
+    {
+        channelRPCRequester->requestDone(Status(Status::STATUSTYPE_ERROR, "No channel name"), pvArgument);
         return;
     }
 
-    /* Unpack the request type */
-
     epicsTimeStamp t0, t1;
-    t0.secPastEpoch = pvArgument->getLongField("t0secPastEpoch")->get();
-    t0.nsec = pvArgument->getIntField("t0nsec")->get();
-    t1.secPastEpoch = pvArgument->getLongField("t1secPastEpoch")->get();
-    t1.nsec = pvArgument->getIntField("t1nsec")->get();
-    std::string name = pvArgument->getStringField("name")->get();
-    int64_t count = 1000000000; // limit to 1e9 results for now
+
+    t0.secPastEpoch = start;
+    t0.nsec = 0;
+    t1.secPastEpoch  = end;
+    t1.nsec = 0;
+
     return QueryRaw(channelRPCRequester, pvArgument, name, t0, t1, count);
 
 }

@@ -88,7 +88,6 @@ ArchiverServiceRPCMain.cpp                C++ source code of the server side of 
 ArchiverClient.cpp                        C++ source code of the client side of the example
 ArchiverClientResponseHandler.h/cpp       C++ source code for the client handling the response from server 
 ServiceClient.h/cpp                       C++ source code for the client sending the query and receiving response
-showtypes.cpp                             C++ source code of application that shows request and response types
 types.h                                   C++ source code of types common to client and server
 
 start_server                              bash script to start server

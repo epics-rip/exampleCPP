@@ -53,19 +53,19 @@ enum DebugLevel
  * Creates the request to be sent to the archiver service for data between
  * start and end times for channel name.
  *
- * @param  channel          The name of the channel to query for.
- * @param  t0secPastEpoch   The seconds past epoch of the start time.
- * @return t1secPastEpoch   The seconds past epoch of the end time.
+ * @param  channel       The name of the channel to query for.
+ * @param  start         The seconds past epoch of the start time.
+ * @return end           The seconds past epoch of the end time.
  */
-PVStructure::shared_pointer createArchiverQueryRequest(string channel, int64_t t0secPastEpoch, int64_t t1secPastEpoch)
+PVStructure::shared_pointer createArchiverQueryRequest(string channel, const std::string & start, const std::string &  end)
 {
     StructureConstPtr archiverStructure = ArchiverQuery(*getFieldCreate());
     PVStructure::shared_pointer queryRequest(getPVDataCreate()->createPVStructure(archiverStructure));
 
     // Set request.
-    queryRequest->getStringField("name")->put(channel);
-    queryRequest->getLongField("t0secPastEpoch")->put(t0secPastEpoch);
-    queryRequest->getLongField("t1secPastEpoch")->put(t1secPastEpoch); 
+    queryRequest->getStringField(nameStr)->put(channel);
+    queryRequest->getStringField(startStr)->put(start);
+    queryRequest->getStringField(endStr)->put(end); 
     return queryRequest;
 }
 
@@ -180,6 +180,9 @@ int main (int argc, char *argv[])
     string outputtedFields;
     DebugLevel debugLevel = NORMAL;
 
+    std::string start;
+    std::string end;
+
     while ((opt = getopt(argc, argv, ":hS:s:e:f:ao:p:dxntqv")) != -1)
     {
         switch (opt)
@@ -193,11 +196,13 @@ int main (int argc, char *argv[])
                 break;
 
             case 's':
-                t0 = atoi(optarg);
+                t0 = atol(optarg);
+                start = optarg;
                 break;
 
             case 'e':
-                t1 = atoi(optarg);
+                t1 = atol(optarg);
+                end = optarg;
                 break;
 
             case 'f':
@@ -274,7 +279,7 @@ int main (int argc, char *argv[])
         }
 
         //  Create query and send to archiver service.
-        PVStructure::shared_pointer queryRequest = createArchiverQueryRequest(channel, t0, t1);
+        PVStructure::shared_pointer queryRequest = createArchiverQueryRequest(channel, start, end);
 
         if (debugLevel == VERBOSE)
         {
@@ -328,6 +333,11 @@ int main (int argc, char *argv[])
                 }
                 std::cout << std::endl;
                 std::cout << "Output fields: " << outputtedFields << std::endl;
+            }
+
+            if (debugLevel != QUIET)
+            {
+                std::cout << toString(queryResponse->getField()) << std::endl;
             }
 
             int result = handleResponse(queryResponse, parameters);
