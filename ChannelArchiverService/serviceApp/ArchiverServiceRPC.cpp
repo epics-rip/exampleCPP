@@ -13,6 +13,7 @@
 #include <memory>
 #include <iostream>
 #include <vector>
+#include <limits>
 #include <float.h>
 
 /* EPICS Archiver Includes */
@@ -174,19 +175,28 @@ void ArchiverServiceRPC::request(
     /* Unpack the request type */
     std::string name;
     int64_t start = 0;
-    int64_t end   = 0xFFFFFFFF;
+    int64_t end   = std::numeric_limits<uint32_t>::max();
     int64_t count = 1000000000; // limit to 1e9 values unless other number specified
 
-    epics::pvData::PVString::shared_pointer const & pathField = pvArgument->getStringField("path");
-    epics::pvData::PVStructure::shared_pointer const & queryField = pvArgument->getStructureField("query");
+    bool isNTQuery = false;
 
-    bool isNTQuery = (pathField != NULL) && (queryField != NULL);
+    if ( (pvArgument->getSubField("path") != NULL) && (pvArgument->getStringField("path") != NULL) 
+      && (pvArgument->getSubField("query") != NULL) && (pvArgument->getStructureField("query") != NULL))
+    {
+        isNTQuery = true;
+    }
 
-    epics::pvData::PVStructure::shared_pointer const & query = isNTQuery ? queryField : pvArgument; 
+    epics::pvData::PVStructure::shared_pointer const & query
+        = isNTQuery ? pvArgument->getStructureField("query") : pvArgument;
 
-    if ((query->getSubField(nameStr) != NULL) && (query->getStringField(nameStr) != NULL))
+    if (query->getStringField(nameStr) != NULL)
     {
         name = query->getStringField(nameStr)->get();
+    }
+    else
+    {
+        channelRPCRequester->requestDone(Status(Status::STATUSTYPE_ERROR, "No channel name"), pvArgument);
+        return;
     }
         
     if ((query->getSubField(startStr) != NULL) && (query->getStringField(startStr) != NULL))
@@ -202,12 +212,6 @@ void ArchiverServiceRPC::request(
     if ((query->getSubField(countStr) != NULL) && (query->getStringField(countStr) != NULL))
     {
         count = atol((query->getStringField(countStr)->get()).c_str());
-    }
-
-    if (name == "")
-    {
-        channelRPCRequester->requestDone(Status(Status::STATUSTYPE_ERROR, "No channel name"), pvArgument);
-        return;
     }
 
     epicsTimeStamp t0, t1;
