@@ -84,9 +84,9 @@ size_t maxWidth(const T & t)
 const std::string ntTableStr = "uri:ev4:nt/2012/pwd:NTTable";
 const std::string ntURIStr = "uri:ev4:nt/2012/pwd:NTURI";
 
-const std::string nameStr  = "name";
-const std::string startStr = "start";
-const std::string endStr   = "end";
+const std::string nameStr  = "entity";
+const std::string startStr = "starttime";
+const std::string endStr   = "endtime";
 const std::string countStr = "count";
 
 
