@@ -30,6 +30,7 @@ namespace
 class ChannelRPCRequesterImpl : public ChannelRPCRequester
 {
     auto_ptr<Event> m_event;
+    Mutex m_pointerMutex;
     public:
     shared_ptr<epics::pvData::PVStructure> pvResponse;
     ChannelRPCRequesterImpl(String channelName) 
@@ -44,7 +45,10 @@ class ChannelRPCRequesterImpl : public ChannelRPCRequester
 
     virtual void requestDone(const epics::pvData::Status &status, epics::pvData::PVStructure::shared_pointer const &pvResponse)
     {
-        this->pvResponse = pvResponse;
+        {
+            Lock lock(m_pointerMutex);
+            this->pvResponse = pvResponse;
+        }
         m_event->signal();
     }
 
