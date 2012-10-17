@@ -18,7 +18,7 @@
 namespace channelArchiverService
 {
 
-class ArchiverServiceRPC : public epics::pvIOC::ServiceRPC,
+class ArchiverServiceRPC : virtual public epics::pvIOC::ServiceRPC,
   public std::tr1::enable_shared_from_this<ArchiverServiceRPC>
 {
     std::string indexFilename;

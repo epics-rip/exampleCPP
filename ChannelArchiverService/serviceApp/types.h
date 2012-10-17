@@ -87,7 +87,7 @@ const std::string ntURIStr = "uri:ev4:nt/2012/pwd:NTURI";
 const std::string nameStr  = "entity";
 const std::string startStr = "starttime";
 const std::string endStr   = "endtime";
-const std::string countStr = "count";
+const std::string countStr = "maxrecords";
 
 
 epics::pvData::StructureConstPtr ArchiverQuery(epics::pvData::FieldCreate & factory)
