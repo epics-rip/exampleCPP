@@ -13,34 +13,30 @@
 #include <stdexcept>
 #include <memory>
 
-#include <pv/service.h>
+#include <pv/rpcServer.h>
 
 namespace channelArchiverService
 {
 
-class ArchiverServiceRPC : virtual public epics::pvIOC::ServiceRPC,
-  public std::tr1::enable_shared_from_this<ArchiverServiceRPC>
+class ArchiverServiceRPC : public epics::pvAccess::RPCService
 {
     std::string indexFilename;
 public:
     POINTER_DEFINITIONS(ArchiverServiceRPC);
     ArchiverServiceRPC(char * indexFilename) : indexFilename(indexFilename) {}
     virtual ~ArchiverServiceRPC();
-    virtual void destroy();
-    virtual void request(
-        epics::pvAccess::ChannelRPCRequester::shared_pointer const & channelRPCRequester,
-        epics::pvData::PVStructure::shared_pointer const & pvArgument);
+
+    epics::pvData::PVStructure::shared_pointer request(
+        epics::pvData::PVStructure::shared_pointer const & args
+    ) throw (epics::pvAccess::RPCRequestException);
+
 private:
-    void QueryRaw(epics::pvAccess::ChannelRPCRequester::shared_pointer const & channelRPCRequester,
-                  epics::pvData::PVStructure::shared_pointer const & pvArgument,
-                  std::string & name, 
-                  const epicsTimeStamp & t0,
-                  const epicsTimeStamp & t1,
-                  int64_t count);
-    ArchiverServiceRPC::shared_pointer getPtrSelf()
-    {
-        return shared_from_this();
-    }
+    epics::pvData::PVStructure::shared_pointer QueryRaw(
+        epics::pvData::PVStructure::shared_pointer const & pvArgument,
+        std::string & name, 
+        const epicsTimeStamp & t0,
+        const epicsTimeStamp & t1,
+        int64_t count);
 };
 
 }

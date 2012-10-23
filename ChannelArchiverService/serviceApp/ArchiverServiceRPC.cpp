@@ -31,6 +31,7 @@
 
 #include <ArchiverServiceRPC.h>
 
+#include <pv/rpcServer.h>
 
 #include "types.h"
 
@@ -41,7 +42,6 @@ namespace channelArchiverService
 {
 
 ArchiverServiceRPC::~ArchiverServiceRPC() {}
-void ArchiverServiceRPC::destroy() {}
 
 /**
  * Fills in the list of table column labels
@@ -60,10 +60,12 @@ void LabelTable(PVStructure::shared_pointer pvResult)
 /**
  * Queries the EPICS R-Tree Channel Archiver, returning raw samples
  */
-void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & channelRPCRequester,
-              epics::pvData::PVStructure::shared_pointer const & pvArgument,
-              std::string & name, 
-              const epicsTimeStamp & t0, const epicsTimeStamp & t1, int64_t count)
+PVStructure::shared_pointer ArchiverServiceRPC::QueryRaw(
+    epics::pvData::PVStructure::shared_pointer const & pvArgument,
+    std::string & name, 
+    const epicsTimeStamp & t0,
+    const epicsTimeStamp & t1,
+    int64_t count)
 {
     std::cout << "Begin Query" << std::endl;
 
@@ -93,8 +95,7 @@ void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & ch
     catch(GenericException & e)
     {
         std::cout << e.what() << std::endl;
-        channelRPCRequester->requestDone(Status(Status::STATUSTYPE_ERROR, e.what()), pvArgument);
-        return;
+        throw RPCRequestException(Status::STATUSTYPE_ERROR, e.what());
     }
 
     const epicsTime start = t0;
@@ -161,13 +162,16 @@ void ArchiverServiceRPC::QueryRaw(ChannelRPCRequester::shared_pointer const & ch
 
     std::cout << "End Query" << std::endl;
         
-    channelRPCRequester->requestDone(Status::Ok, pvResult);
-
+    return pvResult;
 }
 
-void ArchiverServiceRPC::request(
-    ChannelRPCRequester::shared_pointer const & channelRPCRequester,
-    epics::pvData::PVStructure::shared_pointer const & pvArgument)
+
+/**
+ * Queries the EPICS R-Tree Channel Archiver, returning raw samples
+ */
+epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
+    epics::pvData::PVStructure::shared_pointer const & pvArgument
+    ) throw (RPCRequestException)
 {
     
     std::cout << toString(pvArgument) << std::endl;
@@ -195,8 +199,7 @@ void ArchiverServiceRPC::request(
     }
     else
     {
-        channelRPCRequester->requestDone(Status(Status::STATUSTYPE_ERROR, "No channel name"), pvArgument);
-        return;
+        throw RPCRequestException(Status::STATUSTYPE_ERROR, "No channel name");
     }
         
     if ((query->getSubField(startStr) != NULL) && (query->getStringField(startStr) != NULL))
@@ -221,7 +224,7 @@ void ArchiverServiceRPC::request(
     t1.secPastEpoch  = end;
     t1.nsec = 0;
 
-    return QueryRaw(channelRPCRequester, pvArgument, name, t0, t1, count);
+    return QueryRaw(pvArgument, name, t0, t1, count);
 
 }
 
