@@ -22,6 +22,7 @@ namespace serviceClient
     class ResponseHandler
     {
     public:
+        POINTER_DEFINITIONS(ResponseHandler);
         /**
          * Process the response from the server to a clients request
          *
@@ -45,7 +46,7 @@ namespace serviceClient
         std::string serviceName,
         epics::pvData::PVStructure::shared_pointer connectionStructure,
         epics::pvData::PVStructure::shared_pointer request,
-        ResponseHandler & handler,
+        ResponseHandler::shared_pointer  handler,
         double timeOut);
 
     /**
@@ -62,7 +63,7 @@ namespace serviceClient
     bool SendRequest(
         std::string serviceName,
         epics::pvData::PVStructure::shared_pointer request,
-        ResponseHandler & handler,
+        ResponseHandler::shared_pointer  handler,
         double timeOut);
 
 }

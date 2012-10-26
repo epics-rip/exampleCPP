@@ -85,6 +85,7 @@ struct FormatParameters
 class RequestResponseHandler : public epics::serviceClient::ResponseHandler
 {
 public:
+    POINTER_DEFINITIONS(RequestResponseHandler);
     /**
      * Constructor.
      *

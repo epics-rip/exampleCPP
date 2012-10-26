@@ -55,11 +55,11 @@ class ChannelRPCRequesterImpl : public ChannelRPCRequester
     Event m_event;
     Event m_connectionEvent;
     String m_channelName;
-    serviceClient::ResponseHandler & m_handler;
+    serviceClient::ResponseHandler::shared_pointer m_handler;
 
     public:
     epics::pvData::PVStructure::shared_pointer response;   
-    ChannelRPCRequesterImpl(String channelName, serviceClient::ResponseHandler & handler)
+    ChannelRPCRequesterImpl(String channelName, serviceClient::ResponseHandler::shared_pointer handler)
     : m_channelName(channelName),
       m_handler(handler)
     {}
@@ -112,7 +112,10 @@ class ChannelRPCRequesterImpl : public ChannelRPCRequester
             {
                 Lock lock(m_pointerMutex);
 
-                m_handler.handle(pvResponse);
+                if (m_handler != NULL)
+                {
+                    m_handler->handle(pvResponse);
+                }
 
                 // this is OK since calle holds also owns it
                 m_channelRPC.reset();                
@@ -210,7 +213,7 @@ namespace serviceClient
 bool SendRequest(string serviceName,
     PVStructure::shared_pointer connectionStructure,
     PVStructure::shared_pointer request,
-    ResponseHandler & handler,
+    ResponseHandler::shared_pointer  handler,
     double timeOut)
 {
     PVStructure::shared_pointer response;
@@ -259,7 +262,7 @@ bool SendRequest(string serviceName,
  */
 bool SendRequest(string serviceName,
     PVStructure::shared_pointer request,
-    ResponseHandler & handler,
+    ResponseHandler::shared_pointer  handler,
     double timeOut)
 {
     // A PVStructure is sent at ChannelRPC connect time but we aren't going

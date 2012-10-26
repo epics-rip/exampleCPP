@@ -286,14 +286,14 @@ int main (int argc, char *argv[])
 
         double timeOut = 3.0;
 
-        RequestResponseHandler handler(parameters);
-        bool ok = epics::serviceClient::SendRequest(serviceName, queryRequest, handler, timeOut);
+        RequestResponseHandler::shared_pointer handler(new RequestResponseHandler(parameters));
+        bool ok = epics::serviceClient::SendRequest(serviceName, queryRequest, handler, timeOut);        
 
         if (!ok)
         {
             std::cerr << "Error: Request failed." << std::endl;
         }
-        else if (!handler.isOk())
+        else if (!handler->isOk())
         {
             std::cerr << "Error: Response handling failed." << std::endl;
         }
@@ -348,11 +348,11 @@ int main (int argc, char *argv[])
                 std::cout  << std::endl;
             }
 
-            handler.outputResults();
+            handler->outputResults();
 
             if (debugLevel != QUIET)
             {
-                if (handler.isOk())
+                if (handler->isOk())
                 {
                     std::cout << "Done. ";
                     if (parameters.filename != "")
