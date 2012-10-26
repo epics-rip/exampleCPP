@@ -111,6 +111,22 @@ epics::pvData::StructureConstPtr ArchiverQuery(epics::pvData::FieldCreate & fact
     return factory.createStructure(names, fields);
 }
 
+epics::pvData::StructureConstPtr ArchiverRequest(epics::pvData::FieldCreate & factory)
+{
+    using namespace epics::pvData;
+
+    FieldConstPtrArray fields;
+    StringArray names;
+
+    fields.push_back(factory.createScalar(epics::pvData::pvString));
+    fields.push_back(ArchiverQuery(factory));
+
+    names.push_back("path");
+    names.push_back("query");
+
+    return factory.createStructure(ntURIStr, names, fields);
+}
+
 epics::pvData::StructureConstPtr ArchiverTableValues(epics::pvData::FieldCreate & factory)
 {
     using namespace epics::pvData;

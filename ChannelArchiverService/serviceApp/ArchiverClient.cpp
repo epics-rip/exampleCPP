@@ -65,6 +65,27 @@ PVStructure::shared_pointer createArchiverQuery(string channel, const std::strin
     return query;
 }
 
+
+PVStructure::shared_pointer createArchiverRequest(std::string service,
+    string channel, const std::string & start, const std::string &  end)
+{    
+    StructureConstPtr archiverStructure = ArchiverRequest(*getFieldCreate());
+    PVStructure::shared_pointer request(getPVDataCreate()->createPVStructure(archiverStructure));
+
+    // set path.
+    request->getStringField("path")->put(service);
+
+    // Set query.
+    PVStructure::shared_pointer query = request->getStructureField("query");
+
+    query->getStringField(nameStr)->put(channel);
+    query->getStringField(startStr)->put(start);
+    query->getStringField(endStr)->put(end);
+ 
+    return request;
+}
+
+
 /**
  * Converts the input string encoding the fields to be outpuuted into a
  * vector output field enums.
@@ -276,7 +297,8 @@ int main (int argc, char *argv[])
         }
 
         //  Create query and send to archiver service.
-        PVStructure::shared_pointer queryRequest = createArchiverQuery(channel, start, end);
+        //PVStructure::shared_pointer queryRequest = createArchiverQuery(channel, start, end);
+        PVStructure::shared_pointer queryRequest = createArchiverRequest(serviceName, channel, start, end);
 
         if (debugLevel == VERBOSE)
         {
