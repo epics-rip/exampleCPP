@@ -30,7 +30,6 @@
 
 using namespace std::tr1;
 using namespace epics::pvData;
-using std::string;
 
 namespace epics
 {
@@ -46,14 +45,14 @@ enum DebugLevel
 };
 
 /**
- * Creates the request to be sent to the archiver service for data between
- * start and end times for channel name.
+ * Creates a plain, strings only query request to be sent to the archiver service for data
+ * between start and end times for channel name.
  *
  * @param  channel       The name of the channel to query for.
  * @param  start         The seconds past epoch of the start time.
  * @return end           The seconds past epoch of the end time.
  */
-PVStructure::shared_pointer createArchiverQuery(string channel, const std::string & start, const std::string &  end)
+PVStructure::shared_pointer createArchiverQuery(const std::string & channel, const std::string & start, const std::string &  end)
 {
     StructureConstPtr archiverStructure = ArchiverQuery(*getFieldCreate());
     PVStructure::shared_pointer query(getPVDataCreate()->createPVStructure(archiverStructure));
@@ -65,9 +64,17 @@ PVStructure::shared_pointer createArchiverQuery(string channel, const std::strin
     return query;
 }
 
-
-PVStructure::shared_pointer createArchiverRequest(std::string service,
-    string channel, const std::string & start, const std::string &  end)
+/**
+ * Creates an NTURI request to be sent to the archiver service for data between
+ * start and end times for channel name.
+ *
+ * @param  service       The service the request.
+ * @param  channel       The name of the channel to query for.
+ * @param  start         The seconds past epoch of the start time.
+ * @return end           The seconds past epoch of the end time.
+ */
+PVStructure::shared_pointer createArchiverRequest(const std::string & service,
+    const std::string & channel, const std::string & start, const std::string &  end)
 {    
     StructureConstPtr archiverStructure = ArchiverRequest(*getFieldCreate());
     PVStructure::shared_pointer request(getPVDataCreate()->createPVStructure(archiverStructure));
@@ -93,7 +100,7 @@ PVStructure::shared_pointer createArchiverRequest(std::string service,
  * @param  inString         The input string encoding the fields to be displayed.
  * @param  fields           The result containing fields to be displayed.
  */
-void makeOutputtedFields(string inString, std::vector<OutputField> & fields)
+void makeOutputtedFields(const std::string & inString, std::vector<OutputField> & fields)
 {
     for (size_t i = 0; i < inString.length();++i)
     {
@@ -189,13 +196,13 @@ int main (int argc, char *argv[])
   
     int opt;
 
-    string serviceName;
+    std::string serviceName;
     int64_t t0     = 0;
     int64_t t1     = std::numeric_limits<int64_t>::max();
 
     FormatParameters parameters; 
     bool printChannelName = false;
-    string outputtedFields;
+    std::string outputtedFields;
     DebugLevel debugLevel = NORMAL;
 
     std::string start;
@@ -288,7 +295,7 @@ int main (int argc, char *argv[])
 
     for (int i = optind; i < argc; ++i)
     {
-        string channel = argv[optind];
+        std::string channel = argv[optind];
 
         if (debugLevel != QUIET)
         {
