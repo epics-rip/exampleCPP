@@ -205,71 +205,71 @@ int main (int argc, char *argv[])
     {
         switch (opt)
         {
-            case 'h':
-                showHelp();
-                return 0;
+        case 'h':
+            showHelp();
+            return 0;
 
-            case 'S':
-                serviceName = optarg;
-                break;
+        case 'S':
+            serviceName = optarg;
+            break;
 
-            case 's':
-                t0 = atol(optarg);
-                start = optarg;
-                break;
+        case 's':
+            t0 = atol(optarg);
+            start = optarg;
+            break;
 
-            case 'e':
-                t1 = atol(optarg);
-                end = optarg;
-                break;
+        case 'e':
+            t1 = atol(optarg);
+            end = optarg;
+            break;
 
-            case 'f':
-                parameters.filename = optarg;
-                break;
+        case 'f':
+            parameters.filename = optarg;
+            break;
 
-            case 'a':
-                parameters.appendToFile = true;
-                break;
+        case 'a':
+            parameters.appendToFile = true;
+            break;
 
-            case 'o':
-                outputtedFields = optarg;
-                break;
+        case 'o':
+            outputtedFields = optarg;
+            break;
 
-            case 'p':
-                parameters.precision = atoi(optarg);
-                break;
+        case 'p':
+            parameters.precision = atoi(optarg);
+            break;
 
-            case 'd':
-                parameters.format = FormatParameters::FIXED_POINT;
-                break;
+        case 'd':
+            parameters.format = FormatParameters::FIXED_POINT;
+            break;
 
-            case 'x':
-                parameters.format = FormatParameters::SCIENTIFIC; 
-                break;
+        case 'x':
+            parameters.format = FormatParameters::SCIENTIFIC; 
+            break;
 
-            case 'n':
-                printChannelName = true; 
-                break;
+        case 'n':
+            printChannelName = true; 
+            break;
 
-            case 't':
-                parameters.transpose = true; 
-                break;
+        case 't':
+            parameters.transpose = true; 
+            break;
 
-            case 'T':
-                parameters.printColumnTitles = true; 
-                break;
+        case 'T':
+            parameters.printColumnTitles = true; 
+            break;
 
-            case 'q':
-                debugLevel = QUIET; 
-                break;
+        case 'q':
+            debugLevel = QUIET; 
+            break;
 
-            case 'v':
-                debugLevel = VERBOSE; 
-                break;
+        case 'v':
+            debugLevel = VERBOSE; 
+            break;
 
-            case '?':
-                std::cerr << "illegal option" << std::endl;
-                break;
+        case '?':
+            std::cerr << "illegal option" << std::endl;
+            break;
         }
     }
 
