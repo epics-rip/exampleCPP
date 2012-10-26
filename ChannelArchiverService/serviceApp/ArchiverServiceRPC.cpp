@@ -106,8 +106,15 @@ PVStructure::shared_pointer ArchiverServiceRPC::QueryRaw(
     AutoPtr<DataReader> reader(new RawDataReader(*index));
     
     /* Seek to the first sample at or before 'start' for the named channel */
-
-    const RawValue::Data *data = reader->find(stdString(name.c_str()), &start);
+    const RawValue::Data *data = 0;
+    try
+    {
+        data = reader->find(stdString(name.c_str()), &start);
+    }
+    catch(...)
+    {
+        throw RPCRequestException(Status::STATUSTYPE_ERROR, "Error querying archive");
+    }
 
     /* find returns the reading immediately before start, unless start date is
        before first reading in archive, so skip to next.*/
@@ -172,8 +179,7 @@ PVStructure::shared_pointer ArchiverServiceRPC::QueryRaw(
 epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     epics::pvData::PVStructure::shared_pointer const & pvArgument
     ) throw (RPCRequestException)
-{
-    
+{    
     std::cout << toString(pvArgument) << std::endl;
 
     /* Unpack the request type */
@@ -196,6 +202,10 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     if (query->getStringField(nameStr) != NULL)
     {
         name = query->getStringField(nameStr)->get();
+        if (name == "")
+        {
+            throw RPCRequestException(Status::STATUSTYPE_ERROR, "Empty channel name");
+        }
     }
     else
     {
@@ -225,7 +235,6 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     t1.nsec = 0;
 
     return QueryRaw(pvArgument, name, t0, t1, count);
-
 }
 
 }
