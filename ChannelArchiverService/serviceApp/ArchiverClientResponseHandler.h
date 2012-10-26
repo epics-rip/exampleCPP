@@ -33,7 +33,7 @@ enum OutputField
 
 const int NUMBER_OF_FIELDS = SEVERITY+1;
 
-const std::string columnTitles[] = {
+const std::string outputFieldNames[] = {
     "timePastEpoch(s)",
     "value",
     "Date",
@@ -65,7 +65,8 @@ struct FormatParameters
         format(DEFAULT),
         precision(6),
         appendToFile(false),
-        printColumnTitles(false)
+        printColumnTitles(false),
+        transpose(false)
     {
     }
 
@@ -77,6 +78,7 @@ struct FormatParameters
     int    precision;
     bool   appendToFile;
     bool   printColumnTitles;
+    bool   transpose;
 };
 
 /**

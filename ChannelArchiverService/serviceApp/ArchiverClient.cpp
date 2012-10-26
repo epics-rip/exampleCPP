@@ -160,7 +160,8 @@ void showHelp()
       << "                in seconds after EPICS epoch\n"
       << "-f= FILENAME    output results of archiver query to file named FILENAME\n"
       << "-n              print channel name, preceeded by #, before results\n"
-      << "-t              print column headers, preceeded by #, before results\n"
+      << "-t              transpose rows and columns\n"
+      << "-T              print column headers, preceeded by #, before results\n"
       << "                after channel name, if printed.\n"
       << "-q              supress all output to standard out except for archive data.\n"
       << "-v              output verbose logging information.\n"  
@@ -200,7 +201,7 @@ int main (int argc, char *argv[])
     std::string start;
     std::string end;
 
-    while ((opt = getopt(argc, argv, ":hS:s:e:f:ao:p:dxntqv")) != -1)
+    while ((opt = getopt(argc, argv, ":hS:s:e:f:ao:p:dxntTqv")) != -1)
     {
         switch (opt)
         {
@@ -251,6 +252,10 @@ int main (int argc, char *argv[])
                 break;
 
             case 't':
+                parameters.transpose = true; 
+                break;
+
+            case 'T':
                 parameters.printColumnTitles = true; 
                 break;
 
@@ -365,7 +370,7 @@ int main (int argc, char *argv[])
                     {
                         std::cout << ", ";
                     }
-                    std::cout << columnTitles[*it];
+                    std::cout << outputFieldNames[*it];
                 }
                 std::cout  << std::endl;
             }

@@ -65,7 +65,9 @@ Options
     -f,--file=FILENAME     output results of archiver query to file named
                            FILENAME
     -n,--title             print channel name, preceeded by #, before results
-    -t,--headers           print column headers, preceeded by #, before results
+                           after channel name, if printed.
+    -t,--transpose         transpose rows and columns
+    -T,--headers           print column headers, preceeded by #, before results
                            after channel name, if printed.
     -q,--quiet             supress all output to standard out except archive
                            data.
@@ -134,7 +136,7 @@ process_shortopts()
 {
 #echo args: $@
 
-while getopts :hs:e:f:ao:p:dxntqv OPTION
+while getopts :hs:e:f:ao:p:dxntTqv OPTION
 do
     case $OPTION in
     h) #echo h
@@ -179,6 +181,10 @@ do
 
     t) #echo t
        OPTIONS+="t"
+       ;;
+
+    T) #echo T
+       OPTIONS+="T"
        ;;
 
     q) #echo q
@@ -336,8 +342,11 @@ process()
             --title )
                 NEW_ARG="-n";;
 
-            --headers )
+            --transpose )
                 NEW_ARG="-t";;
+
+            --headers )
+                NEW_ARG="-T";;
 
             --quiet )
                 NEW_ARG="-q";;

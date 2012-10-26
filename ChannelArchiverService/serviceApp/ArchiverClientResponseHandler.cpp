@@ -316,26 +316,7 @@ void RequestResponseHandler::outputResults()
         out << m_parameters.prefix << m_parameters.title << std::endl;
     }
 
-    size_t maxWidths[NUMBER_OF_FIELDS];
-    for (int i = 0; i < NUMBER_OF_FIELDS; ++i)
-    {
-        maxWidths[i] = maxWidth(outputFieldValues[i]);
-    }
-
     string columnSpace = "  ";
-
-    if (m_parameters.printColumnTitles)
-    {
-        for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
-        {
-            OutputField field = m_parameters.outputtedFields[i];
-            string columnTitle = m_parameters.prefix;
-            columnTitle += columnTitles[field];
-            maxWidths[field] = std::max(maxWidths[field], columnTitle.length());
-            out << setw(maxWidths[field]) << left << columnTitle << columnSpace; 
-        }
-        out << "\n";
-    }
 
 
     //  Output archive data values. 
@@ -353,17 +334,94 @@ void RequestResponseHandler::outputResults()
 
     size_t valuesLength = outputFieldValues[VALUE].size();
 
-    for (size_t j = 0; j < valuesLength; ++j) 
+    std::vector<std::string> columnTitles;
+    columnTitles.resize(m_parameters.outputtedFields.size());
+
+    if (m_parameters.printColumnTitles)
     {
         for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
         {
             OutputField field = m_parameters.outputtedFields[i];
-
-            out << setw(maxWidths[field])      << alignments[field]
-                << outputFieldValues[field][j]   << columnSpace;   
+            string columnTitle = m_parameters.prefix;
+            columnTitle += outputFieldNames[field];
+            columnTitles[i] = columnTitle;
         }
-        out << "\n";
     }
+
+    if (!m_parameters.transpose)
+    {
+        size_t maxWidths[NUMBER_OF_FIELDS];
+        for (int i = 0; i < NUMBER_OF_FIELDS; ++i)
+        {
+            maxWidths[i] = maxWidth(outputFieldValues[i]);
+        }
+
+        if (m_parameters.printColumnTitles)
+        {
+            for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
+            {
+                OutputField field = m_parameters.outputtedFields[i];
+                const string & columnTitle = columnTitles[i];
+                maxWidths[field] = std::max(maxWidths[field], columnTitle.length());
+                out << setw(maxWidths[field]) << left << columnTitle << columnSpace; 
+            }
+            out << "\n";
+        }
+
+        for (size_t j = 0; j < valuesLength; ++j) 
+        {
+            for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
+            {
+                OutputField field = m_parameters.outputtedFields[i];
+
+                out << setw(maxWidths[field])      << alignments[field]
+                    << outputFieldValues[field][j]   << columnSpace;   
+            }
+            out << "\n";
+        }
+    }
+    else
+    {
+        size_t titleWidth = 0;
+        if (m_parameters.printColumnTitles)
+        {  
+            titleWidth = maxWidth(columnTitles);
+        }
+
+        std::vector<size_t> maxWidths;
+        maxWidths.resize(valuesLength, 0);
+
+        for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
+        {
+            OutputField field = m_parameters.outputtedFields[i];
+
+            for (size_t j = 0; j < valuesLength; ++j) 
+            {
+                const string & fieldValue = outputFieldValues[field][j];
+                size_t fieldLength = fieldValue.length();
+                maxWidths[j] = std::max(maxWidths[j], fieldLength);   
+            }
+        }
+
+        for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
+        {
+            OutputField field = m_parameters.outputtedFields[i];
+
+            if (m_parameters.printColumnTitles)
+            {                
+                out << setw(titleWidth) << left << columnTitles[i] << columnSpace; 
+            }
+
+            for (size_t j = 0; j < valuesLength; ++j) 
+            {
+                out << setw(maxWidths[j])  << alignments[field]
+                    << outputFieldValues[field][j]          << columnSpace;    
+            }
+            out << "\n";
+        }
+
+    }
+
     out.flush();
 
 
