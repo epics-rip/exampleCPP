@@ -15,7 +15,7 @@
 #include <pv/event.h>
 #include <pv/logger.h>
 
-
+#include "ServiceClient.h"
 
 using namespace std;
 using namespace std::tr1;
@@ -28,14 +28,6 @@ namespace epics
 
 namespace 
 {
-
-shared_ptr<epics::pvData::PVStructure> clone(const shared_ptr<epics::pvData::PVStructure> & src)
-{
-    shared_ptr<epics::pvData::PVStructure> dest(
-        getPVDataCreate()->createPVStructure(src));
-    getConvert()->copy(src, dest);
-    return dest;
-}
 
 // copied from eget/pvutils. This is a lot of boilerplate and needs refactoring to common code.
 
@@ -63,10 +55,14 @@ class ChannelRPCRequesterImpl : public ChannelRPCRequester
     Event m_event;
     Event m_connectionEvent;
     String m_channelName;
+    serviceClient::ResponseHandler & m_handler;
 
     public:
     epics::pvData::PVStructure::shared_pointer response;   
-    ChannelRPCRequesterImpl(String channelName) : m_channelName(channelName) {}
+    ChannelRPCRequesterImpl(String channelName, serviceClient::ResponseHandler & handler)
+    : m_channelName(channelName),
+      m_handler(handler)
+    {}
     
     virtual String getRequesterName()
     {
@@ -116,8 +112,8 @@ class ChannelRPCRequesterImpl : public ChannelRPCRequester
             {
                 Lock lock(m_pointerMutex);
 
-                //response = clone(pvResponse);
-                response = pvResponse;
+                m_handler.handle(pvResponse);
+
                 // this is OK since calle holds also owns it
                 m_channelRPC.reset();                
             }
@@ -210,9 +206,12 @@ namespace serviceClient
 
 /*
   SendRequest is boilerplate for blocking RPC get
-*/
-PVStructure::shared_pointer SendRequest(string serviceName, PVStructure::shared_pointer connectionStructure,
-                                        PVStructure::shared_pointer request, double timeOut)
+ */
+bool SendRequest(string serviceName,
+    PVStructure::shared_pointer connectionStructure,
+    PVStructure::shared_pointer request,
+    ResponseHandler & handler,
+    double timeOut)
 {
     PVStructure::shared_pointer response;
 
@@ -226,15 +225,16 @@ PVStructure::shared_pointer SendRequest(string serviceName, PVStructure::shared_
     
     if (channelRequesterImpl->waitUntilConnected(timeOut))
     {
-        shared_ptr<ChannelRPCRequesterImpl> rpcRequesterImpl(new ChannelRPCRequesterImpl(channel->getChannelName()));
+        shared_ptr<ChannelRPCRequesterImpl> rpcRequesterImpl(
+            new ChannelRPCRequesterImpl(channel->getChannelName(), handler));
         ChannelRPC::shared_pointer channelRPC = channel->createChannelRPC(rpcRequesterImpl, request);
 
         if (rpcRequesterImpl->waitUntilConnected(timeOut))
         {
-                            channelRPC->request(request, true);
-                            allOK &= rpcRequesterImpl->waitUntilRPC(timeOut);
+            channelRPC->request(request, true);
+            allOK &= rpcRequesterImpl->waitUntilRPC(timeOut);
             response = rpcRequesterImpl->response;
-                    }
+        }
         else
         {
             allOK = false;
@@ -251,21 +251,25 @@ PVStructure::shared_pointer SendRequest(string serviceName, PVStructure::shared_
 
     ClientFactory::stop();
 
-    return response;
+    return allOK;
 }
 
 /*
   SendRequest is boilerplate for blocking RPC get
-*/
-PVStructure::shared_pointer SendRequest(string serviceName, PVStructure::shared_pointer request, double timeOut)
+ */
+bool SendRequest(string serviceName,
+    PVStructure::shared_pointer request,
+    ResponseHandler & handler,
+    double timeOut)
 {
-    // A PVStructure is sent at ChannelRPC connect time but we aren't going to use it, so send an empty one
+    // A PVStructure is sent at ChannelRPC connect time but we aren't going
+    // to use it, so send an empty one
     StringArray fieldNames;
     FieldConstPtrArray fields;
     PVStructure::shared_pointer nothing(
         new PVStructure(getFieldCreate()->createStructure(fieldNames, fields)));
 
-    return SendRequest(serviceName, nothing, request, timeOut);
+    return SendRequest(serviceName, nothing, request, handler, timeOut);
 }
 
 }

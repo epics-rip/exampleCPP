@@ -25,10 +25,6 @@
 #include <pv/logger.h>
 
 #include "types.h"
-
-
-
-
 #include "ArchiverClientResponseHandler.h"
 #include "ServiceClient.h"
 
@@ -57,16 +53,16 @@ enum DebugLevel
  * @param  start         The seconds past epoch of the start time.
  * @return end           The seconds past epoch of the end time.
  */
-PVStructure::shared_pointer createArchiverQueryRequest(string channel, const std::string & start, const std::string &  end)
+PVStructure::shared_pointer createArchiverQuery(string channel, const std::string & start, const std::string &  end)
 {
     StructureConstPtr archiverStructure = ArchiverQuery(*getFieldCreate());
-    PVStructure::shared_pointer queryRequest(getPVDataCreate()->createPVStructure(archiverStructure));
+    PVStructure::shared_pointer query(getPVDataCreate()->createPVStructure(archiverStructure));
 
     // Set request.
-    queryRequest->getStringField(nameStr)->put(channel);
-    queryRequest->getStringField(startStr)->put(start);
-    queryRequest->getStringField(endStr)->put(end); 
-    return queryRequest;
+    query->getStringField(nameStr)->put(channel);
+    query->getStringField(startStr)->put(start);
+    query->getStringField(endStr)->put(end); 
+    return query;
 }
 
 /**
@@ -251,9 +247,10 @@ int main (int argc, char *argv[])
         }
     }
 
-    epics::pvAccess::pvAccessSetLogLevel((debugLevel == QUIET) ? epics::pvAccess::logLevelOff
-                                                               : (debugLevel == NORMAL) ? epics::pvAccess::logLevelInfo
-                                                                                        : epics::pvAccess::logLevelDebug);
+    epics::pvAccess::pvAccessSetLogLevel(
+        (debugLevel == QUIET) ? epics::pvAccess::logLevelOff
+                              : (debugLevel == NORMAL) ? epics::pvAccess::logLevelInfo
+                                                       : epics::pvAccess::logLevelDebug);
 
     makeOutputtedFields(outputtedFields, parameters.outputtedFields);
 
@@ -279,7 +276,7 @@ int main (int argc, char *argv[])
         }
 
         //  Create query and send to archiver service.
-        PVStructure::shared_pointer queryRequest = createArchiverQueryRequest(channel, start, end);
+        PVStructure::shared_pointer queryRequest = createArchiverQuery(channel, start, end);
 
         if (debugLevel == VERBOSE)
         {
@@ -288,13 +285,17 @@ int main (int argc, char *argv[])
         }
 
         double timeOut = 3.0;
-    
-        PVStructure::shared_pointer queryResponse
-             = epics::serviceClient::SendRequest(serviceName, queryRequest, timeOut);
 
-        if (queryResponse == NULL)
+        RequestResponseHandler handler(parameters);
+        bool ok = epics::serviceClient::SendRequest(serviceName, queryRequest, handler, timeOut);
+
+        if (!ok)
         {
             std::cerr << "Error: Request failed." << std::endl;
+        }
+        else if (!handler.isOk())
+        {
+            std::cerr << "Error: Response handling failed." << std::endl;
         }
         else
         {
@@ -313,7 +314,7 @@ int main (int argc, char *argv[])
                               << (parameters.appendToFile ? " (append)" : " (overwrite)")
                               << std::endl;
                 }
-                std::cout << "precision:"      << parameters.precision << std::endl;
+                std::cout << "precision: "    << parameters.precision << std::endl;
                 std::cout << "format: ";
                 switch (parameters.format)
                 {
@@ -325,6 +326,7 @@ int main (int argc, char *argv[])
                     std::cout << "fixed point";
 
                 case FormatParameters::DEFAULT:
+                    std::cout << "default";
                     break;
 
                 default:
@@ -332,19 +334,25 @@ int main (int argc, char *argv[])
                     break;
                 }
                 std::cout << std::endl;
-                std::cout << "Output fields: " << outputtedFields << std::endl;
+
+                std::cout << "Output fields: "; 
+                for (std::vector<OutputField>::const_iterator it = parameters.outputtedFields.begin();
+                     it != parameters.outputtedFields.end(); ++it)
+                {
+                    if (it != parameters.outputtedFields.begin())
+                    {
+                        std::cout << ", ";
+                    }
+                    std::cout << columnTitles[*it];
+                }
+                std::cout  << std::endl;
             }
+
+            handler.outputResults();
 
             if (debugLevel != QUIET)
             {
-                std::cout << toString(queryResponse->getField()) << std::endl;
-            }
-
-            int result = handleResponse(queryResponse, parameters);
-
-            if (debugLevel != QUIET)
-            {
-                if (result == 0)
+                if (handler.isOk())
                 {
                     std::cout << "Done. ";
                     if (parameters.filename != "")

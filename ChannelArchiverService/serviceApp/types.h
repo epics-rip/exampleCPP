@@ -36,7 +36,8 @@ template<typename T> void copyToScalarArray(
     std::vector<T> & x, epics::pvData::PVStructure::shared_pointer & pvArgument, const char * name)
 {
     epics::pvData::ScalarType st = getScalarType<T>();
-    std::tr1::static_pointer_cast<epics::pvData::PVValueArray<T> >(pvArgument->getScalarArrayField(name, st))->put(0, x.size(), &x[0], 0);
+    std::tr1::static_pointer_cast<epics::pvData::PVValueArray<T> >(
+        pvArgument->getScalarArrayField(name, st))->put(0, x.size(), &x[0], 0);
 }
 
 template<typename T> void copyFromScalarArray(
@@ -44,7 +45,8 @@ template<typename T> void copyFromScalarArray(
 {
     epics::pvData::ScalarType st = getScalarType<T>();
     epics::pvData::PVArrayData<T> arrayData;
-    epics::pvData::PVValueArray<T> * pvValues = (epics::pvData::PVValueArray<T> *)pvArgument->getScalarArrayField(name, st);
+    epics::pvData::PVValueArray<T> * pvValues =
+        (epics::pvData::PVValueArray<T> *)pvArgument->getScalarArrayField(name, st);
     pvValues->get(0, pvValues->getLength(), &arrayData);
     x.resize(pvValues->getLength());
     std::copy(arrayData.data, arrayData.data + pvValues->getLength(), x.begin());
@@ -144,7 +146,7 @@ epics::pvData::StructureConstPtr ArchiverTable(epics::pvData::FieldCreate & fact
     fields.push_back(factory.createScalarArray(epics::pvData::pvString));
     fields.push_back(ArchiverTableValues(factory));
 
-    return factory.createStructure("uri:ev4:nt/2012/pwd:NTTable", names, fields);
+    return factory.createStructure(ntTableStr, names, fields);
 }
 
 

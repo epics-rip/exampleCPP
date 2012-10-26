@@ -7,6 +7,9 @@
 #define ARCHIVERCLIENTRESPONSEHANDLER_H
 
 #include <string>
+#include <vector>
+
+#include "ServiceClient.h"
 
 namespace epics
 {
@@ -29,6 +32,17 @@ enum OutputField
 };
 
 const int NUMBER_OF_FIELDS = SEVERITY+1;
+
+const std::string columnTitles[] = {
+    "timePastEpoch(s)",
+    "value",
+    "Date",
+    "Alarm",
+    "secsPastEpoch",
+    "nsecs",
+    "Status",
+    "Severity"
+    };
 
 /**
  * Parameters according to which the results of the archiver query will be handled.
@@ -65,17 +79,41 @@ struct FormatParameters
     bool   printColumnTitles;
 };
 
-
 /**
- * Handles the response from the archiver service, according to supplied parameters.
- *
- * @param  response         The response sent by service.
- * @param  parameters       Parameters for the handling the request.
- * @return Status of the call, 0 indicates success, non-zero indicates failure.
+ * Class to perform the handling of the response from the archive service.
  */
-int handleResponse(epics::pvData::PVStructure::shared_pointer response,
-    const FormatParameters & parameters);
+class RequestResponseHandler : public epics::serviceClient::ResponseHandler
+{
+public:
+    /**
+     * Constructor.
+     *
+     * @param  parameters       Parameters for the handling the request.
+     */
+    RequestResponseHandler(const FormatParameters & parameters)
+    : m_parameters(parameters), m_ok(true)
+    {
+    }
 
+   /**
+     * Handles the response from the archive service, according to supplied parameters.
+     *
+     * @param  response         The response sent by service.
+     */
+    void handle(epics::pvData::PVStructure::shared_pointer const & response);
+
+    bool isOk() { return m_ok; }
+
+    void outputResults();
+
+private:
+    void makeStrings(epics::pvData::PVStructure::shared_pointer const & response);
+
+
+    FormatParameters m_parameters;
+    std::vector<std::string> outputFieldValues[NUMBER_OF_FIELDS];
+    bool m_ok;
+};
 
 }
 

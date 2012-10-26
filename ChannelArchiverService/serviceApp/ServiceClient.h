@@ -16,38 +16,54 @@ namespace epics
 
 namespace serviceClient
 {
+    /**
+     * Interface class for processing responses from a server to a client RPC request.
+     */
+    class ResponseHandler
+    {
+    public:
+        /**
+         * Process the response from the server to a clients request
+         *
+         * @param  pvResponse      The response received from the server to the clients request.
+         */
+        virtual void handle(epics::pvData::PVStructure::shared_pointer const &pvResponse) = 0;
+        virtual ~ResponseHandler() {};
+    };
 
     /**
      * Performs complete blocking RPC call, opening channel and connecting to service,
-     * sending the request.
-     *
-     * If the command fails the response will be a smart pointer to null.
-     * The caller should check for this.
-     * 
+     * sending the request and processing the response.
      *
      * @param  serviceName         The name of the servie to connect to.
      * @param  connectionStructure the PVStructure sent when connecting to service.
      * @param  request             The request sent to service.
-     * @return the result of the RPC call.
+     * @param  handler             The handler to be used to process the response.
+     * @return true iff the call was successful
      */
-    epics::pvData::PVStructure::shared_pointer SendRequest(std::string serviceName,
+    bool SendRequest(
+        std::string serviceName,
         epics::pvData::PVStructure::shared_pointer connectionStructure,
-        epics::pvData::PVStructure::shared_pointer request, double timeOut);
+        epics::pvData::PVStructure::shared_pointer request,
+        ResponseHandler & handler,
+        double timeOut);
 
     /**
      * Performs complete blocking RPC call, opening channel and connecting to service,
-     * sending the request.
+     * sending the request and processing the response.
      *
-     * If the command fails the response will be a smart pointer to null.
-     * The caller should check for this.
      * The PVStructure sent on connection is null.
      *
      * @param  serviceName         The name of the servie to connect to.
      * @param  request             The request sent to service.
-     * @return the result of the RPC call.
+     * @param  handler             The handler to be used to process the response.
+     * @return true iff the call was successful
      */
-    epics::pvData::PVStructure::shared_pointer SendRequest(std::string serviceName,
-        epics::pvData::PVStructure::shared_pointer request, double timeOut);
+    bool SendRequest(
+        std::string serviceName,
+        epics::pvData::PVStructure::shared_pointer request,
+        ResponseHandler & handler,
+        double timeOut);
 
 }
 

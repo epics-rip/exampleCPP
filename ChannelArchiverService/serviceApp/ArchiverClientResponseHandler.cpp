@@ -134,8 +134,8 @@ std::string getDate(int64_t secsPastEpoch, int32_t nsecs)
  * @param  precision  Precision used in formating when converting data to string. 
  */
 template <typename A>
-void dataArrayToVectorOfStrings(vector<string> & strings, const A & arrayData, int length,
-                               const FormatParameters::Format format = FormatParameters::DEFAULT, int precision = 6)
+void dataArrayToStrings(vector<string> & strings, const A & arrayData, int length,
+                        const FormatParameters::Format format = FormatParameters::DEFAULT, int precision = 6)
 {
     strings.reserve(strings.size() + length);
     ostringstream oss;
@@ -166,70 +166,62 @@ void dataArrayToVectorOfStrings(vector<string> & strings, const A & arrayData, i
     }
 }
 
-
 /**
- * Class to perform the handling of the response from the archive service.
+ * RequestResponseHandler 
  */
-class RequestResponseHandler
+void RequestResponseHandler::handle(epics::pvData::PVStructure::shared_pointer const & response)
 {
-public:
-/**
- * Constructor.
- *
- * @param  parameters       Parameters for the handling the request.
- */
-RequestResponseHandler(const FormatParameters & parameters)
-: m_parameters(parameters)
-{
+    makeStrings(response);
 }
 
 /**
- * Handles the response from the archive service, according to supplied parameters.
- *
- * @param  response         The response sent by service.
- * @return Status of the call, 0 indicates success, non-zero indicates failure.
+ * RequestResponseHandler 
  */
-int handle(shared_ptr<epics::pvData::PVStructure> response)
+void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_pointer const & response)
 {
-    vector<string> outputFieldValues[NUMBER_OF_FIELDS];
-
     PVStructurePtr responseValues = response->getStructureField("value");
 
     //  Handle each of the fields in the archiver query response in turn.
 
     //  Values.
-    PVDoubleArrayPtr values = std::tr1::static_pointer_cast<epics::pvData::PVDoubleArray>(responseValues->getScalarArrayField("value", pvDouble));
+    PVDoubleArrayPtr values = std::tr1::static_pointer_cast<epics::pvData::PVDoubleArray>(
+        responseValues->getScalarArrayField("value", pvDouble));
     DoubleArrayData valuesArrayData;
     int valuesLength = values->get(0, values->getLength(), valuesArrayData);
 
-    dataArrayToVectorOfStrings(outputFieldValues[VALUE], valuesArrayData, valuesLength, m_parameters.format, m_parameters.precision);
+    dataArrayToStrings(outputFieldValues[VALUE], valuesArrayData,
+        valuesLength, m_parameters.format, m_parameters.precision);
 
 
     //  Seconds.
-    PVLongArrayPtr secPastEpochs = std::tr1::static_pointer_cast<epics::pvData::PVLongArray>(responseValues->getScalarArrayField("secPastEpoch", pvLong));
+    PVLongArrayPtr secPastEpochs = std::tr1::static_pointer_cast<epics::pvData::PVLongArray>(
+        responseValues->getScalarArrayField("secPastEpoch", pvLong));
     LongArrayData secPastEpochsArrayData;
 
     int secPastEpochsLength = secPastEpochs->get(0, secPastEpochs->getLength(), secPastEpochsArrayData);
     if (secPastEpochsLength != valuesLength)
     {
         cerr << "Data invalid: Secs past epoch and Value lengths don't match." << endl;
-        return 1;  
+        m_ok = false;  
+        return; 
     }
 
-    dataArrayToVectorOfStrings(outputFieldValues[SECONDS_PAST_EPOCH], secPastEpochsArrayData, secPastEpochsLength);
+    dataArrayToStrings(outputFieldValues[SECONDS_PAST_EPOCH], secPastEpochsArrayData, secPastEpochsLength);
 
 
     //  Nanoseconds.
-    PVIntArrayPtr nsecs = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(responseValues->getScalarArrayField("nsec", pvInt));
+    PVIntArrayPtr nsecs = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(
+         responseValues->getScalarArrayField("nsec", pvInt));
     IntArrayData nsecsArrayData;
     int nsecsLength = nsecs->get(0, nsecs->getLength(), nsecsArrayData);
     if (nsecsLength != valuesLength)
     {
         cerr << "Data invalid: nsecs past epoch and Value lengths don't match." << endl;
-        return 1;  
+        m_ok = false;  
+        return;  
     }
 
-    dataArrayToVectorOfStrings(outputFieldValues[NANO_SECONDS], nsecsArrayData, nsecsLength);
+    dataArrayToStrings(outputFieldValues[NANO_SECONDS], nsecsArrayData, nsecsLength);
 
 
     //  Real time in seconds.
@@ -261,29 +253,33 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
 
 
     //  Alarm status.
-    PVIntArrayPtr statuses = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(responseValues->getScalarArrayField("status", pvInt));
+    PVIntArrayPtr statuses = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(
+        responseValues->getScalarArrayField("status", pvInt));
     IntArrayData statusesArrayData;
     int statusesLength = statuses->get(0, statuses->getLength(), statusesArrayData);
     if (statusesLength != valuesLength)
     {
         cerr << "Data invalid: Alarm Status and Value lengths don't match." << endl;
-        return 1;  
+        m_ok = false;  
+        return; 
     }
 
-    dataArrayToVectorOfStrings(outputFieldValues[STATUS], statusesArrayData, statusesLength, FormatParameters::HEX);
+    dataArrayToStrings(outputFieldValues[STATUS], statusesArrayData, statusesLength, FormatParameters::HEX);
 
 
     //  Alarm severity.
-    PVIntArrayPtr severities = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(responseValues->getScalarArrayField("severity", pvInt));
+    PVIntArrayPtr severities = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(
+        responseValues->getScalarArrayField("severity", pvInt));
     IntArrayData severitiesArrayData;
     int severitiesLength = severities->get(0, severities->getLength(), severitiesArrayData);
     if (severitiesLength != valuesLength)
     {
         cerr << "Data invalid: Alarm Severity and Value lengths don't match." << endl;
-        return 1;  
+        m_ok = false;  
+        return; 
     }
 
-    dataArrayToVectorOfStrings(outputFieldValues[SEVERITY], severitiesArrayData, severitiesLength, FormatParameters::HEX);
+    dataArrayToStrings(outputFieldValues[SEVERITY], severitiesArrayData, severitiesLength, FormatParameters::HEX);
 
 
     //  Alarm string.
@@ -296,8 +292,11 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
         string alarmString = MakeAlarmString(statusesArrayData.data[i], severitiesArrayData.data[i]);
         alarmStrings.push_back(alarmString);
     }
+}
 
 
+void RequestResponseHandler::outputResults()
+{
     //  Now output archive data.
     bool outputToFile = m_parameters.filename.compare(string(""));
     std::ofstream outfile;
@@ -317,7 +316,6 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
         out << m_parameters.prefix << m_parameters.title << std::endl;
     }
 
-
     size_t maxWidths[NUMBER_OF_FIELDS];
     for (int i = 0; i < NUMBER_OF_FIELDS; ++i)
     {
@@ -325,19 +323,6 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
     }
 
     string columnSpace = "  ";
-
-
-    //  Print column headers if required.    
-    const string columnTitles[] = {
-        "timePastEpoch(s)",
-        "value",
-        "Date",
-        "Alarm",
-        "secsPastEpoch",
-        "nsecs",
-        "Status",
-        "Severity"
-    };
 
     if (m_parameters.printColumnTitles)
     {
@@ -366,7 +351,9 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
         right
     }; 
 
-    for (int j = 0; j < valuesLength; ++j) 
+    size_t valuesLength = outputFieldValues[VALUE].size();
+
+    for (size_t j = 0; j < valuesLength; ++j) 
     {
         for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
         {
@@ -383,24 +370,8 @@ int handle(shared_ptr<epics::pvData::PVStructure> response)
     if (outputToFile)
     {
         outfile.close();
-    }  
-
-    return 0;
-}
-
-
-private:
-    FormatParameters m_parameters;
-};
-
-
-/*
-  Handle response
-*/
-int handleResponse(PVStructure::shared_pointer response, const FormatParameters & parameters)
-{
-   RequestResponseHandler handler(parameters);
-   return handler.handle(response);
+    }
+    m_ok = true;  
 }
 
 }
