@@ -153,21 +153,19 @@ EPICS V4 components:
 1. EPICS 3 Base          - for a large number of EPICS types
 2. pvDataCPP             - for PVData 
 3. pvAccessCPP           - for PVAccess
-4. pvIOCCPP              - for CPP IOC RPC
-5. The Channel Archiver  - for Channel Archiver access and types
+4. The Channel Archiver  - for Channel Archiver access and types
 
 
 SETUP
 -----
 
-1. EPICS version 3, the Channel Archiver and the EPICS V4 prerequisites (pvData, pvAccess and pvIOC)
+1. EPICS version 3, the Channel Archiver and the EPICS V4 prerequisites (pvData and pvAccess)
 should be built.
 2. The Channel Archiver service needs to know the location of these through the following macros:
 
 EPICS_BASE
 PVDATA
 PVACCESS
-PVIOC
 ARCHIVER 
 
 This can be achieved by creating a RELEASE.local file in the configure directory of the
@@ -178,7 +176,6 @@ are in /epics4 then it could be of the form
 EPICS_BASE=/epics/R3.14.11/base
 PVDATA=/epics4/pvDataCPP
 PVACCESS=/epics4/pvAccessCPP
-PVIOC=/epics4/pvIOCCPP
 ARCHIVER=/epics/R3.14.11/extensions
 
 ARCHIVER should point to the directory containing src/ChannelArchiver. This will depend on

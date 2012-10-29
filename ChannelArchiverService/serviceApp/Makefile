@@ -7,7 +7,7 @@ USR_SYS_LIBS += expat
 PROD_HOST += ArchiverServiceRPC
 ArchiverServiceRPC_SRCS += ArchiverServiceRPCMain.cpp
 ArchiverServiceRPC_SRCS += ArchiverServiceRPC.cpp
-ArchiverServiceRPC_LIBS += pvIOC pvAccess pvData Com Storage Tools
+ArchiverServiceRPC_LIBS += dbIoc pvAccess pvData Com Storage Tools
 
 PROD_HOST += ArchiverClient
 ArchiverClient_SRCS += ArchiverClient.cpp
