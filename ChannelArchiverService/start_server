@@ -2,6 +2,6 @@
 
 TOP=$(dirname $0)
 
-$TOP/bin/$EPICS_HOST_ARCH/ArchiverServiceRPC $TOP/data/index archiveService
+$TOP/bin/$EPICS_HOST_ARCH/ArchiverServiceRPC $TOP/data/fredjanet/index archiveService
 
 
