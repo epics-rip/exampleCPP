@@ -191,7 +191,13 @@ To run a Channel Archiver Service Client
  
    E.g. % ./gethist --start "Jan 1 1990" --end "now" --file out.txt --scientific janet 
  
-By default the server queries the supplied data which has two channels ("fred" and "janet")
-and which covers the period on the 21st September 2005 between 17:49:57 and 19:33:16.
+By default the server queries some supplied data in which has two channels ("fred" and "janet")
+and which covers the period on the 21st September 2005 between 17:49:57 and 19:33:16. This is
+located in the directory data/fredjanet
+
+The data directory also includes some real data (storage ring beam current). The channel name
+ is SR-DI-DCCT-01:SIGNAL and has values between 12/01/2009 11:20:41 and 21/01/2009 07:30:12.
+This is located in data/DCCT.
+
 
 
