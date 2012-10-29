@@ -10,7 +10,7 @@ SUMMARY
 
 The ChannelArchiver service is an EPICS V4 client and server which be used to query a 
 the data archived by an EPICS Channel Archiver. It includes a bash script, gethist,
-which can parse a wide range of dates and times and return the corresponding data.
+which can parse a wide range of dates and times and process the corresponding data.
 
 
 
@@ -27,7 +27,7 @@ service name, the second the location of the index file. Should you wish to chan
 either then these arguments should be modified.   
 
 
-The following are examples of running the client:
+The following are examples of running the client using the bash script gethist:
 
 0) Use the -h or --help options to get help
 
@@ -78,22 +78,72 @@ The following are also valid
     % ./gethist -s "2 weeks ago"   -e "1 hour ago" janet
     % ./gethist -s "4 years ago"   -e "3 months ago" janet
 
+The gethist script calls the archive service client, which can be called directly. It takes the same
+options as gethist, except that the start and end times are in seconds past EPICS epoch and the service
+must be specified with the -S argument.
+
+    % bin/$EPICS_HOST_ARCH/ArchiverClient -S archiveService -a "starttime=600000000"
+        -a "endtime=700000000" -a "entity=fred" 
+
+The service can be also queried using the eget utility. The service name is specified using the
+-s argument and the query parameters using -a. For example 
+
+    % eget -s archiveService -a "starttime=600000000" -a "endtime=700000000"
+        -a "entity=fred" 
+
+(See below for an explanation of the query parameters).
+
+
+SERVICE INTERFACE AND RESPONSE FORMAT
+-------------------------------------
+
+Requests to the service can be made using the NTURI normative type (see the EPICS V4
+website:
+
+   http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html).
+
+The query parameters are entity, starttime, endtime and maxrecords which are respectively
+the channel name, the start and end times between which to query  (in seconds past the
+EPICS epoch, 01-01-1990 00:00:00 UTC") and the maximum number of entries to retrieve.
+The entity is a required field. The server will error the request if it is absent. The
+others have default values of 0, 2,147,483,647 and 1,000,000,000 respectively.
+
+Thus the service can be queried using eget by supplying the parameters above. For example
+
+    % eget -s archiveService -a "starttime=600825600" -a "endtime=600912000"
+        -a "maxrecords=1000"-a "entity=SR-DI-DCCT-01:SIGNAL" 
+
+retrieves the first 1000 archived values of SR-DI-DCCT-01:SIGNAL between the start and end
+times specified in seconds past the EPICS epoch - in this case between 15-01-2009 00:00 UTC
+and 16-01-2009 00:00 UTC - from the service "archiveService" and formats the result in columns.
+
+The service also accept queries in the pure query form, i.e. a struct containing the string
+fields specified and thus the service can be queried using the eget -q option.
+
+The service's response is in the form of an NTTable normative type with the columns value,
+secPastEpoch, nsec, status and severity which are arrays of respectively doubles, longs,
+ints, ints and ints.
 
 
 FILES THAT COMPRISE THE CHANNEL ARCHIVER EXAMPLE
-------------------------------------------
+------------------------------------------------
 
 ArchiverServiceRPC.h/cpp                  C++ source code of the server side of the example
 ArchiverServiceRPCMain.cpp                C++ source code of the server side of the example
 ArchiverClient.cpp                        C++ source code of the client side of the example
-ArchiverClientResponseHandler.h/cpp       C++ source code for the client handling the response from server 
-ServiceClient.h/cpp                       C++ source code for the client sending the query and receiving response
+ArchiverClientResponseHandler.h/cpp       C++ source code for the client handling of the response
+                                          from the server 
+ServiceClient.h/cpp                       C++ source code for the client sending the query and
+                                          receiving the response
 types.h                                   C++ source code of types common to client and server
+
 
 start_server                              bash script to start server
 gethist                                   bash script to query service
 
+
 data                                      directory containing sample Channel Archiver data
+
 
 PREREQUISITES
 -------------
@@ -107,22 +157,13 @@ EPICS V4 components:
 5. The Channel Archiver  - for Channel Archiver access and types
 
 
-
-EPICS_BASE=/dls_sw/epics/R3.14.11/base
-
-PVDATA=$(TOP)/../../pvDataCPP
-PVACCESS=$(TOP)/../../pvAccessCPP
-PVIOC=$(TOP)/../../pvIOCCPP
-
-ARCHIVER=/dls_sw/work/R3.14.11/support/ChannelArchiver
-
-
 SETUP
 -----
 
 1. EPICS version 3, the Channel Archiver and the EPICS V4 prerequisites (pvData, pvAccess and pvIOC)
 should be built.
 2. The Channel Archiver service needs to know the location of these through the following macros:
+
 EPICS_BASE
 PVDATA
 PVACCESS
@@ -159,7 +200,8 @@ This section describes how you start server and client sides of the Channel Arch
 Start the server side first.
 
 To start the Channel Archiver server
--------------------------------
+------------------------------------
+
  * cd to the directory containing start_server
 
    E.g. % cd ~/Development/epicsV4/exampleCPP/ChannelArchiverService
@@ -177,13 +219,13 @@ To start the Channel Archiver server
    or by typing "exit" - after you've tested it with the client below of course.
    
    
-To run a Channel Archiver Service Client
----------------------------
+To run a Channel Archiver Service Client using gethist
+------------------------------------------------------
 
- * In another window from the server:
- 
- * cd to the directory containing gethist (both client and server are in the same dir 
-   for demo purposes)
+With the server started, 
+
+ * In another window from the server cd to the directory containing gethist (both client
+   and server are in the same dir for demo purposes)
    
    E.g. % cd ~/Development/epicsV4/exampleCPP/ChannelArchiverService
  
@@ -191,13 +233,21 @@ To run a Channel Archiver Service Client
  
    E.g. % ./gethist --start "Jan 1 1990" --end "now" --file out.txt --scientific janet 
  
-By default the server queries some supplied data in which has two channels ("fred" and "janet")
+By default the server queries some supplied data which has two channels ("fred" and "janet")
 and which covers the period on the 21st September 2005 between 17:49:57 and 19:33:16. This is
-located in the directory data/fredjanet
+located in the directory data/fredjanet.
 
 The data directory also includes some real data (storage ring beam current). The channel name
  is SR-DI-DCCT-01:SIGNAL and has values between 12/01/2009 11:20:41 and 21/01/2009 07:30:12.
 This is located in data/DCCT.
 
+Querying the service using eget
+-------------------------------
 
+With the server started, assuming eget is in your path:
+
+ * Execute the eget utility:
+
+   eget -s archiveService -a "starttime=600825600" -a "endtime=600912000"
+        -a "entity=SR-DI-DCCT-01:SIGNAL"
 
