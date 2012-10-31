@@ -170,6 +170,7 @@ void showHelp()
       << "                in seconds after EPICS epoch\n"
       << "-e=END_TIME     query archive for results up to END_TIME\n"
       << "                in seconds after EPICS epoch\n"
+      << "-M=MAX          limit results to first MAX records\n"
       << "-f= FILENAME    output results of archiver query to file named FILENAME\n"
       << "-n              print channel name, preceeded by #, before results\n"
       << "-t              transpose rows and columns\n"
@@ -214,7 +215,7 @@ int main (int argc, char *argv[])
     queryFieldnames.push_back(nameStr);
     queryValues.push_back("");
 
-    while ((opt = getopt(argc, argv, ":hS:s:e:f:ao:p:dxntTqv")) != -1)
+    while ((opt = getopt(argc, argv, ":hS:s:e:M:f:ao:p:dxntTqv")) != -1)
     {
         switch (opt)
         {
@@ -233,6 +234,11 @@ int main (int argc, char *argv[])
 
         case 'e':
             queryFieldnames.push_back(endStr);
+            queryValues.push_back(optarg);
+            break;
+
+        case 'M':
+            queryFieldnames.push_back(countStr);
             queryValues.push_back(optarg);
             break;
 

@@ -62,6 +62,7 @@ Options
     -h,--help              display help
     -s,--start=START_TIME  query archive for results starting from START_TIME
     -e,--end=END_TIME      query archive for results up to END_TIME
+    -M,--max-records=MAX   limit results to first MAX records
     -f,--file=FILENAME     output results of archiver query to file named
                            FILENAME
     -n,--title             print channel name, preceeded by #, before results
@@ -124,6 +125,7 @@ EPICS_EPOCH=631152000
 CHANNEL=
 START_ARG="1 hour ago"
 END_ARG="now"
+COUNT_ARG=
 FILE=
 PRECISION=6
 
@@ -136,7 +138,7 @@ process_shortopts()
 {
 #echo args: $@
 
-while getopts :hs:e:f:ao:p:dxntTqv OPTION
+while getopts :hs:e:M:f:ao:p:dxntTqv OPTION
 do
     case $OPTION in
     h) #echo h
@@ -149,6 +151,10 @@ do
 
     e) #echo e
        END_ARG="$OPTARG"
+       ;;
+
+    M) #echo M
+       COUNT_ARG="$OPTARG"
        ;;
 
     f) #echo f
@@ -204,6 +210,7 @@ shift $((OPTIND-1))
 
 #check channel supllied
 (($# > 0))  ||  Error "no channel supplied"
+
 
 CHANNEL="$1"
 
@@ -275,11 +282,23 @@ fi
 SERVICE="archiveService"
 
 
+
+
 if [[ "$FILE" = "" ]]
 then
-    $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  "$CHANNEL"
+    if [[ "$COUNT_ARG" = "" ]]
+    then 
+        $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  "$CHANNEL"
+    else
+        $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -M $COUNT_ARG -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  "$CHANNEL"
+    fi
 else
-    $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION -f "$FILE" "$CHANNEL"
+    if [[ "$COUNT_ARG" = "" ]]
+    then 
+        $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION -f "$FILE" "$CHANNEL"
+    else
+        $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -M $COUNT_ARG -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  -f "$FILE" "$CHANNEL"
+    fi
 fi
 
 shift
@@ -293,9 +312,19 @@ fi
 for CHANNEL in "$@"; do
     if [[ "$FILE" = "" ]]
     then
-        $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  "$CHANNEL"
+        if [[ "$COUNT_ARG" = "" ]]
+        then 
+            $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  "$CHANNEL"
+        else
+            $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -M $COUNT_ARG -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  "$CHANNEL"
+        fi
     else
-        $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION -f "$FILE" "$CHANNEL"
+        if [[ "$COUNT_ARG" = "" ]]
+        then 
+            $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION -f "$FILE" "$CHANNEL"
+        else
+            $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -M $COUNT_ARG -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  -f "$FILE" "$CHANNEL"
+        fi
     fi
 done
 }
@@ -320,6 +349,9 @@ process()
 
             --end )
                 NEW_ARG="-e";;
+
+            --max-records )
+                NEW_ARG="-M";;
 
             --file )
                 NEW_ARG="-a";;
