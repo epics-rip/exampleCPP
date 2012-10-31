@@ -92,26 +92,25 @@ const std::string endStr   = "endtime";
 const std::string countStr = "maxrecords";
 
 
-epics::pvData::StructureConstPtr ArchiverQuery(epics::pvData::FieldCreate & factory)
+epics::pvData::StructureConstPtr ArchiverQuery(epics::pvData::FieldCreate & factory, const std::vector<std::string> & queryFields)
 {
     using namespace epics::pvData;
 
     FieldConstPtrArray fields;
     StringArray names;
 
-    fields.push_back(factory.createScalar(epics::pvData::pvString));
-
-    fields.push_back(factory.createScalar(epics::pvData::pvString));
-    fields.push_back(factory.createScalar(epics::pvData::pvString));
-
-    names.push_back(nameStr);
-    names.push_back(startStr);
-    names.push_back(endStr);
+    for (std::vector<std::string>::const_iterator it = queryFields.begin();
+         it!= queryFields.end();
+         ++it)
+    {
+        fields.push_back(factory.createScalar(epics::pvData::pvString));
+        names.push_back(*it);
+    }
 
     return factory.createStructure(names, fields);
 }
 
-epics::pvData::StructureConstPtr ArchiverRequest(epics::pvData::FieldCreate & factory)
+epics::pvData::StructureConstPtr ArchiverRequest(epics::pvData::FieldCreate & factory, const std::vector<std::string> & queryFields)
 {
     using namespace epics::pvData;
 
@@ -119,13 +118,14 @@ epics::pvData::StructureConstPtr ArchiverRequest(epics::pvData::FieldCreate & fa
     StringArray names;
 
     fields.push_back(factory.createScalar(epics::pvData::pvString));
-    fields.push_back(ArchiverQuery(factory));
+    fields.push_back(ArchiverQuery(factory, queryFields));
 
     names.push_back("path");
     names.push_back("query");
 
     return factory.createStructure(ntURIStr, names, fields);
 }
+
 
 epics::pvData::StructureConstPtr ArchiverTableValues(epics::pvData::FieldCreate & factory)
 {

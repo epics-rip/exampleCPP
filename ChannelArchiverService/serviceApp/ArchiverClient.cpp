@@ -52,15 +52,18 @@ enum DebugLevel
  * @param  start         The seconds past epoch of the start time.
  * @return end           The seconds past epoch of the end time.
  */
-PVStructure::shared_pointer createArchiverQuery(const std::string & channel, const std::string & start, const std::string &  end)
+PVStructure::shared_pointer createArchiverQuery(
+    const std::vector<std::string> & fieldnames,
+    const std::vector<std::string> & values)
 {
-    StructureConstPtr archiverStructure = ArchiverQuery(*getFieldCreate());
+    StructureConstPtr archiverStructure = ArchiverQuery(*getFieldCreate(), fieldnames);
     PVStructure::shared_pointer query(getPVDataCreate()->createPVStructure(archiverStructure));
 
     // Set request.
-    query->getStringField(nameStr)->put(channel);
-    query->getStringField(startStr)->put(start);
-    query->getStringField(endStr)->put(end); 
+    for (size_t i = 0; i < fieldnames.size(); ++i)
+    {
+        query->getStringField(fieldnames[i])->put(values[i]);
+    } 
     return query;
 }
 
@@ -74,9 +77,10 @@ PVStructure::shared_pointer createArchiverQuery(const std::string & channel, con
  * @return end           The seconds past epoch of the end time.
  */
 PVStructure::shared_pointer createArchiverRequest(const std::string & service,
-    const std::string & channel, const std::string & start, const std::string &  end)
+    const std::vector<std::string> & fieldnames,
+    const std::vector<std::string> & values)
 {    
-    StructureConstPtr archiverStructure = ArchiverRequest(*getFieldCreate());
+    StructureConstPtr archiverStructure = ArchiverRequest(*getFieldCreate(), fieldnames);
     PVStructure::shared_pointer request(getPVDataCreate()->createPVStructure(archiverStructure));
 
     // set path.
@@ -85,9 +89,10 @@ PVStructure::shared_pointer createArchiverRequest(const std::string & service,
     // Set query.
     PVStructure::shared_pointer query = request->getStructureField("query");
 
-    query->getStringField(nameStr)->put(channel);
-    query->getStringField(startStr)->put(start);
-    query->getStringField(endStr)->put(end);
+    for (size_t i = 0; i < fieldnames.size(); ++i)
+    {
+        query->getStringField(fieldnames[i])->put(values[i]);
+    }
  
     return request;
 }
@@ -197,16 +202,17 @@ int main (int argc, char *argv[])
     int opt;
 
     std::string serviceName;
-    int64_t t0     = 0;
-    int64_t t1     = std::numeric_limits<int64_t>::max();
 
     FormatParameters parameters; 
     bool printChannelName = false;
     std::string outputtedFields;
     DebugLevel debugLevel = NORMAL;
 
-    std::string start;
-    std::string end;
+    std::vector<std::string> queryFieldnames;
+    std::vector<std::string> queryValues;
+
+    queryFieldnames.push_back(nameStr);
+    queryValues.push_back("");
 
     while ((opt = getopt(argc, argv, ":hS:s:e:f:ao:p:dxntTqv")) != -1)
     {
@@ -221,13 +227,13 @@ int main (int argc, char *argv[])
             break;
 
         case 's':
-            t0 = atol(optarg);
-            start = optarg;
+            queryFieldnames.push_back(startStr);
+            queryValues.push_back(optarg);
             break;
 
         case 'e':
-            t1 = atol(optarg);
-            end = optarg;
+            queryFieldnames.push_back(endStr);
+            queryValues.push_back(optarg);
             break;
 
         case 'f':
@@ -296,11 +302,16 @@ int main (int argc, char *argv[])
     for (int i = optind; i < argc; ++i)
     {
         std::string channel = argv[optind];
+        queryValues[0] = channel;
 
         if (debugLevel != QUIET)
         {
-            std::cout << "Querying " << serviceName << " (channel: "  << channel
-                      << "  start: " << t0 << "  end: " << t1  << ")..." << std::endl;
+            std::cout << "Querying " << serviceName;
+            for (size_t i = 0; i < queryFieldnames.size(); ++i)
+            {
+                std::cout << ", " << queryFieldnames[i] << ":  " << queryValues[i]; 
+            }
+            std::cout << ")..." << std::endl;
         }
 
         if (printChannelName)
@@ -309,8 +320,8 @@ int main (int argc, char *argv[])
         }
 
         //  Create query and send to archiver service.
-        //PVStructure::shared_pointer queryRequest = createArchiverQuery(channel, start, end);
-        PVStructure::shared_pointer queryRequest = createArchiverRequest(serviceName, channel, start, end);
+        //PVStructure::shared_pointer queryRequest = createArchiverQuery(queryFieldnames, queryValues);
+        PVStructure::shared_pointer queryRequest = createArchiverRequest(serviceName, queryFieldnames, queryValues);
 
         if (debugLevel == VERBOSE)
         {
