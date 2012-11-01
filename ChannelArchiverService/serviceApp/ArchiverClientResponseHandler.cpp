@@ -61,11 +61,11 @@ std::string MakeAlarmString(short status, short severity)
         return result;
     //  Archiver specials:
     case ARCH_EST_REPEAT:
-        sprintf(buf, "Est_Repeat %d", (int)status);
+        sprintf(buf, "Est_Repeat %d", static_cast<int>(status));
         result = buf;
         return result;
     case ARCH_REPEAT:
-        sprintf(buf, "Repeat %d", (int)status);
+        sprintf(buf, "Repeat %d", static_cast<int>(status));
         result = buf;
         return result;
     case ARCH_DISCONNECT:
@@ -356,28 +356,31 @@ void RequestResponseHandler::outputResults()
             maxWidths[i] = maxWidth(outputFieldValues[i]);
         }
 
-        if (m_parameters.printColumnTitles)
+        if (m_parameters.outputtedFields.size() > 0)
         {
-            for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
+            if (m_parameters.printColumnTitles)
             {
-                OutputField field = m_parameters.outputtedFields[i];
-                const string & columnTitle = columnTitles[i];
-                maxWidths[field] = std::max(maxWidths[field], columnTitle.length());
-                out << setw(maxWidths[field]) << left << columnTitle << columnSpace; 
+                for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
+                {
+                    OutputField field = m_parameters.outputtedFields[i];
+                    const string & columnTitle = columnTitles[i];
+                    maxWidths[field] = std::max(maxWidths[field], columnTitle.length());
+                    out << setw(maxWidths[field]) << left << columnTitle << columnSpace; 
+                }
+                out << "\n";
             }
-            out << "\n";
-        }
-
-        for (size_t j = 0; j < valuesLength; ++j) 
-        {
-            for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
+        
+            for (size_t j = 0; j < valuesLength; ++j) 
             {
-                OutputField field = m_parameters.outputtedFields[i];
+                for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
+                {
+                    OutputField field = m_parameters.outputtedFields[i];
 
-                out << setw(maxWidths[field])      << alignments[field]
-                    << outputFieldValues[field][j]   << columnSpace;   
+                    out << setw(maxWidths[field])      << alignments[field]
+                        << outputFieldValues[field][j]   << columnSpace;   
+                }
+                out << "\n";
             }
-            out << "\n";
         }
     }
     else
