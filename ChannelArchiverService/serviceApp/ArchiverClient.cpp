@@ -307,7 +307,7 @@ int main (int argc, char *argv[])
 
     for (int i = optind; i < argc; ++i)
     {
-        std::string channel = argv[optind];
+        std::string channel = argv[i];
         queryValues[0] = channel;
 
         if (debugLevel != QUIET)
