@@ -179,7 +179,7 @@ void showHelp()
       << "-q              supress all output to standard out except for archive data.\n"
       << "-v              output verbose logging information.\n"  
       << "-x              results of archiver query request outputted using\n"
-      << "                scientific (i.e. exponent/mantissa) format"
+      << "                scientific (i.e. exponent/mantissa) format\n"
       << "-d              results of archiver query request outputted using\n"
       << "                scientific (i.e. exponent/mantissa) format\n"
       << "-p=PREC         results of archiver query request given to precision PREC\n"
@@ -206,7 +206,7 @@ int main (int argc, char *argv[])
 
     FormatParameters parameters; 
     bool printChannelName = false;
-    std::string outputtedFields;
+    std::string outputtedFields("tvDA");
     DebugLevel debugLevel = NORMAL;
 
     std::vector<std::string> queryFieldnames;
