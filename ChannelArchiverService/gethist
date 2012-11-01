@@ -100,7 +100,7 @@ Description
     the column name, preceeded by'#', is outputted before the values.
 
     The choice of fields and the order in which they are outputted can be
-    selected by the -o,--field option. The argument for this option consist of
+    selected by the -o,--fields option. The argument for this option consist of
     a sequence of characters representing the possible fields
     t    floting point time, in seconds, past EPICS epoch
     v    the archived value
@@ -136,7 +136,6 @@ DISPLAYED_FIELDS="tvDA"
 
 process_shortopts()
 {
-#echo args: $@
 
 while getopts :hs:e:M:f:ao:p:dxntTqv OPTION
 do
@@ -228,8 +227,6 @@ if [ "$?" -ne 0 ]  || ! [[ "$UNIX_START" =~ "[0-9+]" ]]
 then
     echo $UNIX_START
     Error "Invalid UNIX start time"
-#else
-    #echo "Valid UNIX start time $UNIX_START"
 fi
 
 
@@ -247,8 +244,6 @@ if [ "$?" -ne 0 ]  || ! [[ "$UNIX_END" =~ "[0-9+]" ]]
 then
     echo $UNIX_END
     Error "Invalid UNIX end time"
-#else
-#    echo "Valid UNIX end time $UNIX_END"
 fi
 
 END=$((UNIX_END-EPICS_EPOCH))
@@ -264,69 +259,61 @@ then
     Error "Fixed-point and scientific options incomaptible"
 fi
 
-if [ "$OPTIONS" != "" ]
-then
-    OPTIONS=-$OPTIONS
-fi
-
-
-
-#echo "channel $CHANNEL from $START to $END $FILE"
-#echo "precision is $PRECISION"
-#echo "options are $OPTIONS"
-#echo "filename is $FILE"
-#echo 
-
-
 # change this to query an archive service of a different name
 SERVICE="archiveService"
 
-
-
-
-if [[ "$FILE" = "" ]]
-then
-    if [[ "$COUNT_ARG" = "" ]]
-    then 
-        $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  "$CHANNEL"
-    else
-        $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -M $COUNT_ARG -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  "$CHANNEL"
-    fi
-else
-    if [[ "$COUNT_ARG" = "" ]]
-    then 
-        $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION -f "$FILE" "$CHANNEL"
-    else
-        $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -M $COUNT_ARG -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  -f "$FILE" "$CHANNEL"
-    fi
-fi
+run_client
 
 shift
 
-if ! [[ "$OPTIONS" =~ "a" ]]
+if [[ "$FILE" != "" ]] && ! [[ "$OPTIONS" =~ "a" ]]
 then
     OPTIONS+="a"
 fi
 
 
 for CHANNEL in "$@"; do
-    if [[ "$FILE" = "" ]]
-    then
-        if [[ "$COUNT_ARG" = "" ]]
-        then 
-            $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  "$CHANNEL"
-        else
-            $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -M $COUNT_ARG -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  "$CHANNEL"
-        fi
-    else
-        if [[ "$COUNT_ARG" = "" ]]
-        then 
-            $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION -f "$FILE" "$CHANNEL"
-        else
-            $TOP/bin/$EPICS_HOST_ARCH/ArchiverClient -S "$SERVICE" -s $START -e $END -M $COUNT_ARG -o $DISPLAYED_FIELDS $OPTIONS -p $PRECISION  -f "$FILE" "$CHANNEL"
-        fi
-    fi
+   run_client
 done
+}
+
+run_client()
+{
+
+BIN=$TOP/bin/$EPICS_HOST_ARCH/ArchiverClient
+
+
+ARGS=('-S' "$SERVICE" '-s' "$START" '-e' "$END")
+
+if [[ "$COUNT_ARG" != "" ]]
+then
+   ARGS+=('-M' "$COUNT_ARG")
+fi
+
+ARGS+=('-p' "$PRECISION")
+
+if [[ "$DISPLAYED_FIELDS" != "" ]]
+then
+    ARGS+=('-o' "$DISPLAYED_FIELDS")
+fi
+
+if [[ "$FILE" != "" ]]
+then
+    ARGS+=('-f' "$FILE") 
+fi
+
+if [ "$OPTIONS" != "" ]
+then
+   ARGS+=("-$OPTIONS")
+fi
+
+ARGS+=("$CHANNEL")
+
+#echo $BIN "${ARGS[@]}"
+
+$BIN "${ARGS[@]}"
+
+
 }
 
 
@@ -393,8 +380,6 @@ process()
         else
             NEW_ARG="$ARG"
         fi
-        #echo $ARG $NEW_ARG
-        #arg[$i]="$NEW_ARG"
     done
     
     process_shortopts "${arg[@]}"
