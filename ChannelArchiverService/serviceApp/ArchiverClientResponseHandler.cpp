@@ -26,13 +26,7 @@
 #include <pv/pvData.h>
 
 
-using namespace std;
-using namespace std::tr1;
-using namespace epics::pvData;
-
-
 #include "types.h"
-
 #include "ArchiverClientResponseHandler.h"
 
 namespace epics
@@ -134,9 +128,11 @@ std::string getDate(int64_t secsPastEpoch, int32_t nsecs)
  * @param  precision  Precision used in formating when converting data to string. 
  */
 template <typename A>
-void dataArrayToStrings(vector<string> & strings, const A & arrayData, int length,
+void dataArrayToStrings(std::vector<std::string> & strings, const A & arrayData, int length,
                         const FormatParameters::Format format = FormatParameters::DEFAULT, int precision = 6)
 {
+    using namespace std;
+
     strings.reserve(strings.size() + length);
     ostringstream oss;
 
@@ -185,6 +181,9 @@ void RequestResponseHandler::handle(epics::pvData::PVStructure::shared_pointer c
  */
 void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_pointer const & response)
 {
+    using namespace epics::pvData;
+    using namespace std;
+
     PVStructurePtr responseValues = response->getStructureField("value");
 
     //  Handle each of the fields in the archiver query response in turn.
@@ -326,6 +325,8 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
 
 void RequestResponseHandler::outputResults()
 {
+    using namespace std;
+
     //  Now output archive data.
     bool outputToFile = m_parameters.filename.compare(string(""));
     std::ofstream outfile;
@@ -336,13 +337,13 @@ void RequestResponseHandler::outputResults()
         outfile.open(m_parameters.filename.c_str(), openMode);
     }
 
-    ostream & out = outputToFile ? outfile : std::cout; 
+    ostream & out = outputToFile ? outfile : cout; 
 
     //  Print title.
     bool printTitle = m_parameters.title.compare(string(""));
     if (printTitle)
     {
-        out << m_parameters.prefix << m_parameters.title << std::endl;
+        out << m_parameters.prefix << m_parameters.title << endl;
     }
 
     string columnSpace = "  ";
