@@ -15,6 +15,9 @@
 
 #include <pv/rpcServer.h>
 
+namespace epics
+{
+
 namespace channelArchiverService
 {
 
@@ -38,6 +41,8 @@ private:
         const epicsTimeStamp & t1,
         int64_t count);
 };
+
+}
 
 }
 

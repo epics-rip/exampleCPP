@@ -37,7 +37,7 @@ using namespace epics::pvAccess;
 
 int main(int argc,char *argv[])
 {
-    using namespace  channelArchiverService;
+    using namespace  epics::channelArchiverService;
 
     if(argc < 3)
     {

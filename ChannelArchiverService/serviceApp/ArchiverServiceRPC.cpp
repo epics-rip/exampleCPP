@@ -38,6 +38,9 @@
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 
+namespace epics
+{
+
 namespace channelArchiverService
 {
 
@@ -235,6 +238,8 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     t1.nsec = 0;
 
     return QueryRaw(pvArgument, name, t0, t1, count);
+}
+
 }
 
 }
