@@ -166,6 +166,12 @@ void dataArrayToStrings(vector<string> & strings, const A & arrayData, int lengt
     }
 }
 
+template <typename VT, typename CT>
+bool isPresent(VT value, CT & container)
+{
+    return (std::find(container.begin(), container.end(), value) != container.end());
+}
+
 /**
  * RequestResponseHandler 
  */
@@ -188,9 +194,11 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
         responseValues->getScalarArrayField("value", pvDouble));
     DoubleArrayData valuesArrayData;
     int valuesLength = values->get(0, values->getLength(), valuesArrayData);
-
-    dataArrayToStrings(outputFieldValues[VALUE], valuesArrayData,
-        valuesLength, m_parameters.format, m_parameters.precision);
+    if (isPresent(VALUE, m_parameters.outputtedFields))
+    {
+        dataArrayToStrings(outputFieldValues[VALUE], valuesArrayData,
+            valuesLength, m_parameters.format, m_parameters.precision);
+    }
 
 
     //  Seconds.
@@ -205,9 +213,11 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
         m_ok = false;  
         return; 
     }
-
-    dataArrayToStrings(outputFieldValues[SECONDS_PAST_EPOCH], secPastEpochsArrayData, secPastEpochsLength);
-
+    if (isPresent(SECONDS_PAST_EPOCH, m_parameters.outputtedFields)
+     || isPresent(REAL_TIME, m_parameters.outputtedFields))
+    {
+        dataArrayToStrings(outputFieldValues[SECONDS_PAST_EPOCH], secPastEpochsArrayData, secPastEpochsLength);
+    }
 
     //  Nanoseconds.
     PVIntArrayPtr nsecs = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(
@@ -221,34 +231,45 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
         return;  
     }
 
-    dataArrayToStrings(outputFieldValues[NANO_SECONDS], nsecsArrayData, nsecsLength);
+    if (isPresent(NANO_SECONDS, m_parameters.outputtedFields)
+     || isPresent(REAL_TIME, m_parameters.outputtedFields))
+    {
+        dataArrayToStrings(outputFieldValues[NANO_SECONDS], nsecsArrayData, nsecsLength);
+    }
 
 
     //  Real time in seconds.
-    int realTimeLength = min(secPastEpochsLength, nsecsLength);
-    vector<string> & realTimeStrings = outputFieldValues[REAL_TIME];
-    realTimeStrings.reserve(realTimeLength);
-
+    if (isPresent(REAL_TIME, m_parameters.outputtedFields))
     {
-        ostringstream oss;
-        for (int i = 0; i < realTimeLength; ++i)
+        int realTimeLength = min(secPastEpochsLength, nsecsLength);
+        vector<string> & realTimeStrings = outputFieldValues[REAL_TIME];
+        realTimeStrings.reserve(realTimeLength);
+
         {
-            oss << secPastEpochsArrayData.data[i]  << ".";
-            oss << setfill('0') << setw(9) << nsecsArrayData.data[i];
-            realTimeStrings.push_back(oss.str());
-            oss.str("");
+            ostringstream oss;
+            for (int i = 0; i < realTimeLength; ++i)
+            {
+                oss << secPastEpochsArrayData.data[i]  << ".";
+                oss << setfill('0') << setw(9) << nsecsArrayData.data[i];
+                realTimeStrings.push_back(oss.str());
+                oss.str("");
+           }
         }
     }
 
-    //  Dates.
-    vector<string> & dateStrings = outputFieldValues[DATE];
-    int dateLength = min(secPastEpochsLength, nsecsLength);
-    dateStrings.reserve(dateLength);
 
-    for (int i = 0; i < dateLength; ++i)
-    {     
-        string dateString = getDate(secPastEpochsArrayData.data[i], nsecsArrayData.data[i]);
-        dateStrings.push_back(dateString);
+    //  Dates.
+    if (isPresent(DATE, m_parameters.outputtedFields))
+    {
+        vector<string> & dateStrings = outputFieldValues[DATE];
+        int dateLength = min(secPastEpochsLength, nsecsLength);
+        dateStrings.reserve(dateLength);
+
+        for (int i = 0; i < dateLength; ++i)
+        {     
+            string dateString = getDate(secPastEpochsArrayData.data[i], nsecsArrayData.data[i]);
+            dateStrings.push_back(dateString);
+        }
     }
 
 
@@ -263,8 +284,10 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
         m_ok = false;  
         return; 
     }
-
-    dataArrayToStrings(outputFieldValues[STATUS], statusesArrayData, statusesLength, FormatParameters::HEX);
+    if (isPresent(STATUS, m_parameters.outputtedFields))
+    {
+        dataArrayToStrings(outputFieldValues[STATUS], statusesArrayData, statusesLength, FormatParameters::HEX);
+    }
 
 
     //  Alarm severity.
@@ -278,19 +301,25 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
         m_ok = false;  
         return; 
     }
-
-    dataArrayToStrings(outputFieldValues[SEVERITY], severitiesArrayData, severitiesLength, FormatParameters::HEX);
+    if (isPresent(SEVERITY, m_parameters.outputtedFields))
+    {        
+        dataArrayToStrings(outputFieldValues[SEVERITY], severitiesArrayData, severitiesLength,
+            FormatParameters::HEX);
+    }
 
 
     //  Alarm string.
     int alarmStringsLength = std::min(secPastEpochsLength, nsecsLength);
-    vector<string> & alarmStrings = outputFieldValues[ALARM];
-    alarmStrings.reserve(alarmStringsLength);
-
-    for (int i = 0; i < valuesLength; ++i)
-    {     
-        string alarmString = MakeAlarmString(statusesArrayData.data[i], severitiesArrayData.data[i]);
-        alarmStrings.push_back(alarmString);
+    
+    if (isPresent(ALARM, m_parameters.outputtedFields))
+    {
+        vector<string> & alarmStrings = outputFieldValues[ALARM];        
+        alarmStrings.reserve(alarmStringsLength); 
+        for (int i = 0; i < valuesLength; ++i)
+        {     
+            string alarmString = MakeAlarmString(statusesArrayData.data[i], severitiesArrayData.data[i]);
+            alarmStrings.push_back(alarmString);
+        }
     }
 }
 
@@ -332,7 +361,11 @@ void RequestResponseHandler::outputResults()
         right
     }; 
 
-    size_t valuesLength = outputFieldValues[VALUE].size();
+    size_t valuesLength = 0;
+    if (m_parameters.outputtedFields.size() > 0)
+    {
+        valuesLength = outputFieldValues[m_parameters.outputtedFields[0]].size();
+    }
 
     std::vector<std::string> columnTitles;
     columnTitles.resize(m_parameters.outputtedFields.size());
