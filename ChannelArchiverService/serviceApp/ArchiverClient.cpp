@@ -24,7 +24,7 @@
 #include <pv/pvData.h>
 #include <pv/logger.h>
 
-#include "types.h"
+#include "common.h"
 #include "ArchiverClientResponseHandler.h"
 #include "ServiceClient.h"
 

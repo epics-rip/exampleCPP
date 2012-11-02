@@ -26,7 +26,7 @@
 #include <pv/pvData.h>
 
 
-#include "types.h"
+#include "common.h"
 #include "ArchiverClientResponseHandler.h"
 
 namespace epics

@@ -1,14 +1,15 @@
-#ifndef CHANNELARCHIVERSERVICE_TYPES_H
-#define CHANNELARCHIVERSERVICE_TYPES_H
+#ifndef CHANNELARCHIVERSERVICE_COMMON_H
+#define CHANNELARCHIVERSERVICE_COMMON_H
 
-/* types.h - template helpers for pvData */
+/* common.h - channel archiver service types and utilities common to the server and client */
 /**
  * Copyright - See the COPYRIGHT that is included with this distribution.
  * EPICS exampleCPP is distributed subject to a Software License Agreement found
  * in file LICENSE that is included with this distribution.
  */
 
-/* Map Type to pvData Type Identifier through specialization */
+#include <string>
+#include <vector>
 
 #include "pv/pvIntrospect.h"
 #include "pv/pvData.h"
@@ -18,7 +19,7 @@ namespace epics
 
 namespace channelArchiverService
 {
-
+/* Map Type to pvData Type Identifier through specialization */
 
 template<class T> epics::pvData::ScalarType getScalarType()
 {
@@ -92,6 +93,7 @@ size_t maxWidth(const T & t)
 extern const std::string ntTableStr;
 extern const std::string ntURIStr;
 
+// Fieldnames of the channel archiver serivce query fields
 extern const std::string nameStr;
 extern const std::string startStr;
 extern const std::string endStr;

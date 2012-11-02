@@ -4,9 +4,9 @@
  * in file LICENSE that is included with this distribution.
  */
 
-/* Map Type to pvData Type Identifier through specialization */
 
-#include "types.h"
+
+#include "common.h"
 
 namespace epics
 {

@@ -33,7 +33,7 @@
 
 #include <pv/rpcServer.h>
 
-#include "types.h"
+#include "common.h"
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;

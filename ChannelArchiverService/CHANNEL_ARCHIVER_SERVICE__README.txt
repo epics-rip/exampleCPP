@@ -159,8 +159,8 @@ ArchiverClientResponseHandler.h       of the response from the server
 ServiceClient.cpp                     C++ source code for the client sending
 ServiceClient.h                       the query and receiving the response
 
-types.cpp                             C++ source code of types and utilities
-types.h                               common to client and server
+common.cpp                            C++ source code of types and utilities
+common.h                              common to client and server
 
 start_server                          bash script to start server
 
