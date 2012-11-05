@@ -2,16 +2,17 @@
 #!-*- sh -*-
 #
 # Copyright: See the COPYRIGHT that is included with this distribution.
-#            EPICS exampleCPP is distributed subject to a Software License Agreement
-#            found in file LICENSE that is included with this distribution.
+#            EPICS exampleCPP is distributed subject to a Software License
+#            Agreement found in file LICENSE that is included with this
+#            distribution.
 #
 # Abs: gethist queries the Channel Archive Server for the data for the channel 
 #      specified between two dates and times and outputs the data according to
 #      supplied formatting options
 #
-# Rem: gethist creates an Archiver Client which is a simple example of an EPICS
-#      v4 RPC service client, which gets archived data from the Archiver Service,
-#      a simple example of a v4 RPC service.
+# Rem: gethist creates an Archiver Client which is anexample of an EPICS v4 RPC
+#      service client, which gets archived data from the Archiver Service, an
+#      example of a v4 RPC service.
 # 
 #
 # Usage: see help (gethist -h or gethist --help) for options                   
@@ -24,7 +25,7 @@
 TOP=$(dirname $0)
 
 # change this to query an archive service of a different name by default
-SERVICE="archiveService"
+DEFAULT_SERVICE="archiveService"
 
 Error()
 {
@@ -63,7 +64,7 @@ Options
 
     -h,--help              display help
     -S,--service=SERVICE   query the archiver service with name SERVICE.
-                           Default service name is $SERVICE.
+                           Default service name is $DEFAULT_SERVICE.
     -s,--start=START_TIME  query archive for results starting from START_TIME
     -e,--end=END_TIME      query archive for results up to END_TIME
     -M,--max-records=MAX   limit results to first MAX records
@@ -127,6 +128,7 @@ exit 0
 EPICS_EPOCH=631152000
 
 CHANNEL=
+SERVICE=$DEFAULT_SERVICE
 START_ARG="1 hour ago"
 END_ARG="now"
 COUNT_ARG=
