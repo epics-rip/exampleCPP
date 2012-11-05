@@ -26,7 +26,7 @@
 #include <pv/pvAccess.h>
 #include <pv/rpcServer.h>
 
-#include <ArchiverServiceRPC.h>
+#include "ArchiverServiceRPC.h"
 
 
 using namespace std;
