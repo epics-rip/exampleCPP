@@ -23,6 +23,8 @@
 
 TOP=$(dirname $0)
 
+# change this to query an archive service of a different name by default
+SERVICE="archiveService"
 
 Error()
 {
@@ -60,6 +62,8 @@ Options
     Mandatory arguments to long options are mandatory for short options too.
 
     -h,--help              display help
+    -S,--service=SERVICE   query the archiver service with name SERVICE.
+                           Default service name is $SERVICE.
     -s,--start=START_TIME  query archive for results starting from START_TIME
     -e,--end=END_TIME      query archive for results up to END_TIME
     -M,--max-records=MAX   limit results to first MAX records
@@ -134,14 +138,20 @@ OPTIONS=
 DISPLAYED_FIELDS="tvDA"
 
 
+
+
 process_shortopts()
 {
 
-while getopts :hs:e:M:f:ao:p:dxntTqv OPTION
+while getopts :hS:s:e:M:f:ao:p:dxntTqv OPTION
 do
     case $OPTION in
     h) #echo h
        showhelp
+       ;;
+
+    S) #echo S
+       SERVICE="$OPTARG"
        ;;
 
     s) #echo s
@@ -259,9 +269,6 @@ then
     Error "Fixed-point and scientific options incomaptible"
 fi
 
-# change this to query an archive service of a different name
-SERVICE="archiveService"
-
 run_client
 
 shift
@@ -330,6 +337,9 @@ process()
             case $ARG in
             --help)
                 NEW_ARG="-h";;
+
+            --service )
+                NEW_ARG="-S";;
 
             --start )
                 NEW_ARG="-s";;

@@ -20,12 +20,21 @@ namespace epics
 
 namespace channelArchiverService
 {
-
+/**
+ * ArchiverServiceRPC is the class which implements the Channel Archiver serivce
+ * through the RPCService interface.
+ */
 class ArchiverServiceRPC : public epics::pvAccess::RPCService
 {
     std::string indexFilename;
 public:
     POINTER_DEFINITIONS(ArchiverServiceRPC);
+
+   /**
+    * Constructs an instance of ArchiverServiceRPC which queries a given index file.
+    *
+    * @param  indexFilename  the path of the index file to be queried 
+    */
     ArchiverServiceRPC(char * indexFilename) : indexFilename(indexFilename) {}
     virtual ~ArchiverServiceRPC();
 

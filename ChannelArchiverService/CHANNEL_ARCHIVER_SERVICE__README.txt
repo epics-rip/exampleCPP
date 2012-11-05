@@ -20,11 +20,14 @@ EXAMPLES
 The server is run as follows
 
     % ./start_server
+    % ./start_server data/DCCT/index dccthist
 
 start_server calls the ArchiverService executable (which should be
 bin/$EPICS_HOST_ARCH/ArchiverServiceRPC) supplying two arguments. The first is
-the service name, the second the location of the index file. Should you wish to
-change either then these arguments should be modified.   
+the service name, the second the location of the index file. By default
+start_server supplies the index file in data/fredjanet and the service name
+archiveService. Should you wish to use other data or another service name then
+these should be supplied as arguments or the defaults changed.   
 
 
 The following are examples of running the client using the bash script gethist:
@@ -83,10 +86,15 @@ The following are also valid
 
     % ./gethist -s "4 years ago"   -e "3 months ago" fred janet
 
+gethist by default queries the service with name "archiveService". Services
+with other names can be queried using the -S option:
+
+    % ./gethist -S a_service -s "yesterday" -e "now" a_channel
+
 The gethist script calls the archive service client (ArchiveClient), which can
 be called directly. It takes the same short options as gethist, except that the
-start and end times are in seconds past EPICS epoch and the service must be
-specified with the -S argument.
+start and end times are in seconds past EPICS epoch and the service must always
+be specified with the -S argument. For example
 
     % bin/linux-x86/ArchiverClient -S archiveService -s 405012094
         -e 720631294 fred
@@ -116,12 +124,12 @@ EPICS V4 website:
 
  http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypes.html).
 
-The query parameters are entity, starttime, endtime and maxrecords which are
-respectively the channel name, the start and end times between which to query
-(in seconds past the EPICS epoch, 01-01-1990 00:00:00 UTC") and the maximum
-number of entries to retrieve. The entity is a required field. The server will
-error the request if it is absent. The others have default values of 0,
-2,147,483,647 and 1,000,000,000 respectively.
+The query parameters are "entity", "starttime", "endtime" and "maxrecords",
+which are respectively the channel name, the start and end times between which
+to query (in seconds past the EPICS epoch, 01-01-1990 00:00:00 UTC") and the
+maximum number of entries to retrieve. The "entity" field is required. The
+server will error the request if it is absent. The others have default values
+of 0, 2,147,483,647 and 1,000,000,000 respectively.
 
 Thus the service can be queried using eget by supplying the parameters above.
 For example
@@ -139,15 +147,15 @@ containing the string fields specified and thus the service can be queried
 using the eget -q option.
 
 The service's response is in the form of an NTTable normative type with the
-columns value, secPastEpoch, nsec, status and severity which are arrays of
-respectively doubles, longs, ints, ints and ints.
+columns "value", "secPastEpoch", "nsec", "status" and "severity", which are
+arrays of respectively doubles, longs, ints, ints and ints.
 
 
-FILES THAT COMPRISE THE CHANNEL ARCHIVER EXAMPLE
+FILES THAT COMPRISE THE CHANNEL ARCHIVER SERVICE
 ------------------------------------------------
 
 ArchiverServiceRPC.cpp                C++ source code of the server side of
-ArchiverServiceRPC.h                  the example
+ArchiverServiceRPC.h                  the channel archiver service
 ArchiverServiceRPCMain.cpp                
 
 ArchiverClient.cpp                    C++ source code of the client application
@@ -245,14 +253,19 @@ To start the Channel Archiver server
 
    E.g. % cd ~/Development/epicsV4/exampleCPP/ChannelArchiverService
 
-*  start_server calls the ArchiverService executable (which should be
-   bin/$EPICS_HOST_ARCH/ArchiverServiceRPC) supplying two arguments. The first
-   is the service name, the second the location of the index file. Should you
-   wish to change either then these arguments should be modified.  
+ * Start the channel archiver service using the start_server command.
+   The command can take two arguments or use default values. The first argument
+   is the name of the index file and the second is the service name. The script
+   calls the ArchiverService executable for the host architecture (which should
+   be bin/$EPICS_HOST_ARCH/ArchiverServiceRPC). By default it queries the index
+   file in data/fredjanet with service name archiveService. 
 
- * Start the server in one terminal 
+ * Start the channel archiver service using the start_server command as
+   descibed above using default arguments or supplying the index file and
+   name service 
 
    E.g. % ./start_server
+        % ./start_server data/DCCT/index dccthist
   
  * The server can be terminated with a SIGTERM (like CTRL-C in its process
    window).
@@ -272,6 +285,8 @@ With the server started,
  
    E.g. % ./gethist --start "Jan 1 1990" --end "now" --file out.txt
              --scientific janet 
+        % ./gethist -S dccthist --start "10 years ago" --end "yesterday"
+             SR-DI-DCCT-01:SIGNAL
 
 
 Querying the service using eget

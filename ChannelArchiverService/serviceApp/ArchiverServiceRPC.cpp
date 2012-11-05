@@ -189,7 +189,7 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     std::string name;
     int64_t start = 0;
     int64_t end   = std::numeric_limits<int32_t>::max();
-    int64_t count = 1000000000; // limit to 1e9 values unless other number specified
+    int64_t count = 1000000000; // limit to 1e9 values unless another number is specified
 
     bool isNTQuery = false;
 

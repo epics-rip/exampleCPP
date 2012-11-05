@@ -54,7 +54,6 @@ namespace serviceClient
     /**
      * Performs complete blocking RPC call, opening a channel and connecting to the
      * service, sending the request and processing the response.
-     *
      * The PVStructure sent on connection is null.
      *
      * @param  serviceName         the name of the service to connect to

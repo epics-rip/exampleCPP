@@ -1,7 +1,27 @@
 #!/bin/bash
+#!-*- sh -*-
+#
+# Copyright: See the COPYRIGHT that is included with this distribution.
+#            EPICS exampleCPP is distributed subject to a Software License
+#            Agreement found in file LICENSE that is included with this
+#            distribution.
+#
+# Abs: start_server starts the channel archiver service, which can query a
+#      Channel Archiver index file, with a given service name 
+#
+# Rem: The Channel Archiver Service is an example of an EPICS v4 RPC service.
+# 
+#
+# Usage: start_server
+#        start_server index_file
+#        start_server index_file service_name                   
+# 
+# ----------------------------------------------------------------------------
+# Auth: Dave Hickin (david.hickin@diamond.ac.uk)
+# ============================================================================
 
 TOP=$(dirname $0)
 
-$TOP/bin/$EPICS_HOST_ARCH/ArchiverServiceRPC $TOP/data/fredjanet/index archiveService
+$TOP/bin/$EPICS_HOST_ARCH/ArchiverServiceRPC ${1:-$TOP/data/fredjanet/index}  ${2:-archiveService}
 
 

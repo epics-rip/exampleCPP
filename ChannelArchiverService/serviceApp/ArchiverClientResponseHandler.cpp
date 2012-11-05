@@ -169,7 +169,7 @@ bool isPresent(VT value, CT & container)
     return (std::find(container.begin(), container.end(), value) != container.end());
 }
 
-/**
+/*
  * RequestResponseHandler functions
  */
 
