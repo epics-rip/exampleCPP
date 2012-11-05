@@ -185,12 +185,24 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     using namespace std;
 
     PVStructurePtr responseValues = response->getStructureField("value");
+    if (responseValues == NULL)
+    {
+        cerr << "Data invalid: No value field in table." << endl;
+        m_ok = false;  
+        return; 
+    }
 
     //  Handle each of the fields in the archiver query response in turn.
 
     //  Values.
     PVDoubleArrayPtr values = std::tr1::static_pointer_cast<epics::pvData::PVDoubleArray>(
         responseValues->getScalarArrayField("value", pvDouble));
+    if (values == NULL)
+    {
+        cerr << "Data invalid: No value field in table values." << endl;
+        m_ok = false;  
+        return;
+    }    
     DoubleArrayData valuesArrayData;
     int valuesLength = values->get(0, values->getLength(), valuesArrayData);
     if (isPresent(VALUE, m_parameters.outputtedFields))
@@ -203,8 +215,13 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     //  Seconds.
     PVLongArrayPtr secPastEpochs = std::tr1::static_pointer_cast<epics::pvData::PVLongArray>(
         responseValues->getScalarArrayField("secPastEpoch", pvLong));
+    if (secPastEpochs == NULL)
+    {
+        cerr << "Data invalid: No secPastEpoch field in table values." << endl;
+        m_ok = false;  
+        return;
+    }
     LongArrayData secPastEpochsArrayData;
-
     int secPastEpochsLength = secPastEpochs->get(0, secPastEpochs->getLength(), secPastEpochsArrayData);
     if (secPastEpochsLength != valuesLength)
     {
@@ -218,9 +235,16 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
         dataArrayToStrings(outputFieldValues[SECONDS_PAST_EPOCH], secPastEpochsArrayData, secPastEpochsLength);
     }
 
+
     //  Nanoseconds.
     PVIntArrayPtr nsecs = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(
          responseValues->getScalarArrayField("nsec", pvInt));
+    if (nsecs == NULL)
+    {
+        cerr << "Data invalid: No nsec field in table values." << endl;
+        m_ok = false;  
+        return;
+    }
     IntArrayData nsecsArrayData;
     int nsecsLength = nsecs->get(0, nsecs->getLength(), nsecsArrayData);
     if (nsecsLength != valuesLength)
@@ -229,7 +253,6 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
         m_ok = false;  
         return;  
     }
-
     if (isPresent(NANO_SECONDS, m_parameters.outputtedFields)
      || isPresent(REAL_TIME, m_parameters.outputtedFields))
     {
@@ -275,6 +298,12 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     //  Alarm status.
     PVIntArrayPtr statuses = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(
         responseValues->getScalarArrayField("status", pvInt));
+    if (statuses == NULL)
+    {
+        cerr << "Data invalid: No status field in table values." << endl;
+        m_ok = false;  
+        return;
+    }
     IntArrayData statusesArrayData;
     int statusesLength = statuses->get(0, statuses->getLength(), statusesArrayData);
     if (statusesLength != valuesLength)
@@ -292,6 +321,12 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     //  Alarm severity.
     PVIntArrayPtr severities = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(
         responseValues->getScalarArrayField("severity", pvInt));
+    if (severities == NULL)
+    {
+        cerr << "Data invalid: No severity field in table values." << endl;
+        m_ok = false;  
+        return;
+    }
     IntArrayData severitiesArrayData;
     int severitiesLength = severities->get(0, severities->getLength(), severitiesArrayData);
     if (severitiesLength != valuesLength)
@@ -326,6 +361,11 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
 void RequestResponseHandler::outputResults()
 {
     using namespace std;
+
+    if (!m_ok)
+    {
+        throw std::logic_error("attempted to output invalid data");
+    }
 
     //  Now output archive data.
     bool outputToFile = m_parameters.filename.compare(string(""));
@@ -367,6 +407,7 @@ void RequestResponseHandler::outputResults()
     {
         valuesLength = outputFieldValues[m_parameters.outputtedFields[0]].size();
     }
+ 
 
     std::vector<std::string> columnTitles;
     columnTitles.resize(m_parameters.outputtedFields.size());
