@@ -19,7 +19,8 @@ namespace epics
 
 namespace channelArchiverService
 {
-/* Map Type to pvData Type Identifier through specialization */
+
+/* Map type T to pvData Type Identifier through specialisation */
 
 template<class T> epics::pvData::ScalarType getScalarType()
 {
@@ -36,35 +37,46 @@ template<> epics::pvData::ScalarType getScalarType<float>();
 template<> epics::pvData::ScalarType getScalarType<double>();
 template<> epics::pvData::ScalarType getScalarType<std::string>();
 
-/* copy from STL vector to pvData */
 
-template<typename T> void copyToScalarArray(
-    std::vector<T> & x, epics::pvData::PVStructure::shared_pointer & pvArgument, const char * name)
+/**
+ * Copies from a pvData PVStructure to an STL vector.
+ *
+ * @param  scalarArray   the vector of scalars to copy to
+ * @param  pvStructure   the  PVStructure to copy from
+ */
+template<typename T> void copyToScalarArray(std::vector<T> & scalarArray,
+    epics::pvData::PVStructure::shared_pointer & pvArgument, const char * name)
 {
     epics::pvData::ScalarType st = getScalarType<T>();
     std::tr1::static_pointer_cast<epics::pvData::PVValueArray<T> >(
-        pvArgument->getScalarArrayField(name, st))->put(0, x.size(), &x[0], 0);
+        pvArgument->getScalarArrayField(name, st))->put(0, scalarArray.size(), &scalarArray[0], 0);
 }
 
-template<typename T> void copyFromScalarArray(
-    std::vector<T> & x, const epics::pvData::PVStructure::shared_pointer & pvArgument, const char * name)
+/**
+ * Copies from a pvData PVStructure to an STL vector.
+ *
+ * @param  scalarArray   the vector of scalars to copy from
+ * @param  pvStructure   the  PVStructure to copy to
+ */
+template<typename T> void copyFromScalarArray(std::vector<T> & scalarArray,
+    const epics::pvData::PVStructure::shared_pointer & pvArgument, const char * name)
 {
     epics::pvData::ScalarType st = getScalarType<T>();
     epics::pvData::PVArrayData<T> arrayData;
     epics::pvData::PVValueArray<T> * pvValues =
         (epics::pvData::PVValueArray<T> *)pvArgument->getScalarArrayField(name, st);
     pvValues->get(0, pvValues->getLength(), &arrayData);
-    x.resize(pvValues->getLength());
-    std::copy(arrayData.data, arrayData.data + pvValues->getLength(), x.begin());
+    scalarArray.resize(pvValues->getLength());
+    std::copy(arrayData.data, arrayData.data + pvValues->getLength(), scalarArray.begin());
 }
 
-template<typename T> T * copyToArray(std::vector<T> & fields)
-{
-    T * fields2 = new T[fields.size()];
-    std::copy(fields.begin(), fields.end(), fields2);
-    return fields2;
-}
-
+/**
+ * Converts an object of type T to string, where T should be a pointer or smart pointer
+ * to an object which has an apropriate toString function.
+ *
+ * @param  t  the object of type T to be converted
+ * @return    the result of the string conversion
+ */
 template<class T> std::string toString(T st)
 {
     std::string s;
@@ -72,6 +84,14 @@ template<class T> std::string toString(T st)
     return s;
 }
 
+
+/**
+ * Calculates the maximum of the length for a collection of strings or other objects with
+ * a length() function.
+ *
+ * @param  t  the object of type T to be converted
+ * @return    the result of the string conversion
+ */
 template <typename T>
 size_t maxWidth(const T & t)
 {
@@ -89,9 +109,11 @@ size_t maxWidth(const T & t)
 	return maxWidth;
 }
 
+
 // IDs for normative types
 extern const std::string ntTableStr;
 extern const std::string ntURIStr;
+
 
 // Fieldnames of the channel archiver serivce query fields
 extern const std::string nameStr;
@@ -99,19 +121,33 @@ extern const std::string startStr;
 extern const std::string endStr;
 extern const std::string countStr;
 
-
-epics::pvData::StructureConstPtr ArchiverQuery(epics::pvData::FieldCreate & factory,
+/**
+ * Creates a structure for a query to a service with the supplied fields.
+ *
+ * @param  factory      the factory used to create the structure
+ * @param  queryFields  the fields which the query is to contain
+ * @return              the query structure
+ */
+epics::pvData::StructureConstPtr makeQueryStructure(epics::pvData::FieldCreate & factory,
     const std::vector<std::string> & queryFields);
 
-
-epics::pvData::StructureConstPtr ArchiverRequest(epics::pvData::FieldCreate & factory,
+/**
+ * Creates a request structure for a query to a service with the supplied fields/
+ *
+ * @param  factory      the factory used to create the structure
+ * @param  queryFields  the fields which the request query part is to contain
+ * @return              the request structure
+ */
+epics::pvData::StructureConstPtr makeRequestStructure(epics::pvData::FieldCreate & factory,
     const std::vector<std::string> & queryFields);
 
-
-epics::pvData::StructureConstPtr ArchiverTableValues(epics::pvData::FieldCreate & factory);
-
-
-epics::pvData::StructureConstPtr ArchiverTable(epics::pvData::FieldCreate & factory);
+/**
+ * Creates the structure for the response to an archiver query
+ *
+ * @param  factory  the factory used to create the structure
+ * @return          the table structure.
+ */
+epics::pvData::StructureConstPtr makeArchiverResponseStructure(epics::pvData::FieldCreate & factory);
 
 }
 

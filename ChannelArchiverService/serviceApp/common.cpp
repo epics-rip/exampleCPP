@@ -5,8 +5,8 @@
  */
 
 
-
 #include "common.h"
+
 
 namespace epics
 {
@@ -33,7 +33,9 @@ const std::string endStr   = "endtime";
 const std::string countStr = "maxrecords";
 
 
-epics::pvData::StructureConstPtr ArchiverQuery(epics::pvData::FieldCreate & factory, const std::vector<std::string> & queryFields)
+
+epics::pvData::StructureConstPtr makeQueryStructure(epics::pvData::FieldCreate & factory,
+    const std::vector<std::string> & queryFields)
 {
     using namespace epics::pvData;
 
@@ -51,7 +53,8 @@ epics::pvData::StructureConstPtr ArchiverQuery(epics::pvData::FieldCreate & fact
     return factory.createStructure(names, fields);
 }
 
-epics::pvData::StructureConstPtr ArchiverRequest(epics::pvData::FieldCreate & factory, const std::vector<std::string> & queryFields)
+epics::pvData::StructureConstPtr makeRequestStructure(epics::pvData::FieldCreate & factory,
+    const std::vector<std::string> & queryFields)
 {
     using namespace epics::pvData;
 
@@ -59,7 +62,7 @@ epics::pvData::StructureConstPtr ArchiverRequest(epics::pvData::FieldCreate & fa
     StringArray names;
 
     fields.push_back(factory.createScalar(epics::pvData::pvString));
-    fields.push_back(ArchiverQuery(factory, queryFields));
+    fields.push_back(makeQueryStructure(factory, queryFields));
 
     names.push_back("path");
     names.push_back("query");
@@ -68,7 +71,7 @@ epics::pvData::StructureConstPtr ArchiverRequest(epics::pvData::FieldCreate & fa
 }
 
 
-epics::pvData::StructureConstPtr ArchiverTableValues(epics::pvData::FieldCreate & factory)
+epics::pvData::StructureConstPtr makeValuesStructure(epics::pvData::FieldCreate & factory)
 {
     using namespace epics::pvData;
     
@@ -90,7 +93,7 @@ epics::pvData::StructureConstPtr ArchiverTableValues(epics::pvData::FieldCreate 
     return factory.createStructure(names, fields);
 }
 
-epics::pvData::StructureConstPtr ArchiverTable(epics::pvData::FieldCreate & factory)
+epics::pvData::StructureConstPtr makeArchiverResponseStructure(epics::pvData::FieldCreate & factory)
 {
     using namespace epics::pvData;
     
@@ -101,7 +104,7 @@ epics::pvData::StructureConstPtr ArchiverTable(epics::pvData::FieldCreate & fact
     names.push_back("value");
 
     fields.push_back(factory.createScalarArray(epics::pvData::pvString));
-    fields.push_back(ArchiverTableValues(factory));
+    fields.push_back(makeValuesStructure(factory));
 
     return factory.createStructure(ntTableStr, names, fields);
 }

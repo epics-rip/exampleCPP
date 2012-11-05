@@ -34,7 +34,7 @@ public:
     ) throw (epics::pvAccess::RPCRequestException);
 
 private:
-    epics::pvData::PVStructure::shared_pointer QueryRaw(
+    epics::pvData::PVStructure::shared_pointer queryRaw(
         epics::pvData::PVStructure::shared_pointer const & pvArgument,
         std::string & name, 
         const epicsTimeStamp & t0,

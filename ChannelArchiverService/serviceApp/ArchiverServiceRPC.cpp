@@ -63,7 +63,7 @@ void LabelTable(PVStructure::shared_pointer pvResult)
 /**
  * Queries the EPICS R-Tree Channel Archiver, returning raw samples
  */
-PVStructure::shared_pointer ArchiverServiceRPC::QueryRaw(
+PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
     epics::pvData::PVStructure::shared_pointer const & pvArgument,
     std::string & name, 
     const epicsTimeStamp & t0,
@@ -75,7 +75,7 @@ PVStructure::shared_pointer ArchiverServiceRPC::QueryRaw(
     /* Create the result pvStructure */
 
     PVStructure::shared_pointer pvResult(
-        getPVDataCreate()->createPVStructure(ArchiverTable(*getFieldCreate())));
+        getPVDataCreate()->createPVStructure(makeArchiverResponseStructure(*getFieldCreate())));
 
     LabelTable(pvResult);
 
@@ -237,7 +237,7 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     t1.secPastEpoch  = end;
     t1.nsec = 0;
 
-    return QueryRaw(pvArgument, name, t0, t1, count);
+    return queryRaw(pvArgument, name, t0, t1, count);
 }
 
 }

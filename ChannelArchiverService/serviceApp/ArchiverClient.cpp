@@ -36,7 +36,9 @@ namespace epics
 
 namespace channelArchiverService
 {
-
+/**
+ * Verbosity levels for output and debug
+ */
 enum DebugLevel
 {
     QUIET,
@@ -45,18 +47,15 @@ enum DebugLevel
 };
 
 /**
- * Creates a plain, strings only query request to be sent to the archiver service for data
- * between start and end times for channel name.
+ * Creates a plain, strings only, query request.
  *
- * @param  channel       The name of the channel to query for.
- * @param  start         The seconds past epoch of the start time.
- * @return end           The seconds past epoch of the end time.
+ * @param  fieldnames    the names of fields in the query
+ * @return values        the values of fields in the query
  */
-PVStructure::shared_pointer createArchiverQuery(
-    const std::vector<std::string> & fieldnames,
+PVStructure::shared_pointer createQuery(const std::vector<std::string> & fieldnames,
     const std::vector<std::string> & values)
 {
-    StructureConstPtr archiverStructure = ArchiverQuery(*getFieldCreate(), fieldnames);
+    StructureConstPtr archiverStructure = makeQueryStructure(*getFieldCreate(), fieldnames);
     PVStructure::shared_pointer query(getPVDataCreate()->createPVStructure(archiverStructure));
 
     // Set request.
@@ -68,23 +67,21 @@ PVStructure::shared_pointer createArchiverQuery(
 }
 
 /**
- * Creates an NTURI request to be sent to the archiver service for data between
- * start and end times for channel name.
+ * Creates an NTURI request.
  *
- * @param  service       The service the request.
- * @param  channel       The name of the channel to query for.
- * @param  start         The seconds past epoch of the start time.
- * @return end           The seconds past epoch of the end time.
+ * @param  path          the value of the NTURI path field
+ * @param  fieldnames    the names of fields in the NTURI query
+ * @return values        the values of fields in the NTURI query
  */
-PVStructure::shared_pointer createArchiverRequest(const std::string & service,
+PVStructure::shared_pointer createRequest(const std::string & path,
     const std::vector<std::string> & fieldnames,
     const std::vector<std::string> & values)
 {    
-    StructureConstPtr archiverStructure = ArchiverRequest(*getFieldCreate(), fieldnames);
+    StructureConstPtr archiverStructure = makeRequestStructure(*getFieldCreate(), fieldnames);
     PVStructure::shared_pointer request(getPVDataCreate()->createPVStructure(archiverStructure));
 
     // set path.
-    request->getStringField("path")->put(service);
+    request->getStringField("path")->put(path);
 
     // Set query.
     PVStructure::shared_pointer query = request->getStructureField("query");
@@ -99,8 +96,8 @@ PVStructure::shared_pointer createArchiverRequest(const std::string & service,
 
 
 /**
- * Converts the input string encoding the fields to be outpuuted into a
- * vector output field enums.
+ * Converts the input string encoding the fields to be outputted into a
+ * vector of output field enums.
  *
  * @param  inString         The input string encoding the fields to be displayed.
  * @param  fields           The result containing fields to be displayed.
@@ -153,7 +150,7 @@ void makeOutputtedFields(const std::string & inString, std::vector<OutputField> 
 
 
 /**
- * Display help for ArchiverClient.
+ * Displays help for ArchiverClient.
  *
  */
 void showHelp()
@@ -326,8 +323,8 @@ int main (int argc, char *argv[])
         }
 
         //  Create query and send to archiver service.
-        //PVStructure::shared_pointer queryRequest = createArchiverQuery(queryFieldnames, queryValues);
-        PVStructure::shared_pointer queryRequest = createArchiverRequest(serviceName, queryFieldnames, queryValues);
+        //PVStructure::shared_pointer queryRequest = createQuery(queryFieldnames, queryValues);
+        PVStructure::shared_pointer queryRequest = createRequest(serviceName, queryFieldnames, queryValues);
 
         if (debugLevel == VERBOSE)
         {
@@ -338,7 +335,7 @@ int main (int argc, char *argv[])
         double timeOut = 3.0;
 
         RequestResponseHandler::shared_pointer handler(new RequestResponseHandler(parameters));
-        bool ok = epics::serviceClient::SendRequest(serviceName, queryRequest, handler, timeOut);        
+        bool ok = epics::serviceClient::sendRequest(serviceName, queryRequest, handler, timeOut);        
 
         if (!ok)
         {

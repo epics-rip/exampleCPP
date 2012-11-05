@@ -82,7 +82,8 @@ struct FormatParameters
 };
 
 /**
- * Class to perform the handling of the response from the archive service.
+ * RequestResponseHandler performs the handling of the response from the archive
+ * service to a client request.
  */
 class RequestResponseHandler : public epics::serviceClient::ResponseHandler
 {
@@ -91,7 +92,7 @@ public:
     /**
      * Constructor.
      *
-     * @param  parameters       Parameters for the handling the request.
+     * @param  parameters       parameters for the handling the request
      */
     RequestResponseHandler(const FormatParameters & parameters)
     : m_parameters(parameters), m_ok(true)
@@ -101,17 +102,25 @@ public:
    /**
      * Handles the response from the archive service, according to supplied parameters.
      *
-     * @param  response         The response sent by service.
+     * @param  response         the response sent by service
      */
     void handle(epics::pvData::PVStructure::shared_pointer const & response);
 
+   /**
+     * Reports whether the response has been handled correctly.
+     *
+     * @return  true if the response has been handle correctly, false otherwise 
+     */
     bool isOk() { return m_ok; }
 
+   /**
+     * Outputs the results of the response.
+     *
+     */
     void outputResults();
 
 private:
     void makeStrings(epics::pvData::PVStructure::shared_pointer const & response);
-
 
     FormatParameters m_parameters;
     std::vector<std::string> outputFieldValues[NUMBER_OF_FIELDS];

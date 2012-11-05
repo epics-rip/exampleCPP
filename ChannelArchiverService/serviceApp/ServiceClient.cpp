@@ -17,8 +17,7 @@
 
 #include "ServiceClient.h"
 
-using namespace std;
-using namespace std::tr1;
+
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 
@@ -208,14 +207,16 @@ namespace serviceClient
 {
 
 /*
-  SendRequest is boilerplate for blocking RPC get
+  sendRequest is boilerplate for a blocking RPC get
  */
-bool SendRequest(string serviceName,
+bool sendRequest(const std::string & serviceName,
     PVStructure::shared_pointer connectionStructure,
     PVStructure::shared_pointer request,
     ResponseHandler::shared_pointer  handler,
     double timeOut)
 {
+    using namespace std::tr1;
+
     PVStructure::shared_pointer response;
 
     bool allOK = true;
@@ -258,9 +259,9 @@ bool SendRequest(string serviceName,
 }
 
 /*
-  SendRequest is boilerplate for blocking RPC get
+  sendRequest is boilerplate for a blocking RPC get
  */
-bool SendRequest(string serviceName,
+bool sendRequest(const std::string & serviceName,
     PVStructure::shared_pointer request,
     ResponseHandler::shared_pointer  handler,
     double timeOut)
@@ -272,7 +273,7 @@ bool SendRequest(string serviceName,
     PVStructure::shared_pointer nothing(
         new PVStructure(getFieldCreate()->createStructure(fieldNames, fields)));
 
-    return SendRequest(serviceName, nothing, request, handler, timeOut);
+    return sendRequest(serviceName, nothing, request, handler, timeOut);
 }
 
 }

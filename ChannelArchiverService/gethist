@@ -2,8 +2,8 @@
 #!-*- sh -*-
 #
 # Copyright: See the COPYRIGHT that is included with this distribution.
-#            EPICS exampleCPP is distributed subject to a Software License Agreement found
-#            in file LICENSE that is included with this distribution.
+#            EPICS exampleCPP is distributed subject to a Software License Agreement
+#            found in file LICENSE that is included with this distribution.
 #
 # Abs: gethist queries the Channel Archive Server for the data for the channel 
 #      specified between two dates and times and outputs the data according to

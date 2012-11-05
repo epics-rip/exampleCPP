@@ -4,7 +4,6 @@
  * EPICS exampleCPP is distributed subject to a Software License Agreement found
  * in file LICENSE that is included with this distribution.
  */
-/* Author: Marty Kraimer */
 
 #include <cstddef>
 #include <cstdlib>
@@ -50,7 +49,6 @@ int main(int argc,char *argv[])
     RPCServer server;
 
     server.registerService(channel, RPCService::shared_pointer(new ArchiverServiceRPC(index)));
-    // you can register as many services as you want here ...
 
     server.printInfo();
     server.run();

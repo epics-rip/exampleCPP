@@ -39,10 +39,11 @@ namespace channelArchiverService
  * Converts an epics alarm status and severity to a string, including
  * archiver special severities.
  *
- * @param  status       Alarm status.
- * @param  severity     Alarm severity. 
+ * @param  status     alarm status
+ * @param  severity   alarm severity
+ * @return            the result of the string conversion
  */
-std::string MakeAlarmString(short status, short severity)
+std::string makeAlarmString(short status, short severity)
 {
     std::string result;
     char buf[200];
@@ -95,7 +96,7 @@ std::string MakeAlarmString(short status, short severity)
  * @param  t  the time to convert. 
  * @return The date string.
  */
-std::string getDate(epicsTime t)
+std::string getDate(const epicsTime & t)
 {
     char buf[1024];
     buf[0] = '\0';
@@ -169,16 +170,15 @@ bool isPresent(VT value, CT & container)
 }
 
 /**
- * RequestResponseHandler 
+ * RequestResponseHandler functions
  */
+
 void RequestResponseHandler::handle(epics::pvData::PVStructure::shared_pointer const & response)
 {
     makeStrings(response);
 }
 
-/**
- * RequestResponseHandler 
- */
+
 void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_pointer const & response)
 {
     using namespace epics::pvData;
@@ -316,7 +316,7 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
         alarmStrings.reserve(alarmStringsLength); 
         for (int i = 0; i < valuesLength; ++i)
         {     
-            string alarmString = MakeAlarmString(statusesArrayData.data[i], severitiesArrayData.data[i]);
+            string alarmString = makeAlarmString(statusesArrayData.data[i], severitiesArrayData.data[i]);
             alarmStrings.push_back(alarmString);
         }
     }
