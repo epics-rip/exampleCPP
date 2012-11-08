@@ -15,7 +15,7 @@
 #include <pv/event.h>
 #include <pv/logger.h>
 
-#include "ServiceClient.h"
+#include "rpcClient.h"
 
 
 using namespace epics::pvData;

@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-#include "ServiceClient.h"
+#include "rpcClient.h"
 
 namespace epics
 {

@@ -26,7 +26,7 @@
 
 #include "common.h"
 #include "ArchiverClientResponseHandler.h"
-#include "ServiceClient.h"
+#include "rpcClient.h"
 
 using namespace std::tr1;
 using namespace epics::pvData;
