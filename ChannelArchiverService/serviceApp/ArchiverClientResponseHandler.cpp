@@ -176,6 +176,7 @@ bool isPresent(VT value, CT & container)
 void RequestResponseHandler::handle(epics::pvData::PVStructure::shared_pointer const & response)
 {
     makeStrings(response);
+    outputResults();
 }
 
 

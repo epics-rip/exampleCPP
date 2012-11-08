@@ -23,6 +23,7 @@
 
 #include <pv/pvData.h>
 #include <pv/logger.h>
+#include <pv/rpcService.h>
 
 #include "common.h"
 #include "ArchiverClientResponseHandler.h"
@@ -332,21 +333,13 @@ int main (int argc, char *argv[])
             std::cout << toString(queryRequest) << std::endl;
         }
 
-        double timeOut = 3.0;
 
-        RequestResponseHandler::shared_pointer handler(new RequestResponseHandler(parameters));
-        bool ok = epics::rpcClient::sendRequest(serviceName, queryRequest, handler, timeOut);        
+        try 
+        {
+            double timeOut = 3.0;
+            PVStructure::shared_pointer queryResponse
+                 = epics::rpcClient/*serviceClient*/::sendRequest(serviceName, queryRequest, timeOut);
 
-        if (!ok)
-        {
-            std::cerr << "Error: Request failed." << std::endl;
-        }
-        else if (!handler->isOk())
-        {
-            std::cerr << "Error: Response handling failed." << std::endl;
-        }
-        else
-        {
             if (debugLevel != QUIET)
             {
                 std::cout << "Request successful. Processing results..." << std::endl;
@@ -354,7 +347,7 @@ int main (int argc, char *argv[])
 
             if (debugLevel == VERBOSE)
             {
-                std::cout << "Processings with parameters" << std::endl;
+                std::cout << "Processing with parameters" << std::endl;
 
                 if (parameters.filename != "")
                 {
@@ -396,11 +389,12 @@ int main (int argc, char *argv[])
                 std::cout  << std::endl;
             }
 
-            handler->outputResults();
+            RequestResponseHandler handler(parameters);
+            handler.handle(queryResponse);
 
             if (debugLevel != QUIET)
             {
-                if (handler->isOk())
+                if (handler.isOk())
                 {
                     std::cout << "Done. ";
                     if (parameters.filename != "")
@@ -415,6 +409,16 @@ int main (int argc, char *argv[])
                     std::cout << "Processing unsuccessful." << std::endl;
                 }
             }
+        }
+        catch (epics::pvAccess::RPCRequestException & ex)
+        {
+            std::cerr << "RPCException:" << std::endl;
+            std::cerr << ex.what() << std::endl;
+        }
+        catch (...)
+        {
+            std::cerr << "Error: Request failed. Unexpected exception." << std::endl;
+
         }
 
         parameters.appendToFile = true; 

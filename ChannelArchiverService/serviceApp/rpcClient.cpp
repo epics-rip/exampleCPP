@@ -14,6 +14,7 @@
 #include <pv/clientFactory.h>
 #include <pv/event.h>
 #include <pv/logger.h>
+#include <pv/rpcService.h>
 
 #include "rpcClient.h"
 
@@ -54,14 +55,10 @@ class ChannelRPCRequesterImpl : public ChannelRPCRequester
     Event m_event;
     Event m_connectionEvent;
     String m_channelName;
-    rpcClient::ResponseHandler::shared_pointer m_handler;
 
     public:
     epics::pvData::PVStructure::shared_pointer response;   
-    ChannelRPCRequesterImpl(String channelName, rpcClient::ResponseHandler::shared_pointer handler)
-    : m_channelName(channelName),
-      m_handler(handler)
-    {}
+    ChannelRPCRequesterImpl(String channelName) : m_channelName(channelName) {}
     
     virtual String getRequesterName()
     {
@@ -111,11 +108,7 @@ class ChannelRPCRequesterImpl : public ChannelRPCRequester
             {
                 Lock lock(m_pointerMutex);
 
-                if (m_handler != NULL)
-                {
-                    m_handler->handle(pvResponse);
-                }
-
+                response = pvResponse;
                 // this is OK since calle holds also owns it
                 m_channelRPC.reset();                
             }
@@ -207,13 +200,11 @@ namespace rpcClient
 {
 
 /*
-  sendRequest is boilerplate for a blocking RPC get
- */
-bool sendRequest(const std::string & serviceName,
-    PVStructure::shared_pointer connectionStructure,
-    PVStructure::shared_pointer request,
-    ResponseHandler::shared_pointer  handler,
-    double timeOut)
+  sendRequest is boilerplate for blocking RPC get
+*/
+PVStructure::shared_pointer sendRequest(const std::string & serviceName,
+     PVStructure::shared_pointer request,
+     double timeOut)
 {
     using namespace std::tr1;
 
@@ -226,11 +217,10 @@ bool sendRequest(const std::string & serviceName,
     
     shared_ptr<ChannelRequesterImpl> channelRequesterImpl(new ChannelRequesterImpl()); 
     Channel::shared_pointer channel = provider->createChannel(serviceName, channelRequesterImpl);
-    
+
     if (channelRequesterImpl->waitUntilConnected(timeOut))
     {
-        shared_ptr<ChannelRPCRequesterImpl> rpcRequesterImpl(
-            new ChannelRPCRequesterImpl(channel->getChannelName(), handler));
+        shared_ptr<ChannelRPCRequesterImpl> rpcRequesterImpl(new ChannelRPCRequesterImpl(channel->getChannelName()));
         ChannelRPC::shared_pointer channelRPC = channel->createChannelRPC(rpcRequesterImpl, request);
 
         if (rpcRequesterImpl->waitUntilConnected(timeOut))
@@ -255,25 +245,12 @@ bool sendRequest(const std::string & serviceName,
 
     ClientFactory::stop();
 
-    return allOK;
-}
+    if (!allOK)
+    {
+        throw epics::pvAccess::RPCRequestException(Status::STATUSTYPE_ERROR, "RPC request failed");
+    }
 
-/*
-  sendRequest is boilerplate for a blocking RPC get
- */
-bool sendRequest(const std::string & serviceName,
-    PVStructure::shared_pointer request,
-    ResponseHandler::shared_pointer  handler,
-    double timeOut)
-{
-    // A PVStructure is sent at ChannelRPC connect time but we aren't going
-    // to use it, so send an empty one
-    StringArray fieldNames;
-    FieldConstPtrArray fields;
-    PVStructure::shared_pointer nothing(
-        new PVStructure(getFieldCreate()->createStructure(fieldNames, fields)));
-
-    return sendRequest(serviceName, nothing, request, handler, timeOut);
+    return response;
 }
 
 }

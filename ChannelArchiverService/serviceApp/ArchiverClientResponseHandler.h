@@ -9,7 +9,6 @@
 #include <string>
 #include <vector>
 
-#include "rpcClient.h"
 
 namespace epics
 {
@@ -85,7 +84,7 @@ struct FormatParameters
  * RequestResponseHandler performs the handling of the response from the archive
  * service to a client request.
  */
-class RequestResponseHandler : public epics::rpcClient::ResponseHandler
+class RequestResponseHandler
 {
 public:
     POINTER_DEFINITIONS(RequestResponseHandler);
@@ -113,14 +112,9 @@ public:
      */
     bool isOk() { return m_ok; }
 
-   /**
-     * Outputs the results of the response.
-     *
-     */
-    void outputResults();
-
 private:
     void makeStrings(epics::pvData::PVStructure::shared_pointer const & response);
+    void outputResults();
 
     FormatParameters m_parameters;
     std::vector<std::string> outputFieldValues[NUMBER_OF_FIELDS];
