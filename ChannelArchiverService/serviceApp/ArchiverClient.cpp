@@ -24,6 +24,7 @@
 #include <pv/pvData.h>
 #include <pv/logger.h>
 #include <pv/rpcService.h>
+#include <pv/clientFactory.h>
 
 #include "common.h"
 #include "ArchiverClientResponseHandler.h"
@@ -333,12 +334,13 @@ int main (int argc, char *argv[])
             std::cout << toString(queryRequest) << std::endl;
         }
 
+        epics::pvAccess::ClientFactory::start();
 
         try 
         {
             double timeOut = 3.0;
             PVStructure::shared_pointer queryResponse
-                 = epics::rpcClient/*serviceClient*/::sendRequest(serviceName, queryRequest, timeOut);
+                 = epics::rpcClient::sendRequest(serviceName, queryRequest, timeOut);
 
             if (debugLevel != QUIET)
             {
@@ -420,6 +422,7 @@ int main (int argc, char *argv[])
             std::cerr << "Error: Request failed. Unexpected exception." << std::endl;
 
         }
+        epics::pvAccess::ClientFactory::stop();
 
         parameters.appendToFile = true; 
     }

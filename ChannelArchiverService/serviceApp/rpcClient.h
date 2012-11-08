@@ -18,6 +18,35 @@ namespace epics
 namespace rpcClient
 {
     /**
+     * RPCClient is an interface class that is called by a service client.
+     *
+     */
+    class RPCClient
+    {
+    public:
+        POINTER_DEFINITIONS(RPCClient);
+
+        virtual epics::pvData::PVStructure::shared_pointer request(epics::pvData::PVStructure::shared_pointer pvRequest,
+            double timeOut) = 0;
+
+        virtual ~RPCClient() {}
+    };
+
+
+
+    class RPCClientFactory
+    {
+    public:
+	    /**
+	     * Create a RPCClient and connect to the service.
+         *
+	     * @param  serviceName  the service name 
+	     * @return              the RPCClient interface
+	     */
+	    static RPCClient::shared_pointer create(const std::string & serviceName);
+    };
+
+    /**
      * Performs complete blocking RPC call, opening a channel and connecting to the
      * service and sending the request.
      * The PVStructure sent on connection is null.

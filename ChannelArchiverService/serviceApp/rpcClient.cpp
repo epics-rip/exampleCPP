@@ -26,6 +26,9 @@ using namespace epics::pvAccess;
 namespace epics
 {
 
+namespace rpcClient
+{
+
 namespace 
 {
 
@@ -194,17 +197,34 @@ bool ChannelRequesterImpl::waitUntilConnected(double timeOut)
 }
 
 
-}
-
-namespace rpcClient
+class RPCClientImpl: public RPCClient
 {
 
-/*
-  sendRequest is boilerplate for blocking RPC get
-*/
-PVStructure::shared_pointer sendRequest(const std::string & serviceName,
-     PVStructure::shared_pointer request,
-     double timeOut)
+public:
+    POINTER_DEFINITIONS(RPCClientImpl);
+
+    RPCClientImpl(const std::string & serviceName)
+        : m_serviceName(serviceName)
+    {
+        using namespace std::tr1;
+        m_provider = getChannelAccess()->getProvider("pvAccess");
+    
+        shared_ptr<ChannelRequesterImpl> channelRequesterImpl(new ChannelRequesterImpl()); 
+        m_channelRequesterImpl = channelRequesterImpl;
+        m_channel = m_provider->createChannel(serviceName, channelRequesterImpl);
+    }
+
+    virtual PVStructure::shared_pointer request(PVStructure::shared_pointer pvRequest, double timeOut);
+
+private:
+    std::string m_serviceName;
+    ChannelProvider::shared_pointer m_provider;
+    std::tr1::shared_ptr<ChannelRequesterImpl> m_channelRequesterImpl;
+    Channel::shared_pointer m_channel;
+};
+
+
+PVStructure::shared_pointer RPCClientImpl::request(PVStructure::shared_pointer pvRequest, double timeOut)
 {
     using namespace std::tr1;
 
@@ -212,38 +232,34 @@ PVStructure::shared_pointer sendRequest(const std::string & serviceName,
 
     bool allOK = true;
 
-    ClientFactory::start();
-    ChannelProvider::shared_pointer provider = getChannelAccess()->getProvider("pvAccess");
-    
-    shared_ptr<ChannelRequesterImpl> channelRequesterImpl(new ChannelRequesterImpl()); 
-    Channel::shared_pointer channel = provider->createChannel(serviceName, channelRequesterImpl);
+    //ClientFactory::start();
 
-    if (channelRequesterImpl->waitUntilConnected(timeOut))
+    if (m_channelRequesterImpl->waitUntilConnected(timeOut))
     {
-        shared_ptr<ChannelRPCRequesterImpl> rpcRequesterImpl(new ChannelRPCRequesterImpl(channel->getChannelName()));
-        ChannelRPC::shared_pointer channelRPC = channel->createChannelRPC(rpcRequesterImpl, request);
+        shared_ptr<ChannelRPCRequesterImpl> rpcRequesterImpl(new ChannelRPCRequesterImpl(m_channel->getChannelName()));
+        ChannelRPC::shared_pointer channelRPC = m_channel->createChannelRPC(rpcRequesterImpl, pvRequest);
 
         if (rpcRequesterImpl->waitUntilConnected(timeOut))
         {
-            channelRPC->request(request, true);
+            channelRPC->request(pvRequest, true);
             allOK &= rpcRequesterImpl->waitUntilRPC(timeOut);
             response = rpcRequesterImpl->response;
         }
         else
         {
             allOK = false;
-            channel->destroy();
-            std::cerr << "[" << channel->getChannelName() << "] RPC create timeout" << std::endl;
+            m_channel->destroy();
+            std::cerr << "[" << m_channel->getChannelName() << "] RPC create timeout" << std::endl;
         }
     }
     else
     {
         allOK = false;
-        channel->destroy();
-        std::cerr << "[" << channel->getChannelName() << "] connection timeout" << std::endl;
+        m_channel->destroy();
+        std::cerr << "[" << m_channel->getChannelName() << "] connection timeout" << std::endl;
     }
 
-    ClientFactory::stop();
+    //ClientFactory::stop();
 
     if (!allOK)
     {
@@ -252,6 +268,26 @@ PVStructure::shared_pointer sendRequest(const std::string & serviceName,
 
     return response;
 }
+
+}
+
+RPCClient::shared_pointer RPCClientFactory::create(const std::string & serviceName)
+{
+    return RPCClient::shared_pointer(new RPCClientImpl(serviceName));
+}
+
+
+PVStructure::shared_pointer sendRequest(const std::string & serviceName,
+     PVStructure::shared_pointer queryRequest,
+     double timeOut)
+{
+    RPCClient::shared_pointer client = RPCClientFactory::create(serviceName);
+
+    return client->request(queryRequest, timeOut);
+}
+
+
+
 
 }
 
