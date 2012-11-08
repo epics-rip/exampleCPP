@@ -15,7 +15,7 @@
 namespace epics
 {
 
-namespace serviceClient
+namespace rpcClient
 {
     /**
      * ResponseHandler is an interface class for processing responses from a server to

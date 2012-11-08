@@ -335,7 +335,7 @@ int main (int argc, char *argv[])
         double timeOut = 3.0;
 
         RequestResponseHandler::shared_pointer handler(new RequestResponseHandler(parameters));
-        bool ok = epics::serviceClient::sendRequest(serviceName, queryRequest, handler, timeOut);        
+        bool ok = epics::rpcClient::sendRequest(serviceName, queryRequest, handler, timeOut);        
 
         if (!ok)
         {

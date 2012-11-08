@@ -85,7 +85,7 @@ struct FormatParameters
  * RequestResponseHandler performs the handling of the response from the archive
  * service to a client request.
  */
-class RequestResponseHandler : public epics::serviceClient::ResponseHandler
+class RequestResponseHandler : public epics::rpcClient::ResponseHandler
 {
 public:
     POINTER_DEFINITIONS(RequestResponseHandler);

@@ -54,11 +54,11 @@ class ChannelRPCRequesterImpl : public ChannelRPCRequester
     Event m_event;
     Event m_connectionEvent;
     String m_channelName;
-    serviceClient::ResponseHandler::shared_pointer m_handler;
+    rpcClient::ResponseHandler::shared_pointer m_handler;
 
     public:
     epics::pvData::PVStructure::shared_pointer response;   
-    ChannelRPCRequesterImpl(String channelName, serviceClient::ResponseHandler::shared_pointer handler)
+    ChannelRPCRequesterImpl(String channelName, rpcClient::ResponseHandler::shared_pointer handler)
     : m_channelName(channelName),
       m_handler(handler)
     {}
@@ -203,7 +203,7 @@ bool ChannelRequesterImpl::waitUntilConnected(double timeOut)
 
 }
 
-namespace serviceClient
+namespace rpcClient
 {
 
 /*
