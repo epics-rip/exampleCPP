@@ -5,15 +5,15 @@
  */
 
 #include <cstddef>
-#include <cstdlib>
-#include <cstddef>
-#include <string>
 #include <cstdio>
-#include <stdexcept>
-#include <memory>
+#include <cstdlib>
 #include <iostream>
-#include <vector>
 #include <limits>
+#include <memory>
+#include <stdexcept>
+#include <sstream>
+#include <string>
+#include <vector>
 #include <float.h>
 
 /* EPICS Archiver Includes */
@@ -45,6 +45,30 @@ namespace channelArchiverService
 {
 
 ArchiverServiceRPC::~ArchiverServiceRPC() {}
+
+namespace
+{
+
+/**
+ * Converts a string to a Long.
+ * Throws an exception if conversion impossible.
+ *
+ * @param  str  the argument for the rpc
+ * @return      the result of the conversion.
+ */
+int64_t toLong(const std::string & str)
+{
+    int64_t result = 0;
+    std::stringstream ss(str);
+    if (!(ss >> result))
+    {
+        throw RPCRequestException(Status::STATUSTYPE_ERROR,
+            "Cannot convert string " + str + " to Long");
+    }
+    return result;
+}
+
+}
 
 /**
  * Fills in the list of table column labels
@@ -217,17 +241,17 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
         
     if ((query->getSubField(startStr) != NULL) && (query->getStringField(startStr) != NULL))
     {
-        start = atol((query->getStringField(startStr)->get()).c_str());
+        start = toLong((query->getStringField(startStr)->get()));
     }
 
     if ((query->getSubField(endStr) != NULL) && (query->getStringField(endStr) != NULL))
     {
-        end = atol((query->getStringField(endStr)->get()).c_str());
+        end = toLong((query->getStringField(endStr)->get()));
     }
 
     if ((query->getSubField(countStr) != NULL) && (query->getStringField(countStr) != NULL))
     {
-        count = atol((query->getStringField(countStr)->get()).c_str());
+        count = toLong((query->getStringField(countStr)->get()));
     }
 
     epicsTimeStamp t0, t1;
