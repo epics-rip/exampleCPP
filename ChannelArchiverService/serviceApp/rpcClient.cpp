@@ -206,17 +206,28 @@ public:
     RPCClientImpl(const std::string & serviceName)
         : m_serviceName(serviceName), m_connected(false)
     {
-        using namespace std::tr1;
-        m_provider = getChannelAccess()->getProvider("pvAccess");
-    
-        shared_ptr<ChannelRequesterImpl> channelRequesterImpl(new ChannelRequesterImpl()); 
-        m_channelRequesterImpl = channelRequesterImpl;
-        m_channel = m_provider->createChannel(serviceName, channelRequesterImpl);
     }
 
     virtual PVStructure::shared_pointer request(PVStructure::shared_pointer pvRequest, double timeOut);
 
 private:
+    void init()
+    {
+        using namespace std::tr1;
+        m_provider = getChannelAccess()->getProvider("pvAccess");
+    
+        shared_ptr<ChannelRequesterImpl> channelRequesterImpl(new ChannelRequesterImpl()); 
+        m_channelRequesterImpl = channelRequesterImpl;
+        m_channel = m_provider->createChannel(m_serviceName, channelRequesterImpl);
+    }
+
+    bool connect(double timeOut)
+    {
+        init();
+        m_connected = m_channelRequesterImpl->waitUntilConnected(timeOut);             
+        return m_connected;      
+    }
+
     std::string m_serviceName;
     ChannelProvider::shared_pointer m_provider;
     std::tr1::shared_ptr<ChannelRequesterImpl> m_channelRequesterImpl;
@@ -235,9 +246,8 @@ PVStructure::shared_pointer RPCClientImpl::request(PVStructure::shared_pointer p
 
     //ClientFactory::start();
 
-    if (m_connected || m_channelRequesterImpl->waitUntilConnected(timeOut))
+    if (m_connected || connect(timeOut))
     {
-        m_connected = true; 
         shared_ptr<ChannelRPCRequesterImpl> rpcRequesterImpl(new ChannelRPCRequesterImpl(m_channel->getChannelName()));
         ChannelRPC::shared_pointer channelRPC = m_channel->createChannelRPC(rpcRequesterImpl, pvRequest);
 
@@ -251,14 +261,18 @@ PVStructure::shared_pointer RPCClientImpl::request(PVStructure::shared_pointer p
         {
             allOK = false;
             m_channel->destroy();
-            std::cerr << "[" << m_channel->getChannelName() << "] RPC create timeout" << std::endl;
+            m_connected =  false;
+            std::string errMsg = "[" + m_channel->getChannelName() + "] RPC create timeout";
+            throw epics::pvAccess::RPCRequestException(Status::STATUSTYPE_ERROR, errMsg);
         }
     }
     else
     {
         allOK = false;
         m_channel->destroy();
-        std::cerr << "[" << m_channel->getChannelName() << "] connection timeout" << std::endl;
+        m_connected = false;
+        std::string errMsg = "[" + m_channel->getChannelName() + "] connection timeout";
+        throw epics::pvAccess::RPCRequestException(Status::STATUSTYPE_ERROR, errMsg);
     }
 
     //ClientFactory::stop();

@@ -18,7 +18,7 @@ namespace epics
 namespace rpcClient
 {
     /**
-     * RPCClient is an interface class that is called by a service client.
+     * RPCClient is an interface class that is used by a service client.
      *
      */
     class RPCClient
@@ -26,6 +26,15 @@ namespace rpcClient
     public:
         POINTER_DEFINITIONS(RPCClient);
 
+
+        /**
+	     * Sends a request and wait for the response or until timeout occurs.
+	     * This method will also wait for client to connect, if necessary.
+         *
+	     * @param  pvArgument  the argument for the rpc
+	     * @param  timeout     the time in seconds to wait for the response
+	     * @return             request response.
+	     */
         virtual epics::pvData::PVStructure::shared_pointer request(epics::pvData::PVStructure::shared_pointer pvRequest,
             double timeOut) = 0;
 
@@ -38,7 +47,7 @@ namespace rpcClient
     {
     public:
 	    /**
-	     * Create a RPCClient and connect to the service.
+	     * Create a RPCClient.
          *
 	     * @param  serviceName  the service name 
 	     * @return              the RPCClient interface
