@@ -304,6 +304,11 @@ int main (int argc, char *argv[])
         return 1;    
     }
 
+    epics::pvAccess::ClientFactory::start();
+
+    epics::rpcClient::RPCClient::shared_pointer
+        client = epics::rpcClient::RPCClientFactory::create(serviceName);
+
     for (int i = optind; i < argc; ++i)
     {
         std::string channel = argv[i];
@@ -339,8 +344,7 @@ int main (int argc, char *argv[])
         try 
         {
             double timeOut = 3.0;
-            PVStructure::shared_pointer queryResponse
-                 = epics::rpcClient::sendRequest(serviceName, queryRequest, timeOut);
+            PVStructure::shared_pointer queryResponse = client->request(queryRequest, timeOut);
 
             if (debugLevel != QUIET)
             {
@@ -422,10 +426,11 @@ int main (int argc, char *argv[])
             std::cerr << "Error: Request failed. Unexpected exception." << std::endl;
 
         }
-        epics::pvAccess::ClientFactory::stop();
 
         parameters.appendToFile = true; 
     }
+
+    epics::pvAccess::ClientFactory::stop();
  
     return 0;
 }

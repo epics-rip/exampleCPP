@@ -204,7 +204,7 @@ public:
     POINTER_DEFINITIONS(RPCClientImpl);
 
     RPCClientImpl(const std::string & serviceName)
-        : m_serviceName(serviceName)
+        : m_serviceName(serviceName), m_connected(false)
     {
         using namespace std::tr1;
         m_provider = getChannelAccess()->getProvider("pvAccess");
@@ -221,6 +221,7 @@ private:
     ChannelProvider::shared_pointer m_provider;
     std::tr1::shared_ptr<ChannelRequesterImpl> m_channelRequesterImpl;
     Channel::shared_pointer m_channel;
+    bool m_connected;
 };
 
 
@@ -234,8 +235,9 @@ PVStructure::shared_pointer RPCClientImpl::request(PVStructure::shared_pointer p
 
     //ClientFactory::start();
 
-    if (m_channelRequesterImpl->waitUntilConnected(timeOut))
+    if (m_connected || m_channelRequesterImpl->waitUntilConnected(timeOut))
     {
+        m_connected = true; 
         shared_ptr<ChannelRPCRequesterImpl> rpcRequesterImpl(new ChannelRPCRequesterImpl(m_channel->getChannelName()));
         ChannelRPC::shared_pointer channelRPC = m_channel->createChannelRPC(rpcRequesterImpl, pvRequest);
 
