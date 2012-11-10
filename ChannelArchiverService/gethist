@@ -141,7 +141,6 @@ DISPLAYED_FIELDS="tvDA"
 
 
 
-
 process_shortopts()
 {
 
@@ -241,10 +240,6 @@ then
     Error "Invalid UNIX start time"
 fi
 
-
-
-
-
 START=$((UNIX_START-EPICS_EPOCH))
 
 
@@ -261,36 +256,20 @@ fi
 END=$((UNIX_END-EPICS_EPOCH))
 
 
-
-
-
-
 #check compatibility of options and supply default if required
 if [[ "$OPTIONS" =~ "d" ]] && [[ "$OPTIONS" =~ "x" ]]
 then
     Error "Fixed-point and scientific options incomaptible"
 fi
 
-run_client
-
-shift
-
-if [[ "$FILE" != "" ]] && ! [[ "$OPTIONS" =~ "a" ]]
-then
-    OPTIONS+="a"
-fi
-
-
-for CHANNEL in "$@"; do
-   run_client
-done
+run_client "$@"
 }
+
 
 run_client()
 {
 
 BIN=$TOP/bin/$EPICS_HOST_ARCH/ArchiverClient
-
 
 ARGS=('-S' "$SERVICE" '-s' "$START" '-e' "$END")
 
@@ -316,13 +295,7 @@ then
    ARGS+=("-$OPTIONS")
 fi
 
-ARGS+=("$CHANNEL")
-
-#echo $BIN "${ARGS[@]}"
-
-$BIN "${ARGS[@]}"
-
-
+$BIN "${ARGS[@]}" "$@"
 }
 
 
