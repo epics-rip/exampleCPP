@@ -177,6 +177,10 @@ gethist                               bash script to query service
 data                                  directory containing sample Channel
                                       Archiver data
 
+test                                  directory containing a script for testing
+                                      the service. Type run_test -h for details
+                                      of how to use this.
+
 
 SUPPLIED DATA
 -------------

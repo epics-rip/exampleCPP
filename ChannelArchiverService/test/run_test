@@ -69,7 +69,7 @@ EOF
 exit 0
 }
 
-SERVICE=archiveService
+SERVICE="archiveService" 
 
 DEBUG="FALSE"
 NUM_LINES=4
@@ -120,7 +120,10 @@ then
 fi
 
 
-xterm -e "$TOP"'/../start_server' &
+ARCH_INDEX="$TOP"/../data/fredjanet/index
+CheckForFile "$ARCH_INDEX"
+
+xterm -e "$TOP""/../start_server" "$ARCH_INDEX" "$SERVICE" &
 trap 'kill "$!"' SIGINT SIGTERM EXIT
 sleep 1
 
@@ -132,7 +135,7 @@ EXPECTED=$TOP/expected.txt
 GET_HIST="$TOP"/../gethist
 CheckForFile $GET_HIST
 
-$GET_HIST -n $OPTIONS -s "Sep 21 2005" -e "Sep 22 2005" -f "$RESULTS" fred
+$GET_HIST -S "$SERVICE" -n $OPTIONS -s "Sep 21 2005" -e "Sep 22 2005" -f "$RESULTS" fred
 
 
 if [[ "$DEBUG" = "TRUE" ]]
@@ -167,7 +170,7 @@ fi
 
 EGET=$EGET_PATH"eget"
 
-$EGET $EGET_OPTIONS -s $SERVICE -a "starttime=496105200" -a "endtime=496191600" -a "entity=fred" > $TOP/"eget_results.txt"
+$EGET $EGET_OPTIONS -s "$SERVICE" -a "starttime=496105200" -a "endtime=496191600" -a "entity=fred" > $TOP/"eget_results.txt"
 
 EGET_EXPECTED=$TOP/eget_expected.txt
 CheckForFile $EGET_EXPECTED
