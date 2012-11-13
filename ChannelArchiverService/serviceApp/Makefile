@@ -12,7 +12,6 @@ ArchiverServiceRPC_LIBS += dbIoc pvAccess pvData Com Storage Tools
 
 PROD_HOST += ArchiverClient
 ArchiverClient_SRCS += ArchiverClient.cpp
-ArchiverClient_SRCS += rpcClient.cpp
 ArchiverClient_SRCS += ArchiverClientResponseHandler.cpp
 ArchiverClient_SRCS += common.cpp
 ArchiverClient_LIBS += pvAccess pvData Com

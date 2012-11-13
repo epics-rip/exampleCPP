@@ -25,10 +25,11 @@
 #include <pv/logger.h>
 #include <pv/rpcService.h>
 #include <pv/clientFactory.h>
+#include <pv/rpcClient.h>
 
 #include "common.h"
 #include "ArchiverClientResponseHandler.h"
-#include "rpcClient.h"
+
 
 using namespace std::tr1;
 using namespace epics::pvData;
@@ -306,8 +307,8 @@ int main (int argc, char *argv[])
 
     epics::pvAccess::ClientFactory::start();
 
-    epics::rpcClient::RPCClient::shared_pointer
-        client = epics::rpcClient::RPCClientFactory::create(serviceName);
+    epics::pvAccess::RPCClient::shared_pointer
+        client = epics::pvAccess::RPCClientFactory::create(serviceName);
 
     for (int i = optind; i < argc; ++i)
     {
