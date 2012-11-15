@@ -307,43 +307,41 @@ int main (int argc, char *argv[])
 
     epics::pvAccess::ClientFactory::start();
 
-    epics::pvAccess::RPCClient::shared_pointer
+    try 
+    {
+        epics::pvAccess::RPCClient::shared_pointer
         client = epics::pvAccess::RPCClientFactory::create(serviceName);
 
-    for (int i = optind; i < argc; ++i)
-    {
-        std::string channel = argv[i];
-        queryValues[0] = channel;
-
-        if (debugLevel != QUIET)
+        for (int i = optind; i < argc; ++i)
         {
-            std::cout << "Querying " << serviceName;
-            for (size_t i = 0; i < queryFieldnames.size(); ++i)
+            std::string channel = argv[i];
+            queryValues[0] = channel;
+
+            if (debugLevel != QUIET)
             {
-                std::cout << ", " << queryFieldnames[i] << ":  " << queryValues[i]; 
+                std::cout << "Querying " << serviceName;
+                for (size_t i = 0; i < queryFieldnames.size(); ++i)
+                {
+                    std::cout << ", " << queryFieldnames[i] << ":  " << queryValues[i]; 
+                }
+                std::cout << ")..." << std::endl;
             }
-            std::cout << ")..." << std::endl;
-        }
 
-        if (printChannelName)
-        {
-            parameters.title = channel;
-        }
+            if (printChannelName)
+            {
+                parameters.title = channel;
+            }
 
-        //  Create query and send to archiver service.
-        //PVStructure::shared_pointer queryRequest = createQuery(queryFieldnames, queryValues);
-        PVStructure::shared_pointer queryRequest = createRequest(serviceName, queryFieldnames, queryValues);
+            //  Create query and send to archiver service.
+            //PVStructure::shared_pointer queryRequest = createQuery(queryFieldnames, queryValues);
+            PVStructure::shared_pointer queryRequest = createRequest(serviceName, queryFieldnames, queryValues);
 
-        if (debugLevel == VERBOSE)
-        {
-            std::cout << "Query:" << std::endl;        
-            std::cout << toString(queryRequest) << std::endl;
-        }
+            if (debugLevel == VERBOSE)
+            {
+                std::cout << "Query:" << std::endl;        
+                std::cout << toString(queryRequest) << std::endl;
+            }
 
-        epics::pvAccess::ClientFactory::start();
-
-        try 
-        {
             double timeOut = 3.0;
             PVStructure::shared_pointer queryResponse = client->request(queryRequest, timeOut);
 
@@ -416,19 +414,17 @@ int main (int argc, char *argv[])
                     std::cout << "Processing unsuccessful." << std::endl;
                 }
             }
+            parameters.appendToFile = true; 
         }
-        catch (epics::pvAccess::RPCRequestException & ex)
-        {
-            std::cerr << "RPCException:" << std::endl;
-            std::cerr << ex.what() << std::endl;
-        }
-        catch (...)
-        {
-            std::cerr << "Error: Request failed. Unexpected exception." << std::endl;
-
-        }
-
-        parameters.appendToFile = true; 
+    }
+    catch (epics::pvAccess::RPCRequestException & ex)
+    {
+        std::cerr << "RPCException:" << std::endl;
+        std::cerr << ex.what() << std::endl;
+    }
+    catch (...)
+    {
+        std::cerr << "Error: Request failed. Unexpected exception." << std::endl;
     }
 
     epics::pvAccess::ClientFactory::stop();
