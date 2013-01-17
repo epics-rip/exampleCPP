@@ -51,9 +51,9 @@ PVDATA
 PVACCESS
 
 This can be achieved by creating a RELEASE.local file in the configure
-directory of the ChannelArchiverService directory, e.g. if your EPICS 3 base
-and extensions code is in /epics/R3.14.11 and your base directories of the
-EPICS 4 prerequisites you wish to link to are in /epics4 then it could be of
+directory of the HelloWorld directory, e.g. if your EPICS 3 base and extensions
+code is in /epics/R3.14.11 and your base directories of the EPICS 4
+prerequisites you wish to link to are in /epics4 then it could be of
 the form 
 
 EPICS_BASE=/epics/R3.14.11/base
@@ -73,7 +73,7 @@ To start the HelloWorld server
 -------------------------------
  * cd to the directory containing HelloWorld
 
-   E.g. % cd ~/Development/epicsV4/workspace_hg_beta2/exampleCPP/HelloWorld
+   E.g. % cd ~/Development/epicsV4/exampleCPP/HelloWorld
   
  * Start the server in one terminal 
 
@@ -90,7 +90,7 @@ To run a HelloWorld Client
  * cd to the directory containing HelloWorld (both client and server are in the
    same directory for demo purposes)
    
-   E.g. % cd ~/Development/epicsV4/workspace_hg_beta2/exampleCPP/HelloWorld
+   E.g. % cd ~/Development/epicsV4/exampleCPP/HelloWorld
  
  * Execute the client side demo, optionally giving your name!
  
