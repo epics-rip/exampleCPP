@@ -1,4 +1,4 @@
-HELLO_WORLD_SERVICE__README.txt
+HELLOWORLD_README.txt
 
 This is the README file of the HelloWorld service.
 
