@@ -65,8 +65,17 @@ int64_t toLong(const std::string & str)
         throw RPCRequestException(Status::STATUSTYPE_ERROR,
             "Cannot convert string " + str + " to Long");
     }
+    
+    std::string remainder;
+    if ((ss >> remainder) && remainder != "")
+    {
+        throw RPCRequestException(Status::STATUSTYPE_ERROR,
+            "Cannot convert string " + str + " to Long");
+    }
+
     return result;
 }
+
 
 }
 
