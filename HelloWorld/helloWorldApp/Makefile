@@ -7,11 +7,11 @@ USR_SYS_LIBS += expat
 PROD_HOST += HelloService
 HelloService_SRCS += HelloServiceMain.cpp
 HelloService_SRCS += HelloService.cpp
-HelloService_LIBS += dbIoc pvAccess pvData Com Storage Tools
+HelloService_LIBS += pvAccess pvData
 
 PROD_HOST += HelloClient
 HelloClient_SRCS += HelloClient.cpp
-HelloClient_LIBS += dbIoc pvAccess pvData Com Storage Tools
+HelloClient_LIBS += pvAccess pvData
 
 include $(TOP)/configure/RULES
 #----------------------------------------
