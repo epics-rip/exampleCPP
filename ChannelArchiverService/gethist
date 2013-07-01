@@ -234,7 +234,7 @@ fi
 # and check validity
 UNIX_START=$(date -d "$START_ARG" '+%s')
 
-if [ "$?" -ne 0 ]  || ! [[ "$UNIX_START" =~ "[0-9+]" ]]
+if [ "$?" -ne 0 ]  || ! [[ "$UNIX_START" =~ [0-9+] ]]
 then
     echo $UNIX_START
     Error "Invalid UNIX start time"
@@ -247,7 +247,7 @@ START=$((UNIX_START-EPICS_EPOCH))
 # and check validity
 UNIX_END=$(date -d "$END_ARG" '+%s')
 
-if [ "$?" -ne 0 ]  || ! [[ "$UNIX_END" =~ "[0-9+]" ]]
+if [ "$?" -ne 0 ]  || ! [[ "$UNIX_END" =~ [0-9+] ]]
 then
     echo $UNIX_END
     Error "Invalid UNIX end time"
