@@ -75,7 +75,7 @@ DEBUG="FALSE"
 NUM_LINES=4
 OPTIONS="-q"
 EGET_OPTIONS=
-DIFF_OPTIONS=
+DIFF_OPTIONS="-b"
 
 while getopts :hvn:e: OPTION
 do
