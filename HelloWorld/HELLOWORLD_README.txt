@@ -33,32 +33,35 @@ PREREQUISITES
 -------------
 
 1. EPICS V3 Base          - for a large number of EPICS types
-2. pvDataCPP              - for PVData 
-3. pvAccessCPP            - for PVAccess
+2. pvDataCPP              - for pvData 
+3. pvAccessCPP            - for pvAccess
+
+In addition, depending on your target/compiler, you may need
+
+4. pvCommonCPP            - for (Boost) shared pointers
 
 
 SETUP
 -----
 
-1. EPICS version 3and the EPICS V4 prerequisites (pvData and pvAccess) should
-be built.
+1. EPICS V3 Base and the EPICS V4 prerequisites (pvData, pvAccess and, if
+required, pvCommon) should be built.
 
-2. The HelloWorld service needs to know the location of these through the
-following macros:
+2. The HelloWorld service needs to know the location of these. This can be
+achieved by creating a RELEASE.local file in the configure directory of the
+HelloWorld directory.
 
-EPICS_BASE
-PVDATA
-PVACCESS
+For example if your EPICS 3 base code is in /epics and your base directories
+of the EPICS 4 prerequisites you wish to link to are in /epics4 then it could
+be of the form 
 
-This can be achieved by creating a RELEASE.local file in the configure
-directory of the HelloWorld directory, e.g. if your EPICS 3 base and extensions
-code is in /epics/R3.14.11 and your base directories of the EPICS 4
-prerequisites you wish to link to are in /epics4 then it could be of
-the form 
-
-EPICS_BASE=/epics/R3.14.11/base
+EPICS_BASE=/epics/base
 PVDATA=/epics4/pvDataCPP
 PVACCESS=/epics4/pvAccessCPP
+
+If you need pvCommonCPP you will also need include its location:
+
+PVCOMMON=/epics4/pvCommonCPP
 
 3. The HelloWorld server and client are built by the command "make" issued from
 the HelloWorld directory.

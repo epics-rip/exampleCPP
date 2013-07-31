@@ -197,40 +197,41 @@ The channel name is SR-DI-DCCT-01:SIGNAL and has values between 12/01/2009
 PREREQUISITES
 -------------
 
-EPICS V4 components:
-
-1. EPICS 3 Base          - for a large number of EPICS types
-2. pvDataCPP             - for PVData 
-3. pvAccessCPP           - for PVAccess
+1. EPICS V3 Base         - for a large number of EPICS types
+2. pvDataCPP             - for pvData
+3. pvAccessCPP           - for pvAccess
 4. The Channel Archiver  - for Channel Archiver access and types
+
+In addition, depending on your target/compiler, you may need
+
+5. pvCommonCPP           - for (Boost) shared pointers
 
 
 SETUP
 -----
 
-1. EPICS version 3, the Channel Archiver and the EPICS V4 prerequisites (pvData
-and pvAccess) should be built.
-2. The Channel Archiver service needs to know the location of these through the
-following macros:
+1. EPICS V3 Base, the Channel Archiver and the EPICS V4 prerequisites (pvData,
+pvAccess and, if required, pvCommon) should be built.
 
-EPICS_BASE
-PVDATA
-PVACCESS
-ARCHIVER 
+2. The Channel Archiver service needs to know the location of these. This can
+be achieved by creating a RELEASE.local file in the configure directory of the
+ChannelArchiverService directory.
 
-This can be achieved by creating a RELEASE.local file in the configure
-directory of the ChannelArchiverService directory, e.g. if your EPICS 3 base
-and extensions code is in /epics/R3.14.11 and your base directories of the
-EPICS 4 prerequisites you wish to link to are in /epics4 then it could be of
-the form 
+For example if your EPICS 3 base and extensions code is in /epics and your base
+directories of the EPICS 4 prerequisites you wish to link to are in /epics4
+then it could be of the form 
 
-EPICS_BASE=/epics/R3.14.11/base
+EPICS_BASE=/epics/base
 PVDATA=/epics4/pvDataCPP
 PVACCESS=/epics4/pvAccessCPP
-ARCHIVER=/epics/R3.14.11/extensions
+ARCHIVER=/epics/extensions
 
 ARCHIVER should point to the directory containing src/ChannelArchiver. This
 will depend on the layout of your EPICS installation.
+
+If you need pvCommonCPP you will also need include its location:
+
+PVCOMMON=/epics4/pvCommonCPP
 
 3. The Archiver server and client are built by the command "make" issued from
 the ChannelArchiverService directory.
