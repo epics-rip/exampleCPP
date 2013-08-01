@@ -217,9 +217,9 @@ pvAccess and, if required, pvCommon) should be built.
 be achieved by creating a RELEASE.local file in the configure directory of the
 ChannelArchiverService directory.
 
-For example if your EPICS 3 base and extensions code is in /epics and your base
-directories of the EPICS 4 prerequisites you wish to link to are in /epics4
-then it could be of the form 
+For example if your EPICS V3 Base and Extensions code is in /epics and the
+directories of the EPICS V4 prerequisites you wish to link to are in /epics4
+then it could be of the form
 
 EPICS_BASE=/epics/base
 PVDATA=/epics4/pvDataCPP

@@ -51,9 +51,9 @@ required, pvCommon) should be built.
 achieved by creating a RELEASE.local file in the configure directory of the
 HelloWorld directory.
 
-For example if your EPICS 3 base code is in /epics and your base directories
-of the EPICS 4 prerequisites you wish to link to are in /epics4 then it could
-be of the form 
+For example if your EPICS V3 Base code is in /epics and the directories of the
+EPICS V4 prerequisites you wish to link to are in /epics4 then it could be of
+the form 
 
 EPICS_BASE=/epics/base
 PVDATA=/epics4/pvDataCPP
