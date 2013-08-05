@@ -44,7 +44,7 @@ GTEST=${STUFF}/gtest
 EOF
 
 make -C HelloWorld distclean all
-make -C ChannelArchiverService distclean all
+make -C ChannelArchiverService distclean # all
 
 ###########################################
 # Test
