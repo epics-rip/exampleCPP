@@ -36,7 +36,6 @@ cat << EOF
 Usage
     run_test [OPTIONS]
     run_test -h
-    see run_test -h for details
 EOF
 }
 
@@ -169,6 +168,12 @@ fi
 
 
 EGET=$EGET_PATH"eget"
+
+if [ ! -f $EGET ]; then
+    echo 'Cant find eget. Skipping eget test.'
+    echo 'Do run_test -h for details.'
+    exit 1
+fi
 
 $EGET $EGET_OPTIONS -s "$SERVICE" -a "starttime=496105200" -a "endtime=496191600" -a "entity=fred" > $TOP/"eget_results.txt"
 
