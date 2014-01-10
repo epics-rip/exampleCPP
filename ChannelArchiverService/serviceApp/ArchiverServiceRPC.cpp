@@ -84,13 +84,13 @@ int64_t toLong(const std::string & str)
  */
 void LabelTable(PVStructure::shared_pointer pvResult)
 {
-    std::vector<std::string> labels;
+    PVStringArray::svector labels;
     labels.push_back("value");
     labels.push_back("secPastEpoch");
     labels.push_back("nsec");
     labels.push_back("status");
     labels.push_back("severity");
-    copyToScalarArray(labels, pvResult, "labels");
+    getStringArrayField(pvResult, "labels")->replace(freeze(labels));
 }
 
 /**
@@ -114,11 +114,11 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
 
     /* The result table is built up as one STL vector per column */
     
-    std::vector<double> values;
-    std::vector<int64_t> secPastEpoch;
-    std::vector<int> nsec;
-    std::vector<int> stats;
-    std::vector<int> sevrs;
+    PVDoubleArray::svector values;
+    PVLongArray::svector   secPastEpoch;
+    PVIntArray::svector    nsec;
+    PVIntArray::svector    stats;
+    PVIntArray::svector    sevrs;
 
     /* Open the Index */
 
@@ -197,11 +197,11 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
 
     PVStructure::shared_pointer resultValues = pvResult->getStructureField("value");    
 
-    copyToScalarArray(values, resultValues, "value");
-    copyToScalarArray(secPastEpoch, resultValues, "secPastEpoch");
-    copyToScalarArray(nsec, resultValues, "nsec");
-    copyToScalarArray(stats, resultValues, "status");
-    copyToScalarArray(sevrs, resultValues, "severity");
+    getDoubleArrayField(resultValues, "value")->replace(freeze(values));
+    getLongArrayField(resultValues, "secPastEpoch")->replace(freeze(secPastEpoch));
+    getIntArrayField(resultValues, "nsec")->replace(freeze(nsec));
+    getIntArrayField(resultValues, "status")->replace(freeze(stats));
+    getIntArrayField(resultValues, "severity")->replace(freeze(sevrs));
 
     std::cout << "End Query" << std::endl;
         

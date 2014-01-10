@@ -20,54 +20,39 @@ namespace epics
 namespace channelArchiverService
 {
 
-/* Map type T to pvData Type Identifier through specialisation */
-
-template<class T> epics::pvData::ScalarType getScalarType()
+/**
+ * Returns a scalar array of Type T from PVStructure
+ *
+ * @param  pvStructure  the PVStructure
+ * @param  name         the name of the field
+ * @return              the scalar array
+ */
+template <typename T>
+typename T::shared_pointer getScalarArrayField(const pvData::PVStructurePtr & pvStructure, std::string name)
 {
-    void Error_getScalarType_UsedWithNonPvDataType();
-    Error_getScalarType_UsedWithNonPvDataType();
-    return epics::pvData::pvString;
+    return std::tr1::static_pointer_cast<T>(pvStructure->getScalarArrayField(name, T::typeCode));
 }
 
-template<> epics::pvData::ScalarType getScalarType<int8_t>();
-template<> epics::pvData::ScalarType getScalarType<int16_t>();
-template<> epics::pvData::ScalarType getScalarType<int32_t>();
-template<> epics::pvData::ScalarType getScalarType<int64_t>();
-template<> epics::pvData::ScalarType getScalarType<float>();
-template<> epics::pvData::ScalarType getScalarType<double>();
-template<> epics::pvData::ScalarType getScalarType<std::string>();
+// non template versions of getScalarArrayField for each type used
 
-
-/**
- * Copies from a pvData PVStructure to an STL vector.
- *
- * @param  scalarArray   the vector of scalars to copy to
- * @param  pvStructure   the  PVStructure to copy from
- */
-template<typename T> void copyToScalarArray(std::vector<T> & scalarArray,
-    epics::pvData::PVStructure::shared_pointer & pvArgument, const char * name)
+inline pvData::PVDoubleArrayPtr getDoubleArrayField(const pvData::PVStructurePtr & pvStructure, std::string name)
 {
-    epics::pvData::ScalarType st = getScalarType<T>();
-    std::tr1::static_pointer_cast<epics::pvData::PVValueArray<T> >(
-        pvArgument->getScalarArrayField(name, st))->put(0, scalarArray.size(), &scalarArray[0], 0);
+    return getScalarArrayField<pvData::PVDoubleArray>(pvStructure, name);
 }
 
-/**
- * Copies from a pvData PVStructure to an STL vector.
- *
- * @param  scalarArray   the vector of scalars to copy from
- * @param  pvStructure   the  PVStructure to copy to
- */
-template<typename T> void copyFromScalarArray(std::vector<T> & scalarArray,
-    const epics::pvData::PVStructure::shared_pointer & pvArgument, const char * name)
+inline pvData::PVLongArrayPtr getLongArrayField(const pvData::PVStructurePtr & pvStructure, std::string name)
 {
-    epics::pvData::ScalarType st = getScalarType<T>();
-    epics::pvData::PVArrayData<T> arrayData;
-    epics::pvData::PVValueArray<T> * pvValues =
-        (epics::pvData::PVValueArray<T> *)pvArgument->getScalarArrayField(name, st);
-    pvValues->get(0, pvValues->getLength(), &arrayData);
-    scalarArray.resize(pvValues->getLength());
-    std::copy(arrayData.data, arrayData.data + pvValues->getLength(), scalarArray.begin());
+    return getScalarArrayField<pvData::PVLongArray>(pvStructure, name);
+}
+
+inline pvData::PVIntArrayPtr getIntArrayField(const pvData::PVStructurePtr & pvStructure, std::string name)
+{
+    return getScalarArrayField<pvData::PVIntArray>(pvStructure, name);
+}
+
+inline pvData::PVStringArrayPtr getStringArrayField(const pvData::PVStructurePtr & pvStructure, std::string name)
+{
+    return getScalarArrayField<pvData::PVStringArray>(pvStructure, name);
 }
 
 /**

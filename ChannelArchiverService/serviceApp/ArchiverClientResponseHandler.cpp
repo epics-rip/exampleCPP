@@ -120,21 +120,21 @@ std::string getDate(int64_t secsPastEpoch, int32_t nsecs)
 }
 
 /**
- * Converts data from array data object to strings according to format parameters 
+ * Converts data container to strings according to format parameters 
  * and adds to vector of strings 
  *
  * @param  strings    Array of strings to add to. 
- * @param  arrayData  The array data to add.
+ * @param  data       The data container to be added.
  * @param  format     Format used to convert data to string. 
  * @param  precision  Precision used in formating when converting data to string. 
  */
 template <typename A>
-void dataArrayToStrings(std::vector<std::string> & strings, const A & arrayData, int length,
+void arrayValuesToStrings(std::vector<std::string> & strings, const A & data,
                         const FormatParameters::Format format = FormatParameters::DEFAULT, int precision = 6)
 {
     using namespace std;
 
-    strings.reserve(strings.size() + length);
+    strings.reserve(strings.size() + data.size());
     ostringstream oss;
 
     switch(format)
@@ -155,16 +155,16 @@ void dataArrayToStrings(std::vector<std::string> & strings, const A & arrayData,
         oss << hex;
         break;
     }
-    for (size_t i = arrayData.offset; i < arrayData.offset + length; ++i)
+    for (typename A::const_iterator it = data.begin(); it != data.end(); ++it)
     {
-        oss << arrayData.data[i];
+        oss << *it;
         strings.push_back(oss.str());
         oss.str("");    
     }
 }
 
 template <typename VT, typename CT>
-bool isPresent(VT value, CT & container)
+bool isPresent(const VT & value, CT & container)
 {
     return (std::find(container.begin(), container.end(), value) != container.end());
 }
@@ -196,68 +196,72 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     //  Handle each of the fields in the archiver query response in turn.
 
     //  Values.
-    PVDoubleArrayPtr values = std::tr1::static_pointer_cast<epics::pvData::PVDoubleArray>(
-        responseValues->getScalarArrayField("value", pvDouble));
+    PVDoubleArrayPtr values = getDoubleArrayField(responseValues, "value");
     if (values == NULL)
     {
         cerr << "Data invalid: No value field in table values." << endl;
         m_ok = false;  
         return;
     }    
-    DoubleArrayData valuesArrayData;
-    int valuesLength = values->get(0, values->getLength(), valuesArrayData);
+    int valuesLength = values->getLength();
+
     if (isPresent(VALUE, m_parameters.outputtedFields))
     {
-        dataArrayToStrings(outputFieldValues[VALUE], valuesArrayData,
-            valuesLength, m_parameters.format, m_parameters.precision);
+
+        arrayValuesToStrings(outputFieldValues[VALUE], values->view(),
+            m_parameters.format, m_parameters.precision);
     }
 
 
     //  Seconds.
-    PVLongArrayPtr secPastEpochs = std::tr1::static_pointer_cast<epics::pvData::PVLongArray>(
-        responseValues->getScalarArrayField("secPastEpoch", pvLong));
+    PVLongArrayPtr secPastEpochs = getLongArrayField(responseValues, "secPastEpoch");
     if (secPastEpochs == NULL)
     {
         cerr << "Data invalid: No secPastEpoch field in table values." << endl;
         m_ok = false;  
         return;
     }
-    LongArrayData secPastEpochsArrayData;
-    int secPastEpochsLength = secPastEpochs->get(0, secPastEpochs->getLength(), secPastEpochsArrayData);
+
+    int secPastEpochsLength = secPastEpochs->getLength();
     if (secPastEpochsLength != valuesLength)
     {
         cerr << "Data invalid: Secs past epoch and Value lengths don't match." << endl;
         m_ok = false;  
         return; 
     }
+
+    PVLongArray::const_svector secPastEpochsData = secPastEpochs->view();
+
     if (isPresent(SECONDS_PAST_EPOCH, m_parameters.outputtedFields)
      || isPresent(REAL_TIME, m_parameters.outputtedFields))
     {
-        dataArrayToStrings(outputFieldValues[SECONDS_PAST_EPOCH], secPastEpochsArrayData, secPastEpochsLength);
+        arrayValuesToStrings(outputFieldValues[SECONDS_PAST_EPOCH], secPastEpochsData);
     }
 
 
     //  Nanoseconds.
-    PVIntArrayPtr nsecs = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(
-         responseValues->getScalarArrayField("nsec", pvInt));
+    PVIntArrayPtr nsecs = getIntArrayField(responseValues, "nsec");
     if (nsecs == NULL)
     {
         cerr << "Data invalid: No nsec field in table values." << endl;
         m_ok = false;  
         return;
     }
-    IntArrayData nsecsArrayData;
-    int nsecsLength = nsecs->get(0, nsecs->getLength(), nsecsArrayData);
+
+    int nsecsLength =  nsecs->getLength();
     if (nsecsLength != valuesLength)
     {
         cerr << "Data invalid: nsecs past epoch and Value lengths don't match." << endl;
         m_ok = false;  
         return;  
     }
+
+    PVIntArray::const_svector nsecsData = nsecs->view();
+
     if (isPresent(NANO_SECONDS, m_parameters.outputtedFields)
      || isPresent(REAL_TIME, m_parameters.outputtedFields))
     {
-        dataArrayToStrings(outputFieldValues[NANO_SECONDS], nsecsArrayData, nsecsLength);
+        arrayValuesToStrings(outputFieldValues[NANO_SECONDS], nsecsData);
     }
 
 
@@ -272,8 +276,8 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
             ostringstream oss;
             for (int i = 0; i < realTimeLength; ++i)
             {
-                oss << secPastEpochsArrayData.data[i]  << ".";
-                oss << setfill('0') << setw(9) << nsecsArrayData.data[i];
+                oss << secPastEpochsData[i]  << ".";
+                oss << setfill('0') << setw(9) << nsecsData[i];
                 realTimeStrings.push_back(oss.str());
                 oss.str("");
            }
@@ -290,23 +294,22 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
 
         for (int i = 0; i < dateLength; ++i)
         {     
-            string dateString = getDate(secPastEpochsArrayData.data[i], nsecsArrayData.data[i]);
+            string dateString = getDate(secPastEpochsData[i], nsecsData[i]);
             dateStrings.push_back(dateString);
         }
     }
 
 
     //  Alarm status.
-    PVIntArrayPtr statuses = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(
-        responseValues->getScalarArrayField("status", pvInt));
+    PVIntArrayPtr statuses = getIntArrayField(responseValues, "status");
     if (statuses == NULL)
     {
         cerr << "Data invalid: No status field in table values." << endl;
         m_ok = false;  
         return;
     }
-    IntArrayData statusesArrayData;
-    int statusesLength = statuses->get(0, statuses->getLength(), statusesArrayData);
+
+    int statusesLength = statuses->getLength();
     if (statusesLength != valuesLength)
     {
         cerr << "Data invalid: Alarm Status and Value lengths don't match." << endl;
@@ -315,21 +318,21 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     }
     if (isPresent(STATUS, m_parameters.outputtedFields))
     {
-        dataArrayToStrings(outputFieldValues[STATUS], statusesArrayData, statusesLength, FormatParameters::HEX);
+        PVIntArray::const_svector statusData = statuses->view();
+        arrayValuesToStrings(outputFieldValues[STATUS], statusData, FormatParameters::HEX);
     }
 
 
     //  Alarm severity.
-    PVIntArrayPtr severities = std::tr1::static_pointer_cast<epics::pvData::PVIntArray>(
-        responseValues->getScalarArrayField("severity", pvInt));
+    PVIntArrayPtr severities = getIntArrayField(responseValues, "severity");
     if (severities == NULL)
     {
         cerr << "Data invalid: No severity field in table values." << endl;
         m_ok = false;  
         return;
     }
-    IntArrayData severitiesArrayData;
-    int severitiesLength = severities->get(0, severities->getLength(), severitiesArrayData);
+
+    int severitiesLength = severities->getLength();
     if (severitiesLength != valuesLength)
     {
         cerr << "Data invalid: Alarm Severity and Value lengths don't match." << endl;
@@ -338,8 +341,8 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     }
     if (isPresent(SEVERITY, m_parameters.outputtedFields))
     {        
-        dataArrayToStrings(outputFieldValues[SEVERITY], severitiesArrayData, severitiesLength,
-            FormatParameters::HEX);
+        PVIntArray::const_svector severityData = severities->view();
+        arrayValuesToStrings(outputFieldValues[SEVERITY], severityData, FormatParameters::HEX);
     }
 
 
@@ -350,9 +353,13 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     {
         vector<string> & alarmStrings = outputFieldValues[ALARM];        
         alarmStrings.reserve(alarmStringsLength); 
+
+        PVIntArray::const_svector statusData = statuses->view();
+        PVIntArray::const_svector severityData = severities->view();
+
         for (int i = 0; i < valuesLength; ++i)
         {     
-            string alarmString = makeAlarmString(statusesArrayData.data[i], severitiesArrayData.data[i]);
+            string alarmString = makeAlarmString(statusData[i], severityData[i]);
             alarmStrings.push_back(alarmString);
         }
     }

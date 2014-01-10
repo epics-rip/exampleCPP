@@ -14,16 +14,6 @@ namespace epics
 namespace channelArchiverService
 {
 
-
-template<> epics::pvData::ScalarType getScalarType<int8_t>()  { return epics::pvData::pvByte; }
-template<> epics::pvData::ScalarType getScalarType<int16_t>() { return epics::pvData::pvShort; }
-template<> epics::pvData::ScalarType getScalarType<int32_t>() { return epics::pvData::pvInt; }
-template<> epics::pvData::ScalarType getScalarType<int64_t>() { return epics::pvData::pvLong; }
-template<> epics::pvData::ScalarType getScalarType<float>()   { return epics::pvData::pvFloat; }
-template<> epics::pvData::ScalarType getScalarType<double>()  { return epics::pvData::pvDouble; }
-template<> epics::pvData::ScalarType getScalarType<std::string>()  { return epics::pvData::pvString; }
-
-
 const std::string ntTableStr = "uri:ev4:nt/2012/pwd:NTTable";
 const std::string ntURIStr = "uri:ev4:nt/2012/pwd:NTURI";
 
