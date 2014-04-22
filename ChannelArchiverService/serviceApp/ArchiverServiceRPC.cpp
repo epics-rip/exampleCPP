@@ -93,6 +93,17 @@ void LabelTable(PVStructure::shared_pointer pvResult)
     getStringArrayField(pvResult, "labels")->replace(freeze(labels));
 }
 
+ArchiverServiceRPC::ArchiverServiceRPC(char * indexFilename)
+{
+	indexes.push_back(indexFilename);
+}
+
+ArchiverServiceRPC::ArchiverServiceRPC(const std::vector<std::string> & indexFilenames)
+{
+	indexes.resize(indexFilenames.size());
+	std::copy(indexFilenames.begin(), indexFilenames.end(), indexes.begin());
+}
+
 /**
  * Queries the EPICS R-Tree Channel Archiver, returning raw samples
  */
@@ -101,7 +112,7 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
     std::string & name, 
     const epicsTimeStamp & t0,
     const epicsTimeStamp & t1,
-    int64_t count)
+    int64_t maxRecords)
 {
     std::cout << "Begin Query" << std::endl;
 
@@ -120,82 +131,87 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
     PVIntArray::svector    stats;
     PVIntArray::svector    sevrs;
 
-    /* Open the Index */
+    int64_t recordCount = 0;
 
-    AutoPtr<Index> index(new AutoIndex());
-    
-    try
+    for (std::vector<std::string>::const_iterator it = indexes.begin();
+    	 it != indexes.end(); ++it)
     {
-        index->open(indexFilename.c_str(), true);
-    }
-    catch(GenericException & e)
-    {
-        std::cout << e.what() << std::endl;
-        throw RPCRequestException(Status::STATUSTYPE_ERROR, e.what());
-    }
+        /* Open the Index */
+		AutoPtr<Index> index(new AutoIndex());
 
-    const epicsTime start = t0;
-    const epicsTime end = t1;
+		try
+		{
+			index->open(it->c_str(), true);
+		}
+		catch(GenericException & e)
+		{
+			std::cout << e.what() << std::endl;
+			throw RPCRequestException(Status::STATUSTYPE_ERROR, e.what());
+		}
 
-    /* Create a Database Cursor */
+		const epicsTime start = t0;
+		const epicsTime end = t1;
 
-    AutoPtr<DataReader> reader(new RawDataReader(*index));
-    
-    /* Seek to the first sample at or before 'start' for the named channel */
-    const RawValue::Data *data = 0;
-    try
-    {
-        data = reader->find(stdString(name.c_str()), &start);
-    }
-    catch(...)
-    {
-        throw RPCRequestException(Status::STATUSTYPE_ERROR, "Error querying archive");
-    }
+		/* Create a Database Cursor */
 
-    /* find returns the reading immediately before start, unless start date is
-       before first reading in archive, so skip to next.*/
-    if((data != 0) && (RawValue::getTime(data) < start))
-    {
-        data = reader->next();
-    }
- 
+		AutoPtr<DataReader> reader(new RawDataReader(*index));
 
-    /* Fill the table */
+		/* Seek to the first sample at or before 'start' for the named channel */
+		const RawValue::Data *data = 0;
+		try
+		{
+			data = reader->find(stdString(name.c_str()), &start);
+		}
+		catch(...)
+		{
+			throw RPCRequestException(Status::STATUSTYPE_ERROR, "Error querying archive");
+		}
 
-    for(int64_t c = 0; c < count; c++)
-    {
-        if(data == 0)
-        {
-            break;
-        }
-        double value;
-        
-        /* missing support for waveforms and strings */
+		/* find returns the reading immediately before start, unless start date is
+		   before first reading in archive, so skip to next.*/
+		if((data != 0) && (RawValue::getTime(data) < start))
+		{
+			data = reader->next();
+		}
 
-        RawValue::getDouble(reader->getType(), reader->getCount(), data, value, 0);
-        epicsTimeStamp t = RawValue::getTime(data);
 
-        if(end < t)
-        {
-            break;
-        }
-            
-        int status = RawValue::getStat(data);
-        int severity = RawValue::getSevr(data);
+		/* Fill the table */
 
-        values.push_back(value);
-        secPastEpoch.push_back(t.secPastEpoch);
-        nsec.push_back(t.nsec);
-        stats.push_back(status);
-        sevrs.push_back(severity);
-            
-        data = reader->next();
+		for(; recordCount < maxRecords; recordCount++)
+		{
+			if(data == 0)
+			{
+				break;
+			}
+			double value;
 
+			/* missing support for waveforms and strings */
+
+			RawValue::getDouble(reader->getType(), reader->getCount(), data, value, 0);
+			epicsTimeStamp t = RawValue::getTime(data);
+
+			if(end < t)
+			{
+				break;
+			}
+
+			int status = RawValue::getStat(data);
+			int severity = RawValue::getSevr(data);
+
+			values.push_back(value);
+			secPastEpoch.push_back(t.secPastEpoch);
+			nsec.push_back(t.nsec);
+			stats.push_back(status);
+			sevrs.push_back(severity);
+
+			data = reader->next();
+
+		}
     }
         
     /* Pack the table into the pvStructure using some STL helper functions */
 
-    PVStructure::shared_pointer resultValues = pvResult->getStructureField("value");    
+    PVStructurePtr resultValues = pvResult->getStructureField("value");
 
     getDoubleArrayField(resultValues, "value")->replace(freeze(values));
     getLongArrayField(resultValues, "secPastEpoch")->replace(freeze(secPastEpoch));
@@ -222,7 +238,7 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     std::string name;
     int64_t start = 0;
     int64_t end   = std::numeric_limits<int32_t>::max();
-    int64_t count = 1000000000; // limit to 1e9 values unless another number is specified
+    int64_t maxRecords = 1000000000; // limit to 1e9 values unless another number is specified
 
     bool isNTQuery = false;
 
@@ -260,7 +276,7 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
 
     if ((query->getSubField(countStr) != NULL) && (query->getStringField(countStr) != NULL))
     {
-        count = toLong((query->getStringField(countStr)->get()));
+        maxRecords = toLong((query->getStringField(countStr)->get()));
     }
 
     epicsTimeStamp t0, t1;
@@ -270,7 +286,7 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     t1.secPastEpoch  = end;
     t1.nsec = 0;
 
-    return queryRaw(pvArgument, name, t0, t1, count);
+    return queryRaw(pvArgument, name, t0, t1, maxRecords);
 }
 
 }

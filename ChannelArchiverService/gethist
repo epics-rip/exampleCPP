@@ -147,78 +147,61 @@ process_shortopts()
 while getopts :hS:s:e:M:f:ao:p:dxntTqv OPTION
 do
     case $OPTION in
-    h) #echo h
-       showhelp
+    h) showhelp
        ;;
 
-    S) #echo S
-       SERVICE="$OPTARG"
+    S) SERVICE="$OPTARG"
        ;;
 
-    s) #echo s
-       START_ARG="$OPTARG"
+    s) START_ARG="$OPTARG"
        ;;
 
-    e) #echo e
-       END_ARG="$OPTARG"
+    e) END_ARG="$OPTARG"
        ;;
 
-    M) #echo M
-       COUNT_ARG="$OPTARG"
+    M) COUNT_ARG="$OPTARG"
        ;;
 
-    f) #echo f
-       FILE="$OPTARG"
+    f) FILE="$OPTARG"
        ;;
 
-    a) #echo a
-       OPTIONS+="a"
+    a) OPTIONS+="a"
        ;;
 
-    o) #echo o
-       DISPLAYED_FIELDS="$OPTARG"
+    o) DISPLAYED_FIELDS="$OPTARG"
        ;;
 
-    p) #echo p
-       PRECISION="$OPTARG"
+    p) PRECISION="$OPTARG"
        ;;
 
-    x) #echo x
-       OPTIONS+="x"
+    x) OPTIONS+="x"
        ;;
 
-    d) #echo d
-       OPTIONS+="d"
+    d) OPTIONS+="d"
        ;;
 
-    n) #echo n
-       OPTIONS+="n"
+    n) OPTIONS+="n"
        ;;
 
-    t) #echo t
-       OPTIONS+="t"
+    t) OPTIONS+="t"
        ;;
 
-    T) #echo T
-       OPTIONS+="T"
+    T) OPTIONS+="T"
        ;;
 
-    q) #echo q
-       OPTIONS+="q"
+    q) OPTIONS+="q"
        ;;
 
-    v) #echo v
-       OPTIONS+="v"
+    v) OPTIONS+="v"
        ;;
 
-    ?) #echo "?"
-	   Error invalid option or missing argument ;;
+    ?) Error invalid option or missing argument ;;
     esac
 done
 shift $((OPTIND-1))
 
 
-#check channel supllied
+#check channel supplied
 (($# > 0))  ||  Error "no channel supplied"
 
 

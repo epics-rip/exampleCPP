@@ -17,17 +17,23 @@ the corresponding data.
 EXAMPLES
 --------
 
-The server is run as follows
+The server is run as follows:
+
+    % start_server [-S service_name] [index_1 ... index_n]
+    
+E.g.
 
     % ./start_server
-    % ./start_server data/DCCT/index dccthist
+    % ./start_server -S dccthist data/DCCT/index 
+    % ./start_server data/fredjanet/index data/DCCT/index 
 
 start_server calls the ArchiverService executable (which should be
-bin/$EPICS_HOST_ARCH/ArchiverServiceRPC) supplying two arguments. The first is
-the service name, the second the location of the index file. By default
-start_server supplies the index file in data/fredjanet and the service name
-archiveService. Should you wish to use other data or another service name then
-these should be supplied as arguments or the defaults changed.   
+bin/$EPICS_HOST_ARCH/ArchiverServiceRPC) supplying the service name and the
+locations of the index files. By default start_server supplies the index file
+in data/fredjanet and the service name "archiveService". Should you wish to use
+other data or another service name then these should be supplied as arguments
+or the defaults changed. The service name is supplied with the -S option.
+Subsequent arguments are one or more index files.  
 
 
 The following are examples of running the client using the bash script gethist:
@@ -150,6 +156,10 @@ The service's response is in the form of an NTTable normative type with the
 columns "value", "secPastEpoch", "nsec", "status" and "severity", which are
 arrays of respectively doubles, longs, ints, ints and ints.
 
+Currently the service queries the index files in turn and appends the results.
+If the index files cover different time periods therefore the file names should
+be supplied chronologically.
+
 
 FILES THAT COMPRISE THE CHANNEL ARCHIVER SERVICE
 ------------------------------------------------
@@ -259,19 +269,21 @@ To start the Channel Archiver server
    E.g. % cd ~/Development/epicsV4/exampleCPP/ChannelArchiverService
 
  * Start the channel archiver service using the start_server command.
-   The command can take two arguments or use default values. The first argument
-   is the name of the index file and the second is the service name. The script
+   The command can take arguments specifying the service name and index files 
+   or use default values. The service name is specified via the -S option and
+   the subsequent arguments are the names of the index files. The script
    calls the ArchiverService executable for the host architecture (which should
    be bin/$EPICS_HOST_ARCH/ArchiverServiceRPC). By default it queries the index
    file in data/fredjanet with service name archiveService. 
 
  * Start the channel archiver service using the start_server command as
-   descibed above using default arguments or supplying the index file and
-   name service 
+   described above using default arguments or supplying service name and index
+   files
 
-   E.g. % ./start_server
-        % ./start_server data/DCCT/index dccthist
-  
+   E.g. % ./start_server 
+        % ./start_server -S dccthist data/DCCT/index 
+        % ./start_server data/fredjanet/index data/DCCT/index
+          
  * The server can be terminated with a SIGTERM (like CTRL-C in its process
    window).
    

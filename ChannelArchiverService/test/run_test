@@ -122,7 +122,7 @@ fi
 ARCH_INDEX="$TOP"/../data/fredjanet/index
 CheckForFile "$ARCH_INDEX"
 
-xterm -e "$TOP""/../start_server" "$ARCH_INDEX" "$SERVICE" &
+xterm -e "$TOP""/../start_server" -S "$SERVICE" "$ARCH_INDEX"  &
 trap 'kill "$!"' SIGINT SIGTERM EXIT
 sleep 1
 

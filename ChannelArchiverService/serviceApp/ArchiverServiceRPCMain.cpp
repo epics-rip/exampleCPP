@@ -40,16 +40,21 @@ int main(int argc,char *argv[])
 
     if(argc < 3)
     {
-        cerr << "usage: ArchiverServiceRPC index channel" << endl;
+        cerr << "usage: ArchiverServiceRPC channel index1 [index_2 ... index_n]" << endl;
         exit(1);
     }
 
-    char * index = argv[1];
-    char * channel = argv[2];
+    char * channel = argv[1];
+
+    std::vector<std::string> indexFilenames;
+    for (int i = 2; i < argc; ++i)
+    {
+        char * index = argv[i];
+        indexFilenames.push_back(index);
+    }
+
     RPCServer server;
-
-    server.registerService(channel, RPCService::shared_pointer(new ArchiverServiceRPC(index)));
-
+    server.registerService(channel, RPCService::shared_pointer(new ArchiverServiceRPC(indexFilenames)));
     server.printInfo();
     server.run();
 
