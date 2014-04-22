@@ -172,11 +172,11 @@ void showHelp()
       << "                in seconds after EPICS epoch\n"
       << "-M=MAX          limit results to first MAX records\n"
       << "-f= FILENAME    output results of archiver query to file named FILENAME\n"
-      << "-n              print channel name, preceeded by #, before results\n"
+      << "-n              print channel name, preceded by #, before results\n"
       << "-t              transpose rows and columns\n"
-      << "-T              print column headers, preceeded by #, before results\n"
+      << "-T              print column headers, preceded by #, before results\n"
       << "                after channel name, if printed.\n"
-      << "-q              supress all output to standard out except for archive data.\n"
+      << "-q              suppress all output to standard out except for archive data.\n"
       << "-v              output verbose logging information.\n"  
       << "-x              results of archiver query request outputted using\n"
       << "                scientific (i.e. exponent/mantissa) format\n"
@@ -345,6 +345,12 @@ int main (int argc, char *argv[])
             double timeOut = 3.0;
             PVStructure::shared_pointer queryResponse = client->request(queryRequest, timeOut);
 
+            if (queryResponse == NULL)
+            {
+            	std::string errMsg = "RPC request failed";
+            	throw epics::pvAccess::RPCRequestException(Status::STATUSTYPE_ERROR, errMsg);
+            }
+
             if (debugLevel != QUIET)
             {
                 std::cout << "Request successful. Processing results..." << std::endl;
@@ -370,6 +376,7 @@ int main (int argc, char *argv[])
 
                 case FormatParameters::FIXED_POINT:
                     std::cout << "fixed point";
+                    break;
 
                 case FormatParameters::DEFAULT:
                     std::cout << "default";
