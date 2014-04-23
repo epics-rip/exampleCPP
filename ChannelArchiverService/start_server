@@ -21,6 +21,7 @@
 
 TOP=$(dirname $0)
 DEFAULT_SERVICE="archiveService"
+DEFAULT_INDEX="$TOP/data/fredjanet/index"
 SERVICE=${DEFAULT_SERVICE}
 
 Error()
@@ -54,8 +55,10 @@ do
 done
 shift $((OPTIND-1))
 
- 
-$TOP/bin/$EPICS_HOST_ARCH/ArchiverServiceRPC ${SERVICE} "$@"
-
+if [ $# -eq 0 ]; then
+     $TOP/bin/$EPICS_HOST_ARCH/ArchiverServiceRPC ${SERVICE} ${DEFAULT_INDEX} 
+else
+     $TOP/bin/$EPICS_HOST_ARCH/ArchiverServiceRPC ${SERVICE} "$@"
+fi
 
 
