@@ -55,14 +55,14 @@ Options
     -h,--help              display help
     -v                     verbose.    
     -n=NUM_LINES           show first NUM_LINES lines. 
-    -e=EGET_PATH           use EGET_PATH as path for eget. 
+    -e=EGET                run eget tests using EGET. 
 
 Description
     run_test tests the Channel Archiver Service by starting a server and
     issuing requests using the Channel Archiver Service client and eget and
     comparing the actual results with those expected. eget must be in your
-    path, or given by the EGET_PATH environmental variable or supplied by the
-    -e option.
+    path or given by the EGET environmental variable or supplied by the -e
+    option.
 EOF
 
 exit 0
@@ -91,7 +91,7 @@ do
        NUM_LINES="$OPTARG"
        ;;
 
-    e) EGET_PATH="$OPTARG"
+    e) EGET="$OPTARG"
        ;;
 
     ?) echo "Invalid option or missing argument."
@@ -104,20 +104,12 @@ shift $((OPTIND-1))
 
 echo "Running Channel Archiver Test"
 
-RESULTS="$TOP"/results.txt
-if [[ -e "$RESULTS" ]]
+RESULTS_DIR="$TOP"/results
+if [[ -e "$RESULTS_DIR" ]]
 then
-    echo "Deleting previous results ($RESULTS)."   
-    rm "$RESULTS" 
+    echo "Deleting previous results ($RESULTS_DIR)."   
+    rm -rf "$RESULTS_DIR"
 fi
-
-EGET_RESULTS="$TOP"/eget_results.txt
-if [[ -e "$EGET_RESULTS" ]]
-then
-    echo "Deleting previous results ($EGET_RESULTS)."   
-    rm "$EGET_RESULTS"
-fi
-
 
 ARCH_INDEX="$TOP"/../data/fredjanet/index
 CheckForFile "$ARCH_INDEX"
@@ -134,6 +126,8 @@ EXPECTED=$TOP/expected.txt
 GET_HIST="$TOP"/../gethist
 CheckForFile $GET_HIST
 
+mkdir "${RESULTS_DIR}"
+RESULTS="${RESULTS_DIR}/results.txt"
 $GET_HIST -S "$SERVICE" -n $OPTIONS -s "Sep 21 2005" -e "Sep 22 2005" -f "$RESULTS" fred
 
 
@@ -159,23 +153,32 @@ else
     echo "FAIL"
 fi
 
+
+# Check eget can be found. If eget not supplied look in path.
+
+if [[ "$EGET" != "" ]]
+then
+    if [ ! -f $EGET ]; then
+        echo "Can't find specified eget: $EGET"
+        echo "Skipping eget test."
+        echo "Do run_test -h for details."
+        exit 1
+    fi    
+else
+    EGET="eget"
+    which $EGET >/dev/null 2>/dev/null
+    if [[(($? != 0))]]; then
+        echo "Can't find eget in PATH. Skipping eget test."
+        echo "Make sure eget is in your path or specify using EGET variable or -e option"
+        echo "Do run_test -h for details."
+        exit 1
+    fi
+fi
+
 echo "Test using eget"
 
-if [[ "$EGET_PATH" != "" ]]
-then
-    EGET_PATH+='/'
-fi
-
-
-EGET=$EGET_PATH"eget"
-
-if [ ! -f $EGET ]; then
-    echo 'Cant find eget. Skipping eget test.'
-    echo 'Do run_test -h for details.'
-    exit 1
-fi
-
-$EGET $EGET_OPTIONS -s "$SERVICE" -a "starttime=496105200" -a "endtime=496191600" -a "entity=fred" > $TOP/"eget_results.txt"
+EGET_RESULTS="${RESULTS_DIR}/eget_results.txt"
+$EGET $EGET_OPTIONS -s "$SERVICE" -a "starttime=496105200" -a "endtime=496191600" -a "entity=fred" > "$EGET_RESULTS"
 
 EGET_EXPECTED=$TOP/eget_expected.txt
 CheckForFile $EGET_EXPECTED
