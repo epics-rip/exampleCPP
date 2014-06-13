@@ -2,8 +2,6 @@ TOP=..
 
 include $(TOP)/configure/CONFIG
 
-USR_SYS_LIBS += expat
-
 PROD_HOST += HelloService
 HelloService_SRCS += HelloServiceMain.cpp
 HelloService_SRCS += HelloService.cpp
