@@ -55,20 +55,6 @@ inline pvData::PVStringArrayPtr getStringArrayField(const pvData::PVStructurePtr
     return getScalarArrayField<pvData::PVStringArray>(pvStructure, name);
 }
 
-/**
- * Converts an object of type T to string, where T should be a pointer or smart pointer
- * to an object which has an apropriate toString function.
- *
- * @param  t  the object of type T to be converted
- * @return    the result of the string conversion
- */
-template<class T> std::string toString(T st)
-{
-    std::string s;
-    st->toString(&s);
-    return s;
-}
-
 
 /**
  * Calculates the maximum of the length for a collection of strings or other objects with

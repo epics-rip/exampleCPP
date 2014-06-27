@@ -339,7 +339,7 @@ int main (int argc, char *argv[])
             if (debugLevel == VERBOSE)
             {
                 std::cout << "Query:" << std::endl;        
-                std::cout << toString(queryRequest) << std::endl;
+                std::cout << *queryRequest << std::endl;
             }
 
             double timeOut = 3.0;

@@ -232,7 +232,7 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     epics::pvData::PVStructure::shared_pointer const & pvArgument
     ) throw (RPCRequestException)
 {    
-    std::cout << toString(pvArgument) << std::endl;
+    std::cout << *pvArgument << std::endl;
 
     /* Unpack the request type */
     std::string name;
