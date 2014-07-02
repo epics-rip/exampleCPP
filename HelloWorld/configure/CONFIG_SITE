@@ -37,3 +37,4 @@ USR_INCLUDES += -I $(INSTALL_LOCATION)/include
 
 -include $(TOP)/configure/CONFIG_SITE.local
 -include $(TOP)/../CONFIG.local
+-include $(TOP)/../../CONFIG.local
