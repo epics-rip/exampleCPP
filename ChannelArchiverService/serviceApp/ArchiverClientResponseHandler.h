@@ -40,7 +40,7 @@ const std::string outputFieldNames[] = {
     "secondsPastEpoch",
     "nanoseconds",
     "status",
-    "everity"
+    "severity"
     };
 
 /**
