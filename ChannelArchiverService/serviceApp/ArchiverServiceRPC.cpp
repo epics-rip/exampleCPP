@@ -86,8 +86,8 @@ void LabelTable(PVStructure::shared_pointer pvResult)
 {
     PVStringArray::svector labels;
     labels.push_back("value");
-    labels.push_back("secPastEpoch");
-    labels.push_back("nsec");
+    labels.push_back("secondsPastEpoch");
+    labels.push_back("nanoseconds");
     labels.push_back("status");
     labels.push_back("severity");
     getStringArrayField(pvResult, "labels")->replace(freeze(labels));
@@ -214,8 +214,8 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
     PVStructurePtr resultValues = pvResult->getStructureField("value");
 
     getDoubleArrayField(resultValues, "value")->replace(freeze(values));
-    getLongArrayField(resultValues, "secPastEpoch")->replace(freeze(secPastEpoch));
-    getIntArrayField(resultValues, "nsec")->replace(freeze(nsec));
+    getLongArrayField(resultValues, "secondsPastEpoch")->replace(freeze(secPastEpoch));
+    getIntArrayField(resultValues, "nanoseconds")->replace(freeze(nsec));
     getIntArrayField(resultValues, "status")->replace(freeze(stats));
     getIntArrayField(resultValues, "severity")->replace(freeze(sevrs));
 

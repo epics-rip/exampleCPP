@@ -214,10 +214,10 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
 
 
     //  Seconds.
-    PVLongArrayPtr secPastEpochs = getLongArrayField(responseValues, "secPastEpoch");
+    PVLongArrayPtr secPastEpochs = getLongArrayField(responseValues, "secondsPastEpoch");
     if (secPastEpochs == NULL)
     {
-        cerr << "Data invalid: No secPastEpoch field in table values." << endl;
+        cerr << "Data invalid: No secondsPastEpoch field in table values." << endl;
         m_ok = false;  
         return;
     }
@@ -225,7 +225,7 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     int secPastEpochsLength = secPastEpochs->getLength();
     if (secPastEpochsLength != valuesLength)
     {
-        cerr << "Data invalid: Secs past epoch and Value lengths don't match." << endl;
+        cerr << "Data invalid: secondsPastEpoch and value lengths don't match." << endl;
         m_ok = false;  
         return; 
     }
@@ -240,10 +240,10 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
 
 
     //  Nanoseconds.
-    PVIntArrayPtr nsecs = getIntArrayField(responseValues, "nsec");
+    PVIntArrayPtr nsecs = getIntArrayField(responseValues, "nanoseconds");
     if (nsecs == NULL)
     {
-        cerr << "Data invalid: No nsec field in table values." << endl;
+        cerr << "Data invalid: No nanoseconds field in table values." << endl;
         m_ok = false;  
         return;
     }
@@ -251,7 +251,7 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     int nsecsLength =  nsecs->getLength();
     if (nsecsLength != valuesLength)
     {
-        cerr << "Data invalid: nsecs past epoch and Value lengths don't match." << endl;
+        cerr << "Data invalid: nanoseconds past epoch and value lengths don't match." << endl;
         m_ok = false;  
         return;  
     }
@@ -312,7 +312,7 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     int statusesLength = statuses->getLength();
     if (statusesLength != valuesLength)
     {
-        cerr << "Data invalid: Alarm Status and Value lengths don't match." << endl;
+        cerr << "Data invalid: status and value lengths don't match." << endl;
         m_ok = false;  
         return; 
     }
@@ -335,7 +335,7 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     int severitiesLength = severities->getLength();
     if (severitiesLength != valuesLength)
     {
-        cerr << "Data invalid: Alarm Severity and Value lengths don't match." << endl;
+        cerr << "Data invalid: severity and value lengths don't match." << endl;
         m_ok = false;  
         return; 
     }

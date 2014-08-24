@@ -35,12 +35,12 @@ const int NUMBER_OF_FIELDS = SEVERITY+1;
 const std::string outputFieldNames[] = {
     "timePastEpoch(s)",
     "value",
-    "Date",
-    "Alarm",
-    "secsPastEpoch",
-    "nsecs",
-    "Status",
-    "Severity"
+    "date",
+    "alarm",
+    "secondsPastEpoch",
+    "nanoseconds",
+    "status",
+    "everity"
     };
 
 /**

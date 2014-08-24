@@ -69,8 +69,8 @@ epics::pvData::StructureConstPtr makeValuesStructure(epics::pvData::FieldCreate 
     StringArray names;
 
     names.push_back("value");
-    names.push_back("secPastEpoch");
-    names.push_back("nsec");
+    names.push_back("secondsPastEpoch");
+    names.push_back("nanoseconds");
     names.push_back("status");
     names.push_back("severity");
 
