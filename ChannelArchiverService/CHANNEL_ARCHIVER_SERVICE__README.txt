@@ -153,8 +153,8 @@ containing the string fields specified and thus the service can be queried
 using the eget -q option.
 
 The service's response is in the form of an NTTable normative type with the
-columns "value", "secPastEpoch", "nsec", "status" and "severity", which are
-arrays of respectively doubles, longs, ints, ints and ints.
+columns "value", "secondsPastEpoch", "nanoseconds", "status" and "severity",
+which are arrays of respectively doubles, longs, ints, ints and ints.
 
 Currently the service queries the index files in turn and appends the results.
 If the index files cover different time periods therefore the file names should
