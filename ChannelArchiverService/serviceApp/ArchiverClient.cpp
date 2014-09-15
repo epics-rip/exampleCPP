@@ -310,7 +310,7 @@ int main (int argc, char *argv[])
     try 
     {
         epics::pvAccess::RPCClient::shared_pointer
-        client = epics::pvAccess::RPCClientFactory::create(serviceName);
+            client = epics::pvAccess::RPCClient::create(serviceName);
 
         for (int i = optind; i < argc; ++i)
         {
