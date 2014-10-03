@@ -10,9 +10,9 @@
 #      specified between two dates and times and outputs the data according to
 #      supplied formatting options
 #
-# Rem: gethist creates an Archiver Client which is anexample of an EPICS v4 RPC
-#      service client, which gets archived data from the Archiver Service, an
-#      example of a v4 RPC service.
+# Rem: gethist creates an Archiver Client which is an example of an EPICS v4 
+#      service client, which gets archived data from the Archiver Service,
+#      an example of a v4 RPC service.
 # 
 #
 # Usage: see help (gethist -h or gethist --help) for options                   
@@ -70,12 +70,12 @@ Options
     -M,--max-records=MAX   limit results to first MAX records
     -f,--file=FILENAME     output results of archiver query to file named
                            FILENAME
-    -n,--title             print channel name, preceeded by #, before results
+    -n,--title             print channel name, preceded by #, before results
                            after channel name, if printed.
     -t,--transpose         transpose rows and columns
-    -T,--headers           print column headers, preceeded by #, before results
+    -T,--headers           print column headers, preceded by #, before results
                            after channel name, if printed.
-    -q,--quiet             supress all output to standard out except archive
+    -q,--quiet             suppress all output to standard out except archive
                            data.
     -v,--verbose           output verbose logging information.    
     -x,--scientific        results of archiver query request outputted using
@@ -100,14 +100,14 @@ Description
     The default is neither scientific nor fixed formatting. In this case the
     value is formatted as fixed or scientific, the format being value-dependent.
 
-    If the -n,--title option is selected the channel name, preceeded by'#', is 
+    If the -n,--title option is selected the channel name, preceded by'#', is 
     outputted before the archived values. If the -t,--header option is selected
-    the column name, preceeded by'#', is outputted before the values.
+    the column name, preceded by'#', is outputted before the values.
 
     The choice of fields and the order in which they are outputted can be
     selected by the -o,--fields option. The argument for this option consist of
     a sequence of characters representing the possible fields
-    t    floting point time, in seconds, past EPICS epoch
+    t    floating point time, in seconds, past EPICS epoch
     v    the archived value
     D    the date and time string of the archived value
     A    A string based on the alarm status and severity 
@@ -242,7 +242,7 @@ END=$((UNIX_END-EPICS_EPOCH))
 #check compatibility of options and supply default if required
 if [[ "$OPTIONS" =~ "d" ]] && [[ "$OPTIONS" =~ "x" ]]
 then
-    Error "Fixed-point and scientific options incomaptible"
+    Error "Fixed-point and scientific options incompatible"
 fi
 
 run_client "$@"
