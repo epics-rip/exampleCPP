@@ -345,7 +345,7 @@ int main (int argc, char *argv[])
             double timeOut = 3.0;
             PVStructure::shared_pointer queryResponse = client->request(queryRequest, timeOut);
 
-            if (queryResponse == NULL)
+            if (!queryResponse)
             {
             	std::string errMsg = "RPC request failed";
             	throw epics::pvAccess::RPCRequestException(Status::STATUSTYPE_ERROR, errMsg);

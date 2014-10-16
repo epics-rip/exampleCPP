@@ -74,7 +74,7 @@ int main (int argc, char *argv[])
         PVStringPtr greeting = response->getStringField("greeting");
 
         // Check the result conforms to expected format and if so print it.
-        if (greeting == NULL)
+        if (!greeting)
         {
             std::cerr << "Acquisition of greeting was not successful. Response invalid" << std::endl;
         } 

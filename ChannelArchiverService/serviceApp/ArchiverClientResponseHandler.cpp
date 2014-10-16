@@ -186,7 +186,7 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
     using namespace std;
 
     PVStructurePtr responseValues = response->getStructureField("value");
-    if (responseValues == NULL)
+    if (!responseValues)
     {
         cerr << "Data invalid: No value field in table." << endl;
         m_ok = false;  
@@ -197,7 +197,7 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
 
     //  Values.
     PVDoubleArrayPtr values = getDoubleArrayField(responseValues, "value");
-    if (values == NULL)
+    if (!values)
     {
         cerr << "Data invalid: No value field in table values." << endl;
         m_ok = false;  
@@ -215,7 +215,7 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
 
     //  Seconds.
     PVLongArrayPtr secPastEpochs = getLongArrayField(responseValues, "secondsPastEpoch");
-    if (secPastEpochs == NULL)
+    if (!secPastEpochs)
     {
         cerr << "Data invalid: No secondsPastEpoch field in table values." << endl;
         m_ok = false;  
@@ -241,7 +241,7 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
 
     //  Nanoseconds.
     PVIntArrayPtr nsecs = getIntArrayField(responseValues, "nanoseconds");
-    if (nsecs == NULL)
+    if (!nsecs)
     {
         cerr << "Data invalid: No nanoseconds field in table values." << endl;
         m_ok = false;  
@@ -302,7 +302,7 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
 
     //  Alarm status.
     PVIntArrayPtr statuses = getIntArrayField(responseValues, "status");
-    if (statuses == NULL)
+    if (!statuses)
     {
         cerr << "Data invalid: No status field in table values." << endl;
         m_ok = false;  
@@ -325,7 +325,7 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
 
     //  Alarm severity.
     PVIntArrayPtr severities = getIntArrayField(responseValues, "severity");
-    if (severities == NULL)
+    if (!severities)
     {
         cerr << "Data invalid: No severity field in table values." << endl;
         m_ok = false;  
