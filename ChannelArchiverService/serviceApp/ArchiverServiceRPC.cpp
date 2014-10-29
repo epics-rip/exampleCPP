@@ -236,8 +236,8 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
 
     bool isNTQuery = false;
 
-    if ( (pvArgument->getSubField("path") != NULL) && (pvArgument->getStringField("path") != NULL) 
-      && (pvArgument->getSubField("query") != NULL) && (pvArgument->getStructureField("query") != NULL))
+    if ( (pvArgument->getSubField("path")) && (pvArgument->getStringField("path")) 
+      && (pvArgument->getSubField("query")) && (pvArgument->getStructureField("query")))
     {
         isNTQuery = true;
     }
@@ -245,7 +245,7 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     epics::pvData::PVStructure::shared_pointer const & query
         = isNTQuery ? pvArgument->getStructureField("query") : pvArgument;
 
-    if (query->getStringField(nameStr) != NULL)
+    if (query->getStringField(nameStr))
     {
         name = query->getStringField(nameStr)->get();
         if (name == "")
@@ -258,17 +258,17 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
         throw RPCRequestException(Status::STATUSTYPE_ERROR, "No channel name");
     }
         
-    if ((query->getSubField(startStr) != NULL) && (query->getStringField(startStr) != NULL))
+    if ((query->getSubField(startStr)) && (query->getStringField(startStr)))
     {
         start = toLong((query->getStringField(startStr)->get()));
     }
 
-    if ((query->getSubField(endStr) != NULL) && (query->getStringField(endStr) != NULL))
+    if ((query->getSubField(endStr)) && (query->getStringField(endStr)))
     {
         end = toLong((query->getStringField(endStr)->get()));
     }
 
-    if ((query->getSubField(countStr) != NULL) && (query->getStringField(countStr) != NULL))
+    if ((query->getSubField(countStr)) && (query->getStringField(countStr)))
     {
         maxRecords = toLong((query->getStringField(countStr)->get()));
     }

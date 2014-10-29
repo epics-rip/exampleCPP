@@ -40,7 +40,7 @@ epics::pvData::PVStructure::shared_pointer HelloService::request(
     // Extract the arguments. Just one in this case.
     // Report an error by throwing a RPCRequestException 
     epics::pvData::PVStringPtr nameField = pvArgument->getStringField("personsname");
-    if (nameField == NULL)
+    if (!nameField)
     {
         throw pvAccess::RPCRequestException(Status::STATUSTYPE_ERROR,
             "PVString field with name 'personsname' expected.");
