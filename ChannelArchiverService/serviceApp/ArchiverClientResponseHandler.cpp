@@ -109,7 +109,7 @@ std::string getDate(const epicsTime & t)
  * Converts secs past epoch and nsecs to a date string
  *
  * @param  secsPastEpoch seconds past EPICS epoch. 
- * @param  nsecs         nanseconds after second.
+ * @param  nsecs         nanoseconds after second.
  * @return The date string.
  */
 std::string getDate(int64_t secsPastEpoch, int32_t nsecs)
@@ -126,7 +126,7 @@ std::string getDate(int64_t secsPastEpoch, int32_t nsecs)
  * @param  strings    Array of strings to add to. 
  * @param  data       The data container to be added.
  * @param  format     Format used to convert data to string. 
- * @param  precision  Precision used in formating when converting data to string. 
+ * @param  precision  Precision used in formatting when converting data to string. 
  */
 template <typename A>
 void arrayValuesToStrings(std::vector<std::string> & strings, const A & data,

@@ -86,7 +86,7 @@ extern const std::string ntTableStr;
 extern const std::string ntURIStr;
 
 
-// Fieldnames of the channel archiver serivce query fields
+// Fieldnames of the channel archiver service query fields
 extern const std::string nameStr;
 extern const std::string startStr;
 extern const std::string endStr;

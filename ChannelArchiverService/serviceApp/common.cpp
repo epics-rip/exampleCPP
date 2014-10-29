@@ -14,8 +14,8 @@ namespace epics
 namespace channelArchiverService
 {
 
-const std::string ntTableStr = "ev4:nt/NTTable:1.0";
-const std::string ntURIStr = "ev4:nt/NTURI:1.0";
+const std::string ntTableStr = "epics:nt/NTTable:1.0";
+const std::string ntURIStr = "epics:nt/NTURI:1.0";
 
 const std::string nameStr  = "entity";
 const std::string startStr = "starttime";

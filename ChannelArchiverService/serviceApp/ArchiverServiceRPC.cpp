@@ -114,8 +114,6 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
     const epicsTimeStamp & t1,
     int64_t maxRecords)
 {
-    std::cout << "Begin Query" << std::endl;
-
     /* Create the result pvStructure */
 
     PVStructure::shared_pointer pvResult(
@@ -218,8 +216,6 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
     getIntArrayField(resultValues, "nanoseconds")->replace(freeze(nsec));
     getIntArrayField(resultValues, "status")->replace(freeze(stats));
     getIntArrayField(resultValues, "severity")->replace(freeze(sevrs));
-
-    std::cout << "End Query" << std::endl;
         
     return pvResult;
 }
@@ -232,8 +228,6 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     epics::pvData::PVStructure::shared_pointer const & pvArgument
     ) throw (RPCRequestException)
 {    
-    std::cout << *pvArgument << std::endl;
-
     /* Unpack the request type */
     std::string name;
     int64_t start = 0;

@@ -57,7 +57,7 @@ times, which are 1 hour ago and now.
     % ./gethist --start "Jan 1 1990" --end "now" --file out.txt
          --scientific janet
 
-4) The options without argument can preceed another:
+4) The options without argument can precede another:
 
     % ./gethist -xn fred
 
@@ -248,7 +248,7 @@ the ChannelArchiverService directory.
 
 4. The start_server script starts the ChannelArchiverService server using the
 data supplied in the directory "data". Should you wish to use other data you
-need have data in the ususal format created by the ChannelArchiver application,
+need have data in the usual format created by the ChannelArchiver application,
 including the index file, and will need to modify the start_server script to
 point to this as described below (see the ChannelArchiver manual, for example,
 
