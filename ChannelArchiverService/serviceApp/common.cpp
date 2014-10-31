@@ -101,6 +101,25 @@ epics::pvData::StructureConstPtr makeArchiverResponseStructure(epics::pvData::Fi
     return factory.createStructure(ntTableStr, names, fields);
 }
 
+std::string getTypeIdBase(const std::string & id)
+{
+    std::string idBase(id);
+    size_t pos = id.find_last_of(':');
+    if (pos != std::string::npos)
+        idBase = id.substr(0, pos);
+    return idBase;
+}
+std::string getTypeIdBasePlusMajor(const std::string & id)
+{
+{
+    std::string idMajor(id);
+    size_t pos = id.find_last_of('.');
+    if (pos != std::string::npos)
+        idMajor = id.substr(0, pos);
+    return idMajor;
+}
+}
+
 }
 
 }
