@@ -207,7 +207,7 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
 		}
     }
         
-    /* Pack the table into the pvStructure using some STL helper functions */
+    // Pack the table into the pvStructure using some STL helper functions
 
     PVStructurePtr resultValues = pvResult->getStructureField("value");
 
@@ -227,23 +227,43 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
 epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     epics::pvData::PVStructure::shared_pointer const & pvArgument
     ) throw (RPCRequestException)
-{    
-    /* Unpack the request type */
+{
+    // Unpack the request type
     std::string name;
     int64_t start = 0;
     int64_t end   = std::numeric_limits<int32_t>::max();
     int64_t maxRecords = 1000000000; // limit to 1e9 values unless another number is specified
 
-    bool isNTQuery = false;
+    std::string id = pvArgument->getField()->getID();
 
-    if ( (pvArgument->getSubField("path")) && (pvArgument->getStringField("path")) 
-      && (pvArgument->getSubField("query")) && (pvArgument->getStructureField("query")))
+    // If type id is empty treat as pure request (NTURI.query sent as
+    //request argument) otherwise check it's an NTURI with a query field
+
+    epics::pvData::PVStructure::shared_pointer query = pvArgument;
+
+    if (id != "")
     {
-        isNTQuery = true;
-    }
+        // Check type id is NTURI and major version is correct
+        if (getTypeIdBasePlusMajor(id) != getTypeIdBasePlusMajor(ntURIStr))
+        {
+            // Fail request, reporting whether the type itself or the
+            // major version was wrong 
+            if (getTypeIdBase(id) != getTypeIdBase(ntURIStr))
+            {
+                throw RPCRequestException(Status::STATUSTYPE_ERROR,
+                    "Request does not have correct id for normative type NTURI");
+            }
+            throw RPCRequestException(Status::STATUSTYPE_ERROR,
+                "Request uses unsupported major version of NTURI");
+        }
 
-    epics::pvData::PVStructure::shared_pointer const & query
-        = isNTQuery ? pvArgument->getStructureField("query") : pvArgument;
+        query = pvArgument->getStructureField("query");
+        if (!query)
+        {
+            throw RPCRequestException(Status::STATUSTYPE_ERROR,
+                "No structure 'query' field (required for this service)");             
+        }      
+    }
 
     if (query->getStringField(nameStr))
     {
@@ -258,17 +278,17 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
         throw RPCRequestException(Status::STATUSTYPE_ERROR, "No channel name");
     }
         
-    if ((query->getSubField(startStr)) && (query->getStringField(startStr)))
+    if (query->getStringField(startStr))
     {
         start = toLong((query->getStringField(startStr)->get()));
     }
 
-    if ((query->getSubField(endStr)) && (query->getStringField(endStr)))
+    if (query->getStringField(endStr))
     {
         end = toLong((query->getStringField(endStr)->get()));
     }
 
-    if ((query->getSubField(countStr)) && (query->getStringField(countStr)))
+    if (query->getStringField(countStr))
     {
         maxRecords = toLong((query->getStringField(countStr)->get()));
     }

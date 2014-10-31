@@ -26,7 +26,6 @@ namespace channelArchiverService
  */
 class ArchiverServiceRPC : public epics::pvAccess::RPCService
 {
-    std::vector<std::string> indexes;
 public:
     POINTER_DEFINITIONS(ArchiverServiceRPC);
 
@@ -58,6 +57,8 @@ private:
         const epicsTimeStamp & t0,
         const epicsTimeStamp & t1,
         int64_t maxRecords);
+
+    std::vector<std::string> indexes;   
 };
 
 }

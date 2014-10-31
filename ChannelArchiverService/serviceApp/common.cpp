@@ -52,8 +52,10 @@ epics::pvData::StructureConstPtr makeRequestStructure(epics::pvData::FieldCreate
     StringArray names;
 
     fields.push_back(factory.createScalar(epics::pvData::pvString));
+    fields.push_back(factory.createScalar(epics::pvData::pvString));
     fields.push_back(makeQueryStructure(factory, queryFields));
 
+    names.push_back("scheme");
     names.push_back("path");
     names.push_back("query");
 
@@ -97,6 +99,25 @@ epics::pvData::StructureConstPtr makeArchiverResponseStructure(epics::pvData::Fi
     fields.push_back(makeValuesStructure(factory));
 
     return factory.createStructure(ntTableStr, names, fields);
+}
+
+std::string getTypeIdBase(const std::string & id)
+{
+    std::string idBase(id);
+    size_t pos = id.find_last_of(':');
+    if (pos != std::string::npos)
+        idBase = id.substr(0, pos);
+    return idBase;
+}
+std::string getTypeIdBasePlusMajor(const std::string & id)
+{
+{
+    std::string idMajor(id);
+    size_t pos = id.find_last_of('.');
+    if (pos != std::string::npos)
+        idMajor = id.substr(0, pos);
+    return idMajor;
+}
 }
 
 }

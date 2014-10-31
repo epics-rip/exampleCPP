@@ -150,7 +150,7 @@ between 15-01-2009 00:00 UTC and 16-01-2009 00:00 UTC - from the service
 
 The service also accepts queries in the pure query form, i.e. a structure
 containing the string fields specified and thus the service can be queried
-using the eget -q option.
+using the eget -z option.
 
 The service's response is in the form of an NTTable normative type with the
 columns "value", "secondsPastEpoch", "nanoseconds", "status" and "severity",

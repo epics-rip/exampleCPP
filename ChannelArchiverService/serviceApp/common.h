@@ -21,7 +21,7 @@ namespace channelArchiverService
 {
 
 /**
- * Returns a scalar array of Type T from PVStructure
+ * Returns a scalar array of Type T from PVStructure.
  *
  * @param  pvStructure  the PVStructure
  * @param  name         the name of the field
@@ -85,8 +85,7 @@ size_t maxWidth(const T & t)
 extern const std::string ntTableStr;
 extern const std::string ntURIStr;
 
-
-// Fieldnames of the channel archiver service query fields
+// Fieldnames of the channel archiver service query fields.
 extern const std::string nameStr;
 extern const std::string startStr;
 extern const std::string endStr;
@@ -103,7 +102,7 @@ epics::pvData::StructureConstPtr makeQueryStructure(epics::pvData::FieldCreate &
     const std::vector<std::string> & queryFields);
 
 /**
- * Creates a request structure for a query to a service with the supplied fields/
+ * Creates a request structure for a query to a service with the supplied fields.
  *
  * @param  factory      the factory used to create the structure
  * @param  queryFields  the fields which the request query part is to contain
@@ -113,13 +112,34 @@ epics::pvData::StructureConstPtr makeRequestStructure(epics::pvData::FieldCreate
     const std::vector<std::string> & queryFields);
 
 /**
- * Creates the structure for the response to an archiver query
+ * Creates the structure for the response to an archiver query.
  *
  * @param  factory  the factory used to create the structure
  * @return          the table structure.
  */
 epics::pvData::StructureConstPtr makeArchiverResponseStructure(epics::pvData::FieldCreate & factory);
 
+/**
+ * Returns the type id including any namespace and excluding any version
+ * numbers of a given type id. If the supplied string is of the form 
+ * <namespace>/<typename>:<Major>.<Minor> it will return
+ * <namespace>/<typename>
+ *
+ * @param   id  the type id to parse
+ * @return      the type id string without version numbers
+ */
+std::string getTypeIdBase(const std::string & id);
+
+/**
+ * Returns the type id including any namespace or major version number, but
+ * excluding the minor version for a given type id. If the supplied string is
+ * of the form <namespace>/<typename>:<Major>.<Minor> it will return
+ * <namespace>/<typename>:<Major>
+ *
+ * @param   id  the type id to parse
+ * @return      the type id string without minor version 
+ */
+std::string getTypeIdBasePlusMajor(const std::string & id);
 }
 
 }

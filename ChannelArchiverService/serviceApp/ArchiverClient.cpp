@@ -83,6 +83,9 @@ PVStructure::shared_pointer createRequest(const std::string & path,
     StructureConstPtr archiverStructure = makeRequestStructure(*getFieldCreate(), fieldnames);
     PVStructure::shared_pointer request(getPVDataCreate()->createPVStructure(archiverStructure));
 
+    // set scheme.
+    request->getStringField("scheme")->put("pva");
+
     // set path.
     request->getStringField("path")->put(path);
 
