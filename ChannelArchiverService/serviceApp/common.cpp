@@ -52,8 +52,10 @@ epics::pvData::StructureConstPtr makeRequestStructure(epics::pvData::FieldCreate
     StringArray names;
 
     fields.push_back(factory.createScalar(epics::pvData::pvString));
+    fields.push_back(factory.createScalar(epics::pvData::pvString));
     fields.push_back(makeQueryStructure(factory, queryFields));
 
+    names.push_back("scheme");
     names.push_back("path");
     names.push_back("query");
 
