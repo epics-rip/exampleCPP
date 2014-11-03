@@ -24,8 +24,8 @@ class HelloService : public epics::pvAccess::RPCService
 public:
     POINTER_DEFINITIONS(HelloService);
 
-    epics::pvData::PVStructure::shared_pointer request(
-        epics::pvData::PVStructure::shared_pointer const & args
+    epics::pvData::PVStructurePtr request(
+        epics::pvData::PVStructurePtr const & args
             ) throw (epics::pvAccess::RPCRequestException);
 };
 

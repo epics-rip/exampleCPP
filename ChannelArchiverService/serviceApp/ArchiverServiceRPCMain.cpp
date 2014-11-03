@@ -29,18 +29,13 @@
 #include "ArchiverServiceRPC.h"
 
 
-using namespace std;
-using namespace epics::pvData;
-using namespace epics::pvAccess;
-
-
 int main(int argc,char *argv[])
 {
-    using namespace  epics::channelArchiverService;
+    using namespace epics::channelArchiverService;
 
     if(argc < 3)
     {
-        cerr << "usage: ArchiverServiceRPC channel index1 [index_2 ... index_n]" << endl;
+        std::cerr << "usage: ArchiverServiceRPC channel index1 [index_2 ... index_n]" << std::endl;
         exit(1);
     }
 
@@ -53,8 +48,9 @@ int main(int argc,char *argv[])
         indexFilenames.push_back(index);
     }
 
-    RPCServer server;
-    server.registerService(channel, RPCService::shared_pointer(new ArchiverServiceRPC(indexFilenames)));
+    epics::pvAccess::RPCServer server;
+    server.registerService(channel, epics::pvAccess::RPCService::shared_pointer(
+        new ArchiverServiceRPC(indexFilenames)));
     server.printInfo();
     server.run();
 

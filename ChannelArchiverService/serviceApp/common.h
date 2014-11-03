@@ -20,39 +20,53 @@ namespace epics
 namespace channelArchiverService
 {
 
+
 /**
- * Returns a scalar array of Type T from PVStructure.
+ * Returns a double array from PVStructure.
  *
  * @param  pvStructure  the PVStructure
  * @param  name         the name of the field
- * @return              the scalar array
+ * @return              the double array
  */
-template <typename T>
-typename T::shared_pointer getScalarArrayField(const pvData::PVStructurePtr & pvStructure, std::string name)
-{
-    return std::tr1::static_pointer_cast<T>(pvStructure->getScalarArrayField(name, T::typeCode));
-}
-
-// non template versions of getScalarArrayField for each type used
-
 inline pvData::PVDoubleArrayPtr getDoubleArrayField(const pvData::PVStructurePtr & pvStructure, std::string name)
 {
-    return getScalarArrayField<pvData::PVDoubleArray>(pvStructure, name);
+    return pvStructure->getSubField<pvData::PVDoubleArray>(name);
 }
 
+/**
+ * Returns a long array from PVStructure.
+ *
+ * @param  pvStructure  the PVStructure
+ * @param  name         the name of the field
+ * @return              the long array
+ */
 inline pvData::PVLongArrayPtr getLongArrayField(const pvData::PVStructurePtr & pvStructure, std::string name)
 {
-    return getScalarArrayField<pvData::PVLongArray>(pvStructure, name);
+    return pvStructure->getSubField<pvData::PVLongArray>(name);
 }
 
+/**
+ * Returns a int array from PVStructure.
+ *
+ * @param  pvStructure  the PVStructure
+ * @param  name         the name of the field
+ * @return              the int array
+ */
 inline pvData::PVIntArrayPtr getIntArrayField(const pvData::PVStructurePtr & pvStructure, std::string name)
 {
-    return getScalarArrayField<pvData::PVIntArray>(pvStructure, name);
+    return pvStructure->getSubField<pvData::PVIntArray>(name);
 }
 
+/**
+ * Returns a string array from PVStructure.
+ *
+ * @param  pvStructure  the PVStructure
+ * @param  name         the name of the field
+ * @return              the string array
+ */
 inline pvData::PVStringArrayPtr getStringArrayField(const pvData::PVStructurePtr & pvStructure, std::string name)
 {
-    return getScalarArrayField<pvData::PVStringArray>(pvStructure, name);
+    return pvStructure->getSubField<pvData::PVStringArray>(name);
 }
 
 
@@ -98,7 +112,7 @@ extern const std::string countStr;
  * @param  queryFields  the fields which the query is to contain
  * @return              the query structure
  */
-epics::pvData::StructureConstPtr makeQueryStructure(epics::pvData::FieldCreate & factory,
+pvData::StructureConstPtr makeQueryStructure(pvData::FieldCreate & factory,
     const std::vector<std::string> & queryFields);
 
 /**
@@ -108,7 +122,7 @@ epics::pvData::StructureConstPtr makeQueryStructure(epics::pvData::FieldCreate &
  * @param  queryFields  the fields which the request query part is to contain
  * @return              the request structure
  */
-epics::pvData::StructureConstPtr makeRequestStructure(epics::pvData::FieldCreate & factory,
+pvData::StructureConstPtr makeRequestStructure(pvData::FieldCreate & factory,
     const std::vector<std::string> & queryFields);
 
 /**
@@ -117,7 +131,7 @@ epics::pvData::StructureConstPtr makeRequestStructure(epics::pvData::FieldCreate
  * @param  factory  the factory used to create the structure
  * @return          the table structure.
  */
-epics::pvData::StructureConstPtr makeArchiverResponseStructure(epics::pvData::FieldCreate & factory);
+pvData::StructureConstPtr makeArchiverResponseStructure(pvData::FieldCreate & factory);
 
 /**
  * Returns the type id including any namespace and excluding any version

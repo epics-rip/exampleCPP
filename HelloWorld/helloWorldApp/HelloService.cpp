@@ -33,8 +33,8 @@ StructureConstPtr makeResponseStructure()
 
 // Definition of the Hello World RPC service.
 
-epics::pvData::PVStructure::shared_pointer HelloService::request(
-    epics::pvData::PVStructure::shared_pointer const & pvArgument
+epics::pvData::PVStructurePtr HelloService::request(
+    epics::pvData::PVStructurePtr const & pvArgument
     ) throw (pvAccess::RPCRequestException)
 {   
     // Extract the arguments. Just one in this case.

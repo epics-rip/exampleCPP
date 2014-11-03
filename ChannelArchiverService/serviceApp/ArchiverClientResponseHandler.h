@@ -103,7 +103,7 @@ public:
      *
      * @param  response         the response sent by service
      */
-    void handle(epics::pvData::PVStructure::shared_pointer const & response);
+    void handle(epics::pvData::PVStructurePtr const & response);
 
    /**
      * Reports whether the response has been handled correctly.
@@ -113,7 +113,7 @@ public:
     bool isOk() { return m_ok; }
 
 private:
-    void makeStrings(epics::pvData::PVStructure::shared_pointer const & response);
+    void makeStrings(epics::pvData::PVStructurePtr const & response);
     void outputResults();
 
     FormatParameters m_parameters;

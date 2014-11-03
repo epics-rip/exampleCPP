@@ -16,7 +16,7 @@
 #include <vector>
 #include <float.h>
 
-/* EPICS Archiver Includes */
+// EPICS Archiver Includes
 #include <epicsVersion.h>
 #include <alarm.h>
 #include <epicsMath.h>
@@ -36,7 +36,7 @@
 
 
 using namespace epics::pvData;
-using namespace epics::pvAccess;
+using epics::pvAccess::RPCRequestException;
 
 namespace epics
 {
@@ -76,13 +76,12 @@ int64_t toLong(const std::string & str)
     return result;
 }
 
-
 }
 
 /**
  * Fills in the list of table column labels
  */
-void LabelTable(PVStructure::shared_pointer pvResult)
+void LabelTable(PVStructurePtr const & pvResult)
 {
     PVStringArray::svector labels;
     labels.push_back("value");
@@ -107,21 +106,21 @@ ArchiverServiceRPC::ArchiverServiceRPC(const std::vector<std::string> & indexFil
 /**
  * Queries the EPICS R-Tree Channel Archiver, returning raw samples
  */
-PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
-    epics::pvData::PVStructure::shared_pointer const & pvArgument,
+PVStructurePtr ArchiverServiceRPC::queryRaw(
+    PVStructurePtr const & pvArgument,
     std::string & name, 
     const epicsTimeStamp & t0,
     const epicsTimeStamp & t1,
     int64_t maxRecords)
 {
-    /* Create the result pvStructure */
+    // Create the result pvStructure
 
-    PVStructure::shared_pointer pvResult(
+    PVStructurePtr pvResult(
         getPVDataCreate()->createPVStructure(makeArchiverResponseStructure(*getFieldCreate())));
 
     LabelTable(pvResult);
 
-    /* The result table is built up as one STL vector per column */
+    // The result table is built up as one STL vector per column
     
     PVDoubleArray::svector values;
     PVLongArray::svector   secPastEpoch;
@@ -134,7 +133,7 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
     for (std::vector<std::string>::const_iterator it = indexes.begin();
     	 it != indexes.end(); ++it)
     {
-        /* Open the Index */
+        // Open the Index
 		AutoPtr<Index> index(new AutoIndex());
 
 		try
@@ -150,11 +149,11 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
 		const epicsTime start = t0;
 		const epicsTime end = t1;
 
-		/* Create a Database Cursor */
+		// Create a Database Cursor
 
 		AutoPtr<DataReader> reader(new RawDataReader(*index));
 
-		/* Seek to the first sample at or before 'start' for the named channel */
+		// Seek to the first sample at or before 'start' for the named channel
 		const RawValue::Data *data = 0;
 		try
 		{
@@ -165,15 +164,15 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
 			throw RPCRequestException(Status::STATUSTYPE_ERROR, "Error querying archive");
 		}
 
-		/* find returns the reading immediately before start, unless start date is
-		   before first reading in archive, so skip to next.*/
+		// find returns the reading immediately before start, unless start date is
+		//  before first reading in archive, so skip to next.
 		if((data != 0) && (RawValue::getTime(data) < start))
 		{
 			data = reader->next();
 		}
 
 
-		/* Fill the table */
+		// Fill the table
 
 		for(; recordCount < maxRecords; recordCount++)
 		{
@@ -183,7 +182,7 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
 			}
 			double value;
 
-			/* missing support for waveforms and strings */
+			// missing support for waveforms and strings
 
 			RawValue::getDouble(reader->getType(), reader->getCount(), data, value, 0);
 			epicsTimeStamp t = RawValue::getTime(data);
@@ -224,9 +223,8 @@ PVStructure::shared_pointer ArchiverServiceRPC::queryRaw(
 /**
  * Queries the EPICS R-Tree Channel Archiver, returning raw samples
  */
-epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
-    epics::pvData::PVStructure::shared_pointer const & pvArgument
-    ) throw (RPCRequestException)
+PVStructurePtr ArchiverServiceRPC::request(PVStructurePtr const & pvArgument)
+    throw (RPCRequestException)
 {
     // Unpack the request type
     std::string name;
@@ -239,7 +237,7 @@ epics::pvData::PVStructure::shared_pointer ArchiverServiceRPC::request(
     // If type id is empty treat as pure request (NTURI.query sent as
     //request argument) otherwise check it's an NTURI with a query field
 
-    epics::pvData::PVStructure::shared_pointer query = pvArgument;
+    PVStructurePtr query = pvArgument;
 
     if (id != "")
     {

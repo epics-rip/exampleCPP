@@ -31,7 +31,6 @@
 #include "ArchiverClientResponseHandler.h"
 
 
-using namespace std::tr1;
 using namespace epics::pvData;
 
 namespace epics
@@ -50,38 +49,18 @@ enum DebugLevel
 };
 
 /**
- * Creates a plain, strings only, query request.
- *
- * @param  fieldnames    the names of fields in the query
- * @return values        the values of fields in the query
- */
-PVStructure::shared_pointer createQuery(const std::vector<std::string> & fieldnames,
-    const std::vector<std::string> & values)
-{
-    StructureConstPtr archiverStructure = makeQueryStructure(*getFieldCreate(), fieldnames);
-    PVStructure::shared_pointer query(getPVDataCreate()->createPVStructure(archiverStructure));
-
-    // Set request.
-    for (size_t i = 0; i < fieldnames.size(); ++i)
-    {
-        query->getStringField(fieldnames[i])->put(values[i]);
-    } 
-    return query;
-}
-
-/**
  * Creates an NTURI request.
  *
  * @param  path          the value of the NTURI path field
  * @param  fieldnames    the names of fields in the NTURI query
  * @return values        the values of fields in the NTURI query
  */
-PVStructure::shared_pointer createRequest(const std::string & path,
+PVStructurePtr createRequest(const std::string & path,
     const std::vector<std::string> & fieldnames,
     const std::vector<std::string> & values)
 {    
     StructureConstPtr archiverStructure = makeRequestStructure(*getFieldCreate(), fieldnames);
-    PVStructure::shared_pointer request(getPVDataCreate()->createPVStructure(archiverStructure));
+    PVStructurePtr request(getPVDataCreate()->createPVStructure(archiverStructure));
 
     // set scheme.
     request->getStringField("scheme")->put("pva");
@@ -90,7 +69,7 @@ PVStructure::shared_pointer createRequest(const std::string & path,
     request->getStringField("path")->put(path);
 
     // Set query.
-    PVStructure::shared_pointer query = request->getStructureField("query");
+    PVStructurePtr query = request->getStructureField("query");
 
     for (size_t i = 0; i < fieldnames.size(); ++i)
     {
@@ -296,9 +275,9 @@ int main (int argc, char *argv[])
     }
 
     epics::pvAccess::pvAccessSetLogLevel(
-        (debugLevel == QUIET) ? epics::pvAccess::logLevelOff
-                              : (debugLevel == NORMAL) ? epics::pvAccess::logLevelInfo
-                                                       : epics::pvAccess::logLevelDebug);
+        (debugLevel == QUIET)  ? epics::pvAccess::logLevelOff  :
+        (debugLevel == NORMAL) ? epics::pvAccess::logLevelInfo :
+        epics::pvAccess::logLevelDebug);
 
     makeOutputtedFields(outputtedFields, parameters.outputtedFields);
 
@@ -336,8 +315,7 @@ int main (int argc, char *argv[])
             }
 
             //  Create query and send to archiver service.
-            //PVStructure::shared_pointer queryRequest = createQuery(queryFieldnames, queryValues);
-            PVStructure::shared_pointer queryRequest = createRequest(serviceName, queryFieldnames, queryValues);
+            PVStructurePtr queryRequest = createRequest(serviceName, queryFieldnames, queryValues);
 
             if (debugLevel == VERBOSE)
             {
@@ -346,7 +324,7 @@ int main (int argc, char *argv[])
             }
 
             double timeOut = 3.0;
-            PVStructure::shared_pointer queryResponse = client->request(queryRequest, timeOut);
+            PVStructurePtr queryResponse = client->request(queryRequest, timeOut);
 
             if (!queryResponse)
             {

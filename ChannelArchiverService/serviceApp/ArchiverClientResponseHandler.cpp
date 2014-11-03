@@ -169,18 +169,15 @@ bool isPresent(const VT & value, CT & container)
     return (std::find(container.begin(), container.end(), value) != container.end());
 }
 
-/*
- * RequestResponseHandler functions
- */
 
-void RequestResponseHandler::handle(epics::pvData::PVStructure::shared_pointer const & response)
+void RequestResponseHandler::handle(epics::pvData::PVStructurePtr const & response)
 {
     makeStrings(response);
     outputResults();
 }
 
 
-void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_pointer const & response)
+void RequestResponseHandler::makeStrings(epics::pvData::PVStructurePtr const & response)
 {
     using namespace epics::pvData;
     using namespace std;
@@ -347,7 +344,7 @@ void RequestResponseHandler::makeStrings(epics::pvData::PVStructure::shared_poin
 
 
     //  Alarm string.
-    int alarmStringsLength = std::min(secPastEpochsLength, nsecsLength);
+    int alarmStringsLength = min(secPastEpochsLength, nsecsLength);
     
     if (isPresent(ALARM, m_parameters.outputtedFields))
     {
@@ -372,12 +369,12 @@ void RequestResponseHandler::outputResults()
 
     if (!m_ok)
     {
-        throw std::logic_error("attempted to output invalid data");
+        throw logic_error("attempted to output invalid data");
     }
 
     //  Now output archive data.
     bool outputToFile = m_parameters.filename.compare(string(""));
-    std::ofstream outfile;
+    ofstream outfile;
 
     if (outputToFile)
     {
@@ -415,9 +412,8 @@ void RequestResponseHandler::outputResults()
     {
         valuesLength = outputFieldValues[m_parameters.outputtedFields[0]].size();
     }
- 
 
-    std::vector<std::string> columnTitles;
+    vector<string> columnTitles;
     columnTitles.resize(m_parameters.outputtedFields.size());
 
     if (m_parameters.printColumnTitles)
@@ -447,7 +443,7 @@ void RequestResponseHandler::outputResults()
                 {
                     OutputField field = m_parameters.outputtedFields[i];
                     const string & columnTitle = columnTitles[i];
-                    maxWidths[field] = std::max(maxWidths[field], columnTitle.length());
+                    maxWidths[field] = max(maxWidths[field], columnTitle.length());
                     out << setw(maxWidths[field]) << left << columnTitle << columnSpace; 
                 }
                 out << "\n";
@@ -474,7 +470,7 @@ void RequestResponseHandler::outputResults()
             titleWidth = maxWidth(columnTitles);
         }
 
-        std::vector<size_t> maxWidths;
+        vector<size_t> maxWidths;
         maxWidths.resize(valuesLength, 0);
 
         for (size_t i = 0; i < m_parameters.outputtedFields.size(); ++i)
@@ -485,7 +481,7 @@ void RequestResponseHandler::outputResults()
             {
                 const string & fieldValue = outputFieldValues[field][j];
                 size_t fieldLength = fieldValue.length();
-                maxWidths[j] = std::max(maxWidths[j], fieldLength);   
+                maxWidths[j] = max(maxWidths[j], fieldLength);   
             }
         }
 
