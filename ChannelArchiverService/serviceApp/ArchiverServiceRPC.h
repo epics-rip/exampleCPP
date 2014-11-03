@@ -46,13 +46,13 @@ public:
 
     virtual ~ArchiverServiceRPC();
 
-    epics::pvData::PVStructure::shared_pointer request(
-        epics::pvData::PVStructure::shared_pointer const & args
+    epics::pvData::PVStructurePtr request(
+        epics::pvData::PVStructurePtr const & args
     ) throw (epics::pvAccess::RPCRequestException);
 
 private:
-    epics::pvData::PVStructure::shared_pointer queryRaw(
-        epics::pvData::PVStructure::shared_pointer const & pvArgument,
+    epics::pvData::PVStructurePtr queryRaw(
+        epics::pvData::PVStructurePtr const & pvArgument,
         std::string & name, 
         const epicsTimeStamp & t0,
         const epicsTimeStamp & t1,

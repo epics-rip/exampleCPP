@@ -7,6 +7,7 @@
 
 #include "common.h"
 
+using namespace epics::pvData;
 
 namespace epics
 {
@@ -23,12 +24,9 @@ const std::string endStr   = "endtime";
 const std::string countStr = "maxrecords";
 
 
-
-epics::pvData::StructureConstPtr makeQueryStructure(epics::pvData::FieldCreate & factory,
+StructureConstPtr makeQueryStructure(FieldCreate & factory,
     const std::vector<std::string> & queryFields)
 {
-    using namespace epics::pvData;
-
     FieldConstPtrArray fields;
     StringArray names;
 
@@ -36,23 +34,21 @@ epics::pvData::StructureConstPtr makeQueryStructure(epics::pvData::FieldCreate &
          it!= queryFields.end();
          ++it)
     {
-        fields.push_back(factory.createScalar(epics::pvData::pvString));
+        fields.push_back(factory.createScalar(pvString));
         names.push_back(*it);
     }
 
     return factory.createStructure(names, fields);
 }
 
-epics::pvData::StructureConstPtr makeRequestStructure(epics::pvData::FieldCreate & factory,
+StructureConstPtr makeRequestStructure(FieldCreate & factory,
     const std::vector<std::string> & queryFields)
 {
-    using namespace epics::pvData;
-
     FieldConstPtrArray fields;
     StringArray names;
 
-    fields.push_back(factory.createScalar(epics::pvData::pvString));
-    fields.push_back(factory.createScalar(epics::pvData::pvString));
+    fields.push_back(factory.createScalar(pvString));
+    fields.push_back(factory.createScalar(pvString));
     fields.push_back(makeQueryStructure(factory, queryFields));
 
     names.push_back("scheme");
@@ -63,10 +59,8 @@ epics::pvData::StructureConstPtr makeRequestStructure(epics::pvData::FieldCreate
 }
 
 
-epics::pvData::StructureConstPtr makeValuesStructure(epics::pvData::FieldCreate & factory)
+StructureConstPtr makeValuesStructure(FieldCreate & factory)
 {
-    using namespace epics::pvData;
-    
     FieldConstPtrArray fields;
     StringArray names;
 
@@ -76,26 +70,24 @@ epics::pvData::StructureConstPtr makeValuesStructure(epics::pvData::FieldCreate 
     names.push_back("status");
     names.push_back("severity");
 
-    fields.push_back(factory.createScalarArray(epics::pvData::pvDouble));
-    fields.push_back(factory.createScalarArray(epics::pvData::pvLong));
-    fields.push_back(factory.createScalarArray(epics::pvData::pvInt));
-    fields.push_back(factory.createScalarArray(epics::pvData::pvInt));
-    fields.push_back(factory.createScalarArray(epics::pvData::pvInt));
+    fields.push_back(factory.createScalarArray(pvDouble));
+    fields.push_back(factory.createScalarArray(pvLong));
+    fields.push_back(factory.createScalarArray(pvInt));
+    fields.push_back(factory.createScalarArray(pvInt));
+    fields.push_back(factory.createScalarArray(pvInt));
 
     return factory.createStructure(names, fields);
 }
 
-epics::pvData::StructureConstPtr makeArchiverResponseStructure(epics::pvData::FieldCreate & factory)
+StructureConstPtr makeArchiverResponseStructure(FieldCreate & factory)
 {
-    using namespace epics::pvData;
-    
     FieldConstPtrArray fields;
     StringArray names;
 
     names.push_back("labels");
     names.push_back("value");
 
-    fields.push_back(factory.createScalarArray(epics::pvData::pvString));
+    fields.push_back(factory.createScalarArray(pvString));
     fields.push_back(makeValuesStructure(factory));
 
     return factory.createStructure(ntTableStr, names, fields);
@@ -109,15 +101,14 @@ std::string getTypeIdBase(const std::string & id)
         idBase = id.substr(0, pos);
     return idBase;
 }
+
 std::string getTypeIdBasePlusMajor(const std::string & id)
-{
 {
     std::string idMajor(id);
     size_t pos = id.find_last_of('.');
     if (pos != std::string::npos)
         idMajor = id.substr(0, pos);
     return idMajor;
-}
 }
 
 }
