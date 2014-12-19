@@ -15,7 +15,9 @@
 DEFAULT_BASE=3.14.12.4
 
 BASE=${1:-${DEFAULT_BASE}}
-[ "${1}" = ${DEFAULT_BASE} -o -z "${1}" ] && BUILD_DOCS=YES
+if [ "${1}" = "${DEFAULT_BASE}" -o -z "${1}" ]; then
+    BUILD_DOCS=YES
+fi
 
 ###########################################
 # Fetch and unpack dependencies
@@ -70,4 +72,6 @@ echo No binary artifacts to create.
 # Publish documentation
 
 echo No generated documentation to install.
-#[ "${BUILD_DOCS}" ] && rsync -aqP --delete -e ssh documentation epics-jenkins@web.sourceforge.net:/home/project-web/epics-pvdata/htdocs/docbuild/exampleCPP/tip
+#if [ "${BUILD_DOCS}" ]; then
+#    rsync -aqP --delete -e ssh documentation epics-jenkins@web.sourceforge.net:/home/project-web/epics-pvdata/htdocs/docbuild/exampleCPP/tip
+#fi
