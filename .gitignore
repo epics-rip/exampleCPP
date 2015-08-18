@@ -1,6 +1,6 @@
 bin/
-O.*/
 **/configure/RELEASE.*
 **/configure/CONFIG_SITE.*
 ChannelArchiverService/test/results/
-
+**/O.*
+QtC-*
