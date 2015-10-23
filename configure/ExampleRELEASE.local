@@ -1,0 +1,11 @@
+
+EPICS_BASE=/home/install/epics/base
+EPICS4_DIR=/home/epicsv4
+PVCOMMON=${EPICS4_DIR}/pvCommonCPP
+PVDATA=${EPICS4_DIR}/pvDataCPP
+PVACCESS=${EPICS4_DIR}/pvAccessCPP
+PVASRV=${EPICS4_DIR}/pvaSrv
+NORMATIVETYPES=${EPICSV4}/normativeTypesCPP
+PVDATABASE=${EPICSV4}/pvDatabaseCPP
+PVACLIENT=${EPICSV4}/pvaClientCPP
+

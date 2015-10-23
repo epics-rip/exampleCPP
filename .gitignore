@@ -1,6 +1,14 @@
 bin/
-**/configure/RELEASE.*
-**/configure/CONFIG_SITE.*
+lib/
+doc/
+include/
+db/
+dbd/
+documentation/html
+documentation/*.tag
+envPaths
+configure/*.local
+!configure/ExampleRELEASE.local
 ChannelArchiverService/test/results/
 */**/O.*
 QtC-*
