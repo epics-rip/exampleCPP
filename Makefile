@@ -4,8 +4,6 @@ TOP = .
 include $(TOP)/configure/CONFIG
 
 DIRS := configure
-DIRS += src
-src_DEPEND_DIRS = configure
 
 DIRS += database
 EMBEDDED_TOPS := $(EMBEDDED_TOPS) $(filter-out $(EMBEDDED_TOPS), database)

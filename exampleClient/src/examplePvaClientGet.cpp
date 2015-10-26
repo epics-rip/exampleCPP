@@ -69,21 +69,6 @@ static void exampleDoubleArray(PvaClientPtr const &pva)
     }
 }
 
-static void examplePowerSupply(PvaClientPtr const &pva)
-{
-    cout << "example powerSupply\n";
-    PVStructurePtr pvStructure;
-    try {
-        cout << "short way\n";
-        pvStructure =  pva->channel("PVRpowerSupply")->
-            get("field()")->getData()->getPVStructure();
-        cout << pvStructure << endl;
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-    }
-     
-}
-
 static void exampleCADouble(PvaClientPtr const &pva)
 {
     cout << "example double scalar\n";
@@ -138,7 +123,6 @@ int main(int argc,char *argv[])
     PvaClientPtr pva= PvaClient::create();
     exampleDouble(pva);
     exampleDoubleArray(pva);
-    examplePowerSupply(pva);
     exampleCADouble(pva);
     exampleCADoubleArray(pva);
     cout << "done\n";

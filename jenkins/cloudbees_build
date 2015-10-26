@@ -21,6 +21,10 @@ USE_MB=${2:-"MB_NO"}
 PVCOMMON_BRANCH=""
 PVDATA_BRANCH=""
 PVACCESS_BRANCH=""
+PVASRV_BRANCH=""
+NORMATIVETYPES_BRANCH=""
+PVDATABASE_BRANCH=""
+PVACLIENT_BRANCH=""
 
 ###########################################
 # Fetch and unpack dependencies

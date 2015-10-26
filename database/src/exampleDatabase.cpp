@@ -26,8 +26,6 @@
 #include <pv/serverContext.h>
 #include <pv/traceRecord.h>
 
-#include <pv/powerSupply.h>
-
 #define epicsExportSharedSymbols
 #include <pv/exampleDatabase.h>
 #include <pv/exampleHello.h>
@@ -210,15 +208,6 @@ void ExampleDatabase::create()
     createRegularUnionArrayRecord(master,"PVRregularUnionArray");
     createVariantUnionArrayRecord(master,"PVRvariantUnionArray");
     createDumbPowerSupplyRecord(master,"PVRdumbPowerSupply");
-    recordName = "PVRpowerSupply";
-    PVStructurePtr pvStructure = createPowerSupply();
-    PowerSupplyPtr psr = PowerSupply::create(recordName,pvStructure);
-    if(!psr) {
-          cout << "PowerSupply::create failed" << endl;
-    } else {
-        result = master->addRecord(psr);
-        if(!result) cout<< "record " << recordName << " not added" << endl;
-    }
     recordName = "PVRhelloPutGet";
     result = master->addRecord(ExampleHello::create(recordName));
     if(!result) cout<< "record " << recordName << " not added" << endl;
