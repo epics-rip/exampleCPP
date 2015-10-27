@@ -7,8 +7,8 @@ dbd/
 documentation/html
 documentation/*.tag
 envPaths
-configure/*.local
-!configure/ExampleRELEASE.local
+*/configure/*.local
+!*/configure/ExampleRELEASE.local
 ChannelArchiverService/test/results/
 */**/O.*
 QtC-*
