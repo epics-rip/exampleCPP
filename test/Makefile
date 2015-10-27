@@ -1,7 +1,9 @@
 # Makefile for the pvAccess tests
 
-TOP = ..
+TOP = .
 include $(TOP)/configure/CONFIG
+
+DIRS += configure
 
 TESTPROD_HOST += pvaClientTest
 pvaClientTest_SRCS = pvaClientTest 
