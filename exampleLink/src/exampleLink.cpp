@@ -105,9 +105,12 @@ bool ExampleLink::init()
 
 void ExampleLink::process()
 {
+cout << "ExampleLink::process()\n";
     status = Status::Ok;
     channelGet->get();
+cout << "calling event.wait\n";
     event.wait();
+cout << "after calling event.wait\n";
     timeStamp.getCurrent();
     pvTimeStamp.set(timeStamp);
     AlarmSeverity severity(noAlarm);
@@ -120,10 +123,12 @@ void ExampleLink::process()
         }
         alarm.setSeverity(severity);
     } else {
+cout << "calling copyUnchecked\n";
         pvValue->copyUnchecked(*getPVValue);
     }
     alarm.setMessage(status.getMessage());
     pvAlarm.set(alarm);
+cout << "ExampleLink::process() returning\n";
 }
 
 void ExampleLink::channelCreated(
@@ -146,6 +151,7 @@ void ExampleLink::channelGetConnect(
         ChannelGet::shared_pointer const & channelGet,
         StructureConstPtr const & structure)
 {
+cout << "ExampleLink::channelGetConnect\n";
     this->status = status;
     this->channelGet = channelGet;
     getPVStructure = getPVDataCreate()->createPVStructure(structure);
@@ -158,6 +164,7 @@ void ExampleLink::getDone(
         PVStructurePtr const & pvStructure,
         BitSetPtr const & bitSet)
 {
+cout << "ExampleLink::channelGetDone\n";
     this->status = status;
     getPVStructure->copyUnchecked(*pvStructure);
     this->bitSet = bitSet;
@@ -185,7 +192,9 @@ cout << "ExampleLink::monitorEvent\n";
            throw;
     }
     unlock();
+cout << "ExampleLink::monitorEvent calling poll\n";
     MonitorElementPtr monitorElement = monitor->poll();
+cout << "ExampleLink::monitorEvent monitorElement " << monitorElement << endl;
     if(monitorElement) monitor->release(monitorElement);
 }
 
