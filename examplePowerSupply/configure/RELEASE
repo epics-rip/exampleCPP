@@ -1,8 +1,7 @@
-# PVEXAMPLETESTCPP/example RELEASE - Location of external support modules
+# RELEASE - Location of external support modules
 #
 # IF YOU CHANGE this file or any file it includes you must
-# subsequently do a "gnumake rebuild" in the application's
-# top level directory.
+# do a "gnumake rebuild" in the application's top level directory.
 #
 # The build process does not check dependencies against files
 # that are outside this application, thus you should also do a
@@ -16,27 +15,12 @@
 
 # EPICS V4 Developers: Do not edit the locations in this file!
 #
-# Create a file RELEASE.local pointing to your places
-# for the dependencies, e.g.
-#   PVACCESS = /path/to/epics/pvAccessCPP
-#   PVDATA   = /path/to/epics/pvDataCPP
-#   PVCOMMON = /path/to/epics/pvCommonCPP
-#   EPICS_BASE = /path/to/epics/base
+# To create a file RELEASE.local in this directory
+#     copy ExampleRELEASE.local to RELEASE.local
+#     edit RELEASE.local
+#     rebuild 
 
-# If this example is built in a directory under PVEXAMPLETESTCPP,
-# use the following definitions:
-
-PVEXAMPLETEST = $(TOP)/..
-PVEXAMPLETESTTEST = $(TOP)/../test
 -include $(TOP)/../../RELEASE.local
--include $(TOP)/../configure/RELEASE.local
+-include $(TOP)/../RELEASE.local
+-include $(TOP)/configure/RELEASE.local
 
-# If you copied this example from PVEXAMPLETESTCPP to be built as a
-# standalone TOP, define
-#   PVEXAMPLETEST = /path/to/epics/PVEXAMPLETESTCPP
-#   PVEXAMPLETESTTEST = /path/to/epics/PVEXAMPLETESTCPP/test
-# in the appropriate RELEASE[.local],
-# and use the following definitions instead:
-
-#-include $(TOP)/../RELEASE.local
-#-include $(TOP)/configure/RELEASE.local

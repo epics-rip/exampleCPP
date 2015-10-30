@@ -1,4 +1,4 @@
-# pvDatabaseCPP/example RELEASE - Location of external support modules
+# RELEASE - Location of external support modules
 #
 # IF YOU CHANGE this file or any file it includes you must
 # do a "gnumake rebuild" in the application's top level directory.
