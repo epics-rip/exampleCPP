@@ -41,7 +41,6 @@ typedef std::tr1::shared_ptr<ExampleLink> ExampleLinkPtr;
 class epicsShareClass ExampleLink :
     public PVRecord,
     public epics::pvAccess::ChannelRequester,
-    public epics::pvAccess::ChannelGetRequester,
     public epics::pvData::MonitorRequester
 {
 public:
@@ -61,15 +60,6 @@ public:
     virtual void channelStateChange(
         epics::pvAccess::Channel::shared_pointer const & channel,
         epics::pvAccess::Channel::ConnectionState connectionState);
-    virtual void channelGetConnect(
-        const epics::pvData::Status& status,
-        epics::pvAccess::ChannelGet::shared_pointer const & channelGet,
-        epics::pvData::StructureConstPtr const & structure);
-    virtual void getDone(
-        const epics::pvData::Status& status,
-        epics::pvAccess::ChannelGet::shared_pointer const & channelGet,
-        epics::pvData::PVStructurePtr const & pvStructure,
-        epics::pvData::BitSetPtr const &bitSet);
     virtual std::string getRequesterName() {return channelName;}
     virtual void message(
         std::string const & message,
@@ -91,17 +81,9 @@ private:
     std::string providerName;
     std::string channelName;
     epics::pvData::PVDoubleArrayPtr pvValue;
-    epics::pvData::PVTimeStamp pvTimeStamp;
-    epics::pvData::TimeStamp timeStamp;
-    epics::pvData::PVAlarm pvAlarm;
-    epics::pvData::Alarm alarm;
     epics::pvAccess::Channel::shared_pointer channel;
-    epics::pvAccess::ChannelGet::shared_pointer channelGet;
     epics::pvData::Event event;
     epics::pvData::Status status;
-    epics::pvData::PVStructurePtr getPVStructure;
-    epics::pvData::BitSetPtr bitSet;
-    epics::pvData::PVDoubleArrayPtr getPVValue;
     epics::pvData::MonitorPtr monitor;
 };
 

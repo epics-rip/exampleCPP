@@ -30,7 +30,7 @@ ExampleLinkPtr ExampleLink::create(
     string const & channelName)
 {
     PVStructurePtr pvStructure = getStandardPVField()->scalarArray(
-        pvDouble,"alarm.timeStamp");
+        pvDouble,"timeStamp");
     ExampleLinkPtr pvRecord(
         new ExampleLink(
            recordName,providerName,channelName,pvStructure));    
@@ -59,8 +59,6 @@ bool ExampleLink::init()
     initPVRecord();
 
     PVStructurePtr pvStructure = getPVRecordStructure()->getPVStructure();
-    pvTimeStamp.attach(pvStructure->getSubField("timeStamp"));
-    pvAlarm.attach(pvStructure->getSubField("alarm"));
     pvValue = pvStructure->getSubField<PVDoubleArray>("value");
     if(!pvValue) {
         return false;
@@ -81,22 +79,8 @@ bool ExampleLink::init()
              << status.getMessage() << endl;
         return false;
     }
-    ChannelGetRequester::shared_pointer channelGetRequester =
-        dynamic_pointer_cast<ChannelGetRequester>(getPtrSelf());
     PVStructurePtr pvRequest = CreateRequest::create()->createRequest(
-        "value,alarm,timeStamp");
-    channelGet = channel->createChannelGet(channelGetRequester,pvRequest);
-    event.wait();
-    if(!status.isOK()) {
-        cout << getRecordName() << " createChannelGet failed "
-             << status.getMessage() << endl;
-        return false;
-    }
-    getPVValue = getPVStructure->getSubField<PVDoubleArray>("value");
-    if(!getPVValue) {
-        cout << getRecordName() << " get value not  PVDoubleArray" << endl;
-        return false;
-    }
+        "value");
     MonitorRequester::shared_pointer  monitorRequester =
         dynamic_pointer_cast<MonitorRequester>(getPtrSelf());
     monitor = channel->createMonitor(monitorRequester,pvRequest);
@@ -105,30 +89,7 @@ bool ExampleLink::init()
 
 void ExampleLink::process()
 {
-cout << "ExampleLink::process()\n";
-    status = Status::Ok;
-    channelGet->get();
-cout << "calling event.wait\n";
-    event.wait();
-cout << "after calling event.wait\n";
-    timeStamp.getCurrent();
-    pvTimeStamp.set(timeStamp);
-    AlarmSeverity severity(noAlarm);
-    if(!status.isOK()) {
-        switch(status.getType()) {
-        case Status::STATUSTYPE_OK: severity = noAlarm; break;
-        case Status::STATUSTYPE_WARNING: severity = minorAlarm; break;
-        case Status::STATUSTYPE_ERROR: severity = majorAlarm; break;
-        case Status::STATUSTYPE_FATAL: severity = invalidAlarm; break;
-        }
-        alarm.setSeverity(severity);
-    } else {
-cout << "calling copyUnchecked\n";
-        pvValue->copyUnchecked(*getPVValue);
-    }
-    alarm.setMessage(status.getMessage());
-    pvAlarm.set(alarm);
-cout << "ExampleLink::process() returning\n";
+    PVRecord::process();
 }
 
 void ExampleLink::channelCreated(
@@ -146,31 +107,6 @@ void ExampleLink::channelStateChange(
 {
 }
 
-void ExampleLink::channelGetConnect(
-        const Status& status,
-        ChannelGet::shared_pointer const & channelGet,
-        StructureConstPtr const & structure)
-{
-cout << "ExampleLink::channelGetConnect\n";
-    this->status = status;
-    this->channelGet = channelGet;
-    getPVStructure = getPVDataCreate()->createPVStructure(structure);
-    event.signal();
-}
-
-void ExampleLink::getDone(
-        const Status& status,
-        ChannelGet::shared_pointer const & channelGet,
-        PVStructurePtr const & pvStructure,
-        BitSetPtr const & bitSet)
-{
-cout << "ExampleLink::channelGetDone\n";
-    this->status = status;
-    getPVStructure->copyUnchecked(*pvStructure);
-    this->bitSet = bitSet;
-    event.signal();
-}
-
 void ExampleLink::monitorConnect(
         const epics::pvData::Status& status,
         epics::pvData::Monitor::shared_pointer const & monitor,
@@ -181,21 +117,26 @@ void ExampleLink::monitorConnect(
 
 void ExampleLink::monitorEvent(epics::pvData::MonitorPtr const & monitor)
 {
-cout << "ExampleLink::monitorEvent\n";
-    lock();
-    try {
-        beginGroupPut();
-        process();
-        endGroupPut();
-    } catch(...) {
+    while(true) {
+        MonitorElementPtr monitorElement = monitor->poll();
+        if(!monitorElement) break;
+        PVStructurePtr pvStructurePtr = monitorElement->pvStructurePtr;
+        PVDoubleArrayPtr pvDoubleArray = pvStructurePtr->getSubField<PVDoubleArray>("value");
+        if(!pvDoubleArray) throw std::runtime_error("value is not a double array");
+
+        lock();
+        try {
+            beginGroupPut();
+            pvValue->replace(pvDoubleArray->view());
+            process();
+            endGroupPut();
+        } catch(...) {
            unlock();
            throw;
+        }
+        unlock();
+        monitor->release(monitorElement);
     }
-    unlock();
-cout << "ExampleLink::monitorEvent calling poll\n";
-    MonitorElementPtr monitorElement = monitor->poll();
-cout << "ExampleLink::monitorEvent monitorElement " << monitorElement << endl;
-    if(monitorElement) monitor->release(monitorElement);
 }
 
 void ExampleLink::unlisten(epics::pvData::MonitorPtr const & monitor)
