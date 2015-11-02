@@ -1,353 +1,48 @@
+# exampleServer
 
-<h1>exampleServer</h1>
-<h2>Building</h2>
-<p>If a proper RELEASE.local file exists one or two directory levels above <b>exampleServer</b>
-then just type:</p>
-<pre>
-make
-</pre>
-<p>
-It can also be built by</p>
-<pre>
-cp configure/ExampleRELEASE.local configure/RELEASE.local
-edit configure/RELEASE.local
-make
-</pre>
+The example implements a simple service that has a top level pvStructure:
 
-<h2>To start the exampleServer as part of a V3 IOC</h2>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/master/exampleCPP/exampleServer/iocBoot/exampleServer
-mrk&gt; ../../bin/linux-x86_64/exampleServer st.cmd
-</pre>
-
-<h2>To start the exampleServer as main program</h2>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/master/exampleCPP/exampleServer
-mrk&gt; bin/linux-x86_64/exampleServerMain
-</pre>
+    structure
+        structure argument
+            string value
+        structure result
+            string value
+            time_t timeStamp
+                long secondsPastEpoch
+                int nanoseconds
+                int userTag
 
 
-<h2>Overview</h2>
-<p>The example implements a simple service that has a top level pvStructure:
-</p>
-<pre>
-structure
-    structure argument
-        string value
-    structure result
-        string value
-        time_t timeStamp
-            long secondsPastEpoch
-            int nanoseconds
-            int userTag
-</pre>
-<p>It is designed to be accessed via a channelPutGet request.
+It is designed to be accessed via a channelPutGet request.
 The client sets argument.value
 When the record processes it sets result.value to "Hello " 
 concatenated with argument.value.
 Thus if the client sets argument.value equal to "World"
 result.value will be "Hello World".
 In addition the timeStamp is set to the time when process is called.</p>
-<p>
-The example can be run on linux as follows:</p>
-<pre>
-mrk&gt; pwd
-/home/hg/pvExampleTestCPP/exampleService
-mrk&gt; bin/linux-x86_64/exampleService
-</pre>
-<h2>Directory Layout</h2>
-<p>
-The directory layout is:
-</p>
-<pre>
-exampleServer
-    configure
-       ExampleRELEASE.local
-       ...
-    src
-       exampleServer.h
-       exampleServer.cpp
-       exampleServerInclude.dbd
-       exampleServerMain.cpp
-       exampleServerRegister.cpp
-       exampleServerRegister.dbd
-    ioc
-       Db
-          ...
-       src
-          exampleServerInclude.dbd
-          exampleServerMain.cpp
-   iocBoot
-      exampleServer
-         st.cmd
-         ...
-</pre>
-where
-<dl>
-  <dt>ExampleRELEASE.local</dt>
-     <dd>
-     If you make a copy of exampleServer and use it
-     to create a new server,
-    This is the file that must be copied to RELEASE.local
-     and edited.</dd>
-   <dt>exampleServer.h</dt>
-     <dd>The header file for the service.</dd>
-   <dt>exampleServer.cpp</dt>
-     <dd>The service implementation.</dd>
-   <dt>exampleServerMain.cpp</dt>
-     <dd>A main program that runs the example so that it can be accessed
-       by a pvAccess client.
-     </dd>
-   <dt>exampleServerInclude.dbd</dt>
-     <dd>This has a register command so that the service can be started
-       on a V3 IOC via iocsh.
-      </dd>
-   <dt>exampleServerRegister.cpp</dt>
-      <dd>This has the code to start the service via the following iocsh
-       command.
-      </dd>
-   <dt>exampleServerRegister.dbd</dt>
-       <dd>This is the file that is used to create the shell command
-        exampleServerCreateRecord.
-<pre>
-exampleServerCreateRecord exampleServer
-</pre>
-       Multiple commands can be issued to create multiple service records.
-       </dd>
-   <dt>ioc</dt>
-     <dd>This is for building a V3 IOC application.</dd>
-   <dt>ioc/Db</dt>
-     <dd>This has template files for creating V3 records.</dd>
-   <dt>ioc/src</dt>
-     <dd>The files for running a V3 IOC.</dd>
-   <dt>iocBoot/exampleServer</dt>
-      <dd>A place to start exampleServer as part of a V3IOC.
-       It has a st.cmd file that starts the ioc and also starts pvAccess
-      and the example.</dd>
-</dl>
-<p>If only a main program is desired then the directory layout is:</p>
-<pre>
-exampleServer
-    configure
-       ExampleRELEASE.local
-       ...
-    src
-       exampleServer.h
-       exampleServer.cpp
-       exampleServerMain.cpp
-</pre>
-<p>Thus if only a main program is required the directory layout is simple.</p>
-<p>Also many sites will want to build the src directory in an area
-separate from where the iocs are build.</p>
-<h2>exampleServer.h</h2>
-<p>The example resides in src
-The implementation is in exampleServer.cpp.
-</p>
-<p>The description consists of</p>
-<pre>
-class ExampleServer;
-typedef std::tr1::shared_ptr&lt;ExampleServer&gt; ExampleServerPtr;
 
-class ExampleServer :
-    public PVRecord
-{
-public:
-    POINTER_DEFINITIONS(ExampleServer);
-    static ExampleServerPtr create(
-        std::string const &amp; recordName);
-    virtual ~ExampleServer();
-    virtual void destroy();
-    virtual bool init();
-    virtual void process();
-private:
-    ExampleServer(std::string const &amp; recordName,
-        epics::pvData::PVStructurePtr const &amp; pvStructure);
+## Building
 
-    epics::pvData::PVStringPtr pvArgumentValue;
-    epics::pvData::PVStringPtr pvResultValue;
-    epics::pvData::PVTimeStamp pvTimeStamp;
-    epics::pvData::TimeStamp timeStamp;
-};
-</pre>
-<p>where</p>
-<dl>
-  <dt>create</dt>
-    <dd>This is example specific but each support could provide
-     a similar static method.
-    </dd>
-  <dt>~ExampleServer</dt>
-    <dd>The destructor must be declared virtual.</dd>
-  <dt>destroy</dt>
-     <dd>Called when the record is being destroyed.
-      This must call the base class destroy method.
-     </dd>
-  <dt>init</dt>
-    <dd>A method to initialize the support. It returns true
-    if initialization is successful and false if not.
-    NOTE that this is a virtual method of PVRecord itself.</dd>
-  <dt>process</dt>
-    <dd>
-     This again is a virtual method of PVRecord.
-    </dd>
-  <dt>ExampleServer</dt>
-    <dd>For the example this is private.</dd>
-  <dt>pvValue</dt>
-    <dd>This is the field of the top level structure that process
-    accesses.
-    </dd>
-</dl>
-<p>The implementation of create method is:</p>
-<pre>
-ExampleServerPtr ExampleServer::create(
-    std::string const &amp; recordName)
-{
-    StandardFieldPtr standardField = getStandardField();
-    FieldCreatePtr fieldCreate = getFieldCreate();
-    PVDataCreatePtr pvDataCreate = getPVDataCreate();
-    StructureConstPtr  topStructure = fieldCreate-&gt;createFieldBuilder()-&gt;
-        addNestedStructure("argument")-&gt;
-            add("value",pvString)-&gt;
-            endNested()-&gt;
-        addNestedStructure("result") -&gt;
-            add("value",pvString) -&gt;
-            add("timeStamp",standardField-&gt;timeStamp()) -&gt;
-            endNested()-&gt;
-        createStructure();
-    PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(topStructure);
+If a proper RELEASE.local file exists one or two directory levels above **exampleServer**
+then just type:
 
-    ExampleServerPtr pvRecord(
-        new ExampleServer(recordName,pvStructure));
-    if(!pvRecord-&gt;init()) pvRecord.reset();
-    return pvRecord;
-}
-</pre>
-This:
-<ul>
-   <li>Creates the top level structure.</li>
-   <li>Creates a ExampleServerPtr via the constructor.</li>
-   <li>Calls init and if it fails resets the shared pointer.</li>
-   <li>Returns the shared pointer to the newly created record.</li>
-</ul>
-<p>The private constructor method is:</p>
-<pre>
-ExampleServer::ExampleServer(
-    std::string const &amp; recordName,
-    epics::pvData::PVStructurePtr const &amp; pvStructure)
-: PVRecord(recordName,pvStructure)
-{
-}
-</pre>
-The example is very simple. Note that it calls the base class constructor.
-<p>The destructor and destroy methods are:</p>
-<pre>
-ExampleServer::~ExampleServer()
-{
-}
+    make
 
-void ExampleServer::destroy()
-{
-    PVRecord::destroy();
-}
-</pre>
-The destructor has nothing to do.
-The destroy method, which is virtual,  just calls the destroy method of the base class.
-A more complicated example can clean up any resources it used but must call the base
-class destroy method.
-<p>The implementation of init is:</p>
-<pre>
-bool ExampleServer::init()
-{
-    initPVRecord();
-    PVFieldPtr pvField;
-    pvArgumentValue = getPVStructure()-&gt;getStringField("argument.value");
-    if(pvArgumentValue.get()==NULL) return false;
-    pvResultValue = getPVStructure()-&gt;getStringField("result.value");
-    if(pvResultValue.get()==NULL) return false;
-    pvTimeStamp.attach(getPVStructure()-&gt;getSubField("result.timeStamp"));
-    return true;
-}
-</pre>
-<p>The implementation of process is:</p>
-<pre>
-void ExampleServer::process()
-{
-    pvResultValue-&gt;put(String("Hello ") + pvArgumentValue-&gt;get());
-    timeStamp.getCurrent();
-    pvTimeStamp.set(timeStamp);
-}
-</pre>
-It gives a value to result.value and
-then sets the timeStamp to the current time.
-<h2>src/exampleServerMain.cpp</h2>
-<p><b>NOTE:</b>
-This is a shorter version of the actual code.
-It shows the essential code.
-The actual example shows how create an additional record.
-</p>
-<p>The main program is:</p>
-<pre>
-int main(int argc,char *argv[])
-{
-    PVDatabasePtr master = PVDatabase::getMaster();
-    PVRecordPtr pvRecord;
-    bool result = false;
-    string recordName;
+It can also be built by:
 
-    recordName = "exampleServer";
-    pvRecord = ExampleServer::create(recordName);
-    result = master-&gt;addRecord(pvRecord);
-    if(!result) cout&lt;&lt; "record " &lt;&lt; recordName &lt;&lt; " not added" &lt;&lt; endl;
+    cp configure/ExampleRELEASE.local configure/RELEASE.local
+    edit configure/RELEASE.local
+    make
 
-    recordName = "traceRecordPGRPC";
-    pvRecord = TraceRecord::create(recordName);
-    result = master-&gt;addRecord(pvRecord);
-    if(!result) cout&lt;&lt; "record " &lt;&lt; recordName &lt;&lt; " not added" &lt;&lt; endl;
+## To start the exampleServer as part of a V3 IOC
 
-   
-    ContextLocal::shared_pointer contextLocal = ContextLocal::create();
-    contextLocal-&gt;start();
+    mrk> pwd
+    /home/epicsv4/master/exampleServer/database/iocBoot/exampleServer
+    mrk> ../../bin/linux-x86_64/exampleServer st.cmd 
 
-    PVStringArrayPtr pvNames = master-&gt;getRecordNames();
-    shared_vector&lt;const string&gt; names = pvNames-&gt;view();
-    for(size_t i=0; i&lt;names.size(); ++i) cout &lt;&lt; names[i] &lt;&lt; endl;
+## To start the exampleServer as a standalone main
 
-    contextLocal->waitForExit();
+    mrk> pwd
+    /home/epicsv4/master/exampleCPP/exampleServer
+    mrk> bin/linux-x86_64/exampleServerMain
 
-    return 0;
-}
-</pre>
-This:
-<ul>
-  <li>Gets a pointer to the master database.</li>
-  <li>Creates the local Channel Provider. This starts the pvAccess server.</li>
-  <li>Creates record exampleServer </li>
-  <li>creates records traceRecordPGRPC and recordListPGRPC</li>
-  <li>lists all the records</li>
-  <li>Runs forever until the user types exit on standard in.</li>
-</ul>
-<h2>V3IOC exampleServer</h2>
-<p>To start exampleServer as part of a V3IOC:</p>
-<pre>
-mrk&gt; pwd
-/home/hg/pvExampleTestCPP/exampleServer/iocBoot/exampleServer
-mrk&gt; ../../../bin/linux-x86_64/exampleServer st.cmd
-</pre>
-<p>You can then issue the commands dbl and pvdbl:</p>
-<pre>
-epics&gt; dbl
-pvdouble
-pvcounter
-pvenum
-pvdoubleArray
-pvstringArray
-epics&gt; pvdbl
-exampleServer
-epics&gt; 
-</pre>
-dbl shows the V3 records.
-pvdbl shows the pvRecords.
-<p>
-It starts pvaSrv so that the V3 records can be accessed via Channel Access
-or via PVAccess.</p>
