@@ -87,7 +87,7 @@ static void example(
      string provider,
      shared_vector<const string> const &channelNames)
 {
-    
+    cout << "_example provider " << provider << " channels " << channelNames << "_\n";
     size_t num = channelNames.size();
     PvaClientMultiChannelPtr multiChannel(
         PvaClientMultiChannel::create(pva,channelNames,provider));
@@ -117,25 +117,31 @@ static void example(
 
 int main(int argc,char *argv[])
 {
+    cout << "_____examplePvaClientNTMultiDouble starting_______\n";
     PvaClientPtr pva = PvaClient::create();
     size_t num = 4;
     shared_vector<string> channelNames(num);
-    channelNames[0] = "DBRdouble01";
-    channelNames[1] = "DBRstring01";
-    channelNames[2] = "DBRdoubleArray01";
-    channelNames[3] = "DBRstringArray01";
-    cout << "dbRecord pva\n";
-    shared_vector<const string> names(freeze(channelNames));
-    example(pva,"pva",names);
-    cout << "dbRecord ca\n";
-    example(pva,"ca",names);
-    channelNames = shared_vector<string>(num);
     channelNames[0] = "PVRdouble";
     channelNames[1] = "PVRstring";
     channelNames[2] = "PVRdoubleArray";
     channelNames[3] = "PVRstringArray";
-    names = freeze(channelNames);
-    cout << "pvRecord pva\n";
+    shared_vector<const string> names(freeze(channelNames));
     example(pva,"pva",names);
+    PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");
+    pvaChannel->issueConnect();
+    Status status = pvaChannel->waitConnect(1.0);
+    if(status.isOK()) {
+        channelNames = shared_vector<string>(num);
+        channelNames[0] = "DBRdouble01";
+        channelNames[1] = "DBRstring01";
+        channelNames[2] = "DBRdoubleArray01";
+        channelNames[3] = "DBRstringArray01";
+        names = freeze(channelNames);
+        example(pva,"pva",names);
+        example(pva,"ca",names);
+    } else {
+         cout << "DBRdouble00 not found\n";
+    }
+    cout << "_____examplePvaClientNTMultiDouble done_______\n";
     return 0;
 }

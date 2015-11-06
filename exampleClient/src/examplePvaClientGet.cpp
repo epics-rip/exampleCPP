@@ -22,7 +22,7 @@ using namespace epics::pvaClient;
 
 static void exampleDouble(PvaClientPtr const &pva)
 {
-    cout << "example double scalar\n";
+    cout << "__exampleDouble__\n";
     double value;
     try {
         cout << "short way\n";
@@ -47,7 +47,7 @@ static void exampleDouble(PvaClientPtr const &pva)
 
 static void exampleDoubleArray(PvaClientPtr const &pva)
 {
-    cout << "example double array\n";
+    cout << "__exampleDoubleArray__\n";
     shared_vector<const double> value;
     try {
         cout << "short way\n";
@@ -71,7 +71,7 @@ static void exampleDoubleArray(PvaClientPtr const &pva)
 
 static void exampleCADouble(PvaClientPtr const &pva)
 {
-    cout << "example double scalar\n";
+    cout << "__exampleCADouble__\n";
     double value;
     try {
         cout << "short way\n";
@@ -96,7 +96,7 @@ static void exampleCADouble(PvaClientPtr const &pva)
 
 static void exampleCADoubleArray(PvaClientPtr const &pva)
 {
-    cout << "example double array\n";
+    cout << "__exampleCADoubleArray__\n";
     shared_vector<const double> value;
     try {
         cout << "short way\n";
@@ -120,11 +120,19 @@ static void exampleCADoubleArray(PvaClientPtr const &pva)
 
 int main(int argc,char *argv[])
 {
+    cout << "_____examplePvaClientGet starting_______\n";
     PvaClientPtr pva= PvaClient::create();
     exampleDouble(pva);
     exampleDoubleArray(pva);
-    exampleCADouble(pva);
-    exampleCADoubleArray(pva);
-    cout << "done\n";
+    PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");
+    pvaChannel->issueConnect();
+    Status status = pvaChannel->waitConnect(1.0);
+    if(status.isOK()) {
+        exampleCADouble(pva);
+        exampleCADoubleArray(pva);
+    } else {
+         cout << "DBRdouble00 not found\n";
+    }
+    cout << "_____examplePvaClientGet done_______\n";
     return 0;
 }

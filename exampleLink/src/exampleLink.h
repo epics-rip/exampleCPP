@@ -8,8 +8,8 @@
  * @author mrk
  * @date 2013.08.02
  */
-#ifndef EXAMPLEPVADOUBLEARRAYGET_H
-#define EXAMPLEPVADOUBLEARRAYGET_H
+#ifndef EXAMPLELINK_H
+#define EXAMPLELINK_H
 
 #ifdef epicsExportSharedSymbols
 #   define exampleLinkEpicsExportSharedSymbols
@@ -89,4 +89,4 @@ private:
 
 }}
 
-#endif  /* EXAMPLEPVADOUBLEARRAYGET_H */
+#endif  /* EXAMPLELINK_H */

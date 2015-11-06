@@ -24,9 +24,8 @@ static void example(
      string provider,
      shared_vector<const string> const &channelNames)
 {
-    
+    cout << "_example provider " << provider << " channels " << channelNames << "_\n";
     size_t num = channelNames.size();
-cout << "num " << num << " names " << channelNames << endl;
     PvaClientMultiChannelPtr multiChannel(
         PvaClientMultiChannel::create(pva,channelNames,provider));
     PvaClientMultiGetDoublePtr multiGet(multiChannel->createGet());
@@ -53,27 +52,33 @@ cout << "num " << num << " names " << channelNames << endl;
 
 int main(int argc,char *argv[])
 {
+    cout << "_____examplePvaClientMultiDouble starting_______\n";
     PvaClientPtr pva = PvaClient::create();
     size_t num = 5;
     shared_vector<string> channelNames(num);
-    channelNames[0] = "DBRdouble01";
-    channelNames[1] = "DBRint01";
-    channelNames[2] = "DBRdouble03";
-    channelNames[3] = "DBRdouble04";
-    channelNames[4] = "DBRdouble05";
-    cout << "double pva\n";
-    shared_vector<const string> names(freeze(channelNames));
-    example(pva,"pva",names);
-    cout << "double ca\n";
-    example(pva,"ca",names);
-    channelNames = shared_vector<string>(num);
     channelNames[0] = "PVRdouble01";
     channelNames[1] = "PVRint";
     channelNames[2] = "PVRdouble03";
     channelNames[3] = "PVRdouble04";
     channelNames[4] = "PVRdouble05";
-    names = freeze(channelNames);
-    cout << "exampleDouble pva\n";
+    shared_vector<const string> names(freeze(channelNames));
     example(pva,"pva",names);
+    PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");
+    pvaChannel->issueConnect();
+    Status status = pvaChannel->waitConnect(1.0);
+    if(status.isOK()) {
+        channelNames = shared_vector<string>(num);
+        channelNames[0] = "DBRdouble01";
+        channelNames[1] = "DBRint01";
+        channelNames[2] = "DBRdouble03";
+        channelNames[3] = "DBRdouble04";
+        channelNames[4] = "DBRdouble05";
+        names = freeze(channelNames);
+        example(pva,"pva",names);
+        example(pva,"ca",names);
+    } else {
+         cout << "DBRdouble00 not found\n";
+    }
+    cout << "_____examplePvaClientMultiDouble done_______\n";
     return 0;
 }

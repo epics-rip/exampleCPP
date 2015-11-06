@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-  <title>EPICS pva</title>
+  <title>EPICS exampleCPP</title>
   <link rel="stylesheet" type="text/css"
   href="http://epics-pvdata.sourceforge.net/base.css" />
   <link rel="stylesheet" type="text/css"
@@ -49,18 +49,23 @@
 <dl>
     <dt>database</dt>
      <dd>Provides an IOC with a combination of V3 DBRecords, PVRecords, and also starts pvaSrv.</dd>
-    <dt>pvaClientCPP examples</dt>
-     <dd>The examples communicate with the database</dd>
-    <dt>pvDatabaseCPP examples</dt>
-       <dd>Various example of implementing PVRecords as defined by pvDatabase.</dd>
-    <dt>pvaClient and pvDatabase regresion test</dt>
-      <dd>This is activated via:
+    <dt>exampleClient</dt>
+     <dd>pvaClientCPP example that communicate with the database</dd>
+    <dt>exampleServer</dt>
+    <dt>exampleLink</dt>
+    <dt>HelloWorld</dt>
+    <dt>ChannelArchiveService</dt>
+    <dt>test</dt>
+      <dd>A regression test for pvDatabaseCPP and pvaClientCPP.<br />
+        This is activated via:
         <pre>
 make runtests
         </pre>
         It starts the database and
         then runs a number of pvaClientCPP tests that communicate with the IOC.
        </dd>
+     <dt>examplePowerSupply</dt>
+     <dt>arrayPerformance</dt>
 </dl>
 
 <p>There are several reasons for a separate repository:</p>

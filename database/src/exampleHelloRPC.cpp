@@ -46,7 +46,6 @@ PVStructurePtr ExampleHelloRPC::request(PVStructurePtr const &pvArgument)
     throw (RPCRequestException)
 {
     PVStringPtr pvFrom = pvArgument->getSubField<PVString>("value");
-    if(!pvFrom) pvFrom = pvArgument->getSubField<PVString>("query.value");
     if(!pvFrom) {
         stringstream ss;
         ss << " expected string subfield named value. got\n" << pvArgument;

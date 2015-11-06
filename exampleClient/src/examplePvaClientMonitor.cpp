@@ -22,11 +22,12 @@ using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
 
-static void exampleMonitor(PvaClientPtr const &pva,string provider)
+static void exampleMonitor(PvaClientPtr const &pva,string const & recordName,string const& provider)
 {
-    PvaClientMonitorPtr monitor = pva->channel("DBRdouble00",provider,2.0)->monitor("");
+    cout << "__exampleDouble recordName " << recordName << " provider " << provider << "__\n";
+    PvaClientMonitorPtr monitor = pva->channel(recordName,provider,2.0)->monitor("");
     PvaClientMonitorDataPtr monitorData = monitor->getData();
-    PvaClientPutPtr put = pva->channel("DBRdouble00",provider,2.0)->put("");
+    PvaClientPutPtr put = pva->channel(recordName,provider,2.0)->put("");
     PvaClientPutDataPtr putData = put->getData();
     for(size_t ntimes=0; ntimes<5; ++ntimes)
     {
@@ -51,11 +52,20 @@ static void exampleMonitor(PvaClientPtr const &pva,string provider)
 
 int main(int argc,char *argv[])
 {
+    cout << "_____examplePvaClientMonitor starting_______\n";
     PvaClientPtr pva = PvaClient::create();
-    cout << "exampleMonitor pva\n";
-    exampleMonitor(pva,"pva");
-    cout << "exampleMonitor ca\n";
-    exampleMonitor(pva,"ca");
-    cout << "done\n";
+    exampleMonitor(pva,"PVRdouble","pva");
+    PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");
+    pvaChannel->issueConnect();
+    Status status = pvaChannel->waitConnect(1.0);
+    if(status.isOK()) {
+        cout << "exampleMonitor pva\n";
+        exampleMonitor(pva,"DBRdouble00","pva");
+        cout << "exampleMonitor ca\n";
+        exampleMonitor(pva,"DBRdouble00","ca");
+    } else {
+         cout << "DBRdouble00 not found\n";
+    }
+    cout << "_____examplePvaClientMonitor done_______\n";;
     return 0;
 }
