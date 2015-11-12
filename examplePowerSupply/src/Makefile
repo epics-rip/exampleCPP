@@ -31,12 +31,12 @@ powerSupplyMain_LIBS += pvData
 powerSupplyMain_LIBS += Com
 powerSupplyMain_LIBS += powerSupply
 
-PROD_HOST += examplePutGet
-examplePutGet_SRCS += examplePutGet.cpp
-examplePutGet_LIBS += pvaClient
-examplePutGet_LIBS += pvAccess
-examplePutGet_LIBS += pvData
-examplePutGet_LIBS += Com
+PROD_HOST += powerSupplyClient
+powerSupplyClient_SRCS += powerSupplyClient.cpp
+powerSupplyClient_LIBS += pvaClient
+powerSupplyClient_LIBS += pvAccess
+powerSupplyClient_LIBS += pvData
+powerSupplyClient_LIBS += Com
 
 
 #===========================

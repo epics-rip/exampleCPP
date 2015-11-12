@@ -1,4 +1,4 @@
-# arrayPerformance
+# database
 
 This example implements main programs that demonstrate performance
 of large arrays and can also be used to check for memory leaks.
@@ -7,23 +7,12 @@ or some other memory check program.
 
 ## Brief Summary
 
-The programs are:
-
-* arrayPerformanceMain   
-    This is server and also a configurable number of longArrayMonitor clients.   
-    The clients can use either the local or remote providers.     
-    The monitor code is the same code that is used by longArrayMonitorMain.
-* longArrayMonitorMain   
-    Remote client that monitors the array served by arrayPerformanceMain.
-* longArrayGetMain    
-    Remote client that uses channelGet to access the array served by arrayPerformanceMain.
-* longArrayPutMain    
-     Remote client that uses channelPut to access the array served by arrayPerformanceMain.
+Provides an IOC with a combination of V3 DBRecords, PVRecords, and also starts pvaSrv.
 
 
 ## Building
 
-If a proper RELEASE.local file exists one or two directory levels above **arrayPerformance**
+If a proper RELEASE.local file exists one or two directory levels above **database**
 then just type:
 
     make

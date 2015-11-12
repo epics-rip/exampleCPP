@@ -31,6 +31,14 @@ exampleServerMain_LIBS += pvAccess
 exampleServerMain_LIBS += pvData
 exampleServerMain_LIBS += Com
 
+PROD_HOST += exampleServerClient
+exampleServerClient_SRCS += exampleServerClient.cpp
+exampleServerClient_LIBS += pvaClient
+exampleServerClient_LIBS += pvAccess
+exampleServerClient_LIBS += pvData
+exampleServerClient_LIBS += Com
+
+
 #===========================
 
 include $(TOP)/configure/RULES

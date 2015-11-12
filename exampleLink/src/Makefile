@@ -22,6 +22,14 @@ exampleLink_LIBS += pvData
 exampleLink_LIBS += Com
 exampleLink_LIBS += $(EPICS_BASE_IOC_LIBS)
 
+PROD_HOST += exampleLinkClient
+exampleLinkClient_SRCS += exampleLinkClient.cpp
+exampleLinkClient_LIBS += pvaClient
+exampleLinkClient_LIBS += pvAccess
+exampleLinkClient_LIBS += pvData
+exampleLinkClient_LIBS += Com
+
+
 #===========================
 
 include $(TOP)/configure/RULES
