@@ -26,23 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP</h1>
-<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
-<h2 class="nocount">EPICS V4 Working Group, Working Draft,
-02-November-2015</h2>
-<dl>
-  <dt>This version:</dt>
-    <dd><a
-      href="exampleCPP.html">exampleCPP.html
-    </a> </dd>
-  <dt>Latest version:</dt>
-    <dd><a
-      href="exampleCPP_20151102.html">exampleCPP_20151102.html
-    </a> </dd>
-  <dt>Previous version:</dt>
-    <dd>None</dd>
-  <dt>Editors:</dt>
-    <dd>Marty Kraimer</dd>
-</dl>
+<h2 class="nocount">Release 1.0 - 2015.11.23</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>exampleCPP provides a set of examples that is each a top level project.</p>
@@ -70,7 +54,7 @@
 
 <h2>Overview</h2>
 
-<p>exampleCPP provides:</p>
+<p>exampleCPP provides a set of examples that is each a top level project.</p>
 <dl>
     <dt>database</dt>
      <dd>Provides an IOC with a combination of V3 DBRecords, PVRecords, and also starts pvaSrv.</dd>
@@ -130,7 +114,87 @@ repositories and slightly modified. When exampleCPP and exampleJava are ready:</
    <li>The developerGuide will be revised to refer to exampleCPP and exampleJava.</li>
 </ul>
 
-
+<h2>Application Templates</h2>
+<p>Since each example is a top level project it is also a template for creating new
+EPICS V4 applications.
+For example:</p>
+<ul>
+   <li>Copy the application to a new location. For example
+<pre>
+mkdir myApp
+cp -a /home/epicsv4/master/exampleCPP/database myApp
+</pre>
+   </li>
+   <li>Make changes for the new application</li>
+   <li>Build</li>
+</ul>
+<h2>Features Tested</h2>
+<h3>pvDataCPP</h3>
+<p>Each type has examples:</p>
+<dl>
+   <dt>scalar</dt>
+    <dd>
+       <b>database</b> has an example for each <b>scalarType</b>.<br />
+        <b>exampleClient</b> has examples for some of the <b>scalarType</b>.
+    </dd>
+   <dt>scalarArray</dt>
+    <dd>
+       <b>database</b> has an example for each <b>scalarType</b>.
+       <b>exampleClient</b> has examples for some of the <b>scalarType</b>.
+    </dd>
+   <dt>structure</dt>
+     <dd>
+      Examples for the special fields <b>enum</b>, <b>alarm</b>, and <b>timeStamp</b> exist.
+      What about <b>display</b>, <b>control</b> and <b>alarmLimit</b>?
+     </dd>
+   <dt>structureArray</dt>
+     <dd>
+        <b>database</b> has an example.
+     </dd>
+   <dt>union</dt>
+     <dd>
+         <b>database</b> has an example.
+     </dd>
+   <dt>unionArray</dt>
+      <dd>
+         <b>database</b> has an example.
+     </dd>
+</dl>
+<h3>pvDatabaseCPP</h3>
+<p>Every example except exampleClient is an example that implements PVRecords as defined by 
+pvDatabaseCPP.</p>
+<p><b>database</b> shows how to create "soft" PVRecords of each of the pvData types.
+A soft record is a record that uses the base process method, which just sets the timeStamp
+to the current time. It also has an example that is meant to be accessed via a channelPutGet
+and an example channelRPC service.
+</p>
+<h3>pvaSrv</h3>
+<p><b>database</b> creates several EPICS V3 DBRecords and also starts <b>pvaSrv</b>
+Thus the DRRecords can be accessed via either provider ca or pva.</p>
+<p>Several of the other examples also start pvaSrv.</p>
+<h3>pvaClientCPP</h3>
+<p><b>NOTE:</b> Since pvaClientCPP supports all of pvAccess except channelRPC,
+pvaClientCPP examples also test pvAccess.</p>
+<p><b>exampleClient</b> has examples for all of channelGet, channelPut,
+channelPutGet, monitor, and channelRPC.
+The examples access channels created by example <b>database</b>
+</p>
+<p>Several other examples also have examples that use pvaClientCPP.</p>
+<h3>normativeTypesCPP</h3>
+<p> The database creates records of type NTScalar, NTScalarArray and NTEnum.
+There is a exampleClient that uses NTMultiChannel.</p>
+<h3>C++ and Java interoperability</h3>
+<p><b>exampleClient</b> can acceess the <b>database</b> from either exampleCPP or exampleJava.
+exampleJava has an b>exampleClient</b> that can acceess the <b>database</b> from either exampleCPP or exampleJava.
+</p>
+<h3>Integration Test</h3>
+<p>Example <b>test</b> supports:</p>
+<pre>
+make runtests
+</pre>
+<p>It starts the example <b>database</b> and then runs a number of tests that use
+pvaClientCPP to access the database.
+</p>
 </div> <!-- class="contents" -->
 </body>
 </html>

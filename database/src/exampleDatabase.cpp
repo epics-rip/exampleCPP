@@ -1,9 +1,8 @@
+// Copyright information and license terms for this software can be
+// found in the file LICENSE that is included with the distribution
+
 /*exampleDatabase.cpp */
-/**
- * Copyright - See the COPYRIGHT that is included with this distribution.
- * EPICS pvData is distributed subject to a Software License Agreement found
- * in file LICENSE that is included with this distribution.
- */
+
 /**
  * @author mrk
  * @date 2013.07.24
@@ -25,6 +24,9 @@
 #include <pv/channelProviderLocal.h>
 #include <pv/serverContext.h>
 #include <pv/traceRecord.h>
+#include <pv/ntscalar.h>
+#include <pv/ntscalarArray.h>
+#include <pv/ntenum.h>
 
 #define epicsExportSharedSymbols
 #include <pv/exampleDatabase.h>
@@ -34,6 +36,7 @@
 using namespace std;
 using std::tr1::static_pointer_cast;
 using namespace epics::pvData;
+using namespace epics::nt;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
 using namespace epics::exampleHello;
@@ -60,7 +63,7 @@ static void createStructureArrayRecord(
     if(!result) cout<< "record " << recordName << " not added" << endl;
 }
 
-static void createRegularUnionRecord(
+static void createRestrictedUnionRecord(
     PVDatabasePtr const &master,
     string const &recordName)
 {
@@ -89,7 +92,7 @@ static void createVariantUnionRecord(
     if(!result) cout<< "record " << recordName << " not added" << endl;
 }
 
-static void createRegularUnionArrayRecord(
+static void createRestrictedUnionArrayRecord(
     PVDatabasePtr const &master,
     string const &recordName)
 {
@@ -148,16 +151,25 @@ static void createDumbPowerSupplyRecord(
 static void createRecords(
     PVDatabasePtr const &master,
     ScalarType scalarType,
-    string const &recordNamePrefix,
-    string const &properties)
+    string const &recordNamePrefix)
 {
     string recordName = recordNamePrefix;
-    PVStructurePtr pvStructure = standardPVField->scalar(scalarType,properties);
+    NTScalarBuilderPtr ntScalarBuilder = NTScalar::createBuilder();
+    PVStructurePtr pvStructure = ntScalarBuilder->
+        value(scalarType)->
+        addAlarm()->
+        addTimeStamp()->
+        createPVStructure();
     PVRecordPtr pvRecord = PVRecord::create(recordName,pvStructure);
     bool result = master->addRecord(pvRecord);
     if(!result) cout<< "record " << recordName << " not added" << endl;
     recordName += "Array";
-    pvStructure = standardPVField->scalarArray(scalarType,properties);
+    NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
+    pvStructure = ntScalarArrayBuilder->
+        value(scalarType)->
+        addAlarm()->
+        addTimeStamp()->
+        createPVStructure();
     pvRecord = PVRecord::create(recordName,pvStructure);
     result = master->addRecord(pvRecord);
 }
@@ -168,44 +180,41 @@ void ExampleDatabase::create()
     PVRecordPtr pvRecord;
     string recordName;
     bool result(false);
-    recordName = "PVRtraceRecordPGRPC";
-    pvRecord = TraceRecord::create(recordName);
-    result = master->addRecord(pvRecord);
-    if(!result) cout<< "record " << recordName << " not added" << endl;
-    string properties;
-    properties = "alarm,timeStamp";
-    createRecords(master,pvByte,"PVRbyte01",properties);
-    createRecords(master,pvShort,"PVRshort01",properties);
-    createRecords(master,pvLong,"PVRlong01",properties);
-    createRecords(master,pvUByte,"PVRubyte01",properties);
-    createRecords(master,pvUInt,"PVRuint01",properties);
-    createRecords(master,pvUShort,"PVRushort01",properties);
-    createRecords(master,pvULong,"PVRulong01",properties);
-    createRecords(master,pvFloat,"PVRfloat01",properties);
+    createRecords(master,pvBoolean,"PVRboolean");
+    createRecords(master,pvByte,"PVRbyte");
+    createRecords(master,pvShort,"PVRshort");
+    createRecords(master,pvInt,"PVRint");
+    createRecords(master,pvLong,"PVRlong");
+    createRecords(master,pvUByte,"PVRubyte");
+    createRecords(master,pvUInt,"PVRuint");
+    createRecords(master,pvUShort,"PVRushort");
+    createRecords(master,pvULong,"PVRulong");
+    createRecords(master,pvFloat,"PVRfloat");
+    createRecords(master,pvDouble,"PVRdouble");
+    createRecords(master,pvString,"PVRstring");
 
-    StringArray choices(2);
+    createRecords(master,pvDouble,"PVRdouble01");
+    createRecords(master,pvDouble,"PVRdouble02");
+    createRecords(master,pvDouble,"PVRdouble03");
+    createRecords(master,pvDouble,"PVRdouble04");
+    createRecords(master,pvDouble,"PVRdouble05");
+
+    NTEnumBuilderPtr ntEnumBuilder = NTEnum::createBuilder();
+    PVStructurePtr pvStructure = ntEnumBuilder->
+        addAlarm()->
+        addTimeStamp()->
+        createPVStructure();
+    shared_vector<string> choices(2);
     choices[0] = "zero";
     choices[1] = "one";
-    master->addRecord(PVRecord::create(
-         "PVRenum",standardPVField->enumerated(choices,properties)));
+    PVStringArrayPtr pvChoices = pvStructure->getSubField<PVStringArray>("value.choices");
+    pvChoices->replace(freeze(choices));
+    master->addRecord(PVRecord::create("PVRenum",pvStructure));
 
-    createRecords(master,pvBoolean,"PVRboolean",properties);
-    createRecords(master,pvByte,"PVRbyte",properties);
-    createRecords(master,pvShort,"PVRshort",properties);
-    createRecords(master,pvInt,"PVRint",properties);
-    createRecords(master,pvLong,"PVRlong",properties);
-    createRecords(master,pvFloat,"PVRfloat",properties);
-    createRecords(master,pvDouble,"PVRdouble",properties);
-    createRecords(master,pvDouble,"PVRdouble01",properties);
-    createRecords(master,pvDouble,"PVRdouble02",properties);
-    createRecords(master,pvDouble,"PVRdouble03",properties);
-    createRecords(master,pvDouble,"PVRdouble04",properties);
-    createRecords(master,pvDouble,"PVRdouble05",properties);
-    createRecords(master,pvString,"PVRstring",properties);
     createStructureArrayRecord(master,"PVRstructureArray");
-    createRegularUnionRecord(master,"PVRregularUnion");
+    createRestrictedUnionRecord(master,"PVRrestrictedUnion");
     createVariantUnionRecord(master,"PVRvariantUnion");
-    createRegularUnionArrayRecord(master,"PVRregularUnionArray");
+    createRestrictedUnionArrayRecord(master,"PVRrestrictedUnionArray");
     createVariantUnionArrayRecord(master,"PVRvariantUnionArray");
     createDumbPowerSupplyRecord(master,"PVRdumbPowerSupply");
     recordName = "PVRhelloPutGet";

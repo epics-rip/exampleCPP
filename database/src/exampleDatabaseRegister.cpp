@@ -1,9 +1,8 @@
+// Copyright information and license terms for this software can be
+// found in the file LICENSE that is included with the distribution
+
 /*exampleDatabase.cpp */
-/**
- * Copyright - See the COPYRIGHT that is included with this distribution.
- * EPICS pvData is distributed subject to a Software License Agreement found
- * in file LICENSE that is included with this distribution.
- */
+
 /**
  * @author mrk
  * @date 2013.07.24
@@ -38,12 +37,8 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
 
-static const iocshArg testArg0 = { "prefix", iocshArgString };
-static const iocshArg *testArgs[] = {
-    &testArg0};
+static const iocshFuncDef exampleDatabaseFuncDef = {"exampleDatabase", 0};
 
-static const iocshFuncDef exampleDatabaseFuncDef = {
-    "exampleDatabase", 1, testArgs};
 static void exampleDatabaseCallFunc(const iocshArgBuf *args)
 {
     ExampleDatabase::create();

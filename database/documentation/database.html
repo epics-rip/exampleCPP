@@ -26,23 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/database</h1>
-<!-- Maturity: Working Draft or Request for Comments, or Recommendation, and date.  -->
-<h2 class="nocount">EPICS V4 Working Group, Working Draft,
-11-November-2015</h2>
-<dl>
-  <dt>This version:</dt>
-    <dd><a
-      href="database.html">database.html
-    </a> </dd>
-  <dt>Latest version:</dt>
-    <dd><a
-      href="database_20151111.html">database_20151111.html
-    </a> </dd>
-  <dt>Previous version:</dt>
-    <dd>None</dd>
-  <dt>Editors:</dt>
-    <dd>Marty Kraimer</dd>
-</dl>
+<h2 class="nocount">Release 1.0 - 2015.11.23</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>database provides an IOC with a combination of V3 DBRecords, PVRecords, and also starts pvaSrv.
@@ -82,7 +66,7 @@ mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
 Since pvaSrv is also started, the DBRecords can be accesed via either channelAccess or pvAccess.
 For example both caget and pvget can be used to access the DBRecords.
 </p>
-<h3>V4 Channels</h3>
+<h3>V4 PVRecords</h3>
 <p>These are the names of the channels that are available if the database is started as
 a main program or as part of a V3 IOC.</p>
 <p>The following are the PVRecords plus helloRPC, which is accessed via channelRPC:</p>
@@ -90,8 +74,6 @@ a main program or as part of a V3 IOC.</p>
 PVRboolean
 PVRbooleanArray
 PVRbyte
-PVRbyte01
-PVRbyte01Array
 PVRbyteArray
 PVRdouble
 PVRdouble01
@@ -108,40 +90,32 @@ PVRdoubleArray
 PVRdumbPowerSupply
 PVRenum
 PVRfloat
-PVRfloat01
-PVRfloat01Array
 PVRfloatArray
 PVRhelloPutGet
 PVRint
 PVRintArray
 PVRlong
-PVRlong01
-PVRlong01Array
 PVRlongArray
-PVRpowerSupply
-PVRregularUnion
-PVRregularUnionArray
+PVRrestrictedUnion
+PVRrestrictedUnionArray
 PVRshort
-PVRshort01
-PVRshort01Array
 PVRshortArray
 PVRstring
 PVRstringArray
 PVRstructureArray
-PVRtraceRecordPGRPC
-PVRubyte01
-PVRubyte01Array
-PVRuint01
-PVRuint01Array
-PVRulong01
-PVRulong01Array
-PVRushort01
-PVRushort01Array
+PVRubyte
+PVRubyteArray
+PVRuint
+PVRuintArray
+PVRulong
+PVRulongArray
+PVRushort
+PVRushortArray
 PVRvariantUnion
 PVRvariantUnionArray
 helloRPC
 </pre>
-<h3>V3 IOC Records</h3>
+<h3>V3 DB Records</h3>
 <p>If the database is started as a V3 IOC, the following DBRecords are present:</p>
 <pre>
 DBRao01
@@ -183,7 +157,109 @@ DBRintArray01
 DBRshortArray01
 DBRstringArray01
 </pre>
-<h2>ADD MORE INFO ABOUT HOW RECORDS ARE CREATED</h2>
+<h2>database/src</h2>
+<p>This directory has the following files:</p>
+<dl>
+  <dt>exampleHello.h and exampleHello.cpp</dt>
+    <dd>Code for an example that is accessed via channelPutGet</dd>
+  <dt>exampleHelloRPC.h and exampleHelloRPC.cpp</dt>
+    <dd>Code for an example that is accesed via channelRPC</dd>
+   <dt>exampleDatabase.h and exampleDatabase.cpp</dt> 
+     <dd>Code that creates many PVRecords.
+       Most are soft records but also exampleHello and exampleHelloRPC.
+       The code is described in the following sub - section.</dd>
+   <dt>exampleDatabaseInclude.dbd and exampleDatabaseRegister.cpp</dt>
+      <dd>Code that allows the PVRecords to be part of a V3 IOC.<br />
+        This is the code that supports the <b>exampleDatabase</b>
+        shell command in <b>database/iocBoot/exampleDatabase/st.cmd</b><br />
+      </dd>
+   <dt>exampleDatabaseMain.cpp</dt>
+      <dd>Code that allows the PVRecords to be available via a standalone main program.</dd>
+</dl>
+<h3>database/src/exampleDatabase.cpp</h3>
+<p>This has a number of private methods:</p>
+<dl>
+   <dt>createRecords</dt>
+     <dd>Given a scalarType this creates an NTScalar and an NTScalarArray record
+       of the specified type.</dd>
+   <dt>createStructureArrayRecord</dt>
+      <dd>Creates a record with a value field that is a structureArray.</dd>
+   <dt>createRestrictedUnionRecord</dt>
+      <dd>Creates a record with a value field that is a regulav.</dd>
+   <dt>createVariantUnionRecord</dt>
+      <dd>Creates a record with a value field that a structureArray.</dd>
+   <dt>createRestrictedUnionArrayRecord</dt>
+      <dd>Creates a record with a value field that a structureArray.</dd>
+   <dt>createVariantUnionArrayRecord</dt>
+      <dd>Creates a record with a value field that a structureArray.</dd>
+   <dt>createDumbPowerSupplyRecord</dt>
+      <dd>Creates a record with a value field that a structureArray.</dd>
+</dl>
+
+<p><b>ExampleDatabase::create</b>
+is a static method of ExampleDatabase that creates all the PVRecords that make up the
+example database.</p>
+<p>It:</p>
+<dl>
+   <dt>createRecords</dt>
+     <dd>This is called for each scalarType.</dd>
+   <dt>addRecord for PVRenum</dt>
+      <dd>Creates <b>PVRenum</b> </dd>
+   <dt>createStructureArrayRecord</dt>
+      <dd>Creates <b>PVRstructureArray</b> </dd>
+   <dt>createRestrictedUnionRecord</dt>
+      <dd>Creates <b>PVRrestrictedUnion</b> </dd>
+   <dt>createVariantUnionRecord</dt>
+       <dd>Creates <b>PVRvariantUnion</b> </dd>
+   <dt>createRestrictedUnionArrayRecord</dt>
+       <dd>Creates <b>PVRrestrictedUnionArray</b> </dd>
+   <dt>createVariantUnionArrayRecord</dt>
+       <dd>Creates <b>PVRvariantUnionArray</b> </dd>
+   <dt>createDumbPowerSupplyRecord</dt>
+       <dd>Creates <b>PVRdumbPowerSupply</b> </dd>
+   <dt>addRecord for PVRhelloPutGet</dt>
+        <dd>Creates <b>PVRhelloPutGet</b> </dd>
+   <dt>registerService for helloRPC</dt>
+        <dd>Creates <b>helloRPC</b> </dd>
+</dl>
+
+<h2>database/ioc</h2>
+<h3>database/ioc/Db</h3>
+<p>This has V3 record templates for creating DBRecords.
+They are used when the example database is started as part of a V3 IOC.</p>
+<h3>database/ioc/src</h3>
+<p>This has:</p>
+<dl>
+   <dt>exampleDatabaseInclude.dbd</dt>
+      <dd>
+        This has the following:
+        <dl>
+           <dt>include "base.dbd"</dt>
+              <dd>This is from iocCore</dd>
+           <dt>include "PVAServerRegister.dbd"</dt>
+              <dd>This is to start pvaSrv</dd>
+           <dt>include "registerChannelProviderLocal.dbd"</dt>
+               <dd>This is to start local provider from pvDatabaseCPP</dd>
+           <dt>include "dbPv.dbd"</dt>
+               <dd>This is to include template db files from ../Db</dd>
+           <dt>registrar("exampleDatabaseRegister")</dt>
+                <dd>This is to create all the PVRecords</dd>
+        </dl>
+      </dd>
+   <dt>exampleDatabaseMain.cpp</dt>
+</dl>
+<h2>database/iocBoot/exampleDatabase</h2>
+<p>This is where the example database is started as part of a V3 IOC.
+</p>
+<p><b>st.cmd</b> is like a normal startup file except for:</p>
+<dl>
+   <dt>exampleDatabase</dt>
+     <dd>This creates the PVRecords.</dd>
+   <dt>startPVAServer</dt>
+      <dd>This starts the local channel provider and pvAccess</dd>
+</dl>
+
+
 </div> <!-- class="contents" -->
 </body>
 </html>

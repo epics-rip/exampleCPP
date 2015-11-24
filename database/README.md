@@ -31,7 +31,7 @@ It can also be built by:
     /home/epicsv4/master/exampleCPP/database
     mrk> bin/linux-x86_64/exampleDatabaseMain
 
-## exampleCPP/src
+## database/src
 
 This directory has the following files:
 
@@ -56,23 +56,23 @@ Code that allows the PVRecords to be part of a V3 IOC.
 
 Code that allows the PVRecords to be available via a standalone main program.
 
-## exampleCPP/ioc
+## database/ioc
 
 Code that allows the database to be part of a V3 IOC.
 
-### exampleCPP/ioc/Db
+### database/ioc/Db
 
 
 Files for creating V3 DBRecords
 
-### exampleCPP/ioc/src
+### database/ioc/src
 
 * exampleDatabaseMain.cpp   
 Standard file for a V3 IOC.
 * exampleDatabaseInclude.dbd    
 Standard V3 dbd file with additional includes for PVRecords and pvaSrv and local pvAccess.
 
-### exampleCPP/ioc/iocBoot/exampleDatabase
+### database/ioc/iocBoot/exampleDatabase
 
 Support for starting V3 IOC that also has support for pvaSrv and PVRecords.
 

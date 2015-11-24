@@ -18,6 +18,7 @@ exampleDatabase_SRCS += exampleDatabaseRegister.cpp
 exampleDatabase_LIBS += pvDatabase
 exampleDatabase_LIBS += pvAccess
 exampleDatabase_LIBS += pvData
+exampleDatabase_LIBS += nt
 exampleDatabase_LIBS += Com
 exampleDatabase_LIBS += $(EPICS_BASE_IOC_LIBS)
 
@@ -27,6 +28,7 @@ exampleDatabaseMain_LIBS += exampleDatabase
 exampleDatabaseMain_LIBS += pvDatabase
 exampleDatabaseMain_LIBS += pvAccess
 exampleDatabaseMain_LIBS += pvData
+exampleDatabaseMain_LIBS += nt
 exampleDatabaseMain_LIBS += Com
 
 #===========================
