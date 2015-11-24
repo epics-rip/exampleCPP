@@ -5,7 +5,7 @@ include $(TOP)/configure/CONFIG
 DIRS += database
 DIRS += exampleClient
 DIRS += exampleLink
-DIRS += examplePowerSupply
+DIRS += powerSupply
 DIRS += helloPutGet
 DIRS += helloRPC
 DIRS += test
