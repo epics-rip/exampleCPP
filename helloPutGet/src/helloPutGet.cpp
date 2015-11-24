@@ -1,9 +1,7 @@
-/* exampleServer.cpp */
-/**
- * Copyright - See the COPYRIGHT that is included with this distribution.
- * EPICS pvData is distributed subject to a Software License Agreement found
- * in file LICENSE that is included with this distribution.
- */
+// Copyright information and license terms for this software can be
+// found in the file LICENSE that is included with the distribution
+
+/* helloPutGet.cpp */
 /**
  * @author mrk
  * @date 2013.04.02
@@ -12,17 +10,17 @@
 #include <pv/standardField.h>
 
 #define epicsExportSharedSymbols
-#include <pv/exampleServer.h>
+#include <pv/helloPutGet.h>
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
 using std::tr1::static_pointer_cast;
 using std::string;
 
-namespace epics { namespace exampleServer { 
+namespace epics { namespace helloPutGet { 
 
 
-ExampleServerPtr ExampleServer::create(
+HelloPutGetPtr HelloPutGet::create(
     string const & recordName)
 {
     StandardFieldPtr standardField = getStandardField();
@@ -39,29 +37,29 @@ ExampleServerPtr ExampleServer::create(
         createStructure();
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
 
-    ExampleServerPtr pvRecord(
-        new ExampleServer(recordName,pvStructure));
+    HelloPutGetPtr pvRecord(
+        new HelloPutGet(recordName,pvStructure));
     if(!pvRecord->init()) pvRecord.reset();
     return pvRecord;
 }
 
-ExampleServer::ExampleServer(
+HelloPutGet::HelloPutGet(
     string const & recordName,
     PVStructurePtr const & pvStructure)
 : PVRecord(recordName,pvStructure)
 {
 }
 
-ExampleServer::~ExampleServer()
+HelloPutGet::~HelloPutGet()
 {
 }
 
-void ExampleServer::destroy()
+void HelloPutGet::destroy()
 {
     PVRecord::destroy();
 }
 
-bool ExampleServer::init()
+bool HelloPutGet::init()
 {
     
     initPVRecord();
@@ -74,7 +72,7 @@ bool ExampleServer::init()
     return true;
 }
 
-void ExampleServer::process()
+void HelloPutGet::process()
 {
     pvResultValue->put(string("Hello ") + pvArgumentValue->get());
     timeStamp.getCurrent();

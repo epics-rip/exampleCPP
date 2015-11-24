@@ -1,9 +1,7 @@
-/*pvaClientTestPutGet.cpp */
-/**
- * Copyright - See the COPYRIGHT that is included with this distribution.
- * EPICS pvData is distributed subject to a Software License Agreement found
- * in file LICENSE that is included with this distribution.
- */
+// Copyright information and license terms for this software can be
+// found in the file LICENSE that is included with the distribution
+
+/*helloPutGetClient.cpp */
 /**
  * @author mrk
  */
@@ -22,10 +20,10 @@ using namespace epics::pvaClient;
 
 int main(int argc,char *argv[])
 {
-    cout << "_____exampleLinkClient starting_______\n";
+    cout << "_____helloPutGetClient starting_______\n";
     PvaClientPtr pva = PvaClient::create();
     try {
-        PvaClientChannelPtr channel = pva->channel("exampleServer");
+        PvaClientChannelPtr channel = pva->channel("helloPutGet");
         PvaClientPutGetPtr putGet = channel->createPutGet();
         putGet->connect();
         PvaClientPutDataPtr putData = putGet->getPutData();
@@ -39,7 +37,7 @@ int main(int argc,char *argv[])
         cout << "exception " << e.what() << endl;
         return 1;
     }
-    cout << "_____exampleLinkClient done_______\n";
+    cout << "_____helloPutGetClient done_______\n";
     return 0;
 }
 

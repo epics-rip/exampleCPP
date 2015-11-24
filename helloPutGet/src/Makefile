@@ -10,33 +10,33 @@ include $(TOP)/configure/CONFIG
 #
 
 
-DBD += exampleServer.dbd
+DBD += helloPutGet.dbd
 
-INC += exampleServer.h
+INC += helloPutGet.h
 
-LIBRARY_IOC += exampleServer
-exampleServer_SRCS += exampleServer.cpp
-exampleServer_SRCS += exampleServerRegister.cpp
-exampleServer_LIBS += pvDatabase
-exampleServer_LIBS += pvAccess
-exampleServer_LIBS += pvData
-exampleServer_LIBS += Com
-exampleServer_LIBS += $(EPICS_BASE_IOC_LIBS)
+LIBRARY_IOC += helloPutGet
+helloPutGet_SRCS += helloPutGet.cpp
+helloPutGet_SRCS += helloPutGetRegister.cpp
+helloPutGet_LIBS += pvDatabase
+helloPutGet_LIBS += pvAccess
+helloPutGet_LIBS += pvData
+helloPutGet_LIBS += Com
+helloPutGet_LIBS += $(EPICS_BASE_IOC_LIBS)
 
-PROD_HOST += exampleServerMain
-exampleServerMain_SRCS += exampleServerMain.cpp
-exampleServerMain_LIBS += exampleServer
-exampleServerMain_LIBS += pvDatabase
-exampleServerMain_LIBS += pvAccess
-exampleServerMain_LIBS += pvData
-exampleServerMain_LIBS += Com
+PROD_HOST += helloPutGetMain
+helloPutGetMain_SRCS += helloPutGetMain.cpp
+helloPutGetMain_LIBS += helloPutGet
+helloPutGetMain_LIBS += pvDatabase
+helloPutGetMain_LIBS += pvAccess
+helloPutGetMain_LIBS += pvData
+helloPutGetMain_LIBS += Com
 
-PROD_HOST += exampleServerClient
-exampleServerClient_SRCS += exampleServerClient.cpp
-exampleServerClient_LIBS += pvaClient
-exampleServerClient_LIBS += pvAccess
-exampleServerClient_LIBS += pvData
-exampleServerClient_LIBS += Com
+PROD_HOST += helloPutGetClient
+helloPutGetClient_SRCS += helloPutGetClient.cpp
+helloPutGetClient_LIBS += pvaClient
+helloPutGetClient_LIBS += pvAccess
+helloPutGetClient_LIBS += pvData
+helloPutGetClient_LIBS += Com
 
 
 #===========================

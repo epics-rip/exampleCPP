@@ -1,9 +1,8 @@
-/*exampleServerRegister.cpp */
-/**
- * Copyright - See the COPYRIGHT that is included with this distribution.
- * EPICS pvData is distributed subject to a Software License Agreement found
- * in file LICENSE that is included with this distribution.
- */
+// Copyright information and license terms for this software can be
+// found in the file LICENSE that is included with the distribution
+
+/*helloPutGetRegister.cpp */
+
 /**
  * @author mrk
  * @date 2013.07.24
@@ -34,12 +33,12 @@
 #include <pv/traceRecord.h>
 
 #include <epicsExport.h>
-#include <pv/exampleServer.h>
+#include <pv/helloPutGet.h>
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
-using namespace epics::exampleServer;
+using namespace epics::helloPutGet;
 using std::cout;
 using std::endl;
 
@@ -47,34 +46,26 @@ static const iocshArg testArg0 = { "recordName", iocshArgString };
 static const iocshArg *testArgs[] = {
     &testArg0};
 
-static const iocshFuncDef exampleServerFuncDef = {
-    "exampleServerCreateRecord", 1, testArgs};
-static void exampleServerCallFunc(const iocshArgBuf *args)
+static const iocshFuncDef helloPutGetFuncDef = {
+    "helloPutGetCreateRecord", 1, testArgs};
+static void helloPutGetCallFunc(const iocshArgBuf *args)
 {
     PVDatabasePtr master = PVDatabase::getMaster();
     char *recordName = args[0].sval;
-    ExampleServerPtr record = ExampleServer::create(recordName);
+    HelloPutGetPtr record = HelloPutGet::create(recordName);
     bool result = master->addRecord(record);
     if(!result) cout << "recordname" << " not added" << endl;
-    PVRecordPtr pvRecord = TraceRecord::create(
-        "laptopTraceRecordPGRPC");
-    if(!pvRecord) {
-          cout << "TraceRecord::create failed" << endl;
-    } else {
-        result = master->addRecord(pvRecord);
-        if(!result) cout<< "record " << recordName << " not added" << endl;
-    }
 }
 
-static void exampleServerRegister(void)
+static void helloPutGetRegister(void)
 {
     static int firstTime = 1;
     if (firstTime) {
         firstTime = 0;
-        iocshRegister(&exampleServerFuncDef, exampleServerCallFunc);
+        iocshRegister(&helloPutGetFuncDef, helloPutGetCallFunc);
     }
 }
 
 extern "C" {
-    epicsExportRegistrar(exampleServerRegister);
+    epicsExportRegistrar(helloPutGetRegister);
 }

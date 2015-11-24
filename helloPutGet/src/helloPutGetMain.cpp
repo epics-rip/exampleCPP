@@ -1,9 +1,8 @@
-/*ExampleServerMain.cpp */
-/**
- * Copyright - See the COPYRIGHT that is included with this distribution.
- * EPICS pvData is distributed subject to a Software License Agreement found
- * in file LICENSE that is included with this distribution.
- */
+// Copyright information and license terms for this software can be
+// found in the file LICENSE that is included with the distribution
+
+/*HelloPutGetMain.cpp */
+
 /**
  * @author mrk
  */
@@ -13,7 +12,7 @@
 #include <string>
 #include <iostream>
 
-#include <pv/exampleServer.h>
+#include <pv/helloPutGet.h>
 #include <pv/traceRecord.h>
 #include <pv/channelProviderLocal.h>
 
@@ -21,7 +20,7 @@ using namespace std;
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
-using namespace epics::exampleServer;
+using namespace epics::helloPutGet;
 
 int main(int argc,char *argv[])
 {
@@ -30,17 +29,11 @@ int main(int argc,char *argv[])
     bool result = false;
     string recordName;
 
-    recordName = "exampleServer";
-    pvRecord = ExampleServer::create(recordName);
+    recordName = "helloPutGet";
+    pvRecord = HelloPutGet::create(recordName);
     result = master->addRecord(pvRecord);
     if(!result) cout<< "record " << recordName << " not added" << endl;
 
-    recordName = "traceRecordPGRPC";
-    pvRecord = TraceRecord::create(recordName);
-    result = master->addRecord(pvRecord);
-    if(!result) cout<< "record " << recordName << " not added" << endl;
-
-   
     ContextLocal::shared_pointer contextLocal = ContextLocal::create();
     contextLocal->start();
 

@@ -9,29 +9,29 @@ include $(TOP)/configure/CONFIG
 # Build an IOC support library
 #
 
-DBD += exampleServer.dbd
+DBD += helloPutGet.dbd
 
 #=============================
 # build an ioc application
 
-PROD_IOC += exampleServer
+PROD_IOC += helloPutGet
 
 
 # <name>_registerRecordDeviceDriver.cpp will be created from <name>.dbd
-exampleServer_SRCS += exampleServer_registerRecordDeviceDriver.cpp
-exampleServer_SRCS_DEFAULT += exampleServerMain.cpp
-exampleServer_SRCS_vxWorks += -nil-
+helloPutGet_SRCS += helloPutGet_registerRecordDeviceDriver.cpp
+helloPutGet_SRCS_DEFAULT += helloPutGetMain.cpp
+helloPutGet_SRCS_vxWorks += -nil-
 
 
 # The following adds support from base/src/vxWorks
-exampleServer_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
+helloPutGet_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
 
-exampleServer_LIBS += exampleServer
-exampleServer_LIBS += pvDatabase
-exampleServer_LIBS += pvaSrv
-exampleServer_LIBS += pvAccess
-exampleServer_LIBS += pvData
-exampleServer_LIBS += $(EPICS_BASE_IOC_LIBS)
+helloPutGet_LIBS += helloPutGet
+helloPutGet_LIBS += pvDatabase
+helloPutGet_LIBS += pvaSrv
+helloPutGet_LIBS += pvAccess
+helloPutGet_LIBS += pvData
+helloPutGet_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #===========================
 
