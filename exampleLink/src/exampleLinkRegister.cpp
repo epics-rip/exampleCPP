@@ -1,4 +1,4 @@
-/*exampleLink.cpp */
+/*exampleLinkRegister.cpp */
 /**
  * Copyright - See the COPYRIGHT that is included with this distribution.
  * EPICS pvData is distributed subject to a Software License Agreement found
@@ -32,12 +32,14 @@
 #include <pv/standardField.h>
 #include <pv/standardPVField.h>
 #include <pv/pvAccess.h>
+#include <pv/ntscalarArray.h>
 #include <pv/pvDatabase.h>
 
 #include <epicsExport.h>
 #include <pv/exampleLink.h>
 
 using namespace epics::pvData;
+using namespace epics::nt;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
 using std::cout;
@@ -60,10 +62,13 @@ static void exampleLinkCallFunc(const iocshArgBuf *args)
     PVRecordPtr pvRecord;
     bool result(false);
     string recordName;
-    PVStructurePtr pvStructure = standardPVField->scalarArray(
-        pvDouble,"alarm,timeStamp");
-    pvRecord = PVRecord::create("doubleArray",pvStructure);
-    result = master->addRecord(pvRecord);
+    NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
+    PVStructurePtr pvStructure = ntScalarArrayBuilder->
+        value(pvDouble)->
+        addAlarm()->
+        addTimeStamp()->
+        createPVStructure();
+    result = master->addRecord(PVRecord::create("doubleArray",pvStructure));
     if(!result) cout<< "record " << recordName << " not added" << endl;
 
     recordName = args[0].sval;

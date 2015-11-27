@@ -36,7 +36,7 @@ int main(int argc,char *argv[])
             monitor->releaseEvent();
         }
         {
-             size_t nElements = 0;
+             size_t nElements = 5;
              shared_vector<double> value(nElements);
              for(size_t i=0; i< nElements; ++i) value[i] = 0.0;
              shared_vector<const double> data(freeze(value));
@@ -49,7 +49,7 @@ int main(int argc,char *argv[])
             monitor->releaseEvent();
         }
         {
-             size_t nElements = 0;
+             size_t nElements = 5;
              shared_vector<double> value(nElements);
              for(size_t i=0; i< nElements; ++i) value[i] = .1*(i+1);
              shared_vector<const double> data(freeze(value));

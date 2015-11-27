@@ -29,6 +29,7 @@ exampleLink_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
 
 exampleLink_LIBS += exampleLink
 exampleLink_LIBS += pvDatabase
+exampleLink_LIBS += nt
 exampleLink_LIBS += pvaSrv
 exampleLink_LIBS += pvAccess
 exampleLink_LIBS += pvData

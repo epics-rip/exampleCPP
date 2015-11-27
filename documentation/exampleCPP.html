@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP</h1>
-<h2 class="nocount">Release 1.0 - 2015.11.23</h2>
+<h2 class="nocount">Release 1.0 - 2015.11.25</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>exampleCPP provides a set of examples that is each a top level project.</p>
@@ -60,12 +60,16 @@
      <dd>Provides an IOC with a combination of V3 DBRecords, PVRecords, and also starts pvaSrv.</dd>
     <dt>exampleClient</dt>
      <dd>pvaClientCPP examples that communicate with the database</dd>
-    <dt>helloService</dt>
+    <dt>helloPutGet</dt>
       <dd>A PVRecord that implements hello world via a channelPutGet request.</dd>
+    <dt>helloRPC</dt>
+        <dd>A channelRPC hello world server.</dd>
     <dt>exampleLink</dt>
         <dd>This example shows how a PVRecord can have support that accesses other channels</dd>
-    <dt>rdbService</dt>
-        <dd>A channelRPC hello world server.</dd>
+    <dt>powerSupply</dt>
+        <dd>This is an example of creating a service that requires a somewhat complicated
+           top level PVStructure.
+        </dd>
     <dt>ChannelArchiveService</dt>
          <dd><b>To be documented.</b></dd>
     <dt>test</dt>
@@ -77,10 +81,6 @@ make runtests
         It starts the database and
         then runs a number of pvaClientCPP tests that communicate with the IOC.
        </dd>
-     <dt>examplePowerSupply</dt>
-        <dd>This is an example of creating a service that requires a somewhat complicated
-           top level PVStructure.
-        </dd>
      <dt>arrayPerformance</dt>
         <dd>
          This example implements main programs that demonstrate performance
@@ -88,7 +88,7 @@ make runtests
         </dd>
 </dl>
 
-<p>There are several reasons for a separate repository:</p>
+<p>There are several reasons for a separate repository for examples of pvDatabase and pvaClient:</p>
 <dl>
    <dt>Circular dependencies</dt>
      <dd>If the examples are in pvaClientCPP and pvDatabaseCPP then
@@ -135,7 +135,7 @@ cp -a /home/epicsv4/master/exampleCPP/database myApp
    <dt>scalar</dt>
     <dd>
        <b>database</b> has an example for each <b>scalarType</b>.<br />
-        <b>exampleClient</b> has examples for some of the <b>scalarType</b>.
+        <b>exampleClient</b> has examples for some of the <b>scalarTypes</b>.
     </dd>
    <dt>scalarArray</dt>
     <dd>
@@ -173,7 +173,7 @@ and an example channelRPC service.
 Thus the DRRecords can be accessed via either provider ca or pva.</p>
 <p>Several of the other examples also start pvaSrv.</p>
 <h3>pvaClientCPP</h3>
-<p><b>NOTE:</b> Since pvaClientCPP supports all of pvAccess except channelRPC,
+<p><b>NOTE:</b> Since pvaClientCPP is a synchronous wrapper for pvAccessCPP,
 pvaClientCPP examples also test pvAccess.</p>
 <p><b>exampleClient</b> has examples for all of channelGet, channelPut,
 channelPutGet, monitor, and channelRPC.
@@ -182,10 +182,10 @@ The examples access channels created by example <b>database</b>
 <p>Several other examples also have examples that use pvaClientCPP.</p>
 <h3>normativeTypesCPP</h3>
 <p> The database creates records of type NTScalar, NTScalarArray and NTEnum.
-There is a exampleClient that uses NTMultiChannel.</p>
+There is an exampleClient that uses NTMultiChannel.</p>
 <h3>C++ and Java interoperability</h3>
-<p><b>exampleClient</b> can acceess the <b>database</b> from either exampleCPP or exampleJava.
-exampleJava has an b>exampleClient</b> that can acceess the <b>database</b> from either exampleCPP or exampleJava.
+<p><b>exampleClient</b> can access the <b>database</b> from either exampleCPP or exampleJava.
+exampleJava has an <b>exampleClient</b> that can acceess the <b>database</b> from either exampleCPP or exampleJava.
 </p>
 <h3>Integration Test</h3>
 <p>Example <b>test</b> supports:</p>
