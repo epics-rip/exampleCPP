@@ -43,19 +43,20 @@ class epicsShareClass PowerSupply :
 public:
     POINTER_DEFINITIONS(PowerSupply);
     static PowerSupplyPtr create(
-        std::string const & recordName,
-        epics::pvData::PVStructurePtr const & pvStructure);
+        std::string const & recordName);
     virtual ~PowerSupply();
     virtual void destroy();
     virtual bool init();
     virtual void process();
+    
+private:
+    PowerSupply(std::string const & recordName,
+        epics::pvData::PVStructurePtr const & pvStructure);
     void put(double power,double voltage);
     double getPower();
     double getVoltage();
     double getCurrent();
-private:
-    PowerSupply(std::string const & recordName,
-        epics::pvData::PVStructurePtr const & pvStructure);
+
     epics::pvData::PVDoublePtr pvCurrent;
     epics::pvData::PVDoublePtr pvPower;
     epics::pvData::PVDoublePtr pvVoltage;

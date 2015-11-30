@@ -31,15 +31,9 @@ int main(int argc,char *argv[])
     string recordName;
 
     recordName = "powerSupply";
-    PVStructurePtr pv = createPowerSupply();
-    pvRecord = PowerSupply::create(recordName,pv);
+    pvRecord = PowerSupply::create(recordName);
     result = master->addRecord(pvRecord);
     cout << "result of addRecord " << recordName << " " << result << endl;
-
-    recordName = "traceRecordPGRPC";
-    pvRecord = TraceRecord::create(recordName);
-    result = master->addRecord(pvRecord);
-    if (!result) cout<< "record " << recordName << " not added" << endl;
 
     ContextLocal::shared_pointer contextLocal = ContextLocal::create();
     contextLocal->start(true);

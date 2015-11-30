@@ -9,7 +9,7 @@ include $(TOP)/configure/CONFIG
 # Build an IOC support library
 #
 
-DBD += powerSupplyRegister.dbd
+DBD += powerSupply.dbd
 
 INC += powerSupply.h
 

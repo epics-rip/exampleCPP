@@ -50,9 +50,7 @@ static const iocshFuncDef powerSupplyFuncDef = {
 static void powerSupplyCallFunc(const iocshArgBuf *args)
 {
     char *recordName = args[0].sval;
-    PVStructurePtr pv = createPowerSupply();
-    
-    PowerSupplyPtr record = PowerSupply::create(recordName,pv);
+    PowerSupplyPtr record = PowerSupply::create(recordName);
     bool result = PVDatabase::getMaster()->addRecord(record);
     if(!result) cout << "recordname" << " not added" << endl;
 }

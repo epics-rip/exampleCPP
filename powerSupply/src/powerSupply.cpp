@@ -22,14 +22,14 @@ using std::endl;
 
 namespace epics { namespace pvDatabase { 
 
-PVStructurePtr createPowerSupply()
+PowerSupplyPtr PowerSupply::create(
+    string const & recordName)
 {
     FieldCreatePtr fieldCreate = getFieldCreate();
     StandardFieldPtr standardField = getStandardField();
     PVDataCreatePtr pvDataCreate = getPVDataCreate();
 
-    return pvDataCreate->createPVStructure(
-        fieldCreate->createFieldBuilder()->
+    StructureConstPtr  topStructure = fieldCreate->createFieldBuilder()->
             add("alarm",standardField->alarm()) ->
             add("timeStamp",standardField->timeStamp()) ->
             addNestedStructure("power") ->
@@ -44,13 +44,8 @@ PVStructurePtr createPowerSupply()
                add("value",pvDouble) ->
                add("alarm",standardField->alarm()) ->
                endNested()->
-            createStructure());
-}
-
-PowerSupplyPtr PowerSupply::create(
-    string const & recordName,
-    PVStructurePtr const & pvStructure)
-{
+            createStructure();
+    PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
     PowerSupplyPtr pvRecord(
         new PowerSupply(recordName,pvStructure));
     if(!pvRecord->init()) pvRecord.reset();
@@ -111,7 +106,7 @@ bool PowerSupply::init()
     }
     pvPower = pvStructure->getSubField<PVDouble>("power.value");
     if(!pvPower) {
-        cerr << "no powert\n";
+        cerr << "no power\n";
         return false;
     }
     return true;
