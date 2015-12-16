@@ -168,10 +168,10 @@ DBRstringArray01
      <dd>Code that creates many PVRecords.
        Most are soft records but also exampleHello and exampleHelloRPC.
        The code is described in the following sub - section.</dd>
-   <dt>exampleDatabaseInclude.dbd and exampleDatabaseRegister.cpp</dt>
+   <dt>exampleDatabaseRegister.dbd and exampleDatabaseRegister.cpp</dt>
       <dd>Code that allows the PVRecords to be part of a V3 IOC.<br />
         This is the code that supports the <b>exampleDatabase</b>
-        shell command in <b>database/iocBoot/exampleDatabase/st.cmd</b><br />
+        shell command in <b>database/iocBoot/exampleDatabase/st.cmd</b>
       </dd>
    <dt>exampleDatabaseMain.cpp</dt>
       <dd>Code that allows the PVRecords to be available via a standalone main program.</dd>
@@ -237,13 +237,13 @@ They are used when the example database is started as part of a V3 IOC.</p>
            <dt>include "base.dbd"</dt>
               <dd>This is from iocCore</dd>
            <dt>include "PVAServerRegister.dbd"</dt>
-              <dd>This is to start pvaSrv</dd>
+              <dd>This is to create the iocsh commmand <b>startPVAServer</b></dd>
            <dt>include "registerChannelProviderLocal.dbd"</dt>
                <dd>This is to start local provider from pvDatabaseCPP</dd>
            <dt>include "dbPv.dbd"</dt>
-               <dd>This is to include template db files from ../Db</dd>
-           <dt>registrar("exampleDatabaseRegister")</dt>
-                <dd>This is to create all the PVRecords</dd>
+               <dd>This is to start <b>pvaSrv</b></dd>
+           <dt>include "exampleDatabaseRegister.dbd"</dt>
+                <dd>This is to create the iocsh commmand <b>exampleDatabase</b></dd>
         </dl>
       </dd>
    <dt>exampleDatabaseMain.cpp</dt>

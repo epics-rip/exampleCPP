@@ -4,7 +4,7 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 
-DBD += exampleDatabase.dbd
+DBD += exampleDatabaseRegister.dbd
 
 INC += exampleHello.h
 INC += exampleHelloRPC.h

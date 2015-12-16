@@ -1,9 +1,8 @@
+// Copyright information and license terms for this software can be
+// found in the file LICENSE that is included with the distribution
+
 /*examplePvaClientMonitor.cpp */
-/**
- * Copyright - See the COPYRIGHT that is included with this distribution.
- * EPICS pvData is distributed subject to a Software License Agreement found
- * in file LICENSE that is included with this distribution.
- */
+
 /**
  * @author mrk
  */
@@ -54,17 +53,21 @@ int main(int argc,char *argv[])
 {
     cout << "_____examplePvaClientMonitor starting_______\n";
     PvaClientPtr pva = PvaClient::create();
-    exampleMonitor(pva,"PVRdouble","pva");
-    PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");
-    pvaChannel->issueConnect();
-    Status status = pvaChannel->waitConnect(1.0);
-    if(status.isOK()) {
-        cout << "exampleMonitor pva\n";
-        exampleMonitor(pva,"DBRdouble00","pva");
-        cout << "exampleMonitor ca\n";
-        exampleMonitor(pva,"DBRdouble00","ca");
-    } else {
-         cout << "DBRdouble00 not found\n";
+    try {
+        exampleMonitor(pva,"PVRdouble","pva");
+        PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");
+        pvaChannel->issueConnect();
+        Status status = pvaChannel->waitConnect(1.0);
+        if(status.isOK()) {
+            cout << "exampleMonitor pva\n";
+            exampleMonitor(pva,"DBRdouble00","pva");
+            cout << "exampleMonitor ca\n";
+            exampleMonitor(pva,"DBRdouble00","ca");
+        } else {
+             cout << "DBRdouble00 not found\n";
+        }
+    } catch (std::runtime_error e) {
+            cout << "exception " << e.what() << endl;
     }
     cout << "_____examplePvaClientMonitor done_______\n";;
     return 0;

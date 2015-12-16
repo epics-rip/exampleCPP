@@ -37,8 +37,7 @@
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
-using std::cout;
-using std::endl;
+using namespace std;
 
 
 static const iocshArg testArg0 = { "recordName", iocshArgString };
@@ -50,6 +49,10 @@ static const iocshFuncDef powerSupplyFuncDef = {
 static void powerSupplyCallFunc(const iocshArgBuf *args)
 {
     char *recordName = args[0].sval;
+    if(!recordName) {
+        throw std::runtime_error("powerSupplyCreateRecord invalid number of arguments");
+    }
+cout << "powerSupplyCreateRecord " << recordName << endl;
     PowerSupplyPtr record = PowerSupply::create(recordName);
     bool result = PVDatabase::getMaster()->addRecord(record);
     if(!result) cout << "recordname" << " not added" << endl;
@@ -58,6 +61,7 @@ static void powerSupplyCallFunc(const iocshArgBuf *args)
 static void powerSupplyRegister(void)
 {
     static int firstTime = 1;
+cout << "powerSupplyRegister firstTime " << firstTime << endl;
     if (firstTime) {
         firstTime = 0;
         iocshRegister(&powerSupplyFuncDef, powerSupplyCallFunc);

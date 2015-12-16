@@ -1,4 +1,4 @@
-# helloService
+# helloPutGet
 
 The example implements a simple service that has a top level pvStructure:
 
@@ -23,7 +23,7 @@ In addition the timeStamp is set to the time when process is called.</p>
 
 ## Building
 
-If a proper RELEASE.local file exists one or two directory levels above **helloService**
+If a proper RELEASE.local file exists one or two directory levels above **helloPutGet**
 then just type:
 
     make
@@ -34,15 +34,15 @@ It can also be built by:
     edit configure/RELEASE.local
     make
 
-## To start the helloService as part of a V3 IOC
+## To start the helloPutGet as part of a V3 IOC
 
     mrk> pwd
-    /home/epicsv4/master/helloService/database/iocBoot/helloService
-    mrk> ../../bin/linux-x86_64/helloService st.cmd 
+    /home/epicsv4/master/helloPutGet/database/iocBoot/helloPutGet
+    mrk> ../../bin/linux-x86_64/helloPutGet st.cmd 
 
-## To start the helloService as a standalone main
+## To start the helloPutGet as a standalone main
 
     mrk> pwd
-    /home/epicsv4/master/exampleCPP/helloService
-    mrk> bin/linux-x86_64/helloServiceMain
+    /home/epicsv4/master/exampleCPP/helloPutGet
+    mrk> bin/linux-x86_64/helloPutGetMain
 

@@ -1,9 +1,8 @@
+// Copyright information and license terms for this software can be
+// found in the file LICENSE that is included with the distribution
+
 /*examplePvaClientMultiDouble.cpp */
-/**
- * Copyright - See the COPYRIGHT that is included with this distribution.
- * EPICS pvData is distributed subject to a Software License Agreement found
- * in file LICENSE that is included with this distribution.
- */
+
 /**
  * @author mrk
  */
@@ -26,14 +25,14 @@ static void example(
 {
     cout << "_example provider " << provider << " channels " << channelNames << "_\n";
     size_t num = channelNames.size();
-    PvaClientMultiChannelPtr multiChannel(
-        PvaClientMultiChannel::create(pva,channelNames,provider));
-    PvaClientMultiGetDoublePtr multiGet(multiChannel->createGet());
-    PvaClientMultiPutDoublePtr multiPut(multiChannel->createPut());
-    PvaClientMultiMonitorDoublePtr multiMonitor(multiChannel->createMonitor());
-    shared_vector<double> data(num,0);
-    for(double value = 0.2; value< 2.3; value+= 1.0) {
-        try {
+    try {
+        PvaClientMultiChannelPtr multiChannel(
+            PvaClientMultiChannel::create(pva,channelNames,provider));
+        PvaClientMultiGetDoublePtr multiGet(multiChannel->createGet());
+        PvaClientMultiPutDoublePtr multiPut(multiChannel->createPut());
+        PvaClientMultiMonitorDoublePtr multiMonitor(multiChannel->createMonitor());
+        shared_vector<double> data(num,0);
+        for(double value = 0.2; value< 2.3; value+= 1.0) {
             for(size_t i=0; i<num; ++i) data[i] = value + i;
             cout << "put " << data << endl;
             multiPut->put(data);
@@ -43,10 +42,10 @@ static void example(
             while(result) {
                 cout << "monitor  data " << multiMonitor->get() << endl;
                 result = multiMonitor->poll();
+            }
         }
-        } catch (std::runtime_error e) {
-            cout << "exception " << e.what() << endl;
-        }
+    } catch (std::runtime_error e) {
+        cout << "exception " << e.what() << endl;
     }
 }
 

@@ -1,9 +1,8 @@
+// Copyright information and license terms for this software can be
+// found in the file LICENSE that is included with the distribution
+
 /*exampleLinkRegister.cpp */
-/**
- * Copyright - See the COPYRIGHT that is included with this distribution.
- * EPICS pvData is distributed subject to a Software License Agreement found
- * in file LICENSE that is included with this distribution.
- */
+
 /**
  * @author mrk
  * @date 2013.07.24
@@ -58,22 +57,25 @@ static const iocshFuncDef exampleLinkFuncDef = {
     "exampleLinkCreateRecord", 3, testArgs};
 static void exampleLinkCallFunc(const iocshArgBuf *args)
 {
+    char *recordName = args[0].sval;
+    char *providerName = args[1].sval;
+    char *channelName = args[2].sval;
+    if(!recordName || !providerName || !channelName) {
+        throw std::runtime_error("exampleLinkCreateRecord invalid number of arguments");
+    }
+cout << "exampleLinkCreateRecord recordName " << recordName << " providerName " << providerName << " channelName " << channelName << endl;
     PVDatabasePtr master = PVDatabase::getMaster();
     PVRecordPtr pvRecord;
     bool result(false);
-    string recordName;
     NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
     PVStructurePtr pvStructure = ntScalarArrayBuilder->
         value(pvDouble)->
         addAlarm()->
         addTimeStamp()->
         createPVStructure();
-    result = master->addRecord(PVRecord::create("doubleArray",pvStructure));
+    result = master->addRecord(PVRecord::create(channelName,pvStructure));
     if(!result) cout<< "record " << recordName << " not added" << endl;
 
-    recordName = args[0].sval;
-    char *providerName = args[1].sval;
-    char *channelName = args[2].sval;
     ExampleLinkPtr record = ExampleLink::create(recordName,providerName,channelName);
     if(record) 
         result = master->addRecord(record);
@@ -83,6 +85,7 @@ static void exampleLinkCallFunc(const iocshArgBuf *args)
 static void exampleLinkRegister(void)
 {
     static int firstTime = 1;
+cout << "exampleLinkRegister firstTime " << firstTime << endl;
     if (firstTime) {
         firstTime = 0;
         iocshRegister(&exampleLinkFuncDef, exampleLinkCallFunc);

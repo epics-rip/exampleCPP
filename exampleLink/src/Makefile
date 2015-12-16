@@ -9,7 +9,7 @@ include $(TOP)/configure/CONFIG
 # Build an IOC support library
 #
 
-DBD += exampleLink.dbd
+DBD += exampleLinkRegister.dbd
 
 INC += exampleLink.h
 

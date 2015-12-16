@@ -8,6 +8,7 @@ DIRS += exampleLink
 DIRS += powerSupply
 DIRS += helloPutGet
 DIRS += helloRPC
+DIRS += exampleRPCService
 DIRS += test
 DIRS += arrayPerformance
 

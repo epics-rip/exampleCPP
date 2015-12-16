@@ -92,5 +92,5 @@ This is an example of issuing a channelPutGet.
 
 This is an example of issuing a channelRPC request.
 It does **not** use pva.
-S
+
 

@@ -35,7 +35,7 @@ int main(int argc,char *argv[])
     ExampleDatabase::create();
     ServerContext::shared_pointer ctx =
         startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-    channelProvider.reset();
+    
     master.reset();
     cout << "exampleDatabase\n";
     string str;
@@ -46,6 +46,7 @@ int main(int argc,char *argv[])
 
     }
     ctx->destroy();
-    epicsThreadSleep(2.0);
+    epicsThreadSleep(3.0);
+    channelProvider->destroy();
     return 0;
 }

@@ -13,8 +13,8 @@
 #include <iostream>
 
 #include <pv/helloPutGet.h>
-#include <pv/traceRecord.h>
 #include <pv/channelProviderLocal.h>
+#include <pv/serverContext.h>
 
 using namespace std;
 using namespace epics::pvData;
@@ -25,6 +25,7 @@ using namespace epics::helloPutGet;
 int main(int argc,char *argv[])
 {
     PVDatabasePtr master = PVDatabase::getMaster();
+    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     PVRecordPtr pvRecord;
     bool result = false;
     string recordName;
@@ -33,16 +34,19 @@ int main(int argc,char *argv[])
     pvRecord = HelloPutGet::create(recordName);
     result = master->addRecord(pvRecord);
     if(!result) cout<< "record " << recordName << " not added" << endl;
+    ServerContext::shared_pointer ctx =
+        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+    master.reset();
+    string str;
+    while(true) {
+        cout << "Type exit to stop: \n";
+        getline(cin,str);
+        if(str.compare("exit")==0) break;
 
-    ContextLocal::shared_pointer contextLocal = ContextLocal::create();
-    contextLocal->start();
-
-    PVStringArrayPtr pvNames = master->getRecordNames();
-    shared_vector<const string> names = pvNames->view();
-    for(size_t i=0; i<names.size(); ++i) cout << names[i] << endl;
-
-    contextLocal->waitForExit();
-
+    }
+    ctx->destroy();
+    channelProvider->destroy();
+    epicsThreadSleep(3.0);
     return 0;
 }
 

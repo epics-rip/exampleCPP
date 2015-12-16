@@ -1,9 +1,8 @@
+// Copyright information and license terms for this software can be
+// found in the file LICENSE that is included with the distribution
+
 /*examplePvaClientPut.cpp */
-/**
- * Copyright - See the COPYRIGHT that is included with this distribution.
- * EPICS pvData is distributed subject to a Software License Agreement found
- * in file LICENSE that is included with this distribution.
- */
+
 /**
  * @author mrk
  */
@@ -27,12 +26,12 @@ static ConvertPtr convert = getConvert();
 static void examplePut(PvaClientPtr const &pva)
 {
     cout << "example put\n";
-    PvaClientChannelPtr channel = pva->channel("PVRdouble");
-    PvaClientPutPtr put = channel->put();
-    PvaClientPutDataPtr putData = put->getData();
-    PvaClientMonitorPtr monitor = pva->channel("PVRdouble")->monitor("");
-    PvaClientMonitorDataPtr monitorData = monitor->getData();
     try {
+        PvaClientChannelPtr channel = pva->channel("PVRdouble");
+        PvaClientPutPtr put = channel->put();
+        PvaClientPutDataPtr putData = put->getData();
+        PvaClientMonitorPtr monitor = pva->channel("PVRdouble")->monitor("");
+        PvaClientMonitorDataPtr monitorData = monitor->getData();
         putData->putDouble(3.0); put->put();
         cout <<  channel->get("field()")->getData()->showChanged(cout) << endl;
         putData->putDouble(4.0); put->put();
@@ -52,12 +51,12 @@ static void examplePut(PvaClientPtr const &pva)
 static void examplePVFieldPut(PvaClientPtr const &pva)
 {
     cout << "example put\n";
-    PvaClientChannelPtr channel = pva->channel("PVRdouble");
-    PvaClientPutPtr put = channel->put();
-    PvaClientPutDataPtr putData = put->getData();
-    PVFieldPtr pvField = putData->getValue();
-    PVScalarPtr pvScalar = static_pointer_cast<PVScalar>(pvField);
     try {
+        PvaClientChannelPtr channel = pva->channel("PVRdouble");
+        PvaClientPutPtr put = channel->put();
+        PvaClientPutDataPtr putData = put->getData();
+        PVFieldPtr pvField = putData->getValue();
+        PVScalarPtr pvScalar = static_pointer_cast<PVScalar>(pvField);
         convert->fromDouble(pvScalar,1.0); put->put();
         cout <<  channel->get("field()")->getData()->showChanged(cout) << endl;
         convert->fromDouble(pvScalar,2.0); put->put();

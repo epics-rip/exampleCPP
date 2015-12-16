@@ -1,9 +1,8 @@
+// Copyright information and license terms for this software can be
+// found in the file LICENSE that is included with the distribution
+
 /*examplePvaClientProcess.cpp */
-/**
- * Copyright - See the COPYRIGHT that is included with this distribution.
- * EPICS pvData is distributed subject to a Software License Agreement found
- * in file LICENSE that is included with this distribution.
- */
+
 /**
  * @author mrk
  */
@@ -23,9 +22,9 @@ using namespace epics::pvaClient;
 static void exampleProcess(PvaClientPtr const &pva)
 {
     cout << "example process\n";
-    PvaClientChannelPtr channel = pva->channel("PVRdouble");
-    PvaClientProcessPtr process = channel->createProcess();
     try {
+        PvaClientChannelPtr channel = pva->channel("PVRdouble");
+        PvaClientProcessPtr process = channel->createProcess();
         process->process();
         cout <<  channel->get("field()")->getData()->showChanged(cout) << endl;
         process->process();

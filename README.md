@@ -60,22 +60,25 @@ In order to run the examples, **database** must also be built and then the IOC d
     mrk> ../../bin/linux-x86_64/exampleDatabase st.cmd
 
 
-### exampleServer
+### helloPutGet
 
 Implements a PVRecord that is an example of a PVRecord intended to ba accessed via channelPutGet.
 It is a simple HelloWorld example.
 
-### HelloWorld
+### helloRPC
 
 This implements HelloWorld that is accessed via channelRPC.
+
+### exampleRPCService
+
+This is an example service that is accessed via PvAClientChannel::createChannelRPC.
 
 ### exampleLink
 
 This implements a V3 IOC that has a PVRecord doubleArray and a PVRecord exampleLink that monitors changes to doubleArray. PVRecord exampleLink uses pvAccess client code to monitor for changes in doubleArray. It can use either provider local or pva to connect to doubleArray.
 
 
-
-### examplePowerSupply
+### powerSupply
 
 This is an example of creating a PVRecord that uses a somewhat complicated top level PVStructure.
 It simulates a power supply.

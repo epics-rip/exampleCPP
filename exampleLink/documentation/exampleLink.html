@@ -377,9 +377,12 @@ Note that all this must be done before the next set of code:</p>
     return 0;
 </pre>
 <p>waits for the caller to enter exit and then terminates</p>
-<h3>exampleLinkInclude.dbd, exampleLinkRegister.dbd, and exampleLinkRegister.cpp</h3>
-<p>This allows the example to be run as part of a V3 IOC.</p>
-<p>The main code is in <b>exampleLinkRegister.cpp</p>
+<h3>exampleLinkRegister.dbd and exampleLinkRegister.cpp</h3>
+<p>This is the code that supports the <b>exampleLinkCreateRecord</b>
+        shell command in <b>exampleLink/iocBoot/exampleLink/st.*</b>.
+</p>
+<p>The following is from <b>exampleLinkRegister.cpp</b>
+</p>
 <pre>
 static void exampleLinkCallFunc(const iocshArgBuf *args)
 {
@@ -409,8 +412,9 @@ static void exampleLinkCallFunc(const iocshArgBuf *args)
 </p>
 <h2>exampleLink/ioc</h2>
 <p>This is standard way to create support for a V3 IOC.
+</p>
 <h3>exampleLink/ioc/Db</h3>
-<p>This is not used by the example.
+<p>This is used by the example to create a DBRecord named exampleLinkAI
 </p>
 <h3>exampleLink/ioc/src</h3>
 <p><b>exampleLinkInclude.dbd</b></p>
@@ -419,7 +423,7 @@ include "base.dbd"
 include "PVAServerRegister.dbd"
 include "PVAClientRegister.dbd"
 include "registerChannelProviderLocal.dbd"
-registrar("exampleLinkRegister")
+include "exampleLinkRegister.dbd"
 </pre>
 <p>Has V3 IOC includes for the example</p>
 <p><b>exampleLinkMain.cpp</b>  is standard V3 IOC code.</p>
@@ -433,13 +437,17 @@ cd ${TOP}
 ## Register all support components
 dbLoadDatabase("dbd/exampleLink.dbd")
 exampleLink_registerRecordDeviceDriver(pdbbase)
+
+## Load record instance
+dbLoadRecords("db/ai.db","name=exampleLinkAI");
+
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
-startPVAClient
 startPVAServer
 exampleLinkCreateRecord exampleLink local doubleArray
 </pre>
-<p><b>st.local</b> is the same except that it asks for provider pva instead of local</p>
+<p><b>st.remote</b> is the similar except that it asks for provider pva instead of local.
+It also issues iocsh command <b>startPVAClient</b></p>
 </div> <!-- class="contents" -->
 </body>
 </html>

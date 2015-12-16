@@ -1,4 +1,4 @@
-exampleCPP
+exampleCPP Release 4.2
 ========================
 
 This is the release for EPICS V4 release 4.6
@@ -10,6 +10,10 @@ If the tests are in pvaClient then circular dependiciesb are created between git
 It also has a test for
 
 make runtests
+
+exampleCPP Release 4.1
+========================
+
 
 HelloWord and ChannelArchiverService
 ------------------------------------
