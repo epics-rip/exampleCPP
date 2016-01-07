@@ -52,7 +52,6 @@ static void powerSupplyCallFunc(const iocshArgBuf *args)
     if(!recordName) {
         throw std::runtime_error("powerSupplyCreateRecord invalid number of arguments");
     }
-cout << "powerSupplyCreateRecord " << recordName << endl;
     PowerSupplyPtr record = PowerSupply::create(recordName);
     bool result = PVDatabase::getMaster()->addRecord(record);
     if(!result) cout << "recordname" << " not added" << endl;
@@ -61,7 +60,6 @@ cout << "powerSupplyCreateRecord " << recordName << endl;
 static void powerSupplyRegister(void)
 {
     static int firstTime = 1;
-cout << "powerSupplyRegister firstTime " << firstTime << endl;
     if (firstTime) {
         firstTime = 0;
         iocshRegister(&powerSupplyFuncDef, powerSupplyCallFunc);

@@ -1,47 +1,19 @@
 TOP=..
 
 include $(TOP)/configure/CONFIG
-#----------------------------------------
-#  ADD MACRO DEFINITIONS AFTER THIS LINE
-#=============================
 
-#==================================================
-# Build an IOC support library
-#
+INSTALL_INCLUDE = $(INSTALL_LOCATION)/include/pv
+USR_INCLUDES += -I$(INSTALL_LOCATION)/include
 
-DBD += powerSupplyRegister.dbd
+powerSupplySRC = $(TOP)/src
 
-INC += powerSupply.h
+include $(powerSupplySRC)/pv/Makefile
+include $(powerSupplySRC)/code/Makefile
 
-LIBRARY += powerSupply
-powerSupply_SRCS += powerSupply.cpp
-powerSupply_SRCS += powerSupplyRegister.cpp
-powerSupply_LIBS += pvDatabase
-powerSupply_LIBS += pvAccess
-powerSupply_LIBS += pvData
-powerSupply_LIBS += Com
+LIBRARY = powerSupply
+powerSupply_LIBS += pvDatabase pvAccess nt pvData Com
 powerSupply_LIBS += $(EPICS_BASE_IOC_LIBS)
 
-PROD_HOST += powerSupplyMain
-powerSupplyMain_SRCS += powerSupplyMain.cpp
-
-powerSupplyMain_LIBS += pvDatabase
-powerSupplyMain_LIBS += pvAccess
-powerSupplyMain_LIBS += pvData
-powerSupplyMain_LIBS += Com
-powerSupplyMain_LIBS += powerSupply
-
-PROD_HOST += powerSupplyClient
-powerSupplyClient_SRCS += powerSupplyClient.cpp
-powerSupplyClient_LIBS += pvaClient
-powerSupplyClient_LIBS += pvAccess
-powerSupplyClient_LIBS += pvData
-powerSupplyClient_LIBS += Com
-
-
-#===========================
 
 include $(TOP)/configure/RULES
-#----------------------------------------
-#  ADD RULES AFTER THIS LINE
-
+\
