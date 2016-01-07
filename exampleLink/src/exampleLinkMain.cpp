@@ -50,7 +50,6 @@ int main(int argc,char *argv[])
     ExampleLinkPtr pvRecord(
         ExampleLink::create(
            "exampleLink",provider,"doubleArray")); 
-pvRecord->setTraceLevel(1);
     master->addRecord(pvRecord);
     cout << "exampleLink\n";
     string str;
@@ -62,8 +61,7 @@ pvRecord->setTraceLevel(1);
     }
     ctx->destroy();
     epicsThreadSleep(3.0);
-    channelProvider->destroy();
-    epicsThreadSleep(3.0);
+//    channelProvider->destroy();
 //    if(provider=="pva") ClientFactory::stop();
 //    epicsThreadSleep(3.0);
     return 0;

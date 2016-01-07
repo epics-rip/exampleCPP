@@ -64,7 +64,7 @@ public:
         std::string const & message,
         epics::pvData::MessageType messageType)
         {
-           std::cout << "Why is ExampleLink::message called\n";
+           std::cout << "ExampleLink::message " << message << "\n";
         }
     virtual void monitorConnect(
         const epics::pvData::Status& status,
