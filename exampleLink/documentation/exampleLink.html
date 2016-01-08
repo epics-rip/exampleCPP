@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/exampleLink</h1>
-<h2 class="nocount">Release 1.0 - 2015.11.23</h2>
+<h2 class="nocount">Release 1.0 - 2016.01.08</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -159,12 +159,14 @@ exampleLink
        ExampleRELEASE.local
        ...
     src
-       exampleLink.h
-       exampleLink.cpp
-       exampleLinkInclude.dbd
-       exampleLinkRegister.cpp
-       exampleLinkClient.cpp
-       exampleLinkMain.cpp
+       pv
+          exampleLink.h
+       code
+          exampleLink.cpp
+          exampleLinkInclude.dbd
+          exampleLinkRegister.cpp
+          exampleLinkClient.cpp
+          exampleLinkMain.cpp
     ioc
        Db
        src
@@ -178,7 +180,7 @@ exampleLink
 </pre>
 
 <h2>exampleLink/src</h2>
-<h3>exampleLink.h and exampleLink.cpp</h3>
+<h3>exampleLink/src/pv</h3>
 <p>exampleLink.h contains the following:</p>
 <pre>
 ...
@@ -217,6 +219,8 @@ public:
 private:
 ...
 </pre>
+<h3>exampleLink/src/code</h3>
+<h4>exampleLink.cpp</h4>
 <p>All the non-static methods are either PVRecord or PVAccess methods
 and will not be discussed further.
 The create method is called to create a new PVRecord instance with code that will issue
@@ -292,7 +296,7 @@ bool ExampleLink::init()
 This a return of true means that it has successfully created a channelGet and is ready
 to issue gets when process is called.</p>
 <p>Look at the code for more details.</p>
-<h3>exampleLinkMain.cpp</h3>
+<h4>exampleLinkMain.cpp</h4>
 <p>This is a main program for starting the example.</p>
 <pre>
 int main(int argc,char *argv[])
@@ -377,7 +381,7 @@ Note that all this must be done before the next set of code:</p>
     return 0;
 </pre>
 <p>waits for the caller to enter exit and then terminates</p>
-<h3>exampleLinkRegister.dbd and exampleLinkRegister.cpp</h3>
+<h4>exampleLinkRegister.dbd and exampleLinkRegister.cpp</h4>
 <p>This is the code that supports the <b>exampleLinkCreateRecord</b>
         shell command in <b>exampleLink/iocBoot/exampleLink/st.*</b>.
 </p>

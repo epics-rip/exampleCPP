@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/helloPutGet</h1>
-<h2 class="nocount">Release 1.0 - 2015.11.23</h2>
+<h2 class="nocount">Release 1.0 - 2016.01.08</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -93,13 +93,15 @@ helloPutGet
        ExampleRELEASE.local
        ...
     src
-       helloPutGet.h
-       helloPutGet.cpp
-       helloPutGetInclude.dbd
-       helloPutGetMain.cpp
-       helloPutGetRegister.cpp
-       helloPutGetRegister.dbd
-       helloPutGetClient.cpp
+       pv
+          helloPutGet.h
+       code
+          helloPutGet.cpp
+          helloPutGetInclude.dbd
+          helloPutGetMain.cpp
+          helloPutGetRegister.cpp
+          helloPutGetRegister.dbd
+          helloPutGetClient.cpp
     ioc
        Db
           ...
@@ -139,11 +141,11 @@ helloPutGetCreateRecord helloPutGet
          </pre>
        Multiple commands can be issued to create multiple putGet records.
        </dd>
-      </dd>
    <dt>helloPutGetRegister.dbd</dt>
        <dd>This is the file that is used to create the shell command
         helloPutGetCreateRecord.
-    <dt>helloPutGetClient.cpp</dl>
+       </dd>
+    <dt>helloPutGetClient.cpp</dt>
        <dd>Client code to test helloPutGet</dd>
 
    <dt>ioc</dt>
@@ -164,9 +166,11 @@ helloPutGet
        ExampleRELEASE.local
        ...
     src
-       helloPutGet.h
-       helloPutGet.cpp
-       helloPutGetMain.cpp
+       pv
+          helloPutGet.h
+       code
+          helloPutGet.cpp
+          helloPutGetMain.cpp
 </pre>
 <p>Thus if only a main program is required the directory layout is simple.</p>
 <p>Also many sites will want to build the src directory in an area

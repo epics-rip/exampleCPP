@@ -27,7 +27,7 @@
 <div class="head">
 <h1>EPICS exampleCPP/powerSupply</h1>
 
-<h2 class="nocount">Release 1.0 - 2015.11.23</h2>
+<h2 class="nocount">Release 1.0 - 2016.01.08</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -97,13 +97,15 @@ powerSupply
        ExampleRELEASE.local
        ...
     src
-       powerSupply.h
-       powerSupply.cpp
-       powerSupplyInclude.dbd
-       powerSupplyMain.cpp
-       powerSupplyRegister.cpp
-       powerSupplyRegister.dbd
-       powerSupplyClient.cpp
+       pv
+           powerSupply.h
+       code
+           powerSupply.cpp
+           powerSupplyInclude.dbd
+           powerSupplyMain.cpp
+           powerSupplyRegister.cpp
+           powerSupplyRegister.dbd
+           powerSupplyClient.cpp
     ioc
        Db
           ...
@@ -168,9 +170,11 @@ powerSupply
        ExampleRELEASE.local
        ...
     src
-       powerSupply.h
-       powerSupply.cpp
-       powerSupplyMain.cpp
+       pv
+           powerSupply.h
+       code
+           powerSupply.cpp
+           powerSupplyMain.cpp
 </pre>
 <p>Thus if only a main program is required the directory layout is simple.</p>
 <p>Also many sites will want to build the src directory in an area

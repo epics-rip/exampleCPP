@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/database</h1>
-<h2 class="nocount">Release 1.0 - 2015.11.23</h2>
+<h2 class="nocount">Release 1.0 - 2016.01.08</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>database provides an IOC with a combination of V3 DBRecords, PVRecords, and also starts pvaSrv.
@@ -158,13 +158,25 @@ DBRshortArray01
 DBRstringArray01
 </pre>
 <h2>database/src</h2>
+<p>This directory has two subdirectories: <b>pv</b> and <b>code></b>.</p>
+<h3>database/src/pv</h3>
 <p>This directory has the following files:</p>
 <dl>
-  <dt>exampleHello.h and exampleHello.cpp</dt>
+  <dt>exampleHello.h</dt>
+    <dd>Header file for exampleHello.cpp</dd>
+  <dt>exampleHelloRPC.h</dt>
+    <dd>Header file for exampleHelloRPC.cpp</dd>
+   <dt>exampleDatabase.h</dt> 
+     <dd>Header file for exampleDatabase.cpp</dd>
+</dl>
+<h3>database/src/code</h3>
+<p>This directory has the following files:</p>
+<dl>
+  <dt>exampleHello.cpp</dt>
     <dd>Code for an example that is accessed via channelPutGet</dd>
-  <dt>exampleHelloRPC.h and exampleHelloRPC.cpp</dt>
+  <dt>exampleHelloRPC.cpp</dt>
     <dd>Code for an example that is accesed via channelRPC</dd>
-   <dt>exampleDatabase.h and exampleDatabase.cpp</dt> 
+   <dt>exampleDatabase.cpp</dt> 
      <dd>Code that creates many PVRecords.
        Most are soft records but also exampleHello and exampleHelloRPC.
        The code is described in the following sub - section.</dd>
@@ -176,7 +188,7 @@ DBRstringArray01
    <dt>exampleDatabaseMain.cpp</dt>
       <dd>Code that allows the PVRecords to be available via a standalone main program.</dd>
 </dl>
-<h3>database/src/exampleDatabase.cpp</h3>
+<h3>database/src/code/exampleDatabase.cpp</h3>
 <p>This has a number of private methods:</p>
 <dl>
    <dt>createRecords</dt>
