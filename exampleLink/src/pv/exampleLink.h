@@ -64,7 +64,10 @@ public:
         std::string const & message,
         epics::pvData::MessageType messageType)
         {
-           std::cout << "ExampleLink::message " << message << "\n";
+           if(messageType>=epics::pvData::errorMessage) {
+               std::cout << "ExampleLink::message " << message;
+               std::cout << " messageType " << getMessageTypeName(messageType) << std::endl;
+           }
         }
     virtual void monitorConnect(
         const epics::pvData::Status& status,
