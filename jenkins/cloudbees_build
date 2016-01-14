@@ -61,5 +61,5 @@ cat > RELEASE.local << EOF
 EPICS_BASE=${EPICS_BASE}
 EOF
 
-make -C HelloWorld distclean all
-make -C ChannelArchiverService distclean # all
+make distclean all
+#make -C ChannelArchiverService distclean # all
