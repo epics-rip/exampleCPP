@@ -9,7 +9,7 @@ DIRS := $(DIRS) $(filter-out $(DIRS), $(TOP)/../exampleLink)
 DIRS := $(DIRS) $(filter-out $(DIRS), $(TOP)/../powerSupply)
 DIRS := $(DIRS) $(filter-out $(DIRS), $(TOP)/../helloPutGet)
 DIRS := $(DIRS) $(filter-out $(DIRS), $(TOP)/../helloRPC)
-#DIRS := $(DIRS) $(filter-out $(DIRS), $(TOP)/../exampleRPCService)
+DIRS := $(DIRS) $(filter-out $(DIRS), $(TOP)/../exampleRPCService)
 DIRS := $(DIRS) $(filter-out $(DIRS), $(TOP)/../test)
 DIRS := $(DIRS) $(filter-out $(DIRS), $(TOP)/../arrayPerformance)
 
