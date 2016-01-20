@@ -71,7 +71,12 @@ This implements HelloWorld that is accessed via channelRPC.
 
 ### exampleRPCService
 
-This is an example service that is accessed via PvAClientChannel::createChannelRPC.
+Implements a PVRecord which also supports channelRPC.
+The record represents a 2-D position, but also provides an RPC service
+which moves the position through a sequence of points before returning.
+A channel to the record supports the usual operations (get, put monitor)
+but also supports channelRPC, i.e. the RPC service has the same channel name as the position PV.
+A client ("move") for calling the service is supplied.
 
 ### exampleLink
 
