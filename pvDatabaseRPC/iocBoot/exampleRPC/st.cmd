@@ -7,7 +7,7 @@ dbLoadDatabase("dbd/exampleRPC.dbd")
 exampleRPC_registerRecordDeviceDriver(pdbbase)
 
 ## Load record instance
-dbLoadRecords("db/dbCounter.db","name=exampleRPCServiceCounter");
+dbLoadRecords("db/dbCounter.db","name=pvDatabaseRPCCounter");
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit()

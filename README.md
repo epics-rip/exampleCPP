@@ -92,15 +92,17 @@ An example of a PVRecord that implements a "Hello World" service that can be
 accessed via Channel Put-Get.
 
 
-### exampleRPCService
+### pvDatabaseRPC
 
-An example of a PVRecord which also supports RPC services.
+An example of a pvDatabase PVRecord which also supports RPC services.
+
 The record represents a 2-D position, but also provides an RPC service
 which moves the position through a sequence of points before returning.
 A channel to the record supports the usual operations (such as get, put and
 monitor) but also supports Channel RPC, i.e. the RPC service has the same 
-channel name as the position PV. A client ("move") for calling the service
-is supplied.
+channel name as the position PV.
+
+A client ("move") for calling the service is supplied.
 
 
 ### exampleLink

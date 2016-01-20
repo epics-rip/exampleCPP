@@ -1,11 +1,11 @@
-# exampleRPCService
+# pvDatabaseRPC
 
-A channelRPC hello world server.
-
+An example of a pvDatabase PVRecord which also supports RPC services.
 
 ## Building
 
-If a proper RELEASE.local file exists one or two directory levels above **exampleRPCService**
+If a proper RELEASE.local file exists one or two directory levels above
+**pvDatabaseRPC**
 then just type:
 
     make
