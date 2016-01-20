@@ -44,7 +44,10 @@ does not exist or if the example has special requirements.
 
 ### helloRPC
 
-This implements HelloWorld that is accessed via channelRPC.
+A very simple example of an EPICS V4 RPC service: This implements a
+"Hello World" example of a service that is accessed via channelRPC.
+
+This is a good starting point for writing an RPC service.
 
 
 ### ChannelArchiverService
