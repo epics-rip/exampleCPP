@@ -10,5 +10,7 @@ envPaths
 */configure/*.local
 !*/configure/ExampleRELEASE.local
 ChannelArchiverService/test/results/
+**/O.*
 */**/O.*
+*/*/**/O.*
 QtC-*
