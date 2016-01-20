@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS exampleCPP/powerSupply</title>
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  <style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     body { margin-right: 10% }
+/*]]>*/</style>
+
+ <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="http://epics-pvdata.sourceforge.net/script/tocgen.js"></script>
+
+</head>
+
+<body>
+
+<div class="head">
+<h1>EPICS exampleCPP/powerSupply</h1>
+
+<h2 class="nocount">Release 1.0 - 2016.01.08</h2>
+
+<h2 class="nocount">Abstract</h2>
+<p>
+<b>powerSupply</b> is an example of creating a service that requires a somewhat complicated top level PVStructure. Look at the code for details.
+</p>
+  <!-- last para of Abstract is boilerplate reference to EPICS -->
+      <p>For more information about EPICS generally, please refer to the home page of the <a
+       href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
+      Control System</a>.</p>
+
+
+</div> <!-- head -->
+
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<!-- Place what you would like in the Table of Contents, inside the contents div -->
+<div id="contents" class="contents">	  
+<hr />
+
+<h2>Overview</h2>
+<p>his is an example of creating a service that requires a somewhat complicated
+           top level PVStructure.</p>
+
+<p>The example has a top level pvStructure:
+</p>
+<pre>
+structure
+    alarm_t alarm
+    time_t timeStamp
+    structure power
+        double value
+        alarm_t alarm
+    structure voltage
+        double value
+        alarm_t alarm
+    structure current
+        double value
+        alarm_t alarm
+</pre>
+<p>It is designed to be accessed via a channelPutGet request.
+The client sets power.value and voltage.value
+When the record processes it computes current.value.
+In addition the timeStamp is set to the time when process is called.</p>
+<p>
+The example can be run on linux as follows:</p>
+<pre>
+mrk&gt; pwd
+/home/epicsv4/master/exampleCPP/powerSupply
+mrk&gt; bin/linux-x86_64/powerSupplyMain
+</pre>
+<p>To start powerSupply as part of a V3IOC:</p>
+<pre>
+mrk&gt; pwd
+/home/hg/exampleCPP/powerSupply/iocBoot/powerSupply
+mrk&gt; ../../../bin/linux-x86_64/powerSupply st.cmd
+</pre>
+
+<h2>Directory Layout</h2>
+<p>
+The directory layout is:
+</p>
+<pre>
+powerSupply
+    configure
+       ExampleRELEASE.local
+       ...
+    src
+       pv
+           powerSupply.h
+       code
+           powerSupply.cpp
+           powerSupplyInclude.dbd
+           powerSupplyMain.cpp
+           powerSupplyRegister.cpp
+           powerSupplyRegister.dbd
+           powerSupplyClient.cpp
+    ioc
+       Db
+          ...
+       src
+          powerSupplyInclude.dbd
+          powerSupplyMain.cpp
+   iocBoot
+      powerSupply
+         st.cmd
+         ...
+</pre>
+where
+<dl>
+  <dt>ExampleRELEASE.local</dt>
+     <dd>
+     If you make a copy of powerSupply and use it
+     to create a new server,
+    This is the file that must be copied to RELEASE.local
+     and edited.</dd>
+   <dt>powerSupply.h</dt>
+     <dd>The header file for powerSupply.</dd>
+   <dt>powerSupply.cpp</dt>
+     <dd>The powerSupply implementation.</dd>
+   <dt>powerSupplyMain.cpp</dt>
+     <dd>A main program that runs the example so that it can be accessed
+       by a pvAccess client.
+     </dd>
+   <dt>powerSupplyInclude.dbd</dt>
+     <dd>This has a register command so that the powerSupply can be started
+       on a V3 IOC via iocsh.
+      </dd>
+   <dt>powerSupplyRegister.cpp</dt>
+      <dd>This has the code to start the powerSupply via the following iocsh
+       command.
+         <pre>
+powerSupplyCreateRecord powerSupply
+         </pre>
+       Multiple commands can be issued to create multiple powerSupply records.
+       </dd>
+      </dd>
+   <dt>powerSupplyRegister.dbd</dt>
+       <dd>This is the file that is used to create the shell command
+        powerSupplyCreateRecord.
+    <dt>powerSupplyClient.cpp</dl>
+       <dd>Client code to test powerSupply</dd>
+
+   <dt>ioc</dt>
+     <dd>This is for building a V3 IOC application.</dd>
+   <dt>ioc/Db</dt>
+     <dd>This has template files for creating V3 records.</dd>
+   <dt>ioc/src</dt>
+     <dd>The files for running a V3 IOC.</dd>
+   <dt>iocBoot/powerSupply</dt>
+      <dd>A place to start powerSupply as part of a V3IOC.
+       It has a st.cmd file that starts the ioc and also starts pvAccess
+      and the example.</dd>
+</dl>
+<p>If only a main program is desired then the directory layout is:</p>
+<pre>
+powerSupply
+    configure
+       ExampleRELEASE.local
+       ...
+    src
+       pv
+           powerSupply.h
+       code
+           powerSupply.cpp
+           powerSupplyMain.cpp
+</pre>
+<p>Thus if only a main program is required the directory layout is simple.</p>
+<p>Also many sites will want to build the src directory in an area
+separate from where the iocs are build.</p>
+<h2>powerSupply.h</h2>
+<p>The example resides in src
+The implementation is in powerSupply.cpp.
+</p>
+<p>The description consists of</p>
+<pre>
+class PowerSupply;
+typedef std::tr1::shared_ptr&lt;PowerSupply&gt; PowerSupplyPtr;
+
+class PowerSupply :
+    public PVRecord
+{
+public:
+    POINTER_DEFINITIONS(PowerSupply);
+    static PowerSupplyPtr create(
+        std::string const &amp; recordName);
+    virtual ~PowerSupply();
+    virtual void destroy();
+    virtual bool init();
+    virtual void process();
+private:
+    PowerSupply(std::string const &amp; recordName,
+        epics::pvData::PVStructurePtr const &amp; pvStructure);
+
+    void put(double power,double voltage);
+    double getPower();
+    double getVoltage();
+    double getCurrent();
+    epics::pvData::PVDoublePtr pvCurrent;
+    epics::pvData::PVDoublePtr pvPower;
+    epics::pvData::PVDoublePtr pvVoltage;
+    epics::pvData::PVAlarm pvAlarm;
+    epics::pvData::PVTimeStamp pvTimeStamp;
+    epics::pvData::Alarm alarm;
+    epics::pvData::TimeStamp timeStamp;
+};
+</pre>
+<p>where</p>
+<dl>
+  <dt>create</dt>
+    <dd>This is example specific but each support could provide
+     a similar static method.
+    </dd>
+  <dt>~PowerSupply</dt>
+    <dd>The destructor must be declared virtual.</dd>
+  <dt>destroy</dt>
+     <dd>Called when the record is being destroyed.
+      This must call the base class destroy method.
+     </dd>
+  <dt>init</dt>
+    <dd>A method to initialize the support. It returns true
+    if initialization is successful and false if not.
+    NOTE that this is a virtual method of PVRecord itself.</dd>
+  <dt>process</dt>
+    <dd>
+     This again is a virtual method of PVRecord.
+    </dd>
+  <dt>PowerSupply</dt>
+    <dd>For the example this is private.</dd>
+  
+</dl>
+<p>The implementation of create method is:</p>
+<pre>
+PowerSupplyPtr PowerSupply::create(
+    std::string const &amp; recordName)
+{
+    StandardFieldPtr standardField = getStandardField();
+    FieldCreatePtr fieldCreate = getFieldCreate();
+    PVDataCreatePtr pvDataCreate = getPVDataCreate();
+    StructureConstPtr  topStructure = fieldCreate-&gt;createFieldBuilder()-&gt;
+        add("alarm",standardField-&gt;alarm()) -&gt;
+            add("timeStamp",standardField-&gt;timeStamp()) -&gt;
+            addNestedStructure("power") -&gt;
+               add("value",pvDouble) -&gt;
+               add("alarm",standardField-&gt;alarm()) -&gt;
+               endNested()-&gt;
+            addNestedStructure("voltage") -&gt;
+               add("value",pvDouble) -&gt;
+               add("alarm",standardField-&gt;alarm()) -&gt;
+               endNested()-&gt;
+            addNestedStructure("current") -&gt;
+               add("value",pvDouble) -&gt;
+               add("alarm",standardField-&gt;alarm()) -&gt;
+               endNested()-&gt;
+        createStructure();
+    PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(topStructure);
+
+    PowerSupplyPtr pvRecord(
+        new PowerSupply(recordName,pvStructure));
+    if(!pvRecord-&gt;init()) pvRecord.reset();
+    return pvRecord;
+}
+</pre>
+This:
+<ul>
+   <li>Creates the top level structure.</li>
+   <li>Creates a PowerSupplyPtr via the constructor.</li>
+   <li>Calls init and if it fails resets the shared pointer.</li>
+   <li>Returns the shared pointer to the newly created record.</li>
+</ul>
+<p>The private constructor method is:</p>
+<pre>
+PowerSupply::PowerSupply(
+    std::string const &amp; recordName,
+    epics::pvData::PVStructurePtr const &amp; pvStructure)
+: PVRecord(recordName,pvStructure)
+{
+}
+</pre>
+The example is very simple. Note that it calls the base class constructor.
+<p>The destructor and destroy methods are:</p>
+<pre>
+PowerSupply::~PowerSupply()
+{
+}
+
+void PowerSupply::destroy()
+{
+    PVRecord::destroy();
+}
+</pre>
+The destructor has nothing to do.
+The destroy method, which is virtual,  just calls the destroy method of the base class.
+A more complicated example can clean up any resources it used but must call the base
+class destroy method.
+<p>The implementation of init is:</p>
+<pre>
+bool PowerSupply::init()
+{
+    initPVRecord();
+    PVStructurePtr pvStructure = getPVStructure();
+    PVFieldPtr pvField;
+    bool result;
+    pvField = pvStructure-&gt;getSubField("timeStamp");
+    if(!pvField) {
+        cerr &lt;&lt; "no timeStamp" &lt;&lt; endl;
+        return false;
+    }
+    result = pvTimeStamp.attach(pvField);
+    if(!result) {
+        cerr &lt;&lt; "no timeStamp" &lt;&lt; endl;
+        return false;
+    }
+    pvField = pvStructure-&gt;getSubField("alarm");
+    if(!pvField) {
+        cerr &lt;&lt; "no alarm" &lt;&lt; endl;
+        return false;
+    }
+    result = pvAlarm.attach(pvField);
+    if(!result) {
+        cerr &lt;&lt; "no alarm" &lt;&lt; endl;
+        return false;
+    }
+    pvCurrent = pvStructure-&gt;getSubField&lt;PVDouble&gt;("current.value");
+    if(!pvCurrent) {
+        cerr &lt;&lt; "no current\n";
+        return false;
+    }
+    pvVoltage = pvStructure-&gt;getSubField&lt;PVDouble&gt;("voltage.value");
+    if(!pvVoltage) {
+        cerr &lt;&lt; "no current\n";
+        return false;
+    }
+    pvPower = pvStructure-&gt;getSubField&lt;PVDouble&gt;("power.value");
+    if(!pvPower) {
+        cerr &lt;&lt; "no power\n";
+        return false;
+    }
+    return true;
+}
+</pre>;
+<p>The implementation of process is:</p>
+<pre>
+void PowerSupply::process()
+{
+    timeStamp.getCurrent();
+    pvTimeStamp.set(timeStamp);
+    double voltage = pvVoltage-&gt;get();
+    double power = pvPower-&gt;get();
+    if(voltage&lt;1e-3 && voltage&gt;-1e-3) {
+        alarm.setMessage("bad voltage");
+        alarm.setSeverity(majorAlarm);
+        pvAlarm.set(alarm);
+        return;
+    }
+    double current = power/voltage;
+    pvCurrent-&gt;put(current);
+    alarm.setMessage("");
+    alarm.setSeverity(noAlarm);
+    pvAlarm.set(alarm);
+}
+</pre>
+It gives a value to result.value and
+then sets the timeStamp to the current time.
+<h2>src/powerSupplyMain.cpp</h2>
+
+<p>The main program is:</p>
+<pre>
+int main(int argc,char *argv[])
+{
+    PVDatabasePtr master = PVDatabase::getMaster();
+    PVRecordPtr pvRecord;
+    bool result = false;
+    string recordName;
+
+    recordName = "powerSupply";
+    pvRecord = PowerSupply::create(recordName);
+    result = master-&gt;addRecord(pvRecord);
+    if(!result) cout&lt;&lt; "record " &lt;&lt; recordName &lt;&lt; " not added" &lt;&lt; endl;
+
+    ContextLocal::shared_pointer contextLocal = ContextLocal::create();
+    contextLocal-&gt;start();
+
+    return 0;
+}
+</pre>
+This:
+<ul>
+  <li>Gets a pointer to the master database.</li>
+  <li>Creates the local Channel Provider. This starts the pvAccess server.</li>
+  <li>Creates record powerSupply </li>
+  <li>creates records traceRecordPGRPC and recordListPGRPC</li>
+  <li>lists all the records</li>
+  <li>Runs forever until the user types exit on standard in.</li>
+</ul>
+
+</div> <!-- class="contents" -->
+</body>
+</html>
