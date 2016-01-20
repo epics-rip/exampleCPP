@@ -50,7 +50,7 @@ requirements.
 ### helloRPC
 
 A very simple example of an EPICS V4 RPC service: This implements a
-"Hello World" example of a service that is accessed via channelRPC.
+"Hello World" example of a service that is accessed via Channel RPC.
 
 This is a good starting point for writing an RPC service.
 
@@ -88,18 +88,20 @@ IOC database must be started as follows:
 
 ### helloPutGet
 
-Implements a PVRecord that is an example of a PVRecord intended to ba
-accessed via channelPutGet.
-It is a simple HelloWorld example.
+An example of a PVRecord that implements a "Hello World" service that can be
+accessed via Channel Put-Get.
+
 
 ### exampleRPCService
 
-Implements a PVRecord which also supports channelRPC.
+An example of a PVRecord which also supports RPC services.
 The record represents a 2-D position, but also provides an RPC service
 which moves the position through a sequence of points before returning.
-A channel to the record supports the usual operations (get, put monitor)
-but also supports channelRPC, i.e. the RPC service has the same channel name
-as the position PV. A client ("move") for calling the service is supplied.
+A channel to the record supports the usual operations (such as get, put and
+monitor) but also supports Channel RPC, i.e. the RPC service has the same 
+channel name as the position PV. A client ("move") for calling the service
+is supplied.
+
 
 ### exampleLink
 
@@ -116,6 +118,19 @@ top level PVStructure. It simulates a power supply.
 
 The example also has an example pvaClient for accessing the PVRecord.
 
+
+###  arrayPerformance
+
+This is an example that shows performance for an array of doubles.
+
+arrayPerformanceMain implements a PVRecord that is a double array.
+It has a process method with code that causes the array to be updated at
+selectable rates and sizes!
+
+It also has pvaClient examples that can get, put and monitor the double
+array record.
+
+
 ### test
 
 This is an example that tests pvDatabase and pvaClient.   
@@ -125,19 +140,6 @@ It is meant to be used to execute:
 
     make runtests
 
-
 When this is done it starts the example database and then executes various
 client tests.
-
-###  arrayPerformance
-
-This is an example that shows performance for an array of doubles.
-
-arrayPerformanceMain implement a PVRecord that is a double array.
-It has a process method with code that causes the array to be updated at
-selectable rates and sizes.!
-
-It also has pvaClient examples that can get, put, and monitor the double
-array record.
-
 
