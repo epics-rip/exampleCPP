@@ -42,6 +42,21 @@ does not exist or if the example has special requirements.
 
 ## Brief summary of examples.
 
+### helloRPC
+
+This implements HelloWorld that is accessed via channelRPC.
+
+
+### ChannelArchiverService
+
+The ChannelArchiver Service is an EPICS V4 client and server which can be used
+to query the data archived by an EPICS Channel Archiver. It includes a bash
+script, gethist, which can parse a wide range of dates and times and process
+the corresponding data. However the service can be queried by any client
+issuing a pvAccess RPC request, such as eget. Requests and responses use EPICS V4
+normative types. Requests are in the form of an NTURI normative type and the results are returned as an NTTable. 
+
+
 ### database
 
 Provides an EPICS IOC that has both EPICS V3 DBRecords, V4 PVRecords, and pvaSrv for accessing the DBRecords.
@@ -65,10 +80,6 @@ In order to run the examples, **database** must also be built and then the IOC d
 Implements a PVRecord that is an example of a PVRecord intended to ba accessed via channelPutGet.
 It is a simple HelloWorld example.
 
-### helloRPC
-
-This implements HelloWorld that is accessed via channelRPC.
-
 ### exampleRPCService
 
 Implements a PVRecord which also supports channelRPC.
@@ -89,15 +100,6 @@ This is an example of creating a PVRecord that uses a somewhat complicated top l
 It simulates a power supply.
 
 The example also has an example pvaClient for accessing the PVRecord.
-
-### ChannelArchiverService
-
-The ChannelArchiver Service is an EPICS V4 client and server which can be used
-to query the data archived by an EPICS Channel Archiver. It includes a bash
-script, gethist, which can parse a wide range of dates and times and process
-the corresponding data. However the service can be queried by any client
-issuing a pvAccess RPC request, such as eget. Requests and responses use EPICS V4
-normative types. Requests are in the form of an NTURI normative type and the results are returned as an NTTable. 
 
 ### test
 
