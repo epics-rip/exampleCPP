@@ -26,11 +26,11 @@
 
 <div class="head">
 <h1>EPICS exampleCPP</h1>
-<h2 class="nocount">Release 4.2 - 2015.11.23</h2>
+<h2 class="nocount">Release 4.2 - 2016.01.22</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
-<b>exampleLink</b> implements a PVRecord that uses pvAccess to access another channel.
+This project provides a set of examples of client and server code for pvAccess.
 </p>
   <!-- last para of Abstract is boilerplate reference to EPICS -->
       <p>For more information about EPICS generally, please refer to the home page of the <a
@@ -77,15 +77,17 @@ make
 An example of a proper <b>RELEASE.local</b> is:
 </p>
 <pre>
-EPICS_BASE=/home/install/epics/base
 EPICS4_DIR=/home/epicsv4/master
-PVCOMMON=${EPICS4_DIR}/pvCommonCPP
-PVDATA=${EPICS4_DIR}/pvDataCPP
-PVACCESS=${EPICS4_DIR}/pvAccessCPP
-PVASRV=${EPICS4_DIR}/pvaSrv
-NORMATIVETYPES=${EPICS4_DIR}/normativeTypesCPP
+EXAMPLE=${EPICS4_DIR}/exampleCPP
 PVDATABASE=${EPICS4_DIR}/pvDatabaseCPP
 PVACLIENT=${EPICS4_DIR}/pvaClientCPP
+PVASRV=${EPICS4_DIR}/pvaSrv
+PVACCESS=${EPICS4_DIR}/pvAccessCPP
+NORMATIVETYPES=${EPICS4_DIR}/normativeTypesCPP
+PVDATA=${EPICS4_DIR}/pvDataCPP
+PVCOMMON=${EPICS4_DIR}/pvCommonCPP
+
+EPICS_BASE=/home/install/epics/base
 </pre>
 
 
