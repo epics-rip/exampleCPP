@@ -92,6 +92,15 @@ static void example(PvaClientPtr const &pvaClient)
         cout << "exception " << e.what() << endl;
         return;
     }
+
+    try {
+        putPower->put(5.0);
+        putVoltage->put(0.0);
+        putGet->putGet();
+    } catch (std::runtime_error e) {
+        cout << "exception " << e.what() << endl;
+        return;
+    }
 }
 
 int main(int argc,char *argv[])

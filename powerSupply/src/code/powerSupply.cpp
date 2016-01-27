@@ -122,7 +122,7 @@ void PowerSupply::process()
         alarm.setMessage("bad voltage");
         alarm.setSeverity(majorAlarm);
         pvAlarm.set(alarm);
-        return;
+        throw std::runtime_error("bad voltage exception");
     }
     double current = power/voltage;
     pvCurrent->put(current);

@@ -73,4 +73,13 @@ EPICS_BASE=${EPICS_BASE}
 EOF
 
 make distclean all
-#make -C ChannelArchiverService distclean # all
+
+###########################################
+# Test
+
+make runtests
+
+###########################################
+# Create distribution
+
+tar -czf pvDatabase.CB-dist.tar.gz lib include dbd COPYRIGHT LICENSE
