@@ -3,6 +3,8 @@
 TOP = ..
 include $(TOP)/configure/CONFIG
 
+PROD_LIBS += pvaClient pvAccess nt pvData Com
+
 TESTPROD_HOST += pvaClientTest
 pvaClientTest_SRCS = pvaClientTest 
 testHarness_SRCS += pvaClientTest.cpp 
@@ -33,7 +35,6 @@ pvaClientTestPutGet_SRCS = pvaClientTestPutGet
 testHarness_SRCS += pvaClientTestPutGet.cpp 
 TESTS += pvaClientTestPutGet
 
-PROD_LIBS += pvaClient pvAccess nt pvData Com
 
 testHarness_SRCS += pvaClientAllTests.c
 
