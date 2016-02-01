@@ -12,10 +12,11 @@ EMBEDDED_TOPS += $(TOP)/helloRPC
 EMBEDDED_TOPS += $(TOP)/pvDatabaseRPC
 EMBEDDED_TOPS += $(TOP)/arrayPerformance
 
+DIRS := configure
 
 DIRS += $(EMBEDDED_TOPS)
 
-DIRS += $(TOP)/test
+DIRS += test
 test_DEPEND_DIRS = configure
 
 # No inter-module dependencies
