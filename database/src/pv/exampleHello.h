@@ -27,7 +27,7 @@
 #include <shareLib.h>
 
 
-namespace epics { namespace exampleHello { 
+namespace epics { namespace exampleCPP { namespace database {
 
 
 class ExampleHello;
@@ -55,6 +55,6 @@ private:
 };
 
 
-}}
+}}}
 
 #endif  /* EXAMPLEHELLO_H */

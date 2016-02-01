@@ -23,7 +23,7 @@
 
 #include <shareLib.h>
 
-namespace epics { namespace pvDatabase { 
+namespace epics { namespace exampleCPP { namespace database {
 
 class epicsShareClass  ExampleDatabase{
 public:
@@ -31,6 +31,6 @@ public:
 };
 
 
-}}
+}}}
 
 #endif  /* EXAMPLEDATABASE_H */

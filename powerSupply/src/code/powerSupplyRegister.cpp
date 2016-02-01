@@ -37,6 +37,7 @@
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
+using namespace epics::exampleCPP::powerSupply;
 using namespace std;
 
 

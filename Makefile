@@ -3,8 +3,6 @@
 TOP = .
 include $(TOP)/configure/CONFIG
 
-# No configure directory here
-
 EMBEDDED_TOPS += $(TOP)/database
 EMBEDDED_TOPS += $(TOP)/exampleClient
 EMBEDDED_TOPS += $(TOP)/exampleLink

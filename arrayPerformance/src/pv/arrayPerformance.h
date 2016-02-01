@@ -28,7 +28,7 @@
 #   include <shareLib.h>
 #endif
 
-namespace epics { namespace pvDatabase { 
+namespace epics { namespace exampleCPP { namespace arrayPerformance { 
 
 class ArrayPerformance;
 typedef std::tr1::shared_ptr<ArrayPerformance> ArrayPerformancePtr;
@@ -37,7 +37,7 @@ class ArrayPerformanceThread;
 typedef std::tr1::shared_ptr<ArrayPerformanceThread> ArrayPerformanceThreadPtr;
 
 class epicsShareClass  ArrayPerformance :
-    public PVRecord
+    public epics::pvDatabase::PVRecord
 {
 public:
     POINTER_DEFINITIONS(ArrayPerformance);
@@ -86,6 +86,6 @@ private:
 };
 
 
-}}
+}}}
 
 #endif  /* ARRAYPERFORMANCE_H */

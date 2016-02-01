@@ -22,6 +22,7 @@
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
 #include <pv/pvAccess.h>
+#include <pv/pvDatabase.h>
 
 
 #ifdef longarrayputEpicsExportSharedSymbols
@@ -30,7 +31,7 @@
 #   include <shareLib.h>
 #endif
 
-namespace epics { namespace pvDatabase { 
+namespace epics { namespace exampleCPP { namespace arrayPerformance {
 
 
 class LongArrayPut;
@@ -78,6 +79,6 @@ private:
 };
 
 
-}}
+}}}
 
 #endif  /* LONGARRAYPUT_H */

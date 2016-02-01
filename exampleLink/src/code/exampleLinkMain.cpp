@@ -30,6 +30,7 @@ using namespace epics::pvData;
 using namespace epics::nt;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
+using namespace epics::exampleCPP::exampleLink;
 
 int main(int argc,char *argv[])
 {

@@ -22,6 +22,7 @@
 #include <pv/pvDatabase.h>
 #include <pv/pvCopy.h>
 #include <pv/pvAccess.h>
+#include <pv/pvDatabase.h>
 #include <pv/serverContext.h>
 
 #ifdef exampleLinkEpicsExportSharedSymbols
@@ -31,14 +32,14 @@
 
 #include <shareLib.h>
 
-namespace epics { namespace pvDatabase { 
+namespace epics { namespace exampleCPP { namespace exampleLink {
 
 
 class ExampleLink;
 typedef std::tr1::shared_ptr<ExampleLink> ExampleLinkPtr;
 
 class epicsShareClass ExampleLink :
-    public PVRecord,
+    public epics::pvDatabase::PVRecord,
     public epics::pvAccess::ChannelRequester,
     public epics::pvData::MonitorRequester
 {
@@ -89,6 +90,6 @@ private:
     epics::pvData::MonitorPtr monitor;
 };
 
-}}
+}}}
 
 #endif  /* EXAMPLELINK_H */

@@ -19,7 +19,7 @@ using namespace std;
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
-using namespace epics::exampleRPC;
+using namespace epics::exampleCPP::exampleRPC;
 
 int main(int argc,char *argv[])
 {

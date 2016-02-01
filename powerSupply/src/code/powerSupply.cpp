@@ -15,12 +15,13 @@
 #include "powerSupply.h"
 
 using namespace epics::pvData;
+using namespace epics::pvDatabase;
 using std::string;
 using std::cout;
 using std::cerr;
 using std::endl;
 
-namespace epics { namespace pvDatabase { 
+namespace epics { namespace exampleCPP {namespace powerSupply { 
 
 PowerSupplyPtr PowerSupply::create(
     string const & recordName)
@@ -153,4 +154,4 @@ double PowerSupply::getCurrent()
 }
 
 
-}}
+}}}

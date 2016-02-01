@@ -23,7 +23,7 @@ using namespace epics::pvDatabase;
 using std::tr1::static_pointer_cast;
 using std::string;
 
-namespace epics { namespace exampleRPC { 
+namespace epics { namespace exampleCPP { namespace exampleRPC { 
 
 
 PVStructurePtr ExampleRPCService::request(
@@ -210,4 +210,4 @@ void ExampleRPC::process()
 }
 
 
-}}
+}}}

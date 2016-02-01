@@ -27,7 +27,7 @@
 #include <shareLib.h>
 
 
-namespace epics { namespace exampleHelloRPC { 
+namespace epics { namespace exampleCPP { namespace database {
 
 
 class ExampleHelloRPC;
@@ -48,6 +48,6 @@ private :
     epics::pvData::PVStructurePtr pvResult;
 };
 
-}}
+}}}
 
 #endif  /* EXAMPLEHELLORPC_H */

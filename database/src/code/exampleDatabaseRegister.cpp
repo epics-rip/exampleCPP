@@ -36,6 +36,7 @@
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
+using namespace epics::exampleCPP::database;
 
 static const iocshFuncDef exampleDatabaseFuncDef = {"exampleDatabase", 0};
 

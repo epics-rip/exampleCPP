@@ -15,9 +15,10 @@
 
 
 
-namespace epics { namespace pvDatabase { 
+namespace epics { namespace exampleCPP { namespace arrayPerformance { 
 
 using namespace epics::pvData;
+using namespace epics::pvDatabase;
 using std::tr1::static_pointer_cast;
 using std::tr1::dynamic_pointer_cast;
 using std::cout;
@@ -201,5 +202,5 @@ void ArrayPerformanceThread::run()
     }
 }
 
-}}
+}}}
 

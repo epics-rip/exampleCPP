@@ -21,6 +21,7 @@
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
 #include <pv/pvAccess.h>
+#include <pv/pvDatabase.h>
 
 #ifdef longarraymonitorEpicsExportSharedSymbols
 #   define epicsExportSharedSymbols
@@ -29,7 +30,7 @@
 #endif
 
 
-namespace epics { namespace pvDatabase { 
+namespace epics { namespace exampleCPP { namespace arrayPerformance {
 
 
 class LongArrayMonitor;
@@ -79,6 +80,6 @@ private:
 };
 
 
-}}
+}}}
 
 #endif  /* LONGARRAYMONITOR_H */
