@@ -23,4 +23,4 @@
 -include $(TOP)/../../RELEASE.local
 -include $(TOP)/../RELEASE.local
 -include $(TOP)/configure/RELEASE.local
-
+-include $(TOP)/../configure/RELEASE.local
