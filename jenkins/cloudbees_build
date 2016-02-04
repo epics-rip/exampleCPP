@@ -82,4 +82,4 @@ make runtests
 ###########################################
 # Create distribution
 
-tar -czf pvDatabase.CB-dist.tar.gz lib include dbd COPYRIGHT LICENSE
+# ??? should all examples have a tar file created ???
