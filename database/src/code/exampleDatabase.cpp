@@ -39,8 +39,7 @@ using namespace epics::pvData;
 using namespace epics::nt;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
-using namespace epics::exampleHello;
-using namespace epics::exampleHelloRPC;
+using namespace epics::exampleCPP::database;
 
 static FieldCreatePtr fieldCreate = getFieldCreate();
 static StandardFieldPtr standardField = getStandardField();

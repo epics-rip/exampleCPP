@@ -17,7 +17,7 @@ using namespace epics::pvDatabase;
 using std::tr1::static_pointer_cast;
 using std::string;
 
-namespace epics { namespace helloPutGet { 
+namespace epics { namespace exampleCPP { namespace helloPutGet { 
 
 
 HelloPutGetPtr HelloPutGet::create(
@@ -79,4 +79,4 @@ void HelloPutGet::process()
     pvTimeStamp.set(timeStamp);
 }
 
-}}
+}}}

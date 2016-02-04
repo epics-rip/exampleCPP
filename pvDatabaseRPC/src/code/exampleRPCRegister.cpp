@@ -37,7 +37,7 @@
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
-using namespace epics::exampleRPC;
+using namespace epics::exampleCPP::exampleRPC;
 using std::cout;
 using std::endl;
 

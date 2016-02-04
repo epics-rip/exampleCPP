@@ -26,7 +26,7 @@
 #include <shareLib.h>
 
 
-namespace epics { namespace helloPutGet { 
+namespace epics { namespace exampleCPP { namespace helloPutGet { 
 
 
 class HelloPutGet;
@@ -54,6 +54,6 @@ private:
 };
 
 
-}}
+}}}
 
 #endif  /* HELLOPUTGET_H */

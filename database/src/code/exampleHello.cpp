@@ -18,7 +18,7 @@ using namespace epics::pvDatabase;
 using std::tr1::static_pointer_cast;
 using std::string;
 
-namespace epics { namespace exampleHello { 
+namespace epics { namespace exampleCPP { namespace database {
 
 
 ExampleHelloPtr ExampleHello::create(
@@ -80,4 +80,4 @@ void ExampleHello::process()
     pvTimeStamp.set(timeStamp);
 }
 
-}}
+}}}

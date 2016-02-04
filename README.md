@@ -12,6 +12,12 @@ Each example can be used as a template for building other applications:
 * Copy the complete example to where the desired application should reside.
 * Edit the new application.
 
+There is also a test that supports:
+
+    make runtests
+
+This test requires that at least **database** is built.
+
 ## Building via exampleCPP
 
 This is only a good idea if a proper **RELEASE.local** is present one 
@@ -134,6 +140,8 @@ array record.
 
 
 ### test
+
+This is **not** an embeded top level but just a subdirectory of **exampleCPP**.
 
 This is an example that tests pvDatabase and pvaClient.   
 This example requires that **database** must also be built. 

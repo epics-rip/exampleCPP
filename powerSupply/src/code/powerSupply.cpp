@@ -15,12 +15,13 @@
 #include "powerSupply.h"
 
 using namespace epics::pvData;
+using namespace epics::pvDatabase;
 using std::string;
 using std::cout;
 using std::cerr;
 using std::endl;
 
-namespace epics { namespace pvDatabase { 
+namespace epics { namespace exampleCPP {namespace powerSupply { 
 
 PowerSupplyPtr PowerSupply::create(
     string const & recordName)
@@ -122,7 +123,7 @@ void PowerSupply::process()
         alarm.setMessage("bad voltage");
         alarm.setSeverity(majorAlarm);
         pvAlarm.set(alarm);
-        return;
+        throw std::runtime_error("bad voltage exception");
     }
     double current = power/voltage;
     pvCurrent->put(current);
@@ -153,4 +154,4 @@ double PowerSupply::getCurrent()
 }
 
 
-}}
+}}}

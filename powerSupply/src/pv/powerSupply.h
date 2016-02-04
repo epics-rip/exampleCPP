@@ -30,7 +30,7 @@
 #include <shareLib.h>
 
 
-namespace epics { namespace pvDatabase { 
+namespace epics { namespace exampleCPP {namespace powerSupply { 
 
 epicsShareExtern epics::pvData::PVStructurePtr createPowerSupply();
 
@@ -38,7 +38,7 @@ class PowerSupply;
 typedef std::tr1::shared_ptr<PowerSupply> PowerSupplyPtr;
 
 class epicsShareClass PowerSupply :
-    public PVRecord
+    public epics::pvDatabase::PVRecord
 {
 public:
     POINTER_DEFINITIONS(PowerSupply);
@@ -67,6 +67,6 @@ private:
 };
 
 
-}}
+}}}
 
 #endif  /* POWERSUPPLY_H */

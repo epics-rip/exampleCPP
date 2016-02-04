@@ -20,7 +20,7 @@ using namespace std;
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
-using namespace epics::helloPutGet;
+using namespace epics::exampleCPP::helloPutGet;
 
 int main(int argc,char *argv[])
 {

@@ -27,6 +27,7 @@ using std::tr1::static_pointer_cast;
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
+using namespace epics::exampleCPP::database;
 
 int main(int argc,char *argv[])
 {

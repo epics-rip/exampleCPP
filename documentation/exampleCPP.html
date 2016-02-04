@@ -26,12 +26,16 @@
 
 <div class="head">
 <h1>EPICS exampleCPP</h1>
-<h2 class="nocount">Release 4.2 - 2015.11.23</h2>
+<h2 class="nocount">Release 4.2 - 2016.01.22</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
-<b>exampleLink</b> implements a PVRecord that uses pvAccess to access another channel.
-</p>
+This project provides a set of examples of client and server code for pvAccess.
+It also has a test that is run via:</p
+<pre>
+make runtests
+</pre>
+<p>
   <!-- last para of Abstract is boilerplate reference to EPICS -->
       <p>For more information about EPICS generally, please refer to the home page of the <a
        href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
@@ -77,15 +81,17 @@ make
 An example of a proper <b>RELEASE.local</b> is:
 </p>
 <pre>
-EPICS_BASE=/home/install/epics/base
 EPICS4_DIR=/home/epicsv4/master
-PVCOMMON=${EPICS4_DIR}/pvCommonCPP
-PVDATA=${EPICS4_DIR}/pvDataCPP
-PVACCESS=${EPICS4_DIR}/pvAccessCPP
-PVASRV=${EPICS4_DIR}/pvaSrv
-NORMATIVETYPES=${EPICS4_DIR}/normativeTypesCPP
+EXAMPLE=${EPICS4_DIR}/exampleCPP
 PVDATABASE=${EPICS4_DIR}/pvDatabaseCPP
 PVACLIENT=${EPICS4_DIR}/pvaClientCPP
+PVASRV=${EPICS4_DIR}/pvaSrv
+PVACCESS=${EPICS4_DIR}/pvAccessCPP
+NORMATIVETYPES=${EPICS4_DIR}/normativeTypesCPP
+PVDATA=${EPICS4_DIR}/pvDataCPP
+PVCOMMON=${EPICS4_DIR}/pvCommonCPP
+
+EPICS_BASE=/home/install/epics/base
 </pre>
 
 
@@ -159,20 +165,7 @@ issuing a pvAccess RPC request, such as eget. Requests and responses use EPICS V
 normative types. Requests are in the form of an NTURI normative type and the results are returned as an NTTable. 
 </p>
 
-<h3>test</h3>
-<p>
-This is an example that tests pvDatabase and pvaClient.   
-This example requires that **database** must also be built. 
-</p>
-<p>
-It is meant to be used to execute:
-</p>
-<pre>
-make runtests
-</pre>
-<p>
-When this is done it starts the example database and then executes various client tests.
-</p>
+
 
 <h3>arrayPerformance</h3>
 <p>
@@ -185,6 +178,22 @@ It has a process method with code that causes the array to be updated at selecta
 <p>
 It also has pvaClient examples that can get, put, and monitor the double array record.
 </p>
+
+<h3>test</h3>
+<p>
+This is a test for pvDatabase and pvaClient.   
+This example requires that **database** must also be built. 
+</p>
+<p>
+It is meant to be used to execute:
+</p>
+<pre>
+make runtests
+</pre>
+<p>
+When this is done it starts the example database and then executes various client tests.
+</p>
+
 </div> <!-- class="contents" -->
 </body>
 </html>

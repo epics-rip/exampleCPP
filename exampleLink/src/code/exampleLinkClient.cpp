@@ -18,7 +18,6 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
-
 int main(int argc,char *argv[])
 {
     cout << "_____exampleLinkClient starting_______\n";

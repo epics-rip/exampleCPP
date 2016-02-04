@@ -16,13 +16,14 @@
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
+using namespace epics::pvDatabase;
 using std::tr1::static_pointer_cast;
 using std::tr1::dynamic_pointer_cast;
 using std::cout;
 using std::endl;
 using std::string;
 
-namespace epics { namespace pvDatabase { 
+namespace epics { namespace exampleCPP { namespace exampleLink {
 
 ExampleLinkPtr ExampleLink::create(
     string const & recordName,
@@ -143,4 +144,4 @@ void ExampleLink::unlisten(epics::pvData::MonitorPtr const & monitor)
 {
 }
 
-}}
+}}}

@@ -27,7 +27,7 @@
 #include <shareLib.h>
 
 
-namespace epics { namespace exampleRPC { 
+namespace epics { namespace exampleCPP { namespace exampleRPC { 
 
 class ExampleRPCService;
 typedef std::tr1::shared_ptr<ExampleRPCService> ExampleRPCServicePtr;
@@ -120,6 +120,6 @@ private:
 };
 
 
-}}
+}}}
 
 #endif  /* EXAMPLERPC_H */

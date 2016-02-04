@@ -19,7 +19,7 @@ using namespace epics::pvAccess;
 using std::tr1::static_pointer_cast;
 using namespace std;
 
-namespace epics { namespace exampleHelloRPC { 
+namespace epics { namespace exampleCPP { namespace database {
 
 
 RPCService::shared_pointer  ExampleHelloRPC::create()
@@ -57,4 +57,4 @@ PVStructurePtr ExampleHelloRPC::request(PVStructurePtr const &pvArgument)
 }
 
 
-}}
+}}}
