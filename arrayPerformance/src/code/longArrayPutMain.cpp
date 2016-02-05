@@ -26,8 +26,8 @@
 #include <pv/serverContext.h>
 #include <pv/clientFactory.h>
 
-#include <arrayPerformance.h>
-#include <longArrayPut.h>
+#include <pv/arrayPerformance.h>
+#include <pv/longArrayPut.h>
 
 using namespace std;
 using std::tr1::static_pointer_cast;

@@ -1,30 +1,32 @@
-SRC_DIRS += $(ARRAYPERFORMSRC)/code
+SRC_DIRS += $(arrayPerformanceSRC)/code
 
+LIBRARY = arrayPerform
 LIBSRCS += arrayPerformance.cpp
 LIBSRCS += longArrayMonitor.cpp
 LIBSRCS += longArrayGet.cpp
 LIBSRCS += longArrayPut.cpp
+arrayPerform_LIBS += pvDatabase pvAccess pvData Com
 
 PROD_HOST += arrayPerformanceMain
 arrayPerformanceMain_SRCS += arrayPerformanceMain.cpp
-arrayPerformanceMain_LIBS += pvDatabase pvAccess pvData Com
 arrayPerformanceMain_LIBS += arrayPerform
+arrayPerformanceMain_LIBS += pvDatabase pvAccess pvData Com
 
 PROD_HOST += longArrayMonitorMain
 longArrayMonitorMain_SRCS += longArrayMonitorMain.cpp
-longArrayMonitorMain_LIBS += pvDatabase pvAccess pvData Com
 longArrayMonitorMain_LIBS += arrayPerform
+longArrayMonitorMain_LIBS += pvDatabase pvAccess  pvData Com
 
 PROD_HOST += longArrayGetMain
 longArrayGetMain_SRCS += longArrayGetMain.cpp
-longArrayGetMain_LIBS += pvDatabase pvAccess pvData Com
 longArrayGetMain_LIBS += arrayPerform
+longArrayGetMain_LIBS += pvDatabase pvAccess pvData Com
 
 
 PROD_HOST += longArrayPutMain
 longArrayPutMain_SRCS += longArrayPutMain.cpp
-longArrayPutMain_LIBS += pvDatabase pvAccess pvData Com
 longArrayPutMain_LIBS += arrayPerform
+longArrayPutMain_LIBS += pvDatabase pvAccess pvData Com
 
 
 PROD_HOST += vectorPerformanceMain

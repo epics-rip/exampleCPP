@@ -2,22 +2,19 @@ SRC_DIRS += $(powerSupplySRC)/code
 
 DBD += powerSupplyRegister.dbd
 
+LIBRARY = powerSupply
 LIBSRCS += powerSupply.cpp
 LIBSRCS += powerSupplyRegister.cpp
-
+powerSupply_LIBS += pvDatabase pvAccess nt pvData Com
 
 PROD_HOST += powerSupplyMain
 powerSupplyMain_SRCS += powerSupplyMain.cpp
-powerSupplyMain_LIBS += pvDatabase
-powerSupplyMain_LIBS += pvAccess
-powerSupplyMain_LIBS += pvData
-powerSupplyMain_LIBS += Com
 powerSupplyMain_LIBS += powerSupply
+powerSupplyMain_LIBS += pvDatabase
+powerSupplyMain_LIBS += pvAccess pvData Com
+
 
 PROD_HOST += powerSupplyClient
 powerSupplyClient_SRCS += powerSupplyClient.cpp
-powerSupplyClient_LIBS += pvaClient
-powerSupplyClient_LIBS += pvAccess
-powerSupplyClient_LIBS += pvData
-powerSupplyClient_LIBS += Com
+powerSupplyClient_LIBS += pvaClient pvAccess pvData ca Com
 

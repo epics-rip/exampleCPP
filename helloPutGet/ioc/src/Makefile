@@ -27,10 +27,7 @@ helloPutGet_SRCS_vxWorks += -nil-
 helloPutGet_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
 
 helloPutGet_LIBS += helloPutGet
-helloPutGet_LIBS += pvDatabase
-helloPutGet_LIBS += pvaSrv
-helloPutGet_LIBS += pvAccess
-helloPutGet_LIBS += pvData
+helloPutGet_LIBS += pvDatabase pvaSrv pvAccess pvData Com
 helloPutGet_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #===========================
