@@ -22,10 +22,10 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
-static PvaClientPtr pvaClient = PvaClient::create();
-static FieldCreatePtr fieldCreate = getFieldCreate();
-static StandardFieldPtr standardField = getStandardField();
-static PVDataCreatePtr pvDataCreate = getPVDataCreate();
+static PvaClientPtr pvaClient;
+static FieldCreatePtr fieldCreate;
+static StandardFieldPtr standardField;
+static PVDataCreatePtr pvDataCreate;
 
 static void testPostPut()
 {
@@ -284,6 +284,11 @@ static void testDoubleArray()
 
 MAIN(pvaClientTestPutData)
 {
+    pvaClient = PvaClient::create();
+    fieldCreate = getFieldCreate();
+    standardField = getStandardField();
+    pvDataCreate = getPVDataCreate();
+
     testPlan(38);
     testDiag("=== pvaClientTestPutData ===");
 
@@ -292,5 +297,9 @@ MAIN(pvaClientTestPutData)
     testDoubleArray();
 
     testDone();
+pvaClient.reset();
+fieldCreate.reset();
+standardField.reset();
+pvDataCreate.reset();
     return 0;
 }
