@@ -2,17 +2,25 @@ TOP=..
 
 include $(TOP)/configure/CONFIG
 
-INSTALL_INCLUDE = $(INSTALL_LOCATION)/include/pv
-USR_INCLUDES += -I$(INSTALL_LOCATION)/include
-
 exampleRPCSRC = $(TOP)/src
 
-include $(exampleRPCSRC)/pv/Makefile
-include $(exampleRPCSRC)/code/Makefile
+INC += pv/exampleRPC.h
+
+DBD += exampleRPCRegister.dbd
 
 LIBRARY = exampleRPC
-exampleRPC_LIBS += pvDatabase pvAccess nt pvData Com
-exampleRPC_LIBS += $(EPICS_BASE_IOC_LIBS)
+LIBSRCS += exampleRPC.cpp
+LIBSRCS += exampleRPCRegister.cpp
+exampleRPC_LIBS += pvDatabase pvAccess pvData Com
+
+PROD_HOST += exampleRPCMain
+exampleRPCMain_SRCS += exampleRPCMain.cpp
+exampleRPCMain_LIBS += exampleRPC
+exampleRPCMain_LIBS += pvDatabase pvAccess pvData Com
+
+PROD_HOST += move
+move_SRCS += positionClient.cpp
+move_LIBS += pvAccess pvData Com
 
 
 include $(TOP)/configure/RULES

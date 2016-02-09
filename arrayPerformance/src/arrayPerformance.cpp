@@ -11,7 +11,7 @@
 #include <pv/lock.h>
 
 #define epicsExportSharedSymbols
-#include <arrayPerformance.h>
+#include <pv/arrayPerformance.h>
 
 
 

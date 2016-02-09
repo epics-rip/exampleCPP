@@ -2,17 +2,26 @@ TOP=..
 
 include $(TOP)/configure/CONFIG
 
-INSTALL_INCLUDE = $(INSTALL_LOCATION)/include/pv
-USR_INCLUDES += -I$(INSTALL_LOCATION)/include
-
 exampleLinkSRC = $(TOP)/src
 
-include $(exampleLinkSRC)/pv/Makefile
-include $(exampleLinkSRC)/code/Makefile
+INC += pv/exampleLink.h
+
+DBD += exampleLinkRegister.dbd
 
 LIBRARY = exampleLink
-exampleLink_LIBS += pvDatabase pvAccess nt pvData Com
-exampleLink_LIBS += $(EPICS_BASE_IOC_LIBS)
+LIBSRCS += exampleLink.cpp
+LIBSRCS += exampleLinkRegister.cpp
+exampleLink_LIBS += pvDatabase pvAccess nt pvData ca Com
+
+PROD_HOST += exampleLinkMain
+exampleLinkMain_SRCS += exampleLinkMain.cpp
+exampleLinkMain_LIBS += exampleLink
+exampleLinkMain_LIBS += pvDatabase pvAccess nt pvData  Com
+
+PROD_HOST += exampleLinkClient
+exampleLinkClient_SRCS += exampleLinkClient.cpp
+exampleLinkClient_LIBS += pvaClient pvAccess pvData ca Com
+
 
 # shared library ABI version.
 SHRLIB_VERSION ?= 1.0

@@ -12,7 +12,7 @@
 #include <pv/caProvider.h>
 
 #define epicsExportSharedSymbols
-#include <longArrayPut.h>
+#include <pv/longArrayPut.h>
 
 namespace epics { namespace exampleCPP { namespace arrayPerformance { 
 

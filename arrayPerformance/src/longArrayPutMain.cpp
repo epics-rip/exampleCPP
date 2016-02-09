@@ -1,7 +1,7 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/*longArrayGetMain.cpp */
+/*longArrayPutMain.cpp */
 
 /**
  * @author mrk
@@ -26,8 +26,8 @@
 #include <pv/serverContext.h>
 #include <pv/clientFactory.h>
 
-#include <arrayPerformance.h>
-#include <longArrayGet.h>
+#include <pv/arrayPerformance.h>
+#include <pv/longArrayPut.h>
 
 using namespace std;
 using std::tr1::static_pointer_cast;
@@ -39,36 +39,41 @@ using namespace epics::exampleCPP::arrayPerformance;
 int main(int argc,char *argv[])
 {
     string channelName("arrayPerformance");
+    size_t arraySize = 10;
     int iterBetweenCreateChannel = 0;
-    int iterBetweenCreateChannelGet = 0;
+    int iterBetweenCreateChannelPut = 0;
     double delayTime = 1.0;
     if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "longArrayGetMain channelName ";
-        cout << "iterBetweenCreateChannel iterBetweenCreateChannelGet delayTime" << endl;
+        cout << "longArrayPutMain channelName arraySize ";
+        cout << "iterBetweenCreateChannel iterBetweenCreateChannelPut delayTime" << endl;
         cout << "default" << endl;
-        cout << "longArrayGetMain " << channelName << " ";
+        cout << "longArrayPutMain " << channelName << " ";
+        cout << arraySize << " ";
         cout << iterBetweenCreateChannel  << " ";
-        cout << iterBetweenCreateChannelGet  << " ";
+        cout << iterBetweenCreateChannelPut  << " ";
         cout << delayTime  << endl;
         return 0;
     }
     ClientFactory::start();
     if(argc>1) channelName = argv[1];
-    if(argc>2) iterBetweenCreateChannel = strtol(argv[2],0,0);
-    if(argc>3) iterBetweenCreateChannelGet = strtol(argv[3],0,0);
-    if(argc>4) delayTime = atof(argv[4]);
-    cout << "longArrayGetMain " << channelName << " ";
+    if(argc>2) arraySize = strtoul(argv[2],0,0);
+    if(argc>3) iterBetweenCreateChannel = strtol(argv[3],0,0);
+    if(argc>4) iterBetweenCreateChannelPut = strtol(argv[4],0,0);
+    if(argc>5) delayTime = atof(argv[5]);
+    cout << "longArrayPutMain " << channelName << " ";
+    cout << arraySize << " ";
     cout << iterBetweenCreateChannel  << " ";
-    cout << iterBetweenCreateChannelGet  << " ";
+    cout << iterBetweenCreateChannelPut  << " ";
     cout << delayTime << endl;
-    LongArrayGetPtr longArrayGet
-         = LongArrayGet::create(
+    LongArrayPutPtr longArrayPut
+         = LongArrayPut::create(
               "pvAccess",
               channelName,
+              arraySize,
               iterBetweenCreateChannel,
-              iterBetweenCreateChannelGet,
+              iterBetweenCreateChannelPut,
               delayTime);
-    cout << "longArrayGet\n";
+    cout << "longArrayPut\n";
     string str;
     while(true) {
         cout << "Type exit to stop: \n";
@@ -76,12 +81,13 @@ int main(int argc,char *argv[])
         if(str.compare("exit")==0) break;
 
     }
-    longArrayGet->destroy();
-    longArrayGet.reset();
+    longArrayPut->destroy();
+    longArrayPut.reset();
     double xxx = 1.0;
     if(xxx<delayTime) xxx = delayTime;
-    ClientFactory::stop();
     epicsThreadSleep(xxx);
+    ClientFactory::stop();
+    epicsThreadSleep(1.0);
     return 0;
 }
 

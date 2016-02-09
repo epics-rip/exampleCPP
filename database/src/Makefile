@@ -2,17 +2,27 @@ TOP=..
 
 include $(TOP)/configure/CONFIG
 
-INSTALL_INCLUDE = $(INSTALL_LOCATION)/include/pv
-USR_INCLUDES += -I$(INSTALL_LOCATION)/include
+exampleDatabaseSRC = $(TOP)/src
 
-EXAMPLEDATABASESRC = $(TOP)/src
+INC += pv/exampleHello.h
+INC += pv/exampleHelloRPC.h
+INC += pv/exampleDatabase.h
 
-include $(EXAMPLEDATABASESRC)/pv/Makefile
-include $(EXAMPLEDATABASESRC)/code/Makefile
+DBD += exampleDatabaseRegister.dbd
 
 LIBRARY = exampleDatabase
+LIBSRCS += exampleHello.cpp
+LIBSRCS += exampleHelloRPC.cpp
+LIBSRCS += exampleDatabase.cpp
+LIBSRCS += exampleDatabaseRegister.cpp
 exampleDatabase_LIBS += pvDatabase pvAccess nt pvData Com
-exampleDatabase_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+
+PROD_HOST += exampleDatabaseMain
+exampleDatabaseMain_SRCS += exampleDatabaseMain.cpp
+exampleDatabaseMain_LIBS += exampleDatabase
+exampleDatabaseMain_LIBS += pvDatabase pvAccess nt pvData Com
+
 
 # shared library ABI version.
 SHRLIB_VERSION ?= 1.0
