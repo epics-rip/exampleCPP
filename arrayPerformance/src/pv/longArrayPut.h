@@ -16,14 +16,8 @@
 #   undef epicsExportSharedSymbols
 #endif
 
-#include <pv/event.h>
-#include <pv/lock.h>
-#include <pv/standardPVField.h>
-#include <pv/timeStamp.h>
-#include <pv/pvTimeStamp.h>
-#include <pv/pvAccess.h>
-#include <pv/pvDatabase.h>
-
+#include <epicsThread.h>
+#include <pv/pvaClient.h>
 
 #ifdef longarrayputEpicsExportSharedSymbols
 #   define epicsExportSharedSymbols
@@ -38,15 +32,11 @@ class LongArrayPut;
 typedef std::tr1::shared_ptr<LongArrayPut> LongArrayPutPtr;
 
 
-class LongArrayChannelPut;
-typedef std::tr1::shared_ptr<LongArrayChannelPut> LongArrayChannelPutPtr;
-
 class epicsShareClass  LongArrayPut :
-    public std::tr1::enable_shared_from_this<LongArrayPut>
+    public epicsThreadRunable
 {
 public:
-    POINTER_DEFINITIONS(LongArrayPut);
-    static LongArrayPutPtr create(
+    LongArrayPut(
         std::string const & providerName,
         std::string const & channelName,
         size_t arraySize = 100,
@@ -54,28 +44,16 @@ public:
         int iterBetweenCreateChannelPut = 0,
         double delayTime = 0.0);
     ~LongArrayPut();
-    void destroy();
+    virtual void run();
 private:
-    LongArrayPutPtr getPtrSelf()
-    {
-        return shared_from_this();
-    }
-    LongArrayPut(
-        std::string const & providerName,
-        std::string const & channelName,
-        size_t arraySize,
-        int iterBetweenCreateChannel,
-        int iterBetweenCreateChannelPut,
-        double delayTime);
-    bool init();
-
     std::string providerName;
     std::string channelName;
     size_t arraySize;
     int iterBetweenCreateChannel;
     int iterBetweenCreateChannelPut;
     double delayTime;
-    LongArrayChannelPutPtr longArrayChannelPut;
+    std::string threadName;
+    std::auto_ptr<epicsThread> thread;
 };
 
 

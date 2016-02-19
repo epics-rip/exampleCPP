@@ -15,13 +15,9 @@
 #   undef epicsExportSharedSymbols
 #endif
 
-#include <pv/event.h>
-#include <pv/lock.h>
-#include <pv/standardPVField.h>
-#include <pv/timeStamp.h>
-#include <pv/pvTimeStamp.h>
-#include <pv/pvAccess.h>
-#include <pv/pvDatabase.h>
+#include <epicsThread.h>
+#include <pv/pvaClient.h>
+
 
 #ifdef longarraymonitorEpicsExportSharedSymbols
 #   define epicsExportSharedSymbols
@@ -36,47 +32,27 @@ namespace epics { namespace exampleCPP { namespace arrayPerformance {
 class LongArrayMonitor;
 typedef std::tr1::shared_ptr<LongArrayMonitor> LongArrayMonitorPtr;
 
-class LAMChannelRequester;
-typedef std::tr1::shared_ptr<LAMChannelRequester> LAMChannelRequesterPtr;
-
-class LAMMonitorRequester;
-typedef std::tr1::shared_ptr<LAMMonitorRequester> LAMMonitorRequesterPtr;
-
 class epicsShareClass  LongArrayMonitor :
-    public std::tr1::enable_shared_from_this<LongArrayMonitor>
+    public epicsThreadRunable
 {
 public:
-    POINTER_DEFINITIONS(LongArrayMonitor);
-    static LongArrayMonitorPtr create(
+    LongArrayMonitor(
         std::string const & providerName,
         std::string const & channelName,
-        int queueSize = 1,
-        double waitTime = 0.0);
+        int queueSize = 1);
     ~LongArrayMonitor();
-    void start();
-    void stop();
-    void destroy();
+    void  nextMonitor();
+    virtual void run();
 private:
-    static epics::pvData::Mutex printMutex;
-    bool init(
-        std::string const & providerName,
-        std::string const & channelName,
-        int queueSize,
-        double waitTime);
-    LongArrayMonitorPtr getPtrSelf()
-    {
-        return shared_from_this();
-    }
-    LongArrayMonitor();
-
-    LAMChannelRequesterPtr channelRequester;
-    LAMMonitorRequesterPtr monitorRequester;
-    epics::pvAccess::Channel::shared_pointer channel;
-    epics::pvData::Monitor::shared_pointer monitor;
-    epics::pvData::Event event;
-    epics::pvData::Status status;
-    friend class LAMChannelRequester;
-    friend class LAMMonitorRequester;
+    epics::pvaClient::PvaClientPtr pva;
+    epics::pvaClient::PvaClientMonitorPtr monitor;
+    epics::pvData::PVTimeStamp pvTimeStamp;
+    epics::pvData::TimeStamp timeStamp;
+    epics::pvData::TimeStamp timeStampLast;
+    long nElements;
+    long nSinceLastReport;
+    std::string threadName;
+    std::auto_ptr<epicsThread> thread;
 };
 
 

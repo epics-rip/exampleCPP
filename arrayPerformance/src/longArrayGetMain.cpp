@@ -36,6 +36,7 @@ using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
 using namespace epics::exampleCPP::arrayPerformance;
 
+
 int main(int argc,char *argv[])
 {
     string channelName("arrayPerformance");
@@ -52,7 +53,6 @@ int main(int argc,char *argv[])
         cout << delayTime  << endl;
         return 0;
     }
-    ClientFactory::start();
     if(argc>1) channelName = argv[1];
     if(argc>2) iterBetweenCreateChannel = strtol(argv[2],0,0);
     if(argc>3) iterBetweenCreateChannelGet = strtol(argv[3],0,0);
@@ -61,27 +61,25 @@ int main(int argc,char *argv[])
     cout << iterBetweenCreateChannel  << " ";
     cout << iterBetweenCreateChannelGet  << " ";
     cout << delayTime << endl;
-    LongArrayGetPtr longArrayGet
-         = LongArrayGet::create(
-              "pvAccess",
+    try {
+        LongArrayGetPtr longArrayGet(new LongArrayGet("pva",
               channelName,
               iterBetweenCreateChannel,
               iterBetweenCreateChannelGet,
-              delayTime);
-    cout << "longArrayGet\n";
-    string str;
-    while(true) {
-        cout << "Type exit to stop: \n";
-        getline(cin,str);
-        if(str.compare("exit")==0) break;
-
+              delayTime));
+        cout << "longArrayGet\n";
+        string str;
+        while(true) {
+            cout << "Type exit to stop: \n";
+            getline(cin,str);
+            if(str.compare("exit")==0) {
+                 exit(0);
+            }
+        }
+    } catch (std::runtime_error e) {
+        cout << "exception " << e.what() << endl;
+        exit(1);
     }
-    longArrayGet->destroy();
-    longArrayGet.reset();
-    double xxx = 1.0;
-    if(xxx<delayTime) xxx = delayTime;
-    ClientFactory::stop();
-    epicsThreadSleep(xxx);
     return 0;
 }
 

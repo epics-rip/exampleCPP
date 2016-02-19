@@ -46,19 +46,17 @@ int main(int argc,char *argv[])
     string providerName("local");
     size_t nMonitor = 1;
     int queueSize = 2;
-    double waitTime = 0.0;
+
     if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "arrayPerformanceMain recordName size";
-        cout << " delay providerName nMonitor queueSize waitTime" << endl;
+        cout << "recordName size";
+        cout << " delay providerName nMonitor queueSize" << endl;
         cout << "default" << endl;
-        cout << "arrayPerformance ";
         cout << recordName << " ";
         cout << size << " ";
         cout << delay << " ";
         cout << providerName << " ";
         cout << nMonitor << " ";
-        cout << queueSize << " ";
-        cout << "0.0" << endl;
+        cout << queueSize << endl;
         return 0;
     }
     if(argc>1) recordName = argv[1];
@@ -67,16 +65,12 @@ int main(int argc,char *argv[])
     if(argc>4) providerName = argv[4];
     if(argc>5) nMonitor = strtoul(argv[5],0,0);
     if(argc>6) queueSize = strtol(argv[6],0,0);
-    if(argc>7) waitTime = atof(argv[7]);
-    cout << "arrayPerformance ";
     cout << recordName << " ";
     cout << size << " ";
     cout << delay << " ";
     cout << providerName << " ";
     cout << nMonitor << " ";
-    cout << queueSize << " ";
-       cout << waitTime << endl;
-    ClientFactory::start();
+    cout << queueSize << endl;
     PVDatabasePtr master = PVDatabase::getMaster();
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     PVRecordPtr pvRecord;
@@ -90,30 +84,28 @@ int main(int argc,char *argv[])
     pvRecord.reset();
     ServerContext::shared_pointer pvaServer = 
         startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-    std::vector<LongArrayMonitorPtr> longArrayMonitor(nMonitor);
-    for(size_t i=0; i<nMonitor; ++i) {
-       longArrayMonitor[i]
-         = LongArrayMonitor::create(providerName,recordName,queueSize,waitTime);
+    
+    epicsThreadSleep(1.0);
+    try {
+        std::vector<LongArrayMonitorPtr> longArrayMonitor(nMonitor);
+        for(size_t i=0; i<nMonitor; ++i) {
+           longArrayMonitor[i] = LongArrayMonitorPtr(
+                new LongArrayMonitor(providerName,recordName,queueSize));
+        }
+        
+        cout << "arrayPerformance\n";
+        string str;
+        while(true) {
+            cout << "Type exit to stop: \n";
+            getline(cin,str);
+            if(str.compare("exit")==0) {
+                 exit(0);
+            }
+        }
+    } catch (std::runtime_error e) {
+        cout << "exception " << e.what() << endl;
+        exit(1);
     }
-    epicsThreadSleep(1.0);
-    for(size_t i=0; i<nMonitor; ++i) longArrayMonitor[i]->start();
-    cout << "arrayPerformance\n";
-    string str;
-    while(true) {
-        cout << "Type exit to stop: \n";
-        getline(cin,str);
-        if(str.compare("exit")==0) break;
-
-    }
-    arrayPreformance.reset();
-    for(size_t i=0; i<nMonitor; ++i) longArrayMonitor[i]->stop();
-    for(size_t i=0; i<nMonitor; ++i) longArrayMonitor[i]->destroy();
-    pvaServer->shutdown();
-    epicsThreadSleep(1.0);
-    pvaServer->destroy();
-    ClientFactory::stop();
-    epicsThreadSleep(1.0);
-    channelProvider->destroy();
     return 0;
 }
 

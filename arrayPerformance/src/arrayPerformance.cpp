@@ -17,13 +17,9 @@
 
 namespace epics { namespace exampleCPP { namespace arrayPerformance { 
 
+using namespace std;
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
-using std::tr1::static_pointer_cast;
-using std::tr1::dynamic_pointer_cast;
-using std::cout;
-using std::endl;
-using std::ostringstream;
 
 ArrayPerformancePtr ArrayPerformance::create(
     std::string const & recordName,
@@ -41,13 +37,14 @@ ArrayPerformancePtr ArrayPerformance::create(
 ArrayPerformance::ArrayPerformance(
     std::string const & recordName,
     epics::pvData::PVStructurePtr const & pvStructure,
-        size_t size,
-        double delay)
+    size_t size,
+    double delay)
 : PVRecord(recordName,pvStructure),
   size(size),
   delay(delay),
-  isDestroyed(false)
-{
+  isDestroyed(false),
+  threadName("arrayPerformance")
+{    
     pvTimeStamp.attach(pvStructure->getSubField("timeStamp"));
 }
 
@@ -57,20 +54,15 @@ ArrayPerformance::~ArrayPerformance()
 
 bool ArrayPerformance::init()
 {
-    
     initPVRecord();
-    PVLongArrayPtr pvLongArray = getPVStructure()->getSubField<PVLongArray>("value");
-    if(!pvLongArray) return false;
-    pvValue = pvLongArray;
-    ArrayPerformancePtr xxx = dynamic_pointer_cast<ArrayPerformance>(getPtrSelf());
-    arrayPerformanceThread = ArrayPerformanceThreadPtr(new ArrayPerformanceThread(xxx));
-    arrayPerformanceThread->init();
+    pvValue = getPVStructure()->getSubField<PVLongArray>("value");
+    thread = std::auto_ptr<epicsThread>(new epicsThread(
+        *this,
+        threadName.c_str(),
+        epicsThreadGetStackSize(epicsThreadStackSmall),
+        epicsThreadPriorityLow));
+     thread->start();
     return true;
-}
-
-void ArrayPerformance::start()
-{
-    arrayPerformanceThread->start();
 }
 
 void ArrayPerformance::process()
@@ -83,65 +75,20 @@ void ArrayPerformance::destroy()
 {
     if(isDestroyed) return;
     isDestroyed = true;
-    arrayPerformanceThread->destroy();
-    arrayPerformanceThread.reset();
     PVRecord::destroy();
 }
 
-ArrayPerformanceThread::ArrayPerformanceThread(ArrayPerformancePtr const & arrayPerformance)
-: 
-  arrayPerformance(arrayPerformance),
-  isDestroyed(false),
-  runReturned(false),
-  threadName("arrayPerformance"),
-  value(0)
-{}
 
-void ArrayPerformanceThread::init()
-{
-     thread = std::auto_ptr<epicsThread>(new epicsThread(
-        *this,
-        threadName.c_str(),
-        epicsThreadGetStackSize(epicsThreadStackSmall),
-        epicsThreadPriorityHigh));
-}
-
-void ArrayPerformanceThread::start()
-{
-    thread->start();
-}
-
-void ArrayPerformanceThread::destroy()
-{
-    Lock lock(mutex);
-    if(isDestroyed) return;
-    isDestroyed = true;
-    while(true) {
-        if(runReturned) break;
-        lock.unlock();
-        epicsThreadSleep(.01);
-        lock.lock();
-    }
-    thread->exitWait();
-    thread.reset();
-    arrayPerformance.reset();
-}
-
-void ArrayPerformanceThread::run()
+void ArrayPerformance::run()
 {
     TimeStamp timeStamp;
     TimeStamp timeStampLast;
     timeStampLast.getCurrent();
     int nSinceLastReport = 0;
+    int64 value = 0;
     while(true) {
-        if(arrayPerformance->delay>0.0) epicsThreadSleep(arrayPerformance->delay);
-        {
-            Lock lock(mutex);
-            if(isDestroyed) {
-                runReturned = true;
-                return;
-            }
-        }
+        if(delay>0.0) epicsThreadSleep(delay);
+        //event.wait();
         timeStamp.getCurrent();
         double diff = TimeStamp::diff(timeStamp,timeStampLast);
         if(diff>=1.0) {
@@ -162,7 +109,7 @@ void ArrayPerformanceThread::run()
             } else  {
                  out << " Iterations/sec " << iterations;
             }
-            double elementSize = arrayPerformance->size;
+            double elementSize = size;
             double elementsPerSecond = elementSize*nSinceLastReport;
             elementsPerSecond /= diff;
             if(elementsPerSecond>10.0e9) {
@@ -182,23 +129,23 @@ void ArrayPerformanceThread::run()
             nSinceLastReport = 0;
         }
         ++nSinceLastReport;
-        arrayPerformance->lock();
+        lock();
         try {
-            if(arrayPerformance->getTraceLevel()>1) {
-                 cout << "arrayPerformance size " << arrayPerformance->size;
+            if(getTraceLevel()>1) {
+                 cout << "arrayPerformance size " << size;
                  cout << " value " << value +1 << endl;
             }
-            shared_vector<int64> xxx(arrayPerformance->size,value++);
+            shared_vector<int64> xxx(size,value++);
             shared_vector<const int64> data(freeze(xxx));
-                arrayPerformance->beginGroupPut();
-                arrayPerformance->pvValue->replace(data);
-                arrayPerformance->process();
-                arrayPerformance->endGroupPut();
+                beginGroupPut();
+                pvValue->replace(data);
+                process();
+                endGroupPut();
         } catch(...) {
-           arrayPerformance->unlock();
+           unlock();
            throw;
         }
-        arrayPerformance->unlock();
+        unlock();
     }
 }
 

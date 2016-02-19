@@ -19,6 +19,8 @@
 #include <iostream>
 #include <vector>
 
+#include <epicsExit.h>
+
 #include <pv/standardField.h>
 #include <pv/standardPVField.h>
 #include <pv/traceRecord.h>
@@ -36,41 +38,37 @@ using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
 using namespace epics::exampleCPP::arrayPerformance;
 
+
 int main(int argc,char *argv[])
 {
     string channelName("arrayPerformance");
     int queueSize = 2;
-    double waitTime = 0.0;
     if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "longArrayMonitorMain channelName queueSize waitTime" << endl;
+        cout << "channelName queueSize waitTime" << endl;
         cout << "default" << endl;
-        cout << "longArrayMonitorMain " << channelName << " ";
-        cout << queueSize  << " ";
-        cout << "0.0"  << endl;
+        cout << channelName << " ";
+        cout << queueSize  << endl;
         return 0;
     }
-    ClientFactory::start();
     if(argc>1) channelName = argv[1];
     if(argc>2) queueSize = strtol(argv[2],0,0);
-    if(argc>3) waitTime = atof(argv[3]);
-    cout << "longArrayMonitorMain " << channelName << " ";
-    cout << queueSize << " ";
-    cout << waitTime << endl;
-    LongArrayMonitorPtr longArrayMonitor
-         = LongArrayMonitor::create("pvAccess",channelName,queueSize,waitTime);
-    longArrayMonitor->start();
-    cout << "longArrayMonitor\n";
-    string str;
-    while(true) {
-        cout << "Type exit to stop: \n";
-        getline(cin,str);
-        if(str.compare("exit")==0) break;
-
+    cout << "longArrayMonitorMain " << channelName << " " << queueSize << endl;
+    try {
+        LongArrayMonitorPtr longArrayMonitor(new
+            LongArrayMonitor("pva",channelName,queueSize));
+        cout << "longArrayMonitor\n";
+        string str;
+        while(true) {
+            cout << "Type exit to stop: \n";
+            getline(cin,str);
+            if(str.compare("exit")==0) {
+                 exit(0);
+            }
+        }
+    } catch (std::runtime_error e) {
+        cout << "exception " << e.what() << endl;
+        exit(1);
     }
-    longArrayMonitor->destroy();
-    longArrayMonitor.reset();
-    ClientFactory::stop();
-    epicsThreadSleep(1.0);
     return 0;
 }
 

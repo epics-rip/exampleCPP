@@ -54,7 +54,6 @@ int main(int argc,char *argv[])
         cout << delayTime  << endl;
         return 0;
     }
-    ClientFactory::start();
     if(argc>1) channelName = argv[1];
     if(argc>2) arraySize = strtoul(argv[2],0,0);
     if(argc>3) iterBetweenCreateChannel = strtol(argv[3],0,0);
@@ -65,29 +64,28 @@ int main(int argc,char *argv[])
     cout << iterBetweenCreateChannel  << " ";
     cout << iterBetweenCreateChannelPut  << " ";
     cout << delayTime << endl;
-    LongArrayPutPtr longArrayPut
-         = LongArrayPut::create(
+    try {
+        LongArrayPutPtr longArrayPut(
+            new LongArrayPut(
               "pvAccess",
               channelName,
               arraySize,
               iterBetweenCreateChannel,
               iterBetweenCreateChannelPut,
-              delayTime);
-    cout << "longArrayPut\n";
-    string str;
-    while(true) {
-        cout << "Type exit to stop: \n";
-        getline(cin,str);
-        if(str.compare("exit")==0) break;
-
+              delayTime));
+        cout << "longArrayPut\n";
+        string str;
+        while(true) {
+            cout << "Type exit to stop: \n";
+            getline(cin,str);
+            if(str.compare("exit")==0) {
+                 exit(0);
+            }
+        }
+    } catch (std::runtime_error e) {
+        cout << "exception " << e.what() << endl;
+        exit(1);
     }
-    longArrayPut->destroy();
-    longArrayPut.reset();
-    double xxx = 1.0;
-    if(xxx<delayTime) xxx = delayTime;
-    epicsThreadSleep(xxx);
-    ClientFactory::stop();
-    epicsThreadSleep(1.0);
     return 0;
 }
 
