@@ -62,6 +62,8 @@ int main(int argc,char *argv[])
             cout << "Type exit to stop: \n";
             getline(cin,str);
             if(str.compare("exit")==0) {
+                 longArrayMonitor->destroy();
+epicsThreadSleep(2.0);
                  exit(0);
             }
         }

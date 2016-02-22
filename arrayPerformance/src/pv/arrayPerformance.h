@@ -17,6 +17,7 @@
 #endif
 
 #include <epicsThread.h>
+#include <pv/event.h>
 #include <pv/standardPVField.h>
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
@@ -42,11 +43,11 @@ public:
         std::string const & recordName,
         size_t size,
         double delay);
-    virtual ~ArrayPerformance();
     virtual bool init();
     virtual void process();
     virtual void destroy();
     virtual void run();
+    void stop();
 private:
      ArrayPerformance(std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure,
@@ -60,6 +61,8 @@ private:
     epics::pvData::TimeStamp timeStamp;
     std::string threadName;
     std::auto_ptr<epicsThread> thread;
+    epics::pvData::Event runStop;
+    epics::pvData::Event runReturn;
 };
 
 }}}

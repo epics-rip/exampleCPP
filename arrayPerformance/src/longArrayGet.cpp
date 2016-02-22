@@ -9,7 +9,6 @@
  */
 
 
-
 #define epicsExportSharedSymbols
 #include <pv/longArrayGet.h>
 
@@ -41,67 +40,75 @@ LongArrayGet::LongArrayGet(
      thread->start();
 }
 
+void LongArrayGet::destroy()
+{
+    runStop.signal();
+    runReturn.wait();
+}
+
 void LongArrayGet::run()
 {
     PvaClientPtr pva(PvaClient::create());
     PvaClientChannelPtr pvaChannel(pva->createChannel(channelName,providerName));
     PvaClientGetPtr pvaGet(pvaChannel->createGet("value,alarm,timeStamp"));
+    TimeStamp timeStamp;
+    TimeStamp timeStampLast;
+    timeStampLast.getCurrent();
+    int numChannelGet = 0;
+    int numChannelCreate = 0;
+    size_t nElements = 0;
     while(true) {
-        TimeStamp timeStamp;
-        TimeStamp timeStampLast;
-        timeStampLast.getCurrent();
-        int numChannelGet = 0;
-        int numChannelCreate = 0;
-        size_t nElements = 0;
-        while(true) {
-            pvaGet->get();
-            PvaClientGetDataPtr pvaData = pvaGet->getData();
-            PVStructurePtr pvStructure = pvaData->getPVStructure();
-            BitSetPtr bitSet = pvaData->getChangedBitSet();
-            size_t latestSize = checkResult(pvStructure,bitSet);
-            nElements += latestSize;
-            timeStamp.getCurrent();
-            double diff = TimeStamp::diff(timeStamp,timeStampLast);
-            if(diff>=1.0) {
-                ostringstream out;
-                out << "get";
-                double elementsPerSec = nElements;
-                elementsPerSec /= diff;
-                if(elementsPerSec>10.0e9) {
-                     elementsPerSec /= 1e9;
-                     out << " gigaElements/sec " << elementsPerSec;
-                } else if(elementsPerSec>10.0e6) {
-                     elementsPerSec /= 1e6;
-                     out << " megaElements/sec " << elementsPerSec;
-                } else if(elementsPerSec>10.0e3) {
-                     elementsPerSec /= 1e3;
-                     out << " kiloElements/sec " << elementsPerSec;
-                } else  {
-                     out << " Elements/sec " << elementsPerSec;
-                }
-                cout << out.str() << endl;
-                timeStampLast = timeStamp;
-                nElements = 0;
+        if(runStop.tryWait()) {
+             runReturn.signal();
+             return;
+        }
+        pvaGet->get();
+        PvaClientGetDataPtr pvaData = pvaGet->getData();
+        PVStructurePtr pvStructure = pvaData->getPVStructure();
+        BitSetPtr bitSet = pvaData->getChangedBitSet();
+        size_t latestSize = checkResult(pvStructure,bitSet);
+        nElements += latestSize;
+        timeStamp.getCurrent();
+        double diff = TimeStamp::diff(timeStamp,timeStampLast);
+        if(diff>=1.0) {
+            ostringstream out;
+            out << "get";
+            double elementsPerSec = nElements;
+            elementsPerSec /= diff;
+            if(elementsPerSec>10.0e9) {
+                 elementsPerSec /= 1e9;
+                 out << " gigaElements/sec " << elementsPerSec;
+            } else if(elementsPerSec>10.0e6) {
+                 elementsPerSec /= 1e6;
+                 out << " megaElements/sec " << elementsPerSec;
+            } else if(elementsPerSec>10.0e3) {
+                 elementsPerSec /= 1e3;
+                 out << " kiloElements/sec " << elementsPerSec;
+            } else  {
+                 out << " Elements/sec " << elementsPerSec;
             }
-            if(delayTime>0.0) epicsThreadSleep(delayTime);
-            ++numChannelGet;
-            bool createGet = false;
-            if(iterBetweenCreateChannelGet!=0) {
-                if(numChannelGet>=iterBetweenCreateChannelGet) createGet = true;
-            }
-            if(createGet) {
-                 numChannelGet = 0;
-                 pvaGet->destroy();
-                 pvaGet = pvaChannel->createGet("value,timeStamp,alarm");
-            }
-            ++numChannelCreate;
-            if(iterBetweenCreateChannel!=0) {
-                if(numChannelCreate>=iterBetweenCreateChannel) {
-                    pvaChannel->destroy();
-                    pvaChannel = pva->createChannel(channelName,providerName);
-                    pvaGet = pvaChannel->createGet("value,timeStamp,alarm");
-                    numChannelCreate = 0;
-                }
+            cout << out.str() << endl;
+            timeStampLast = timeStamp;
+            nElements = 0;
+        }
+        if(delayTime>0.0) epicsThreadSleep(delayTime);
+        ++numChannelGet;
+        bool createGet = false;
+        if(iterBetweenCreateChannelGet!=0) {
+            if(numChannelGet>=iterBetweenCreateChannelGet) createGet = true;
+        }
+        if(createGet) {
+             numChannelGet = 0;
+             pvaGet->destroy();
+             pvaGet = pvaChannel->createGet("value,timeStamp,alarm");
+        }
+        ++numChannelCreate;
+        if(iterBetweenCreateChannel!=0) {
+            if(numChannelCreate>=iterBetweenCreateChannel) {
+                pvaChannel->destroy();
+                pvaChannel = pva->createChannel(channelName,providerName);
+                pvaGet = pvaChannel->createGet("value,timeStamp,alarm");
+                numChannelCreate = 0;
             }
         }
     }

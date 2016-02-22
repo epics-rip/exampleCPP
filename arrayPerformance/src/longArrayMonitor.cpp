@@ -47,14 +47,24 @@ LongArrayMonitor::LongArrayMonitor(
      thread->start();
 }
 
+void LongArrayMonitor::destroy()
+{
+    runStop.signal();
+    runReturn.wait();
+}
+
 void LongArrayMonitor::run()
 {
-    while(true) {       
+    while(true) {   
+        if(runStop.tryWait()) {
+             runReturn.signal();
+             return;
+        }    
         nextMonitor();
     }
 }
 
-LongArrayMonitor::~LongArrayMonitor() {}
+
 
 void LongArrayMonitor::nextMonitor()
 {

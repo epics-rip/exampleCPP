@@ -40,9 +40,9 @@ public:
         std::string const & providerName,
         std::string const & channelName,
         int queueSize = 1);
-    ~LongArrayMonitor();
-    void  nextMonitor();
     virtual void run();
+    void destroy();
+    void  nextMonitor();
 private:
     epics::pvaClient::PvaClientPtr pva;
     epics::pvaClient::PvaClientMonitorPtr monitor;
@@ -53,6 +53,8 @@ private:
     long nSinceLastReport;
     std::string threadName;
     std::auto_ptr<epicsThread> thread;
+    epics::pvData::Event runStop;
+    epics::pvData::Event runReturn;
 };
 
 

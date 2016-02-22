@@ -43,8 +43,8 @@ public:
         int iterBetweenCreateChannel = 0,
         int iterBetweenCreateChannelPut = 0,
         double delayTime = 0.0);
-    ~LongArrayPut();
     virtual void run();
+    void destroy();
 private:
     std::string providerName;
     std::string channelName;
@@ -54,6 +54,8 @@ private:
     double delayTime;
     std::string threadName;
     std::auto_ptr<epicsThread> thread;
+    epics::pvData::Event runStop;
+    epics::pvData::Event runReturn;
 };
 
 

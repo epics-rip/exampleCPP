@@ -48,9 +48,7 @@ ArrayPerformance::ArrayPerformance(
     pvTimeStamp.attach(pvStructure->getSubField("timeStamp"));
 }
 
-ArrayPerformance::~ArrayPerformance()
-{
-}
+
 
 bool ArrayPerformance::init()
 {
@@ -78,6 +76,12 @@ void ArrayPerformance::destroy()
     PVRecord::destroy();
 }
 
+void ArrayPerformance::stop()
+{
+    runStop.signal();
+    runReturn.wait();
+}
+
 
 void ArrayPerformance::run()
 {
@@ -87,6 +91,10 @@ void ArrayPerformance::run()
     int nSinceLastReport = 0;
     int64 value = 0;
     while(true) {
+        if(runStop.tryWait()) {
+             runReturn.signal();
+             return;
+        }    
         if(delay>0.0) epicsThreadSleep(delay);
         //event.wait();
         timeStamp.getCurrent();

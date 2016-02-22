@@ -73,11 +73,14 @@ int main(int argc,char *argv[])
             cout << "Type exit to stop: \n";
             getline(cin,str);
             if(str.compare("exit")==0) {
+                 longArrayGet->destroy();
+epicsThreadSleep(2.0);
                  exit(0);
             }
         }
     } catch (std::runtime_error e) {
         cout << "exception " << e.what() << endl;
+epicsThreadSleep(2.0);
         exit(1);
     }
     return 0;

@@ -44,6 +44,7 @@ public:
         double delayTime);
     virtual ~LongArrayGet(){}
     virtual void run();
+    void destroy();
 private:
     size_t checkResult(
         const epics::pvData::PVStructurePtr &pvStructure,
@@ -55,6 +56,8 @@ private:
     double delayTime;
     std::string threadName;
     std::auto_ptr<epicsThread> thread;
+    epics::pvData::Event runStop;
+    epics::pvData::Event runReturn;
 };
 
 
