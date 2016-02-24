@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/arrayPerformance</h1>
-<h2 class="nocount">Release 1.0 - 2015.12.15</h2>
+<h2 class="nocount">Release 1.0 - 2016.02.24</h2>
 
 
 <h2 class="nocount">Abstract</h2>
@@ -71,24 +71,24 @@ or some other memory check program.
 mrk&gt; pwd
 /home/hg/exampleCPP/arrayPerformance
 mrk&gt; bin/linux-x86_64/arrayPerformanceMain -help
-arrayPerformanceMain recordName size delay providerName nMonitor queueSize waitTime
+recordName size delay providerName nMonitor queueSize
 default
-arrayPerformanceMain arrayPerformance 10000000 0.0001 local 1 2 0.0
+arrayPerformance 10000000 0.0001 local 1 2
 
 mrk&gt; bin/linux-x86_64/longArrayMonitorMain -help
-longArrayMonitorMain channelName queueSize waitTime
+channelName queueSize
 default
-longArrayMonitorMain arrayPerformance 2 0.0
+arrayPerformance 2
 
 mrk&gt; bin/linux-x86_64/longArrayGetMain -help
-longArrayGetMain channelName iterBetweenCreateChannel iterBetweenCreateChannelGet delayTime
+channelName iterBetweenCreateChannel iterBetweenCreateChannelGet delayTime
 default
-longArrayGetMain arrayPerformance 0 0 1
+arrayPerformance 0 0 1
 
 mrk&gt; bin/linux-x86_64/longArrayPutMain -help
-longArrayPutMain channelName arraySize iterBetweenCreateChannel iterBetweenCreateChannelPut delayTime
+channelName arraySize iterBetweenCreateChannel iterBetweenCreateChannelPut delayTime
 default
-longArrayPutMain arrayPerformance 10 0 0 1
+arrayPerformance 10 0 0 1
 
 mrk&gt; 
 </pre>
@@ -105,22 +105,24 @@ bin/linux/&lt;arch&gt;/longArrayPutMain
 Examples are:</p>
 <pre>
 mrk&gt; bin/linux-x86_64/arrayPerformanceMain
-arrayPerformance arrayPerformance 10000000 0.0001 local 1 2 0
+arrayPerformance 10000000 0.0001 local 1 2 0
 ...
- monitors/sec 66 first 131 last 131 changed {1, 2} overrun {} megaElements/sec 656.999
-arrayPerformance value 132 time 1.00486 Iterations/sec 65.681 megaElements/sec 656.81
- monitors/sec 66 first 197 last 197 changed {1, 2} overrun {} megaElements/sec 656.304
-arrayPerformance value 198 time 1.00563 Iterations/sec 65.6307 megaElements/sec 656.307
- monitors/sec 66 first 263 last 263 changed {1, 2} overrun {} megaElements/sec 654.824
+arrayPerformance value 54 time 1.01735 Iterations/sec 26.5396 megaElements/sec 265.396
+ monitors/sec 27 first 80 last 80 changed {1, 2} overrun {} megaElements/sec 261.057
+arrayPerformance value 81 time 1.03442 Iterations/sec 26.1016 megaElements/sec 261.016
+ monitors/sec 26 first 106 last 106 changed {1, 2} overrun {} megaElements/sec 259.798
+arrayPerformance value 108 time 1.0396 Iterations/sec 25.9715 megaElements/sec 259.715
+ monitors/sec 26 first 132 last 132 changed {1, 2} overrun {} megaElements/sec 252.812
 ...
 </pre>
 <pre>
 mrk&gt; bin/linux-x86_64/longArrayMonitorMain
 longArrayMonitorMain arrayPerformance 2 0
 ...
- monitors/sec 6 first 2357 last 2357 changed {1, 2} overrun {} megaElements/sec 68.6406
- monitors/sec 13 first 2385 last 2385 changed {1, 2} overrun {} megaElements/sec 118.72
- monitors/sec 9 first 2418 last 2418 changed {1, 2} overrun {1, 2} megaElements/sec 85.0984
+ monitors/sec 9 first 1068 last 1068 changed {1, 2} overrun {1, 2} megaElements/sec 89.761
+ monitors/sec 9 first 1084 last 1084 changed {1, 2} overrun {1, 2} megaElements/sec 87.1092
+ monitors/sec 9 first 1101 last 1101 changed {1, 2} overrun {} megaElements/sec 86.267
+
 ...
 </pre>
 <pre>

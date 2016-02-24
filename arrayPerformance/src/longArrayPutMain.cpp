@@ -44,10 +44,9 @@ int main(int argc,char *argv[])
     int iterBetweenCreateChannelPut = 0;
     double delayTime = 1.0;
     if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "longArrayPutMain channelName arraySize ";
-        cout << "iterBetweenCreateChannel iterBetweenCreateChannelPut delayTime" << endl;
+        cout << "channelName arraySize iterBetweenCreateChannel iterBetweenCreateChannelPut delayTime" << endl;
         cout << "default" << endl;
-        cout << "longArrayPutMain " << channelName << " ";
+        cout << channelName << " ";
         cout << arraySize << " ";
         cout << iterBetweenCreateChannel  << " ";
         cout << iterBetweenCreateChannelPut  << " ";
@@ -59,7 +58,7 @@ int main(int argc,char *argv[])
     if(argc>3) iterBetweenCreateChannel = strtol(argv[3],0,0);
     if(argc>4) iterBetweenCreateChannelPut = strtol(argv[4],0,0);
     if(argc>5) delayTime = atof(argv[5]);
-    cout << "longArrayPutMain " << channelName << " ";
+    cout << channelName << " ";
     cout << arraySize << " ";
     cout << iterBetweenCreateChannel  << " ";
     cout << iterBetweenCreateChannelPut  << " ";
@@ -80,7 +79,7 @@ int main(int argc,char *argv[])
             getline(cin,str);
             if(str.compare("exit")==0) {
                  longArrayPut->destroy();
-epicsThreadSleep(2.0);
+epicsThreadSleep(2.0); // should not be necessary
                  exit(0);
             }
         }

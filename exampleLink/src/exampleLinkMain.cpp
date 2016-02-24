@@ -44,14 +44,17 @@ int main(int argc,char *argv[])
         addTimeStamp()->
         createPVStructure();
     master->addRecord(PVRecord::create("doubleArray",pvStructure));
+
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     if(provider=="pva") ClientFactory::start();
-    ServerContext::shared_pointer ctx =
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+
     ExampleLinkPtr pvRecord(
         ExampleLink::create(
            "exampleLink",provider,"doubleArray")); 
     master->addRecord(pvRecord);
+
+    ServerContext::shared_pointer ctx =
+        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
     cout << "exampleLink\n";
     string str;
     while(true) {
@@ -61,9 +64,6 @@ int main(int argc,char *argv[])
 
     }
     ctx->destroy();
-    epicsThreadSleep(3.0);
-//    channelProvider->destroy();
-//    if(provider=="pva") ClientFactory::stop();
-//    epicsThreadSleep(3.0);
+epicsThreadSleep(5.0);  // should not be necessary
     return 0;
 }

@@ -129,14 +129,13 @@ The example also has an example pvaClient for accessing the PVRecord.
 
 ###  arrayPerformance
 
-This is an example that shows performance for an array of doubles.
+This is an example that shows performance for an array of longs.
 
-arrayPerformanceMain implements a PVRecord that is a double array.
+arrayPerformanceMain implements a PVRecord that is a long array.
 It has a process method with code that causes the array to be updated at
 selectable rates and sizes!
 
-It also has pvaClient examples that can get, put and monitor the double
-array record.
+It also has pvaClient examples that can get, put and monitor the long array record.
 
 
 ### test

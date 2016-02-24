@@ -28,3 +28,9 @@ It can also be built by:
     mrk> pwd
     /home/epicsv4/master/exampleCPP/examplePowerSupply
     mrk> bin/linux-x86_64/examplePowerSupplyMain
+
+## After starting examplePowerSupply
+
+    mrk> pwd
+    /home/epicsv4/master/exampleCPP/examplePowerSupply
+    mrk> bin/linux-x86_64/examplePowerSupplyClient

@@ -44,7 +44,7 @@ int main(int argc,char *argv[])
     string channelName("arrayPerformance");
     int queueSize = 2;
     if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "channelName queueSize waitTime" << endl;
+        cout << "channelName queueSize" << endl;
         cout << "default" << endl;
         cout << channelName << " ";
         cout << queueSize  << endl;
@@ -63,7 +63,7 @@ int main(int argc,char *argv[])
             getline(cin,str);
             if(str.compare("exit")==0) {
                  longArrayMonitor->destroy();
-epicsThreadSleep(2.0);
+epicsThreadSleep(2.0); // should not be necessary
                  exit(0);
             }
         }

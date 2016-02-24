@@ -104,7 +104,7 @@ int main(int argc,char *argv[])
                  }
                  arrayPerformance->stop();
                  ctx->destroy();
-epicsThreadSleep(3.0);
+epicsThreadSleep(3.0);  // should not be necessary
                  ctx.reset();            
                  exit(0);
             }

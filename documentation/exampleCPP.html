@@ -26,16 +26,15 @@
 
 <div class="head">
 <h1>EPICS exampleCPP</h1>
-<h2 class="nocount">Release 4.2 - 2016.01.22</h2>
+<h2 class="nocount">Release 4.2 - 2016.02.24</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
 This project provides a set of examples of client and server code for pvAccess.
-It also has a test that is run via:</p
+It also has a test that is run via:</p>
 <pre>
 make runtests
 </pre>
-<p>
   <!-- last para of Abstract is boilerplate reference to EPICS -->
       <p>For more information about EPICS generally, please refer to the home page of the <a
        href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
@@ -169,20 +168,20 @@ normative types. Requests are in the form of an NTURI normative type and the res
 
 <h3>arrayPerformance</h3>
 <p>
-This is an example that shows performance for an array of doubles.
+This is an example that shows performance for an array of longs.
 </p>
 <p>
-arrayPerformanceMain implement a PVRecord that is a double array.
+arrayPerformanceMain implement a PVRecord that is a long array.
 It has a process method with code that causes the array to be updated at selectable rates and sizes.!
 </p>
 <p>
-It also has pvaClient examples that can get, put, and monitor the double array record.
+It also has pvaClient examples that can get, put, and monitor the long array record.
 </p>
 
 <h3>test</h3>
 <p>
 This is a test for pvDatabase and pvaClient.   
-This example requires that **database** must also be built. 
+This example requires that <b>database</b> must also be built. 
 </p>
 <p>
 It is meant to be used to execute:

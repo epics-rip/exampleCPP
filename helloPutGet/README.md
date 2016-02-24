@@ -46,3 +46,9 @@ It can also be built by:
     /home/epicsv4/master/exampleCPP/helloPutGet
     mrk> bin/linux-x86_64/helloPutGetMain
 
+## After starting helloPutGet 
+
+    mrk> pwd
+    /home/epicsv4/master/exampleCPP/helloPutGet
+    mrk> bin/linux-x86_64/helloPutGetClient
+

@@ -31,19 +31,28 @@ It can also be built by:
     /home/epicsv4/master/exampleCPP/database
     mrk> bin/linux-x86_64/exampleDatabaseMain
 
+## database/src/pv
+
+This directory has the following files:
+
+     exampleHello.h
+     exampleHelloRPC.h
+     exampleDatabase.h
+  
+
 ## database/src
 
 This directory has the following files:
 
-### exampleHello.h and exampleHello.cpp
+### exampleHello.cpp
    
 Code for an example that is accessed via channelPutGet.
 
-### exampleHelloRPC.h and exampleHelloRPC.cpp
+### exampleHelloRPC.cpp
    
 Code for an example that is accesed via channelRPC.
 
-### exampleDatabase.h and exampleDatabase.cpp 
+### exampleDatabase.cpp 
   
 Code that creates many PVRecords.    
 Most are soft records but also exampleHello and exampleHelloRPC.

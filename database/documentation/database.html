@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/database</h1>
-<h2 class="nocount">Release 1.0 - 2016.01.08</h2>
+<h2 class="nocount">Release 1.0 - 2016.02.24</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>database provides an IOC with a combination of V3 DBRecords, PVRecords, and also starts pvaSrv.
@@ -53,13 +53,13 @@ It also provides a main program that has only the PVRecords.
 <h3>Start as a main program</h3>
 <pre>
 mrk&gt; pwd
-/home/epicsv4/exampleCPP/database
+/home/epicsv4/master/exampleCPP/database
 mrk&gt; bin/linux-x86_64/exampleDatabaseMain
 </pre>
 <h3>Start it as part of an EPICS V3 IOC:</h3>
 <pre>
 mrk&gt; pwd
-/home/epicsv4/exampleCPP/database/iocBoot/exampleDatabase
+/home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
 mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd 
 </pre>
 <p>The database has both iocCore DBRecords and pvDatabase PVRecords.
@@ -157,9 +157,7 @@ DBRintArray01
 DBRshortArray01
 DBRstringArray01
 </pre>
-<h2>database/src</h2>
-<p>This directory has two subdirectories: <b>pv</b> and <b>code></b>.</p>
-<h3>database/src/pv</h3>
+<h2>database/src/pv</h2>
 <p>This directory has the following files:</p>
 <dl>
   <dt>exampleHello.h</dt>
@@ -169,7 +167,7 @@ DBRstringArray01
    <dt>exampleDatabase.h</dt> 
      <dd>Header file for exampleDatabase.cpp</dd>
 </dl>
-<h3>database/src/code</h3>
+<h2>database/src</h2>
 <p>This directory has the following files:</p>
 <dl>
   <dt>exampleHello.cpp</dt>

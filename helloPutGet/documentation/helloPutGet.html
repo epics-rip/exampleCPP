@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/helloPutGet</h1>
-<h2 class="nocount">Release 1.0 - 2016.01.08</h2>
+<h2 class="nocount">Release 1.0 - 2016.02.24</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -79,7 +79,7 @@ mrk&gt; bin/linux-x86_64/helloPutGetMain
 <p>To start helloPutGet as part of a V3IOC:</p>
 <pre>
 mrk&gt; pwd
-/home/hg/exampleCPP/helloPutGet/iocBoot/helloPutGet
+/home/hg/exampleCPP/master/helloPutGet/iocBoot/helloPutGet
 mrk&gt; ../../../bin/linux-x86_64/helloPutGet st.cmd
 </pre>
 
@@ -95,13 +95,12 @@ helloPutGet
     src
        pv
           helloPutGet.h
-       code
-          helloPutGet.cpp
-          helloPutGetInclude.dbd
-          helloPutGetMain.cpp
-          helloPutGetRegister.cpp
-          helloPutGetRegister.dbd
-          helloPutGetClient.cpp
+       helloPutGet.cpp
+       helloPutGetInclude.dbd
+       helloPutGetMain.cpp
+       helloPutGetRegister.cpp
+       helloPutGetRegister.dbd
+       helloPutGetClient.cpp
     ioc
        Db
           ...
@@ -325,30 +324,25 @@ The actual example shows how create an additional record.
 int main(int argc,char *argv[])
 {
     PVDatabasePtr master = PVDatabase::getMaster();
+    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     PVRecordPtr pvRecord;
-    bool result = false;
     string recordName;
 
     recordName = "helloPutGet";
     pvRecord = HelloPutGet::create(recordName);
-    result = master-&gt;addRecord(pvRecord);
-    if(!result) cout&lt;&lt; "record " &lt;&lt; recordName &lt;&lt; " not added" &lt;&lt; endl;
+    master-&gt;addRecord(pvRecord);
 
-    recordName = "traceRecordPGRPC";
-    pvRecord = TraceRecord::create(recordName);
-    result = master-&gt;addRecord(pvRecord);
-    if(!result) cout&lt;&lt; "record " &lt;&lt; recordName &lt;&lt; " not added" &lt;&lt; endl;
+    ServerContext::shared_pointer ctx =
+        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+    cout &lt;&lt; "exampleLink\n";
+    string str;
+    while(true) {
+        cout &lt;&lt; "Type exit to stop: \n";
+        getline(cin,str);
+        if(str.compare("exit")==0) break;
 
-   
-    ContextLocal::shared_pointer contextLocal = ContextLocal::create();
-    contextLocal-&gt;start();
-
-    PVStringArrayPtr pvNames = master-&gt;getRecordNames();
-    shared_vector&lt;const string&gt; names = pvNames-&gt;view();
-    for(size_t i=0; i&lt;names.size(); ++i) cout &lt;&lt; names[i] &lt;&lt; endl;
-
-    contextLocal->waitForExit();
-
+    }
+    ctx-&gt;destroy();
     return 0;
 }
 </pre>
