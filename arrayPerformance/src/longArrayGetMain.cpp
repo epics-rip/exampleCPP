@@ -66,13 +66,12 @@ int main(int argc,char *argv[])
               iterBetweenCreateChannel,
               iterBetweenCreateChannelGet,
               delayTime));
-        cout << "longArrayGet\n";
         string str;
         while(true) {
             cout << "Type exit to stop: \n";
             getline(cin,str);
             if(str.compare("exit")==0) {
-                 longArrayGet->destroy();
+                 longArrayGet->stop();
 epicsThreadSleep(2.0); // should not be necessary
                  exit(0);
             }

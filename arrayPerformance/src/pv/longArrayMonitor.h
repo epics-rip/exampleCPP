@@ -39,19 +39,13 @@ public:
     LongArrayMonitor(
         std::string const & providerName,
         std::string const & channelName,
-        int queueSize = 1);
+        int queueSize = 2);
     virtual void run();
-    void destroy();
-    void  nextMonitor();
+    void stop();
 private:
-    epics::pvaClient::PvaClientPtr pva;
-    epics::pvaClient::PvaClientMonitorPtr monitor;
-    epics::pvData::PVTimeStamp pvTimeStamp;
-    epics::pvData::TimeStamp timeStamp;
-    epics::pvData::TimeStamp timeStampLast;
-    long nElements;
-    long nSinceLastReport;
-    std::string threadName;
+    std::string providerName;
+    std::string channelName;
+    int queueSize;
     std::auto_ptr<epicsThread> thread;
     epics::pvData::Event runStop;
     epics::pvData::Event runReturn;

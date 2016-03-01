@@ -78,7 +78,7 @@ int main(int argc,char *argv[])
             cout << "Type exit to stop: \n";
             getline(cin,str);
             if(str.compare("exit")==0) {
-                 longArrayPut->destroy();
+                 longArrayPut->stop();
 epicsThreadSleep(2.0); // should not be necessary
                  exit(0);
             }

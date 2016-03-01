@@ -56,10 +56,6 @@ private:
     size_t size;
     double delay;
     bool isDestroyed;
-    epics::pvData::PVLongArrayPtr pvValue;
-    epics::pvData::PVTimeStamp pvTimeStamp;
-    epics::pvData::TimeStamp timeStamp;
-    std::string threadName;
     std::auto_ptr<epicsThread> thread;
     epics::pvData::Event runStop;
     epics::pvData::Event runReturn;

@@ -6,7 +6,7 @@ In order to run the examples, **database** must also be built and then the IOC d
 
     mrk> pwd
     /home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
-    mrk> ../../bin/linux-x86_64/exampleDatabase st.cmd
+    mrk> ../../bin/$EPICS_HOST_ARCH/exampleDatabase st.cmd
 
 [developerGuide.html ](http://epics-pvdata.sourceforge.net/informative/developerGuide/developerGuide.html)provides tututorial information on how to use pvaClient
 
@@ -21,8 +21,12 @@ then just type:
 It can also be built by:
 
     cp configure/ExampleRELEASE.local configure/RELEASE.local
-    edit configure/RELEASE.local
+    edit file configure/RELEASE.local
     make
+
+In **configure/RELEASE.local** it may only be necessary to change the definitions
+of **EPICS4_DIR** and **EPICS_BASE**.
+
 
 
 ## examplePvaClientGet

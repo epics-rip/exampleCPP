@@ -70,22 +70,22 @@ or some other memory check program.
 <pre>
 mrk&gt; pwd
 /home/hg/exampleCPP/arrayPerformance
-mrk&gt; bin/linux-x86_64/arrayPerformanceMain -help
+mrk&gt; bin/$EPICS_HOST_ARCH/arrayPerformanceMain -help
 recordName size delay providerName nMonitor queueSize
 default
 arrayPerformance 10000000 0.0001 local 1 2
 
-mrk&gt; bin/linux-x86_64/longArrayMonitorMain -help
+mrk&gt; bin/$EPICS_HOST_ARCH/longArrayMonitorMain -help
 channelName queueSize
 default
 arrayPerformance 2
 
-mrk&gt; bin/linux-x86_64/longArrayGetMain -help
+mrk&gt; bin/$EPICS_HOST_ARCH/longArrayGetMain -help
 channelName iterBetweenCreateChannel iterBetweenCreateChannelGet delayTime
 default
 arrayPerformance 0 0 1
 
-mrk&gt; bin/linux-x86_64/longArrayPutMain -help
+mrk&gt; bin/$EPICS_HOST_ARCH/longArrayPutMain -help
 channelName arraySize iterBetweenCreateChannel iterBetweenCreateChannelPut delayTime
 default
 arrayPerformance 10 0 0 1
@@ -104,7 +104,7 @@ bin/linux/&lt;arch&gt;/longArrayPutMain
 <p>Each program generates a report every second when it has something to report.
 Examples are:</p>
 <pre>
-mrk&gt; bin/linux-x86_64/arrayPerformanceMain
+mrk&gt; bin/$EPICS_HOST_ARCH/arrayPerformanceMain
 arrayPerformance 10000000 0.0001 local 1 2 0
 ...
 arrayPerformance value 54 time 1.01735 Iterations/sec 26.5396 megaElements/sec 265.396
@@ -116,7 +116,7 @@ arrayPerformance value 108 time 1.0396 Iterations/sec 25.9715 megaElements/sec 2
 ...
 </pre>
 <pre>
-mrk&gt; bin/linux-x86_64/longArrayMonitorMain
+mrk&gt; bin/$EPICS_HOST_ARCH/longArrayMonitorMain
 longArrayMonitorMain arrayPerformance 2 0
 ...
  monitors/sec 9 first 1068 last 1068 changed {1, 2} overrun {1, 2} megaElements/sec 89.761
@@ -126,7 +126,7 @@ longArrayMonitorMain arrayPerformance 2 0
 ...
 </pre>
 <pre>
-mrk&gt; bin/linux-x86_64/longArrayPutMain
+mrk&gt; bin/$EPICS_HOST_ARCH/longArrayPutMain
 longArrayPutMain arrayPerformance 10 0 0 1
 ...
 put numChannelPut 0 time 1.00148 Elements/sec 79.8819
@@ -134,7 +134,7 @@ put numChannelPut 1 time 1.00176 Elements/sec 79.8598
 ...
 </pre>
 <pre>
-mrk&gt; bin/linux-x86_64/longArrayGetMain
+mrk&gt; bin/$EPICS_HOST_ARCH/longArrayGetMain
 longArrayGetMain arrayPerformance 0 0 1
 ...
 get kiloElements/sec 7384.61
@@ -276,7 +276,7 @@ You do not want to do this.</p>
 <pre>
 mrk&gt; pwd
 /home/hg/exampleCPP/arrayPerformance
-mrk&gt; bin/linux-x86_64/arrayPerformanceMain
+mrk&gt; bin/$EPICS_HOST_ARCH/arrayPerformanceMain
 </pre>
 <p>This means that the array will hold 10 million elements.
 The delay will be a millisecond.
@@ -291,7 +291,7 @@ Since each element is an int64 this means about 4gigaBytes per second.
 <pre>
 mr&gt; pwd
 /home/hg/exampleCPP/arrayPerformance
-mrk&gt; bin/linux-x86_64/longArrayMonitorMain
+mrk&gt; bin/$EPICS_HOST_ARCH/longArrayMonitorMain
 </pre>
 <p>The performance drops to about 25 iterations per second and 250 million elements per second.
 The next section has an example that demonstrates what happens.

@@ -44,17 +44,13 @@ public:
         double delayTime);
     virtual ~LongArrayGet(){}
     virtual void run();
-    void destroy();
+    void stop();
 private:
-    size_t checkResult(
-        const epics::pvData::PVStructurePtr &pvStructure,
-        const epics::pvData::BitSetPtr & bitSet);
     std::string  providerName;
     std::string  channelName;
     int iterBetweenCreateChannel;
     int iterBetweenCreateChannelGet;
     double delayTime;
-    std::string threadName;
     std::auto_ptr<epicsThread> thread;
     epics::pvData::Event runStop;
     epics::pvData::Event runReturn;

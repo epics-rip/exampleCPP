@@ -70,26 +70,15 @@ int main(int argc,char *argv[])
     cout << providerName << " ";
     cout << nMonitor << " ";
     cout << queueSize << endl;
-    PVDatabasePtr master = PVDatabase::getMaster();
-    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     ArrayPerformancePtr arrayPerformance =ArrayPerformance::create(recordName,size,delay);
-    bool result(false);
-    result = master->addRecord(arrayPerformance);
-    if(!result) cout<< "record " << arrayPerformance->getRecordName() << " not added" << endl;
-    arrayPerformance->setTraceLevel(0);
-    PVRecordPtr pvRecord = TraceRecord::create("traceRecordPGRPC");
-    result = master->addRecord(pvRecord);
-    if(!result) cout<< "record " << pvRecord->getRecordName() << " not added" << endl;
-    pvRecord.reset();
+    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     ServerContext::shared_pointer ctx = 
         startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-    master.reset();
-    epicsThreadSleep(1.0);
     try {
         std::vector<LongArrayMonitorPtr> longArrayMonitor(nMonitor);
         for(size_t i=0; i<nMonitor; ++i) {
            longArrayMonitor[i] = LongArrayMonitorPtr(
-                new LongArrayMonitor(providerName,recordName,queueSize));
+               new LongArrayMonitor(providerName,recordName,queueSize));
         }
         
         cout << "arrayPerformance\n";
@@ -99,13 +88,10 @@ int main(int argc,char *argv[])
             getline(cin,str);
             if(str.compare("exit")==0) {
                  for(size_t i=0; i<nMonitor; ++i) {
-                      longArrayMonitor[i]->destroy();
-                      longArrayMonitor[i].reset();
+                      longArrayMonitor[i]->stop();
                  }
                  arrayPerformance->stop();
-                 ctx->destroy();
-epicsThreadSleep(3.0);  // should not be necessary
-                 ctx.reset();            
+                 ctx->destroy();           
                  exit(0);
             }
         }

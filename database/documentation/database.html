@@ -54,13 +54,13 @@ It also provides a main program that has only the PVRecords.
 <pre>
 mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/database
-mrk&gt; bin/linux-x86_64/exampleDatabaseMain
+mrk&gt; bin/$EPICS_HOST_ARCH/exampleDatabaseMain
 </pre>
 <h3>Start it as part of an EPICS V3 IOC:</h3>
 <pre>
 mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
-mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd 
+mrk&gt; ../../bin/$EPICS_HOST_ARCH/exampleDatabase st.cmd 
 </pre>
 <p>The database has both iocCore DBRecords and pvDatabase PVRecords.
 Since pvaSrv is also started, the DBRecords can be accesed via either channelAccess or pvAccess.

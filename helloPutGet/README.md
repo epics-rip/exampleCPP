@@ -31,24 +31,27 @@ then just type:
 It can also be built by:
 
     cp configure/ExampleRELEASE.local configure/RELEASE.local
-    edit configure/RELEASE.local
+    edit file configure/RELEASE.local
     make
+
+In **configure/RELEASE.local** it may only be necessary to change the definitions
+of **EPICS4_DIR** and **EPICS_BASE**.
 
 ## To start the helloPutGet as part of a V3 IOC
 
     mrk> pwd
     /home/epicsv4/master/helloPutGet/database/iocBoot/helloPutGet
-    mrk> ../../bin/linux-x86_64/helloPutGet st.cmd 
+    mrk> ../../bin/$EPICS_HOST_ARCH/helloPutGet st.cmd 
 
 ## To start the helloPutGet as a standalone main
 
     mrk> pwd
     /home/epicsv4/master/exampleCPP/helloPutGet
-    mrk> bin/linux-x86_64/helloPutGetMain
+    mrk> bin/$EPICS_HOST_ARCH/helloPutGetMain
 
 ## After starting helloPutGet 
 
     mrk> pwd
     /home/epicsv4/master/exampleCPP/helloPutGet
-    mrk> bin/linux-x86_64/helloPutGetClient
+    mrk> bin/$EPICS_HOST_ARCH/helloPutGetClient
 

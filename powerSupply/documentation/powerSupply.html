@@ -78,13 +78,13 @@ The example can be run on linux as follows:</p>
 <pre>
 mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/powerSupply
-mrk&gt; bin/linux-x86_64/powerSupplyMain
+mrk&gt; bin/$EPICS_HOST_ARCH/powerSupplyMain
 </pre>
 <p>To start powerSupply as part of a V3IOC:</p>
 <pre>
 mrk&gt; pwd
 /home/hg/exampleCPP/powerSupply/iocBoot/powerSupply
-mrk&gt; ../../../bin/linux-x86_64/powerSupply st.cmd
+mrk&gt; ../../../bin/$EPICS_HOST_ARCH/powerSupply st.cmd
 </pre>
 
 <h2>Directory Layout</h2>

@@ -13,8 +13,12 @@ then just type:
 It can also be built by:
 
     cp configure/ExampleRELEASE.local configure/RELEASE.local
-    edit configure/RELEASE.local
+    edit file configure/RELEASE.local
     make
+
+In **configure/RELEASE.local** it may only be necessary to change the definitions
+of **EPICS4_DIR** and **EPICS_BASE**.
+
 
 
 

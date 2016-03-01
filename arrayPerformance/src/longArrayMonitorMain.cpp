@@ -52,17 +52,14 @@ int main(int argc,char *argv[])
     }
     if(argc>1) channelName = argv[1];
     if(argc>2) queueSize = strtol(argv[2],0,0);
-    cout << "longArrayMonitorMain " << channelName << " " << queueSize << endl;
     try {
-        LongArrayMonitorPtr longArrayMonitor(new
-            LongArrayMonitor("pva",channelName,queueSize));
-        cout << "longArrayMonitor\n";
+        LongArrayMonitorPtr longArrayMonitor(new LongArrayMonitor("pva",channelName,queueSize));
         string str;
         while(true) {
             cout << "Type exit to stop: \n";
             getline(cin,str);
             if(str.compare("exit")==0) {
-                 longArrayMonitor->destroy();
+                 longArrayMonitor->stop();
 epicsThreadSleep(2.0); // should not be necessary
                  exit(0);
             }

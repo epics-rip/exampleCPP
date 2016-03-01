@@ -26,12 +26,27 @@ ArrayPerformancePtr ArrayPerformance::create(
         size_t size,
         double delay)
 {
-    epics::pvData::PVStructurePtr pvStructure =
-       epics::pvData::getStandardPVField()->scalarArray(epics::pvData::pvLong,"timeStamp,alarm");
-    ArrayPerformancePtr pvRecord(
+    PVStructurePtr pvStructure = getStandardPVField()->scalarArray(
+         pvLong,"value,timeStamp,alarm");
+    ArrayPerformancePtr arrayPerformance(
         new ArrayPerformance(recordName,pvStructure,size,delay));
-    if(!pvRecord->init()) pvRecord.reset();
-    return pvRecord;
+    if(!arrayPerformance->init()) {
+         arrayPerformance.reset();
+         return arrayPerformance;
+    }
+    PVDatabasePtr master = PVDatabase::getMaster();
+    bool result = master->addRecord(arrayPerformance);
+    if(!result) {
+        cout<< "record " << arrayPerformance->getRecordName() << " not added" << endl;
+        arrayPerformance.reset();
+    }
+    arrayPerformance->thread =  std::auto_ptr<epicsThread>(new epicsThread(
+        *arrayPerformance,
+        "arrayPerformance",
+        epicsThreadGetStackSize(epicsThreadStackSmall),
+        epicsThreadPriorityLow));
+    arrayPerformance->thread->start();
+    return arrayPerformance;
 }
 
 ArrayPerformance::ArrayPerformance(
@@ -42,10 +57,8 @@ ArrayPerformance::ArrayPerformance(
 : PVRecord(recordName,pvStructure),
   size(size),
   delay(delay),
-  isDestroyed(false),
-  threadName("arrayPerformance")
-{    
-    pvTimeStamp.attach(pvStructure->getSubField("timeStamp"));
+  isDestroyed(false)
+{
 }
 
 
@@ -53,20 +66,12 @@ ArrayPerformance::ArrayPerformance(
 bool ArrayPerformance::init()
 {
     initPVRecord();
-    pvValue = getPVStructure()->getSubField<PVLongArray>("value");
-    thread = std::auto_ptr<epicsThread>(new epicsThread(
-        *this,
-        threadName.c_str(),
-        epicsThreadGetStackSize(epicsThreadStackSmall),
-        epicsThreadPriorityLow));
-     thread->start();
     return true;
 }
 
 void ArrayPerformance::process()
 {
-    timeStamp.getCurrent();
-    pvTimeStamp.set(timeStamp);
+    PVRecord::process();
 }
 
 void ArrayPerformance::destroy()
@@ -85,6 +90,8 @@ void ArrayPerformance::stop()
 
 void ArrayPerformance::run()
 {
+    PVStructurePtr pvStructure = PVRecord::getPVRecordStructure()->getPVStructure();
+    PVLongArrayPtr pvValue= pvStructure->getSubField<PVLongArray>("value");
     TimeStamp timeStamp;
     TimeStamp timeStampLast;
     timeStampLast.getCurrent();
@@ -96,7 +103,6 @@ void ArrayPerformance::run()
              return;
         }    
         if(delay>0.0) epicsThreadSleep(delay);
-        //event.wait();
         timeStamp.getCurrent();
         double diff = TimeStamp::diff(timeStamp,timeStampLast);
         if(diff>=1.0) {
@@ -145,10 +151,10 @@ void ArrayPerformance::run()
             }
             shared_vector<int64> xxx(size,value++);
             shared_vector<const int64> data(freeze(xxx));
-                beginGroupPut();
-                pvValue->replace(data);
-                process();
-                endGroupPut();
+            beginGroupPut();
+            pvValue->replace(data);
+            process();
+            endGroupPut();
         } catch(...) {
            unlock();
            throw;

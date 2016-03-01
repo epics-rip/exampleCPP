@@ -55,7 +55,7 @@
 <pre>
 mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/exampleLink
-mrk&gt; bin/linux-x86_64/exampleLinkMain provider
+mrk&gt; bin/$EPICS_HOST_ARCH/exampleLinkMain provider
 </pre>
 <p><b>provider</b> is optional.
 If specified it must be <b>local</b> or <b>pva</b>.
@@ -65,7 +65,7 @@ The default is <b>pva</b>.
 <pre>
 mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/exampleLink/iocBoot/exampleLink
-mrk&gt; ../../bin/linux-x86_64/exampleLink arg
+mrk&gt; ../../bin/$EPICS_HOST_ARCH/exampleLink arg
 </pre>
 <p><b>arg</b> must be either <b>st.local</b> or <b>st.remote</b>
 </p>
@@ -75,7 +75,7 @@ Start the example and then:</p>
 <pre>
 mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/exampleLink
-mrk&gt; bin/linux-x86_64/exampleLinkClient
+mrk&gt; bin/$EPICS_HOST_ARCH/exampleLinkClient
 </pre>
 <h2>Discussion</h2>
 <h3>Access Alternatives</h3>

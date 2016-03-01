@@ -89,7 +89,7 @@ IOC database must be started as follows:
 
     mrk> pwd
     /home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
-    mrk> ../../bin/linux-x86_64/exampleDatabase st.cmd
+    mrk> ../../bin/$EPICS_HOST_ARCH/exampleDatabase st.cmd
 
 
 ### helloPutGet

@@ -15,21 +15,24 @@ then just type:
 It can also be built by:
 
     cp configure/ExampleRELEASE.local configure/RELEASE.local
-    edit configure/RELEASE.local
+    edit file configure/RELEASE.local
     make
+
+In **configure/RELEASE.local** it may only be necessary to change the definitions
+of **EPICS4_DIR** and **EPICS_BASE**.
 
 
 ## To start the database as part of a V3 IOC
 
     mrk> pwd
     /home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
-    mrk> ../../bin/linux-x86_64/exampleDatabase st.cmd 
+    mrk> ../../bin/$EPICS_HOST_ARCH/exampleDatabase st.cmd 
 
 ## To start the database as a standalone main
 
     mrk> pwd
     /home/epicsv4/master/exampleCPP/database
-    mrk> bin/linux-x86_64/exampleDatabaseMain
+    mrk> bin/$EPICS_HOST_ARCH/exampleDatabaseMain
 
 ## database/src/pv
 

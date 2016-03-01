@@ -36,13 +36,13 @@ LongArrayPut::LongArrayPut(
 {
      thread = std::auto_ptr<epicsThread>(new epicsThread(
         *this,
-        threadName.c_str(),
+        "longArrayPut",
         epicsThreadGetStackSize(epicsThreadStackSmall),
         epicsThreadPriorityLow));
      thread->start();
 }
 
-void LongArrayPut::destroy()
+void LongArrayPut::stop()
 {
     runStop.signal();
     runReturn.wait();
@@ -68,7 +68,7 @@ void LongArrayPut::run()
         PVStructurePtr pvStructure(putData->getPVStructure());
         BitSetPtr bitSet(putData->getChangedBitSet());
         PVLongArrayPtr pvLongArray(pvStructure->getSubField<PVLongArray>("value"));
-        nElements += sizeof(int64) * arraySize;
+        nElements +=  arraySize;
         shared_vector<int64> xxx(arraySize,numChannelPut);
         shared_vector<const int64> data(freeze(xxx));
         pvLongArray->replace(data);
@@ -78,22 +78,23 @@ void LongArrayPut::run()
         double diff = TimeStamp::diff(timeStamp,timeStampLast);
         if(diff>=1.0) {
             ostringstream out;
-            out << "put numChannelPut " << numChannelPut;
-            out << " time " << diff ;
+            out << "put " << numChannelPut ;
             double elementsPerSec = nElements;
             elementsPerSec /= diff;
-            if(elementsPerSec>10.0e9) {
+            if(elementsPerSec>1e9) {
                  elementsPerSec /= 1e9;
                  out << " gigaElements/sec " << elementsPerSec;
-            } else if(elementsPerSec>10.0e6) {
+            } else if(elementsPerSec>1e6) {
                  elementsPerSec /= 1e6;
                  out << " megaElements/sec " << elementsPerSec;
-            } else if(elementsPerSec>10.0e3) {
+            } else if(elementsPerSec>1e3) {
                  elementsPerSec /= 1e3;
                  out << " kiloElements/sec " << elementsPerSec;
             } else  {
                  out << " Elements/sec " << elementsPerSec;
             }
+            if(iterBetweenCreateChannelPut!=0) out << " numChannelPut " << numChannelPut;
+            if(iterBetweenCreateChannel!=0) out << " numChannelCreate " << numChannelCreate;
             cout << out.str() << endl;
             timeStampLast = timeStamp;
             nElements = 0;
@@ -105,9 +106,9 @@ void LongArrayPut::run()
             if(numChannelPut>=iterBetweenCreateChannelPut) createPut = true;
         }
         if(createPut) {
-             numChannelPut = 0;
              pvaPut->destroy();
              pvaPut = pvaChannel->createPut("value");
+             numChannelPut = 0;
         }
         ++numChannelCreate;
         if(iterBetweenCreateChannel!=0) {

@@ -25,22 +25,21 @@ LongArrayGet::LongArrayGet(
         int iterBetweenCreateChannel,
         int iterBetweenCreateChannelGet,
         double delayTime)
-    : providerName(providerName),
-      channelName(channelName),
-      iterBetweenCreateChannel(iterBetweenCreateChannel),
-      iterBetweenCreateChannelGet(iterBetweenCreateChannelGet),
-      delayTime(delayTime),
-      threadName("longArrayGet")
+: providerName(providerName),
+  channelName(channelName),
+  iterBetweenCreateChannel(iterBetweenCreateChannel),
+  iterBetweenCreateChannelGet(iterBetweenCreateChannelGet),
+  delayTime(delayTime)
 {
      thread = std::auto_ptr<epicsThread>(new epicsThread(
         *this,
-        threadName.c_str(),
+        "longArrayGet",
         epicsThreadGetStackSize(epicsThreadStackSmall),
         epicsThreadPriorityLow));
      thread->start();
 }
 
-void LongArrayGet::destroy()
+void LongArrayGet::stop()
 {
     runStop.signal();
     runReturn.wait();
@@ -66,8 +65,17 @@ void LongArrayGet::run()
         PvaClientGetDataPtr pvaData = pvaGet->getData();
         PVStructurePtr pvStructure = pvaData->getPVStructure();
         BitSetPtr bitSet = pvaData->getChangedBitSet();
-        size_t latestSize = checkResult(pvStructure,bitSet);
-        nElements += latestSize;
+        PVLongArrayPtr pvValue = pvStructure->getSubField<PVLongArray>("value");   
+        shared_vector<const int64> data = pvValue->view();
+        size_t len = data.size();
+        if(len>0) {
+            int64 first = data[0];
+            int64 last = data[data.size()-1];
+            if(first!=last) {
+               cout << "error first=" << first << " last=" << last << endl;
+            }
+        }
+        nElements += len;
         timeStamp.getCurrent();
         double diff = TimeStamp::diff(timeStamp,timeStampLast);
         if(diff>=1.0) {
@@ -87,6 +95,8 @@ void LongArrayGet::run()
             } else  {
                  out << " Elements/sec " << elementsPerSec;
             }
+            if(iterBetweenCreateChannelGet!=0) out << " numChannelGet " << numChannelGet;
+            if(iterBetweenCreateChannel!=0) out << " numChannelCreate " << numChannelCreate;
             cout << out.str() << endl;
             timeStampLast = timeStamp;
             nElements = 0;
@@ -98,9 +108,9 @@ void LongArrayGet::run()
             if(numChannelGet>=iterBetweenCreateChannelGet) createGet = true;
         }
         if(createGet) {
-             numChannelGet = 0;
              pvaGet->destroy();
              pvaGet = pvaChannel->createGet("value,timeStamp,alarm");
+             numChannelGet = 0;
         }
         ++numChannelCreate;
         if(iterBetweenCreateChannel!=0) {
@@ -112,24 +122,6 @@ void LongArrayGet::run()
             }
         }
     }
-}
-
-size_t LongArrayGet::checkResult(const PVStructurePtr &pvStructure, const BitSetPtr & bitSet)
-{
-    PVLongArrayPtr pvValue = pvStructure->getSubField<PVLongArray>("value");
-    if(!bitSet->get(pvValue->getFieldOffset())) {
-        return 0;
-    }
-    bitSet->clear();
-    shared_vector<const int64> data = pvValue->view();
-    if(data.size()>0) {
-        int64 first = data[0];
-        int64 last = data[data.size()-1];
-        if(first!=last) {
-           cout << "error first=" << first << " last=" << last << endl;
-        }
-    }
-    return data.size();
 }
 
 }}}

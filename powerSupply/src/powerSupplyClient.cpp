@@ -96,6 +96,7 @@ static void example(PvaClientPtr const &pvaClient)
     try {
         putPower->put(5.0);
         putVoltage->put(0.0);
+        cout << "NOTE!!! an exception will be thrown because voltage is 0\n";
         putGet->putGet();
     } catch (std::runtime_error e) {
         cout << "exception " << e.what() << endl;

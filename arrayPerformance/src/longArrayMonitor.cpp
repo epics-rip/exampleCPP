@@ -27,27 +27,20 @@ LongArrayMonitor::LongArrayMonitor(
    string  const &providerName,
     string  const & channelName,
     int queueSize)
-: pva(PvaClient::create()),
-  nElements(0),
-  nSinceLastReport(0),
-  threadName("longArrayMonitor")
+: 
+  providerName(providerName),
+  channelName(channelName),
+  queueSize(queueSize)
 {
-    string  request("record[queueSize=");
-    char buff[20];
-    sprintf(buff,"%d",queueSize);
-    request += buff;
-    request += "]field(value,timeStamp,alarm)";
-    monitor = pva->channel(channelName,providerName,2.0)->monitor(request);
-
-    thread = std::auto_ptr<epicsThread>(new epicsThread(
+     thread = std::auto_ptr<epicsThread>(new epicsThread(
         *this,
-        threadName.c_str(),
+        "longArrayMonitor",
         epicsThreadGetStackSize(epicsThreadStackSmall),
         epicsThreadPriorityLow));
      thread->start();
 }
 
-void LongArrayMonitor::destroy()
+void LongArrayMonitor::stop()
 {
     runStop.signal();
     runReturn.wait();
@@ -55,42 +48,48 @@ void LongArrayMonitor::destroy()
 
 void LongArrayMonitor::run()
 {
+    PvaClientPtr pva(PvaClient::create());
+    string  request("record[queueSize=");
+    char buff[20];
+    sprintf(buff,"%d",queueSize);
+    request += buff;
+    request += "]field(value,timeStamp,alarm)";
+    PvaClientMonitorPtr monitor = pva->channel(channelName,providerName,2.0)->monitor(request);
+    TimeStamp timeStamp;
+    TimeStamp timeStampLast;
+    timeStampLast.getCurrent();
+    long nElements = 0;
+    long nSinceLastReport = 0;
+    int64 first = 0;
+    int64 last = 0;
     while(true) {   
         if(runStop.tryWait()) {
              runReturn.signal();
              return;
         }    
-        nextMonitor();
-    }
-}
-
-
-
-void LongArrayMonitor::nextMonitor()
-{
-   if(!monitor->waitEvent(0.0)) {
-	cout << "waitEvent returned false. Why???" << endl;
-    	return;
-    }
-    PvaClientMonitorDataPtr pvaData = monitor->getData();
-	PVStructurePtr pvStructure = pvaData->getPVStructure();
-	pvTimeStamp.attach(pvStructure->getSubField<PVStructure>("timeStamp"));
-	pvTimeStamp.get(timeStamp);
-	PVLongArrayPtr pvValue = pvStructure->getSubField<PVLongArray>("value");
-
-    shared_vector<const int64> data = pvValue->view();
-    if(data.size()>0) {
-        nElements += data.size();
-        int64 first = data[0];
-        int64 last = data[data.size()-1];
-        if(first!=last) {
-            cout << "error first=" << first << " last=" << last << endl;
+        if(!monitor->waitEvent(0.0)) {
+	    cout << "waitEvent returned false. Why???" << endl;
+            continue;
         }
-        double diff = TimeStamp::diff(timeStamp,timeStampLast);
-        if(diff>=1.0) {
+        PvaClientMonitorDataPtr pvaData = monitor->getData();
+    	PVStructurePtr pvStructure = pvaData->getPVStructure();
+    	PVLongArrayPtr pvValue = pvStructure->getSubField<PVLongArray>("value");
+        size_t len = pvValue->getLength();
+        if(len>0) {
+            shared_vector<const int64> data = pvValue->view();
+            first = data[0];
+            last = data[len-1];
+            if(first!=last) cout << "error first=" << first << " last=" << last << endl;
+       } else {
+            cout << "len is 0" << endl;
+       }
+       nElements += len;
+       timeStamp.getCurrent();
+       double diff = TimeStamp::diff(timeStamp,timeStampLast);
+       if(diff>=1.0) {
             ostringstream out;
             out << " monitors/sec " << nSinceLastReport << " ";
-            out << "first " << first << " last " << last ;
+            if(len>0) out << "first " << first << " last " << last ;
             out << " changed " << *pvaData->getChangedBitSet();
             out << " overrun " << *pvaData->getOverrunBitSet();
             double elementsPerSec = nElements;
@@ -113,10 +112,8 @@ void LongArrayMonitor::nextMonitor()
             nElements = 0;
         }
         ++nSinceLastReport;
-    } else {
-        cout << "size = 0" << endl;
+        monitor->releaseEvent();
     }
-    monitor->releaseEvent();
 }
 
 }}}
