@@ -5,8 +5,8 @@ This is an example of creating a service that requires a somewhat complicated to
 
 ## Building
 
-If a proper RELEASE.local file exists one or two directory levels above **examplePowerSupply**
-then just type:
+If a proper RELEASE.local file exists two directory levels above **examplePowerSupply**,
+or in **../configure/RELEASE.local** then just type:
 
     make
 

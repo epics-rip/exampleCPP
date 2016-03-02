@@ -4,9 +4,8 @@ An example of a pvDatabase PVRecord which also supports RPC services.
 
 ## Building
 
-If a proper RELEASE.local file exists one or two directory levels above
-**pvDatabaseRPC**
-then just type:
+If a proper RELEASE.local file exists two directory levels above **pvDatabaseRPC**,
+or in **../configure/RELEASE.local** then just type:
 
     make
 

@@ -5,8 +5,8 @@ A channelRPC hello world server.
 
 ## Building
 
-If a proper RELEASE.local file exists one or two directory levels above **helloRPC**
-then just type:
+If a proper RELEASE.local file exists two directory levels above **helloRPC**,
+or in **../configure/RELEASE.local** then just type:
 
     make
 

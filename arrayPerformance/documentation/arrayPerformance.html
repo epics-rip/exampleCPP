@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/arrayPerformance</h1>
-<h2 class="nocount">Release 1.0 - 2016.02.24</h2>
+<h2 class="nocount">Release 1.0 - 2016.03.02</h2>
 
 
 <h2 class="nocount">Abstract</h2>
@@ -96,10 +96,10 @@ mrk&gt;
 <p><b>Note:</b> These may fail if run on a platform that does not have sufficient memory,</p>
 <p>To see an example just execute the following commands in four different terminal windows:</p>
 <pre>
-bin/linux/&lt;arch&gt;/arrayPerformanceMain
-bin/linux/&lt;arch&gt;/longArrayMonitorMain
-bin/linux/&lt;arch&gt;/longArrayGetMain
-bin/linux/&lt;arch&gt;/longArrayPutMain
+bin/$EPICS_HOST_ARCH/arrayPerformanceMain
+bin/$EPICS_HOST_ARCH/longArrayMonitorMain
+bin/$EPICS_HOST_ARCH/longArrayGetMain
+bin/$EPICS_HOST_ARCH/longArrayPutMain
 </pre>
 <p>Each program generates a report every second when it has something to report.
 Examples are:</p>
@@ -129,8 +129,8 @@ longArrayMonitorMain arrayPerformance 2 0
 mrk&gt; bin/$EPICS_HOST_ARCH/longArrayPutMain
 longArrayPutMain arrayPerformance 10 0 0 1
 ...
-put numChannelPut 0 time 1.00148 Elements/sec 79.8819
-put numChannelPut 1 time 1.00176 Elements/sec 79.8598
+put numChannelPut 0 Elements/sec 79.8819
+put numChannelPut 1  Elements/sec 79.8598
 ...
 </pre>
 <pre>
@@ -162,8 +162,6 @@ get kiloElements/sec 8726.34
      <dd>The queueSize for the element queue.
       A value less than 1 will become 1.
      </dd>
-  <dt>waitTime</dt>
-     <dd>The time that longArrayMonitor will sleep after poll returns a monitorElement.</dd>
 </dl>
 <p>
 arrayPerformance creates a PVRecord that has the structure:.
@@ -175,8 +173,9 @@ recordName
     alarm alarm
 </pre>
 Thus it holds an array of 64 bit integers.
-<p>The record has support that consists of a separate thread that runs
-until the record is destroyed executing the following algorithm:</p>
+<p>arrayPerformance creates a separate thread that runs
+until stop is called.
+arrayPerformance does the following:</p>
 <dl>
   <dt>report</dt>
     <dd>Once a second it produces a report.
@@ -215,10 +214,6 @@ of these conditions is not true.</p>
      <dd>The name for the arrayPerform record.</dd>
   <dt>queueSize</dt>
      <dd>The queueSize. Note that any size &lt;2 is made 2.</dd>
-  <dt>waitTime</dt>
-     <dd>The time to wait after a poll request returns a monitorElement.
-     This can be used to force an overrun of the client even if there is no
-     overrun on the server.</dd>
 </dl>
 <h2>longArrayGet</h2>
 <p>This is a pvAccess client that uses channelGet to access an arrayPerformance record.
@@ -261,56 +256,6 @@ Every second it produces a report.</p>
      <dd>The time to delay between gets.</dd>
 </dl>
 
-<h2>Some results</h2>
-<h3>array performance</h3>
-<p>The results were from my laptop in 2013
-It had a 2.2Ghz intel core i7 with 4Gbytes of memory.
-The operating system was linux fedora 16.</p>
-<p>When test are performed with large arrays it is a good idea to also
-run a system monitor facility and check memory and swap history.
-If a test configuration causes physical memory to be exhausted
-then performance becomes <b>very</b> poor.
-You do not want to do this.</p>
-<h3>arrayPerformance results</h3>
-<p>The simplest test to run arrayPerformance with the defaults:</p>
-<pre>
-mrk&gt; pwd
-/home/hg/exampleCPP/arrayPerformance
-mrk&gt; bin/$EPICS_HOST_ARCH/arrayPerformanceMain
-</pre>
-<p>This means that the array will hold 10 million elements.
-The delay will be a millisecond.
-There will be a single monitor and it will connect directly
-to the local channelProvider, i. e. it will not use any network
-connection.</p>
-<p>The report shows that arrayPerformance can perform about 50 iterations per second
-and is putting about 500million elements per second.
-Since each element is an int64 this means about 4gigaBytes per second.
-</p>
-<p>When no monitors are requested and a remote longArrayMonitorMain is run:</p>
-<pre>
-mr&gt; pwd
-/home/hg/exampleCPP/arrayPerformance
-mrk&gt; bin/$EPICS_HOST_ARCH/longArrayMonitorMain
-</pre>
-<p>The performance drops to about 25 iterations per second and 250 million elements per second.
-The next section has an example that demonstrates what happens.
-Note that if the array size is small enough to fit in the local cache then running longArrayMonitor
-has almost no effect of arrayPerforance.
-</p>
-<h3>memory leaks</h3>
-<p>Running longArrayMonitorMain, longArrayPutMain, and longArrayGetMain
-under valgrind shows no memory leaks.</p>
-<p>arrayPerformanceMain shows the following:</p>
-<pre>
-==9125== LEAK SUMMARY:
-==9125==    definitely lost: 0 bytes in 0 blocks
-==9125==    indirectly lost: 0 bytes in 0 blocks
-==9125==      possibly lost: 576 bytes in 2 blocks
-</pre>
-<p>The possibly leaked is either 1 or 2 blocks.
-It seems to be the same if clients are connected.
-</p>
 
 </div> <!-- class="contents" -->
 </body>

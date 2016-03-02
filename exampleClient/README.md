@@ -13,8 +13,8 @@ In order to run the examples, **database** must also be built and then the IOC d
 
 ## Building
 
-If a proper RELEASE.local file exists one or two directory levels above **exampleClient**
-then just type:
+If a proper RELEASE.local file exists two directory levels above **exampleClient**,
+or in **../configure/RELEASE.local** then just type:
 
     make
 

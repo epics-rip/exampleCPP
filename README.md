@@ -29,15 +29,25 @@ Just type:
 
 An example of a proper *RELEASE.local* is:
 
-    EPICS_BASE=/home/install/epics/base
     EPICS4_DIR=/home/epicsv4/master
-    PVCOMMON=${EPICS4_DIR}/pvCommonCPP
-    PVDATA=${EPICS4_DIR}/pvDataCPP
-    PVACCESS=${EPICS4_DIR}/pvAccessCPP
-    PVASRV=${EPICS4_DIR}/pvaSrv
-    NORMATIVETYPES=${EPICS4_DIR}/normativeTypesCPP
+    EXAMPLE=${EPICS4_DIR}/exampleCPP
     PVDATABASE=${EPICS4_DIR}/pvDatabaseCPP
     PVACLIENT=${EPICS4_DIR}/pvaClientCPP
+    PVASRV=${EPICS4_DIR}/pvaSrv
+    PVACCESS=${EPICS4_DIR}/pvAccessCPP
+    NORMATIVETYPES=${EPICS4_DIR}/normativeTypesCPP
+    PVDATA=${EPICS4_DIR}/pvDataCPP
+    PVCOMMON=${EPICS4_DIR}/pvCommonCPP
+    EPICS_BASE=/home/install/epics/base
+
+All examples can also be built by:
+
+    cp configure/ExampleRELEASE.local configure/RELEASE.local
+    edit file configure/RELEASE.local
+    make
+
+In **configure/RELEASE.local** it may only be necessary to change the definitions
+of **EPICS4_DIR** and **EPICS_BASE**.
 
 
 ## Building An Individual Example

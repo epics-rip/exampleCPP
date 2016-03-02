@@ -7,8 +7,8 @@ It can also create a standalone main that has a set of V4 PVRecords.
 
 ## Building
 
-If a proper RELEASE.local file exists one or two directory levels above **database**
-then just type:
+If a proper RELEASE.local file exists two directory levels above **database**,
+or in **../configure/RELEASE.local** then just type:
 
     make
 

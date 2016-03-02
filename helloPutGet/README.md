@@ -23,8 +23,8 @@ In addition the timeStamp is set to the time when process is called.</p>
 
 ## Building
 
-If a proper RELEASE.local file exists one or two directory levels above **helloPutGet**
-then just type:
+If a proper RELEASE.local file exists two directory levels above **helloPutGet**,
+or in **../configure/RELEASE.local** then just type:
 
     make
 

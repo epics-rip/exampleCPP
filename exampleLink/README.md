@@ -4,8 +4,8 @@ This example implements a PVRecord that accesses another PVRecord.
 
 ## Building
 
-If a proper RELEASE.local file exists one or two directory levels above **exampleLink**
-then just type:
+If a proper RELEASE.local file exists two directory levels above **exampleLink**,
+or in **../configure/RELEASE.local** then just type:
 
     make
 

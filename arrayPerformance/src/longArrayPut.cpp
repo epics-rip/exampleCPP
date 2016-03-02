@@ -77,6 +77,7 @@ void LongArrayPut::run()
         timeStamp.getCurrent();
         double diff = TimeStamp::diff(timeStamp,timeStampLast);
         if(diff>=1.0) {
+            timeStampLast = timeStamp;
             ostringstream out;
             out << "put " << numChannelPut ;
             double elementsPerSec = nElements;
@@ -96,7 +97,6 @@ void LongArrayPut::run()
             if(iterBetweenCreateChannelPut!=0) out << " numChannelPut " << numChannelPut;
             if(iterBetweenCreateChannel!=0) out << " numChannelCreate " << numChannelCreate;
             cout << out.str() << endl;
-            timeStampLast = timeStamp;
             nElements = 0;
         }
         if(delayTime>0.0) epicsThreadSleep(delayTime);
