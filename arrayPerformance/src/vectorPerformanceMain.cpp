@@ -105,7 +105,6 @@ void VectorPerformanceThread::run()
         {
             Lock lock(mutex);
             if(isDestroyed) {
-cout << " found isDestroyed " << threadNumber << endl;
                 runReturned = true;
                 return;
             }

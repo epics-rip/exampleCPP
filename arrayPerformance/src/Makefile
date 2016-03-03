@@ -10,31 +10,31 @@ INC+= pv/longArrayPut.h
 
 LIBRARY = arrayPerform
 LIBSRCS += arrayPerformance.cpp
-LIBSRCS += longArrayMonitor.cpp
 LIBSRCS += longArrayGet.cpp
+LIBSRCS += longArrayMonitor.cpp
 LIBSRCS += longArrayPut.cpp
 arrayPerform_LIBS += pvDatabase pvAccess pvData Com
 
 PROD_HOST += arrayPerformanceMain
 arrayPerformanceMain_SRCS += arrayPerformanceMain.cpp
 arrayPerformanceMain_LIBS += arrayPerform
-arrayPerformanceMain_LIBS += pvDatabase pvAccess pvData Com
-
-PROD_HOST += longArrayMonitorMain
-longArrayMonitorMain_SRCS += longArrayMonitorMain.cpp
-longArrayMonitorMain_LIBS += arrayPerform
-longArrayMonitorMain_LIBS += pvDatabase pvAccess  pvData Com
+arrayPerformanceMain_LIBS += pvDatabase pvaClient pvAccess pvData Com
 
 PROD_HOST += longArrayGetMain
 longArrayGetMain_SRCS += longArrayGetMain.cpp
 longArrayGetMain_LIBS += arrayPerform
-longArrayGetMain_LIBS += pvDatabase pvAccess pvData Com
+longArrayGetMain_LIBS += pvaClient pvAccess pvData Com
+
+PROD_HOST += longArrayMonitorMain
+longArrayMonitorMain_SRCS += longArrayMonitorMain.cpp
+longArrayMonitorMain_LIBS += arrayPerform
+longArrayMonitorMain_LIBS += pvaClient pvAccess  pvData Com
 
 
 PROD_HOST += longArrayPutMain
 longArrayPutMain_SRCS += longArrayPutMain.cpp
 longArrayPutMain_LIBS += arrayPerform
-longArrayPutMain_LIBS += pvDatabase pvAccess pvData Com
+longArrayPutMain_LIBS +=  pvaClient pvAccess pvData Com
 
 
 PROD_HOST += vectorPerformanceMain

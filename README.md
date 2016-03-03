@@ -29,15 +29,25 @@ Just type:
 
 An example of a proper *RELEASE.local* is:
 
-    EPICS_BASE=/home/install/epics/base
     EPICS4_DIR=/home/epicsv4/master
-    PVCOMMON=${EPICS4_DIR}/pvCommonCPP
-    PVDATA=${EPICS4_DIR}/pvDataCPP
-    PVACCESS=${EPICS4_DIR}/pvAccessCPP
-    PVASRV=${EPICS4_DIR}/pvaSrv
-    NORMATIVETYPES=${EPICS4_DIR}/normativeTypesCPP
+    EXAMPLE=${EPICS4_DIR}/exampleCPP
     PVDATABASE=${EPICS4_DIR}/pvDatabaseCPP
     PVACLIENT=${EPICS4_DIR}/pvaClientCPP
+    PVASRV=${EPICS4_DIR}/pvaSrv
+    PVACCESS=${EPICS4_DIR}/pvAccessCPP
+    NORMATIVETYPES=${EPICS4_DIR}/normativeTypesCPP
+    PVDATA=${EPICS4_DIR}/pvDataCPP
+    PVCOMMON=${EPICS4_DIR}/pvCommonCPP
+    EPICS_BASE=/home/install/epics/base
+
+All examples can also be built by:
+
+    cp configure/ExampleRELEASE.local configure/RELEASE.local
+    edit file configure/RELEASE.local
+    make
+
+In **configure/RELEASE.local** it may only be necessary to change the definitions
+of **EPICS4_DIR** and **EPICS_BASE**.
 
 
 ## Building An Individual Example
@@ -89,7 +99,7 @@ IOC database must be started as follows:
 
     mrk> pwd
     /home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
-    mrk> ../../bin/linux-x86_64/exampleDatabase st.cmd
+    mrk> ../../bin/$EPICS_HOST_ARCH/exampleDatabase st.cmd
 
 
 ### helloPutGet
@@ -129,14 +139,13 @@ The example also has an example pvaClient for accessing the PVRecord.
 
 ###  arrayPerformance
 
-This is an example that shows performance for an array of doubles.
+This is an example that shows performance for an array of longs.
 
-arrayPerformanceMain implements a PVRecord that is a double array.
+arrayPerformanceMain implements a PVRecord that is a long array.
 It has a process method with code that causes the array to be updated at
 selectable rates and sizes!
 
-It also has pvaClient examples that can get, put and monitor the double
-array record.
+It also has pvaClient examples that can get, put and monitor the long array record.
 
 
 ### test

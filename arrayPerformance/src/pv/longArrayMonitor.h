@@ -15,13 +15,9 @@
 #   undef epicsExportSharedSymbols
 #endif
 
-#include <pv/event.h>
-#include <pv/lock.h>
-#include <pv/standardPVField.h>
-#include <pv/timeStamp.h>
-#include <pv/pvTimeStamp.h>
-#include <pv/pvAccess.h>
-#include <pv/pvDatabase.h>
+#include <epicsThread.h>
+#include <pv/pvaClient.h>
+
 
 #ifdef longarraymonitorEpicsExportSharedSymbols
 #   define epicsExportSharedSymbols
@@ -36,47 +32,23 @@ namespace epics { namespace exampleCPP { namespace arrayPerformance {
 class LongArrayMonitor;
 typedef std::tr1::shared_ptr<LongArrayMonitor> LongArrayMonitorPtr;
 
-class LAMChannelRequester;
-typedef std::tr1::shared_ptr<LAMChannelRequester> LAMChannelRequesterPtr;
-
-class LAMMonitorRequester;
-typedef std::tr1::shared_ptr<LAMMonitorRequester> LAMMonitorRequesterPtr;
-
 class epicsShareClass  LongArrayMonitor :
-    public std::tr1::enable_shared_from_this<LongArrayMonitor>
+    public epicsThreadRunable
 {
 public:
-    POINTER_DEFINITIONS(LongArrayMonitor);
-    static LongArrayMonitorPtr create(
+    LongArrayMonitor(
         std::string const & providerName,
         std::string const & channelName,
-        int queueSize = 1,
-        double waitTime = 0.0);
-    ~LongArrayMonitor();
-    void start();
+        int queueSize = 2);
+    virtual void run();
     void stop();
-    void destroy();
 private:
-    static epics::pvData::Mutex printMutex;
-    bool init(
-        std::string const & providerName,
-        std::string const & channelName,
-        int queueSize,
-        double waitTime);
-    LongArrayMonitorPtr getPtrSelf()
-    {
-        return shared_from_this();
-    }
-    LongArrayMonitor();
-
-    LAMChannelRequesterPtr channelRequester;
-    LAMMonitorRequesterPtr monitorRequester;
-    epics::pvAccess::Channel::shared_pointer channel;
-    epics::pvData::Monitor::shared_pointer monitor;
-    epics::pvData::Event event;
-    epics::pvData::Status status;
-    friend class LAMChannelRequester;
-    friend class LAMMonitorRequester;
+    std::string providerName;
+    std::string channelName;
+    int queueSize;
+    std::auto_ptr<epicsThread> thread;
+    epics::pvData::Event runStop;
+    epics::pvData::Event runReturn;
 };
 
 

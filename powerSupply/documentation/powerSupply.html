@@ -27,7 +27,7 @@
 <div class="head">
 <h1>EPICS exampleCPP/powerSupply</h1>
 
-<h2 class="nocount">Release 1.0 - 2016.01.08</h2>
+<h2 class="nocount">Release 1.0 - 2016.02.24</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -78,13 +78,13 @@ The example can be run on linux as follows:</p>
 <pre>
 mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/powerSupply
-mrk&gt; bin/linux-x86_64/powerSupplyMain
+mrk&gt; bin/$EPICS_HOST_ARCH/powerSupplyMain
 </pre>
 <p>To start powerSupply as part of a V3IOC:</p>
 <pre>
 mrk&gt; pwd
 /home/hg/exampleCPP/powerSupply/iocBoot/powerSupply
-mrk&gt; ../../../bin/linux-x86_64/powerSupply st.cmd
+mrk&gt; ../../../bin/$EPICS_HOST_ARCH/powerSupply st.cmd
 </pre>
 
 <h2>Directory Layout</h2>
@@ -99,13 +99,12 @@ powerSupply
     src
        pv
            powerSupply.h
-       code
-           powerSupply.cpp
-           powerSupplyInclude.dbd
-           powerSupplyMain.cpp
-           powerSupplyRegister.cpp
-           powerSupplyRegister.dbd
-           powerSupplyClient.cpp
+       powerSupply.cpp
+       powerSupplyInclude.dbd
+       powerSupplyMain.cpp
+       powerSupplyRegister.cpp
+       powerSupplyRegister.dbd
+       powerSupplyClient.cpp
     ioc
        Db
           ...
@@ -380,18 +379,25 @@ then sets the timeStamp to the current time.
 int main(int argc,char *argv[])
 {
     PVDatabasePtr master = PVDatabase::getMaster();
+    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     PVRecordPtr pvRecord;
-    bool result = false;
     string recordName;
 
     recordName = "powerSupply";
     pvRecord = PowerSupply::create(recordName);
-    result = master-&gt;addRecord(pvRecord);
-    if(!result) cout&lt;&lt; "record " &lt;&lt; recordName &lt;&lt; " not added" &lt;&lt; endl;
+    master-&gt;addRecord(pvRecord);
 
-    ContextLocal::shared_pointer contextLocal = ContextLocal::create();
-    contextLocal-&gt;start();
+    ServerContext::shared_pointer ctx =
+        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
 
+    string str;
+    while(true) {
+        cout &lt;&lt; "Type exit to stop: \n";
+        getline(cin,str);
+        if(str.compare("exit")==0) break;
+
+    }
+    ctx-&gt;destroy();
     return 0;
 }
 </pre>

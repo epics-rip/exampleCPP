@@ -24,24 +24,26 @@ using namespace epics::exampleCPP::exampleRPC;
 int main(int argc,char *argv[])
 {
     PVDatabasePtr master = PVDatabase::getMaster();
+    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     PVRecordPtr pvRecord;
-    bool result = false;
     string recordName;
 
     recordName = "mydevice";
     pvRecord = ExampleRPC::create(recordName);
-    result = master->addRecord(pvRecord);
-    if(!result) cout<< "record " << recordName << " not added" << endl;
+    master->addRecord(pvRecord);
 
-    ContextLocal::shared_pointer contextLocal = ContextLocal::create();
-    contextLocal->start();
+    ServerContext::shared_pointer ctx =
+        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+    
+    string str;
+    while(true) {
+        cout << "Type exit to stop: \n";
+        getline(cin,str);
+        if(str.compare("exit")==0) break;
 
-    PVStringArrayPtr pvNames = master->getRecordNames();
-    shared_vector<const string> names = pvNames->view();
-    for(size_t i=0; i<names.size(); ++i) cout << names[i] << endl;
-
-    contextLocal->waitForExit();
-
+    }
+    ctx->destroy();
+epicsThreadSleep(3.0); // should not be necessary
     return 0;
 }
 

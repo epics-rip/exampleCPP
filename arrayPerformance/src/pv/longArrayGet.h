@@ -16,14 +16,8 @@
 #   undef epicsExportSharedSymbols
 #endif
 
-#include <pv/event.h>
-#include <pv/lock.h>
-#include <pv/standardPVField.h>
-#include <pv/timeStamp.h>
-#include <pv/pvTimeStamp.h>
-#include <pv/pvAccess.h>
-#include <pv/pvDatabase.h>
-
+#include <epicsThread.h>
+#include <pv/pvaClient.h>
 
 #ifdef longarraygetEpicsExportSharedSymbols
 #   define epicsExportSharedSymbols
@@ -38,41 +32,28 @@ class LongArrayGet;
 typedef std::tr1::shared_ptr<LongArrayGet> LongArrayGetPtr;
 
 
-class LongArrayChannelGet;
-typedef std::tr1::shared_ptr<LongArrayChannelGet> LongArrayChannelGetPtr;
-
 class epicsShareClass  LongArrayGet :
-    public std::tr1::enable_shared_from_this<LongArrayGet>
+    public epicsThreadRunable
 {
 public:
-    POINTER_DEFINITIONS(LongArrayGet);
-    static LongArrayGetPtr create(
-        std::string const & providerName,
-        std::string const & channelName,
-        int iterBetweenCreateChannel = 0,
-        int iterBetweenCreateChannelGet = 0,
-        double delayTime = 0.0);
-    ~LongArrayGet();
-    void destroy();
-private:
-    LongArrayGetPtr getPtrSelf()
-    {
-        return shared_from_this();
-    }
     LongArrayGet(
-        std::string const & providerName,
-        std::string const & channelName,
-        int iterBetweenCreateChannel = 0,
-        int iterBetweenCreateChannelGet = 0,
-        double delayTime = 0.0);
-    bool init();
-
-    std::string providerName;
-    std::string channelName;
+        std::string  providerName,
+        std::string  channelName,
+        int iterBetweenCreateChannel,
+        int iterBetweenCreateChannelGet,
+        double delayTime);
+    virtual ~LongArrayGet(){}
+    virtual void run();
+    void stop();
+private:
+    std::string  providerName;
+    std::string  channelName;
     int iterBetweenCreateChannel;
     int iterBetweenCreateChannelGet;
     double delayTime;
-    LongArrayChannelGetPtr longArrayChannelGet;
+    std::auto_ptr<epicsThread> thread;
+    epics::pvData::Event runStop;
+    epics::pvData::Event runReturn;
 };
 
 

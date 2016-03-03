@@ -47,7 +47,7 @@ int main(int argc,char *argv[])
 
     }
     ctx->destroy();
-    epicsThreadSleep(3.0);
-    channelProvider->destroy();
+epicsThreadSleep(3.0); // should not be necessary
+//    channelProvider->destroy();
     return 0;
 }

@@ -205,8 +205,6 @@ void ExampleRPC::put(double x, double y)
 void ExampleRPC::process()
 {
     PVRecord::process();
-//    timeStamp.getCurrent();
-//    pvTimeStamp.set(timeStamp);
 }
 
 

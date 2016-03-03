@@ -44,50 +44,49 @@ int main(int argc,char *argv[])
     int iterBetweenCreateChannelPut = 0;
     double delayTime = 1.0;
     if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "longArrayPutMain channelName arraySize ";
-        cout << "iterBetweenCreateChannel iterBetweenCreateChannelPut delayTime" << endl;
+        cout << "channelName arraySize iterBetweenCreateChannel iterBetweenCreateChannelPut delayTime" << endl;
         cout << "default" << endl;
-        cout << "longArrayPutMain " << channelName << " ";
+        cout << channelName << " ";
         cout << arraySize << " ";
         cout << iterBetweenCreateChannel  << " ";
         cout << iterBetweenCreateChannelPut  << " ";
         cout << delayTime  << endl;
         return 0;
     }
-    ClientFactory::start();
     if(argc>1) channelName = argv[1];
     if(argc>2) arraySize = strtoul(argv[2],0,0);
     if(argc>3) iterBetweenCreateChannel = strtol(argv[3],0,0);
     if(argc>4) iterBetweenCreateChannelPut = strtol(argv[4],0,0);
     if(argc>5) delayTime = atof(argv[5]);
-    cout << "longArrayPutMain " << channelName << " ";
+    cout << channelName << " ";
     cout << arraySize << " ";
     cout << iterBetweenCreateChannel  << " ";
     cout << iterBetweenCreateChannelPut  << " ";
     cout << delayTime << endl;
-    LongArrayPutPtr longArrayPut
-         = LongArrayPut::create(
+    try {
+        LongArrayPutPtr longArrayPut(
+            new LongArrayPut(
               "pvAccess",
               channelName,
               arraySize,
               iterBetweenCreateChannel,
               iterBetweenCreateChannelPut,
-              delayTime);
-    cout << "longArrayPut\n";
-    string str;
-    while(true) {
-        cout << "Type exit to stop: \n";
-        getline(cin,str);
-        if(str.compare("exit")==0) break;
-
+              delayTime));
+        cout << "longArrayPut\n";
+        string str;
+        while(true) {
+            cout << "Type exit to stop: \n";
+            getline(cin,str);
+            if(str.compare("exit")==0) {
+                 longArrayPut->stop();
+epicsThreadSleep(2.0); // should not be necessary
+                 exit(0);
+            }
+        }
+    } catch (std::runtime_error e) {
+        cout << "exception " << e.what() << endl;
+        exit(1);
     }
-    longArrayPut->destroy();
-    longArrayPut.reset();
-    double xxx = 1.0;
-    if(xxx<delayTime) xxx = delayTime;
-    epicsThreadSleep(xxx);
-    ClientFactory::stop();
-    epicsThreadSleep(1.0);
     return 0;
 }
 

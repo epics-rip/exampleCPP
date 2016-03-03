@@ -7,43 +7,55 @@ It can also create a standalone main that has a set of V4 PVRecords.
 
 ## Building
 
-If a proper RELEASE.local file exists one or two directory levels above **database**
-then just type:
+If a proper RELEASE.local file exists two directory levels above **database**,
+or in **../configure/RELEASE.local** then just type:
 
     make
 
 It can also be built by:
 
     cp configure/ExampleRELEASE.local configure/RELEASE.local
-    edit configure/RELEASE.local
+    edit file configure/RELEASE.local
     make
+
+In **configure/RELEASE.local** it may only be necessary to change the definitions
+of **EPICS4_DIR** and **EPICS_BASE**.
 
 
 ## To start the database as part of a V3 IOC
 
     mrk> pwd
     /home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
-    mrk> ../../bin/linux-x86_64/exampleDatabase st.cmd 
+    mrk> ../../bin/$EPICS_HOST_ARCH/exampleDatabase st.cmd 
 
 ## To start the database as a standalone main
 
     mrk> pwd
     /home/epicsv4/master/exampleCPP/database
-    mrk> bin/linux-x86_64/exampleDatabaseMain
+    mrk> bin/$EPICS_HOST_ARCH/exampleDatabaseMain
+
+## database/src/pv
+
+This directory has the following files:
+
+     exampleHello.h
+     exampleHelloRPC.h
+     exampleDatabase.h
+  
 
 ## database/src
 
 This directory has the following files:
 
-### exampleHello.h and exampleHello.cpp
+### exampleHello.cpp
    
 Code for an example that is accessed via channelPutGet.
 
-### exampleHelloRPC.h and exampleHelloRPC.cpp
+### exampleHelloRPC.cpp
    
 Code for an example that is accesed via channelRPC.
 
-### exampleDatabase.h and exampleDatabase.cpp 
+### exampleDatabase.cpp 
   
 Code that creates many PVRecords.    
 Most are soft records but also exampleHello and exampleHelloRPC.

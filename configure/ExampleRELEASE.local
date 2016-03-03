@@ -1,4 +1,5 @@
 EPICS4_DIR=/home/epicsv4/master
+EXAMPLE=${EPICS4_DIR}/exampleCPP
 PVDATABASE=${EPICS4_DIR}/pvDatabaseCPP
 PVACLIENT=${EPICS4_DIR}/pvaClientCPP
 PVASRV=${EPICS4_DIR}/pvaSrv

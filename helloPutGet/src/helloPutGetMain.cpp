@@ -27,16 +27,14 @@ int main(int argc,char *argv[])
     PVDatabasePtr master = PVDatabase::getMaster();
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     PVRecordPtr pvRecord;
-    bool result = false;
     string recordName;
 
     recordName = "helloPutGet";
     pvRecord = HelloPutGet::create(recordName);
-    result = master->addRecord(pvRecord);
-    if(!result) cout<< "record " << recordName << " not added" << endl;
+    master->addRecord(pvRecord);
+
     ServerContext::shared_pointer ctx =
         startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-    master.reset();
     string str;
     while(true) {
         cout << "Type exit to stop: \n";
@@ -45,8 +43,7 @@ int main(int argc,char *argv[])
 
     }
     ctx->destroy();
-    channelProvider->destroy();
-    epicsThreadSleep(3.0);
+epicsThreadSleep(3.0);  // should not be necessary
     return 0;
 }
 
