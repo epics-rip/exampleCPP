@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/exampleLink</h1>
-<h2 class="nocount">Release 1.0 - 2016.02.24</h2>
+<h2 class="nocount">Release 1.0 - 2016.03.10</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -161,9 +161,9 @@ exampleLink
        ...
     src
        pv
-          exampleLink.h
+          exampleLinkRecord.h
        code
-          exampleLink.cpp
+          exampleLinkRecord.cpp
           exampleLinkInclude.dbd
           exampleLinkRegister.cpp
           exampleLinkClient.cpp
@@ -181,22 +181,22 @@ exampleLink
 </pre>
 
 <h2>exampleLink/src/pv</h2>
-<p>exampleLink.h contains the following:</p>
+<p>exampleLinkRecord.h contains the following:</p>
 <pre>
 ...
-class ExampleLink :
+class ExampleLinkRecord :
     public PVRecord,
     public epics::pvAccess::ChannelRequester,
     public epics::pvAccess::MonitorRequester
 {
 public:
-    POINTER_DEFINITIONS(ExampleLink);
-    static ExampleLinkPtr create(
+    POINTER_DEFINITIONS(ExampleLinkRecord);
+    static ExampleLinkRecordPtr create(
         std::string const &amp; recordName,
         std::string const &amp; providerName,
         std::string const &amp; channelName
         );
-    virtual ~ExampleLink() {}
+    virtual ~ExampleLinkRecord() {}
     virtual void destroy();
     virtual bool init();
     virtual void process();
@@ -220,7 +220,7 @@ private:
 ...
 </pre>
 <h2>exampleLink/src</h2>
-<h3>exampleLink.cpp</h3>
+<h3>ExampleLinkRecord.cpp</h3>
 <p>All the non-static methods are either PVRecord or PVAccess methods
 and will not be discussed further.
 The create method is called to create a new PVRecord instance with code that will issue
@@ -230,26 +230,26 @@ to process in order to test the example.</p>
 <p>All of the initialization is done by a combination of the create and init methods so
 lets look at them:</p>
 <pre>
-ExampleLinkPtr ExampleLink::create(
+ExampleLinkRecordPtr ExampleLinkRecord::create(
     String const &amp; recordName,
     String const &amp; providerName,
     String const &amp; channelName)
 {
     PVStructurePtr pvStructure = getStandardPVField()-&gt;scalarArray(
         pvDouble,"alarm.timeStamp");
-    ExampleLinkPtr pvRecord(
-        new ExampleLink(
+    ExampleLinkRecordPtr pvRecord(
+        new ExampleLinkRecord(
            recordName,providerName,channelName,pvStructure));
     if(!pvRecord-&gt;init()) pvRecord.reset();
     return pvRecord;
 }
 </pre>
-<p>This first creates a new ExampleLink instance,
-and then calls the init method and the returns a ExampleLinkPtr.
+<p>This first creates a new ExampleLinkRecord instance,
+and then calls the init method and the returns a ExampleLinkRecordPtr.
 Note that if init returns false it returns a pointer to NULL.</p>
 <p>The init method is:</p>
 <pre>
-bool ExampleLink::init()
+bool ExampleLinkRecord::init()
 {
     initPVRecord();
 
@@ -315,8 +315,8 @@ int main(int argc,char *argv[])
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     if(provider=="pva") ClientFactory::start();
 
-    ExampleLinkPtr pvRecord(
-        ExampleLink::create(
+    ExampleLinkRecordPtr pvRecord(
+        ExampleLinkRecord::create(
            "exampleLink",provider,"doubleArray")); 
     master-&gt;addRecord(pvRecord);
 
@@ -361,8 +361,8 @@ int main(int argc,char *argv[])
 starts clientFactory. Then pvAccess server is started.
 Note that all this must be done before the next set of code:</p>
 <pre>
-    ExampleLinkPtr pvRecord(
-        ExampleLink::create(
+    ExampleLinkRecordPtr pvRecord(
+        ExampleLinkRecord::create(
            "exampleLink",provider,"doubleArray")); 
     master-&gt;addRecord(pvRecord);
 </pre>
@@ -407,7 +407,7 @@ static void exampleLinkCallFunc(const iocshArgBuf *args)
     recordName = args[0].sval;
     char *providerName = args[1].sval;
     char *channelName = args[2].sval;
-    ExampleLinkPtr record = ExampleLink::create(recordName,providerName,channelName);
+    ExampleLinkRecordPtr record = ExampleLinkRecord::create(recordName,providerName,channelName);
     if(record) 
         result = master-&gt;addRecord(record);
     if(!result) cout &lt;&lt; "recordname" &lt;&lt; " not added" &lt;&lt; endl;

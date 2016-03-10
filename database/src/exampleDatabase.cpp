@@ -30,7 +30,7 @@
 
 #define epicsExportSharedSymbols
 #include <pv/exampleDatabase.h>
-#include <pv/exampleHello.h>
+#include <pv/exampleHelloRecord.h>
 #include <pv/exampleHelloRPC.h>
 
 using namespace std;
@@ -217,7 +217,7 @@ void ExampleDatabase::create()
     createVariantUnionArrayRecord(master,"PVRvariantUnionArray");
     createDumbPowerSupplyRecord(master,"PVRdumbPowerSupply");
     recordName = "PVRhelloPutGet";
-    result = master->addRecord(ExampleHello::create(recordName));
+    result = master->addRecord(ExampleHelloRecord::create(recordName));
     if(!result) cout<< "record " << recordName << " not added" << endl;
     RPCServer::shared_pointer server(new RPCServer());
     server->registerService("helloRPC",ExampleHelloRPC::create());

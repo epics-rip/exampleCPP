@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/helloPutGet</h1>
-<h2 class="nocount">Release 1.0 - 2016.02.24</h2>
+<h2 class="nocount">Release 1.0 - 2016.03.10</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -94,8 +94,8 @@ helloPutGet
        ...
     src
        pv
-          helloPutGet.h
-       helloPutGet.cpp
+          helloPutGetRecord.h
+       helloPutGetRecord.cpp
        helloPutGetInclude.dbd
        helloPutGetMain.cpp
        helloPutGetRegister.cpp
@@ -120,9 +120,9 @@ where
      to create a new server,
     This is the file that must be copied to RELEASE.local
      and edited.</dd>
-   <dt>helloPutGet.h</dt>
+   <dt>helloPutGetRecord.h</dt>
      <dd>The header file for helloPutGet.</dd>
-   <dt>helloPutGet.cpp</dt>
+   <dt>helloPutGetRecord.cpp</dt>
      <dd>The helloPutGet implementation.</dd>
    <dt>helloPutGetMain.cpp</dt>
      <dd>A main program that runs the example so that it can be accessed
@@ -166,42 +166,40 @@ helloPutGet
        ...
     src
        pv
-          helloPutGet.h
+          helloPutGetRecord.h
        code
-          helloPutGet.cpp
+          helloPutGetRecord.cpp
           helloPutGetMain.cpp
 </pre>
 <p>Thus if only a main program is required the directory layout is simple.</p>
 <p>Also many sites will want to build the src directory in an area
 separate from where the iocs are build.</p>
-<h2>helloPutGet.h</h2>
+<h2>helloPutGetRecord.h</h2>
 <p>The example resides in src
-The implementation is in helloPutGet.cpp.
+The implementation is in helloPutGetRecord.cpp.
 </p>
 <p>The description consists of</p>
 <pre>
-class HelloPutGet;
-typedef std::tr1::shared_ptr&lt;HelloPutGet&gt; HelloPutGetPtr;
+class HelloPutGetRecord;
+typedef std::tr1::shared_ptr&lt;HelloPutGetRecord&gt; HelloPutGetRecordPtr;
 
-class HelloPutGet :
+class HelloPutGetRecord :
     public PVRecord
 {
 public:
-    POINTER_DEFINITIONS(HelloPutGet);
-    static HelloPutGetPtr create(
+    POINTER_DEFINITIONS(HelloPutGetRecord);
+    static HelloPutGetRecordPtr create(
         std::string const &amp; recordName);
-    virtual ~HelloPutGet();
+    virtual ~HelloPutGetRecord();
     virtual void destroy();
     virtual bool init();
     virtual void process();
 private:
-    HelloPutGet(std::string const &amp; recordName,
+    HelloPutGetRecord(std::string const &amp; recordName,
         epics::pvData::PVStructurePtr const &amp; pvStructure);
 
     epics::pvData::PVStringPtr pvArgumentValue;
     epics::pvData::PVStringPtr pvResultValue;
-    epics::pvData::PVTimeStamp pvTimeStamp;
-    epics::pvData::TimeStamp timeStamp;
 };
 </pre>
 <p>where</p>
@@ -210,7 +208,7 @@ private:
     <dd>This is example specific but each support could provide
      a similar static method.
     </dd>
-  <dt>~HelloPutGet</dt>
+  <dt>~HelloPutGetRecord</dt>
     <dd>The destructor must be declared virtual.</dd>
   <dt>destroy</dt>
      <dd>Called when the record is being destroyed.
@@ -298,7 +296,6 @@ bool HelloPutGet::init()
     if(pvArgumentValue.get()==NULL) return false;
     pvResultValue = getPVStructure()-&gt;getStringField("result.value");
     if(pvResultValue.get()==NULL) return false;
-    pvTimeStamp.attach(getPVStructure()-&gt;getSubField("result.timeStamp"));
     return true;
 }
 </pre>
@@ -307,8 +304,7 @@ bool HelloPutGet::init()
 void HelloPutGet::process()
 {
     pvResultValue-&gt;put(String("Hello ") + pvArgumentValue-&gt;get());
-    timeStamp.getCurrent();
-    pvTimeStamp.set(timeStamp);
+    PVRecord::process();
 }
 </pre>
 It gives a value to result.value and
@@ -329,7 +325,7 @@ int main(int argc,char *argv[])
     string recordName;
 
     recordName = "helloPutGet";
-    pvRecord = HelloPutGet::create(recordName);
+    pvRecord = HelloPutGetRecord::create(recordName);
     master-&gt;addRecord(pvRecord);
 
     ServerContext::shared_pointer ctx =

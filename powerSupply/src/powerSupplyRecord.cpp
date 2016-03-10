@@ -124,7 +124,4 @@ void PowerSupplyRecord::process()
     PVRecord::process();
 }
 
-
-
-
 }}}

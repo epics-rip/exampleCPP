@@ -27,7 +27,7 @@
 <div class="head">
 <h1>EPICS exampleCPP/powerSupply</h1>
 
-<h2 class="nocount">Release 1.0 - 2016.02.24</h2>
+<h2 class="nocount">Release 1.0 - 2016.03.10</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -98,8 +98,8 @@ powerSupply
        ...
     src
        pv
-           powerSupply.h
-       powerSupply.cpp
+           powerSupplyRecord.h
+       powerSupplyRecord.cpp
        powerSupplyInclude.dbd
        powerSupplyMain.cpp
        powerSupplyRegister.cpp
@@ -124,10 +124,10 @@ where
      to create a new server,
     This is the file that must be copied to RELEASE.local
      and edited.</dd>
-   <dt>powerSupply.h</dt>
-     <dd>The header file for powerSupply.</dd>
-   <dt>powerSupply.cpp</dt>
-     <dd>The powerSupply implementation.</dd>
+   <dt>powerSupplyRecord.h</dt>
+     <dd>The header file for powerSupplyRecord.</dd>
+   <dt>powerSupplyRecord.cpp</dt>
+     <dd>The powerSupplyRecord implementation.</dd>
    <dt>powerSupplyMain.cpp</dt>
      <dd>A main program that runs the example so that it can be accessed
        by a pvAccess client.
@@ -170,9 +170,9 @@ powerSupply
        ...
     src
        pv
-           powerSupply.h
+           powerSupplyRecord.h
        code
-           powerSupply.cpp
+           powerSupplyRecord.cpp
            powerSupplyMain.cpp
 </pre>
 <p>Thus if only a main program is required the directory layout is simple.</p>
@@ -184,35 +184,27 @@ The implementation is in powerSupply.cpp.
 </p>
 <p>The description consists of</p>
 <pre>
-class PowerSupply;
-typedef std::tr1::shared_ptr&lt;PowerSupply&gt; PowerSupplyPtr;
+class PowerSupplyRecord;
+typedef std::tr1::shared_ptr&lt;PowerSupplyRecord&gt; PowerSupplyRecordPtr;
 
-class PowerSupply :
+class PowerSupplyRecord :
     public PVRecord
 {
 public:
-    POINTER_DEFINITIONS(PowerSupply);
-    static PowerSupplyPtr create(
+    POINTER_DEFINITIONS(PowerSupplyRecord);
+    static PowerSupplyRecordPtr create(
         std::string const &amp; recordName);
-    virtual ~PowerSupply();
+    virtual ~PowerSupplyRecord();
     virtual void destroy();
     virtual bool init();
     virtual void process();
 private:
-    PowerSupply(std::string const &amp; recordName,
+    PowerSupplyRecord(std::string const &amp; recordName,
         epics::pvData::PVStructurePtr const &amp; pvStructure);
-
-    void put(double power,double voltage);
-    double getPower();
-    double getVoltage();
-    double getCurrent();
     epics::pvData::PVDoublePtr pvCurrent;
     epics::pvData::PVDoublePtr pvPower;
     epics::pvData::PVDoublePtr pvVoltage;
     epics::pvData::PVAlarm pvAlarm;
-    epics::pvData::PVTimeStamp pvTimeStamp;
-    epics::pvData::Alarm alarm;
-    epics::pvData::TimeStamp timeStamp;
 };
 </pre>
 <p>where</p>
@@ -221,7 +213,7 @@ private:
     <dd>This is example specific but each support could provide
      a similar static method.
     </dd>
-  <dt>~PowerSupply</dt>
+  <dt>~PowerSupplyRecord</dt>
     <dd>The destructor must be declared virtual.</dd>
   <dt>destroy</dt>
      <dd>Called when the record is being destroyed.
@@ -235,13 +227,13 @@ private:
     <dd>
      This again is a virtual method of PVRecord.
     </dd>
-  <dt>PowerSupply</dt>
+  <dt>PowerSupplyRecord</dt>
     <dd>For the example this is private.</dd>
   
 </dl>
 <p>The implementation of create method is:</p>
 <pre>
-PowerSupplyPtr PowerSupply::create(
+PowerSupplyRecordPtr PowerSupplyRecord::create(
     std::string const &amp; recordName)
 {
     StandardFieldPtr standardField = getStandardField();
@@ -252,21 +244,18 @@ PowerSupplyPtr PowerSupply::create(
             add("timeStamp",standardField-&gt;timeStamp()) -&gt;
             addNestedStructure("power") -&gt;
                add("value",pvDouble) -&gt;
-               add("alarm",standardField-&gt;alarm()) -&gt;
                endNested()-&gt;
             addNestedStructure("voltage") -&gt;
                add("value",pvDouble) -&gt;
-               add("alarm",standardField-&gt;alarm()) -&gt;
                endNested()-&gt;
             addNestedStructure("current") -&gt;
                add("value",pvDouble) -&gt;
-               add("alarm",standardField-&gt;alarm()) -&gt;
                endNested()-&gt;
         createStructure();
     PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(topStructure);
 
-    PowerSupplyPtr pvRecord(
-        new PowerSupply(recordName,pvStructure));
+    PowerSupplyRecordPtr pvRecord(
+        new PowerSupplyRecord(recordName,pvStructure));
     if(!pvRecord-&gt;init()) pvRecord.reset();
     return pvRecord;
 }
@@ -274,13 +263,13 @@ PowerSupplyPtr PowerSupply::create(
 This:
 <ul>
    <li>Creates the top level structure.</li>
-   <li>Creates a PowerSupplyPtr via the constructor.</li>
+   <li>Creates a PowerSupplyRecordPtr via the constructor.</li>
    <li>Calls init and if it fails resets the shared pointer.</li>
    <li>Returns the shared pointer to the newly created record.</li>
 </ul>
 <p>The private constructor method is:</p>
 <pre>
-PowerSupply::PowerSupply(
+PowerSupplyRecord::PowerSupplyRecord(
     std::string const &amp; recordName,
     epics::pvData::PVStructurePtr const &amp; pvStructure)
 : PVRecord(recordName,pvStructure)
@@ -290,11 +279,11 @@ PowerSupply::PowerSupply(
 The example is very simple. Note that it calls the base class constructor.
 <p>The destructor and destroy methods are:</p>
 <pre>
-PowerSupply::~PowerSupply()
+PowerSupplyRecord::~PowerSupplyRecord()
 {
 }
 
-void PowerSupply::destroy()
+void PowerSupplyRecord::destroy()
 {
     PVRecord::destroy();
 }
@@ -305,7 +294,7 @@ A more complicated example can clean up any resources it used but must call the 
 class destroy method.
 <p>The implementation of init is:</p>
 <pre>
-bool PowerSupply::init()
+bool PowerSupplyRecord::init()
 {
     initPVRecord();
     PVStructurePtr pvStructure = getPVStructure();
@@ -346,32 +335,35 @@ bool PowerSupply::init()
         cerr &lt;&lt; "no power\n";
         return false;
     }
+    alarm.setMessage("bad voltage");
+    alarm.setSeverity(majorAlarm);
+    pvAlarm.set(alarm);
     return true;
 }
 </pre>;
 <p>The implementation of process is:</p>
 <pre>
-void PowerSupply::process()
+void PowerSupplyRecord::process()
 {
-    timeStamp.getCurrent();
-    pvTimeStamp.set(timeStamp);
     double voltage = pvVoltage-&gt;get();
     double power = pvPower-&gt;get();
     if(voltage&lt;1e-3 && voltage&gt;-1e-3) {
         alarm.setMessage("bad voltage");
         alarm.setSeverity(majorAlarm);
         pvAlarm.set(alarm);
-        return;
+        throw std::runtime_error("bad voltage exception");
     }
     double current = power/voltage;
     pvCurrent-&gt;put(current);
-    alarm.setMessage("");
-    alarm.setSeverity(noAlarm);
-    pvAlarm.set(alarm);
+    pvAlarm.get(alarm);
+    if(alarm.getSeverity()!=noAlarm) {
+        alarm.setMessage("");
+        alarm.setSeverity(noAlarm);
+        pvAlarm.set(alarm);
+    }
+    PVRecord::process();
 }
 </pre>
-It gives a value to result.value and
-then sets the timeStamp to the current time.
 <h2>src/powerSupplyMain.cpp</h2>
 
 <p>The main program is:</p>
@@ -384,7 +376,7 @@ int main(int argc,char *argv[])
     string recordName;
 
     recordName = "powerSupply";
-    pvRecord = PowerSupply::create(recordName);
+    pvRecord = PowerSupplyRecord::create(recordName);
     master-&gt;addRecord(pvRecord);
 
     ServerContext::shared_pointer ctx =

@@ -11,7 +11,7 @@
 #include <pv/standardField.h>
 
 #define epicsExportSharedSymbols
-#include <pv/exampleHello.h>
+#include <pv/exampleHelloRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
@@ -21,7 +21,7 @@ using std::string;
 namespace epics { namespace exampleCPP { namespace database {
 
 
-ExampleHelloPtr ExampleHello::create(
+ExampleHelloRecordPtr ExampleHelloRecord::create(
     string const & recordName)
 {
     StandardFieldPtr standardField = getStandardField();
@@ -38,29 +38,29 @@ ExampleHelloPtr ExampleHello::create(
         createStructure();
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
 
-    ExampleHelloPtr pvRecord(
-        new ExampleHello(recordName,pvStructure));
+    ExampleHelloRecordPtr pvRecord(
+        new ExampleHelloRecord(recordName,pvStructure));
     if(!pvRecord->init()) pvRecord.reset();
     return pvRecord;
 }
 
-ExampleHello::ExampleHello(
+ExampleHelloRecord::ExampleHelloRecord(
     string const & recordName,
     PVStructurePtr const & pvStructure)
 : PVRecord(recordName,pvStructure)
 {
 }
 
-ExampleHello::~ExampleHello()
+ExampleHelloRecord::~ExampleHelloRecord()
 {
 }
 
-void ExampleHello::destroy()
+void ExampleHelloRecord::destroy()
 {
     PVRecord::destroy();
 }
 
-bool ExampleHello::init()
+bool ExampleHelloRecord::init()
 {
     
     initPVRecord();
@@ -73,7 +73,7 @@ bool ExampleHello::init()
     return true;
 }
 
-void ExampleHello::process()
+void ExampleHelloRecord::process()
 {
     pvResultValue->put(string("Hello ") + pvArgumentValue->get());
     timeStamp.getCurrent();
