@@ -35,7 +35,7 @@
 #include <pv/pvDatabase.h>
 
 #include <epicsExport.h>
-#include <pv/exampleLink.h>
+#include <pv/exampleLinkRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::nt;
@@ -77,7 +77,7 @@ cout << "exampleLinkCreateRecord recordName " << recordName << " providerName " 
     result = master->addRecord(PVRecord::create(channelName,pvStructure));
     if(!result) cout<< "record " << recordName << " not added" << endl;
 
-    ExampleLinkPtr record = ExampleLink::create(recordName,providerName,channelName);
+    ExampleLinkRecordPtr record = ExampleLinkRecord::create(recordName,providerName,channelName);
     if(record) 
         result = master->addRecord(record);
     if(!result) cout << "recordname" << " not added" << endl;

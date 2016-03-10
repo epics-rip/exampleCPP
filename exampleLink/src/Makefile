@@ -4,12 +4,12 @@ include $(TOP)/configure/CONFIG
 
 exampleLinkSRC = $(TOP)/src
 
-INC += pv/exampleLink.h
+INC += pv/exampleLinkRecord.h
 
 DBD += exampleLinkRegister.dbd
 
 LIBRARY = exampleLink
-LIBSRCS += exampleLink.cpp
+LIBSRCS += exampleLinkRecord.cpp
 LIBSRCS += exampleLinkRegister.cpp
 exampleLink_LIBS += pvDatabase pvAccess nt pvData ca Com
 

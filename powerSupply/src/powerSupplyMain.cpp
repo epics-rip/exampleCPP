@@ -12,7 +12,7 @@
 #include <string>
 #include <iostream>
 
-#include <pv/powerSupply.h>
+#include <pv/powerSupplyRecord.h>
 #include <pv/traceRecord.h>
 #include <pv/channelProviderLocal.h>
 #include <pv/serverContext.h>
@@ -32,7 +32,7 @@ int main(int argc,char *argv[])
     string recordName;
 
     recordName = "powerSupply";
-    pvRecord = PowerSupply::create(recordName);
+    pvRecord = PowerSupplyRecord::create(recordName);
     master->addRecord(pvRecord);
 
     ServerContext::shared_pointer ctx =

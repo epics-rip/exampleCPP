@@ -33,7 +33,7 @@
 #include <pv/traceRecord.h>
 
 #include <epicsExport.h>
-#include <pv/helloPutGet.h>
+#include <pv/helloPutGetRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
@@ -52,7 +52,7 @@ static void helloPutGetCallFunc(const iocshArgBuf *args)
 {
     PVDatabasePtr master = PVDatabase::getMaster();
     char *recordName = args[0].sval;
-    HelloPutGetPtr record = HelloPutGet::create(recordName);
+    HelloPutGetRecordPtr record = HelloPutGetRecord::create(recordName);
     bool result = master->addRecord(record);
     if(!result) cout << "recordname" << " not added" << endl;
 }

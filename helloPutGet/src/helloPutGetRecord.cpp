@@ -10,7 +10,7 @@
 #include <pv/standardField.h>
 
 #define epicsExportSharedSymbols
-#include <pv/helloPutGet.h>
+#include <pv/helloPutGetRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
@@ -20,7 +20,7 @@ using std::string;
 namespace epics { namespace exampleCPP { namespace helloPutGet { 
 
 
-HelloPutGetPtr HelloPutGet::create(
+HelloPutGetRecordPtr HelloPutGetRecord::create(
     string const & recordName)
 {
     StandardFieldPtr standardField = getStandardField();
@@ -37,46 +37,43 @@ HelloPutGetPtr HelloPutGet::create(
         createStructure();
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
 
-    HelloPutGetPtr pvRecord(
-        new HelloPutGet(recordName,pvStructure));
+    HelloPutGetRecordPtr pvRecord(
+        new HelloPutGetRecord(recordName,pvStructure));
     if(!pvRecord->init()) pvRecord.reset();
     return pvRecord;
 }
 
-HelloPutGet::HelloPutGet(
+HelloPutGetRecord::HelloPutGetRecord(
     string const & recordName,
     PVStructurePtr const & pvStructure)
 : PVRecord(recordName,pvStructure)
 {
 }
 
-HelloPutGet::~HelloPutGet()
+HelloPutGetRecord::~HelloPutGetRecord()
 {
 }
 
-void HelloPutGet::destroy()
+void HelloPutGetRecord::destroy()
 {
     PVRecord::destroy();
 }
 
-bool HelloPutGet::init()
+bool HelloPutGetRecord::init()
 {
     
     initPVRecord();
-    PVFieldPtr pvField;
     pvArgumentValue = getPVStructure()->getSubField<PVString>("argument.value");
     if(pvArgumentValue.get()==NULL) return false;
     pvResultValue = getPVStructure()->getSubField<PVString>("result.value");
     if(pvResultValue.get()==NULL) return false;
-    pvTimeStamp.attach(getPVStructure()->getSubField("result.timeStamp"));
     return true;
 }
 
-void HelloPutGet::process()
+void HelloPutGetRecord::process()
 {
-    pvResultValue->put(string("Hello ") + pvArgumentValue->get());
-    timeStamp.getCurrent();
-    pvTimeStamp.set(timeStamp);
+    pvResultValue->put("Hello " + pvArgumentValue->get());
+    PVRecord::process();
 }
 
 }}}

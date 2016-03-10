@@ -22,7 +22,7 @@
 #include <pv/clientFactory.h>
 #include <pv/ntscalarArray.h>
 
-#include <pv/exampleLink.h>
+#include <pv/exampleLinkRecord.h>
 
 using namespace std;
 using std::tr1::static_pointer_cast;
@@ -35,6 +35,12 @@ using namespace epics::exampleCPP::exampleLink;
 int main(int argc,char *argv[])
 {
     string provider("pva");
+    if(argc==2 && string(argv[1])==string("-help")) {
+        cout << "provider" << endl;
+        cout << "default" << endl;
+        cout << provider;
+        return 0;
+    }
     if(argc>1) provider = argv[1];
     PVDatabasePtr master = PVDatabase::getMaster();
     NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
@@ -43,16 +49,16 @@ int main(int argc,char *argv[])
         addAlarm()->
         addTimeStamp()->
         createPVStructure();
-    master->addRecord(PVRecord::create("doubleArray",pvStructure));
+    string recordName("doubleArray");
+    master->addRecord(PVRecord::create(recordName,pvStructure));
+    ExampleLinkRecordPtr pvRecord(
+        ExampleLinkRecord::create(
+           "exampleLink",provider,recordName));
+    master->addRecord(pvRecord);
 
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     if(provider=="pva") ClientFactory::start();
-
-    ExampleLinkPtr pvRecord(
-        ExampleLink::create(
-           "exampleLink",provider,"doubleArray")); 
-    master->addRecord(pvRecord);
-
+    
     ServerContext::shared_pointer ctx =
         startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
     cout << "exampleLink\n";

@@ -32,7 +32,7 @@
 #include <pv/pvDatabase.h>
 
 #include <epicsExport.h>
-#include <pv/powerSupply.h>
+#include <pv/powerSupplyRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
@@ -53,7 +53,7 @@ static void powerSupplyCallFunc(const iocshArgBuf *args)
     if(!recordName) {
         throw std::runtime_error("powerSupplyCreateRecord invalid number of arguments");
     }
-    PowerSupplyPtr record = PowerSupply::create(recordName);
+    PowerSupplyRecordPtr record = PowerSupplyRecord::create(recordName);
     bool result = PVDatabase::getMaster()->addRecord(record);
     if(!result) cout << "recordname" << " not added" << endl;
 }
