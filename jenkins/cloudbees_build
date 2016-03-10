@@ -68,7 +68,7 @@ export EPICS_HOST_ARCH=$(${EPICS_BASE}/startup/EpicsHostArch)
 export LD_LIBRARY_PATH=${EPICS_BASE}/lib/${EPICS_HOST_ARCH}
 export PATH=${STUFF}/bin:${PATH}
 
-cat > RELEASE.local << EOF
+cat > configure/RELEASE.local << EOF
 EPICS_BASE=${EPICS_BASE}
 EOF
 
