@@ -105,7 +105,7 @@ IOC database must be started as follows:
 ### helloPutGet
 
 An example of a PVRecord that implements a "Hello World" service that can be
-accessed via Channel Put-Get.
+accessed via ChannelPutGet.
 
 
 ### pvDatabaseRPC
