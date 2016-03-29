@@ -42,6 +42,7 @@ int main(int argc,char *argv[])
         return 0;
     }
     if(argc>1) provider = argv[1];
+    if(provider=="pva") ClientFactory::start();
     PVDatabasePtr master = PVDatabase::getMaster();
     NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
     PVStructurePtr pvStructure = ntScalarArrayBuilder->
@@ -57,7 +58,6 @@ int main(int argc,char *argv[])
     master->addRecord(pvRecord);
 
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
-    if(provider=="pva") ClientFactory::start();
     
     ServerContext::shared_pointer ctx =
         startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);

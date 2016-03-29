@@ -40,7 +40,7 @@ static void exampleSimple()
     }
 }
 
-void exampleMore()
+static void exampleMore()
 {
     StructureConstPtr  topStructure = fieldCreate->createFieldBuilder()->
         add("value",pvString)->

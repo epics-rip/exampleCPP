@@ -67,7 +67,8 @@ int main(int argc,char *argv[])
              cout << "DBRdouble00 not found\n";
         }
     } catch (std::runtime_error e) {
-            cout << "exception " << e.what() << endl;
+            cerr << "exception " << e.what() << endl;
+            return 1;
     }
     cout << "_____examplePvaClientMonitor done_______\n";;
     return 0;

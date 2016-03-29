@@ -22,22 +22,23 @@ using namespace epics::pvaClient;
 static void exampleProcess(PvaClientPtr const &pva)
 {
     cout << "example process\n";
-    try {
-        PvaClientChannelPtr channel = pva->channel("PVRdouble");
-        PvaClientProcessPtr process = channel->createProcess();
-        process->process();
-        cout <<  channel->get("field()")->getData()->showChanged(cout) << endl;
-        process->process();
-        cout <<  channel->get("field()")->getData()->showChanged(cout) << endl;
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-    }
+    PvaClientChannelPtr channel = pva->channel("PVRdouble");
+    PvaClientProcessPtr process = channel->createProcess();
+    process->process();
+    cout <<  channel->get("field()")->getData()->showChanged(cout) << endl;
+    process->process();
+    cout <<  channel->get("field()")->getData()->showChanged(cout) << endl;
 }
 
 
 int main(int argc,char *argv[])
 {
     PvaClientPtr pva = PvaClient::create();
-    exampleProcess(pva);
+    try {
+        exampleProcess(pva);
+    } catch (std::runtime_error e) {
+        cerr << "exception " << e.what() << endl;
+        return 1;
+    }
     return 0;
 }

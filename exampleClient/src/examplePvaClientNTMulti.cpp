@@ -90,6 +90,17 @@ static void example(
     size_t num = channelNames.size();
     PvaClientMultiChannelPtr multiChannel(
         PvaClientMultiChannel::create(pva,channelNames,provider));
+    Status status = multiChannel->connect();
+    if(!status.isSuccess()) {
+         cout << "Did not connect: ";
+         shared_vector<epics::pvData::boolean> isConnected = multiChannel->getIsConnected();
+         for(size_t i=0; i<num; ++i) {
+             if(!isConnected[i]) cout << channelNames[i] << " ";
+         }
+         cout << endl;
+         multiChannel->destroy();
+         return;
+    }
     PvaClientNTMultiGetPtr multiGet(multiChannel->createNTGet());
     PvaClientNTMultiPutPtr multiPut(multiChannel->createNTPut());
     PvaClientNTMultiMonitorPtr multiMonitor(multiChannel->createNTMonitor());
@@ -116,7 +127,7 @@ static void example(
 
 int main(int argc,char *argv[])
 {
-    cout << "_____examplePvaClientNTMultiDouble starting_______\n";
+    cout << "_____examplePvaClientNTMulti starting_______\n";
     PvaClientPtr pva = PvaClient::create();
     size_t num = 4;
     shared_vector<string> channelNames(num);
@@ -141,6 +152,6 @@ int main(int argc,char *argv[])
     } else {
          cout << "DBRdouble00 not found\n";
     }
-    cout << "_____examplePvaClientNTMultiDouble done_______\n";
+    cout << "_____examplePvaClientNTMulti done_______\n";
     return 0;
 }

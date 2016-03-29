@@ -19,19 +19,19 @@ using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
 
-static void exampleDouble(PvaClientPtr const &pva)
+static void exampleDouble(PvaClientPtr const &pva,string const & channelName,string const & providerName )
 {
-    cout << "__exampleDouble__\n";
+    cout << "__exampleDouble__ channelName " << channelName << " providerName " << providerName << endl;
     double value;
-    try {
-        cout << "short way\n";
-        value =  pva->channel("PVRdouble")->get()->getData()->getDouble();
-        cout << "as double " << value << endl;
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-    }
+    cout << "short way\n";
+    value =  pva->channel(channelName,providerName,2.0)->get()->getData()->getDouble();
+    cout << "as double " << value << endl;
+    cout << "repeat short way\n";
+    value =  pva->channel(channelName,providerName,2.0)->get()->getData()->getDouble();
+    
+    cout << "as double " << value << endl;
     cout << "long way\n";
-    PvaClientChannelPtr pvaChannel = pva->createChannel("PVRdouble");
+    PvaClientChannelPtr pvaChannel = pva->createChannel(channelName,providerName);
     pvaChannel->issueConnect();
     Status status = pvaChannel->waitConnect(2.0);
     if(!status.isOK()) {cout << " connect failed\n"; return;}
@@ -42,96 +42,53 @@ static void exampleDouble(PvaClientPtr const &pva)
     PvaClientGetDataPtr pvaData = pvaGet->getData();
     value = pvaData->getDouble();
     cout << "as double " << value << endl;
+    pvaChannel->destroy();
 }
 
-static void exampleDoubleArray(PvaClientPtr const &pva)
+static void exampleDoubleArray(PvaClientPtr const &pva,string const & channelName,string const & providerName)
 {
-    cout << "__exampleDoubleArray__\n";
+    cout << "__exampleDoubleArray__  channelName " << channelName << " providerName " << providerName << endl;
     shared_vector<const double> value;
-    try {
-        cout << "short way\n";
-        value =  pva->channel("PVRdoubleArray")->get()->getData()->getDoubleArray();
-        cout << "as doubleArray " << value << endl;
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-    }
-    try {
-        cout << "long way\n";
-        PvaClientChannelPtr pvaChannel = pva->createChannel("PVRdoubleArray");
-        pvaChannel->connect(2.0);
-        PvaClientGetPtr pvaGet = pvaChannel->createGet();
-        PvaClientGetDataPtr pvaData = pvaGet->getData();
-        value = pvaData->getDoubleArray();
-        cout << "as doubleArray " << value << endl;
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-    }
-}
-
-static void exampleCADouble(PvaClientPtr const &pva)
-{
-    cout << "__exampleCADouble__\n";
-    double value;
-    try {
-        cout << "short way\n";
-        value =  pva->channel("DBRdouble00","ca",5.0)->get()->getData()->getDouble();
-        cout << "as double " << value << endl;
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-    }
+    cout << "short way\n";
+    value =  pva->channel(channelName,providerName,2.0)->get()->getData()->getDoubleArray();
+    cout << "as doubleArray " << value << endl;
+    cout << "repeat short way\n";
+    value =  pva->channel(channelName,providerName,2.0)->get()->getData()->getDoubleArray();
+    cout << "as doubleArray " << value << endl;
+   
     cout << "long way\n";
-    PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");
-    pvaChannel->issueConnect();
-    Status status = pvaChannel->waitConnect(2.0);
-    if(!status.isOK()) {cout << " connect failed\n"; return;}
+    PvaClientChannelPtr pvaChannel = pva->createChannel(channelName,providerName);
+    pvaChannel->connect(2.0);
     PvaClientGetPtr pvaGet = pvaChannel->createGet();
-    pvaGet->issueConnect();
-    status = pvaGet->waitConnect();
-    if(!status.isOK()) {cout << " createGet failed\n"; return;}
     PvaClientGetDataPtr pvaData = pvaGet->getData();
-    value = pvaData->getDouble();
-    cout << "as double " << value << endl;
-}
-
-static void exampleCADoubleArray(PvaClientPtr const &pva)
-{
-    cout << "__exampleCADoubleArray__\n";
-    shared_vector<const double> value;
-    try {
-        cout << "short way\n";
-        value =  pva->channel("DBRdoubleArray","ca",5.0)->get()->getData()->getDoubleArray();
-        cout << "as doubleArray " << value << endl;
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-    }
-    try {
-        cout << "long way\n";
-        PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdoubleArray","ca");
-        pvaChannel->connect(2.0);
-        PvaClientGetPtr pvaGet = pvaChannel->createGet();
-        PvaClientGetDataPtr pvaData = pvaGet->getData();
-        value = pvaData->getDoubleArray();
-        cout << "as doubleArray " << value << endl;
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-    }
+    value = pvaData->getDoubleArray();
+    cout << "as doubleArray " << value << endl;
+    pvaChannel->destroy();
 }
 
 int main(int argc,char *argv[])
 {
     cout << "_____examplePvaClientGet starting_______\n";
     PvaClientPtr pva= PvaClient::create();
-    exampleDouble(pva);
-    exampleDoubleArray(pva);
-    PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");
-    pvaChannel->issueConnect();
-    Status status = pvaChannel->waitConnect(1.0);
-    if(status.isOK()) {
-        exampleCADouble(pva);
-        exampleCADoubleArray(pva);
-    } else {
-         cout << "DBRdouble00 not found\n";
+    try {
+        exampleDouble(pva,"PVRdouble","pva");
+        exampleDoubleArray(pva,"PVRdoubleArray","pva");
+        PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");
+        pvaChannel->issueConnect();
+        Status status = pvaChannel->waitConnect(1.0);
+        pvaChannel->destroy();
+        if(status.isOK()) {
+            exampleDouble(pva,"DBRdouble00","pva");
+            exampleDouble(pva,"DBRdouble00","ca");
+            exampleDoubleArray(pva,"DBRdoubleArray","pva");
+            exampleDoubleArray(pva,"DBRdoubleArray","ca");
+        } else {
+             cout << "DBRdouble00 not found\n";
+        }
+        cout << "_____examplePvaClientGet done_______\n";
+    } catch (std::runtime_error e) {
+        cerr << "exception " << e.what() << endl;
+        return 1;
     }
-    cout << "_____examplePvaClientGet done_______\n";
     return 0;
 }

@@ -66,7 +66,7 @@ int main(int argc,char *argv[])
     try {
         LongArrayPutPtr longArrayPut(
             new LongArrayPut(
-              "pvAccess",
+              "pva",
               channelName,
               arraySize,
               iterBetweenCreateChannel,

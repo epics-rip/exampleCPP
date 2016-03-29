@@ -22,26 +22,27 @@ using namespace epics::pvaClient;
 static void example(PvaClientPtr const &pva)
 {
     cout << "helloWorldPutGet\n";
-    try {
-        PvaClientChannelPtr channel = pva->channel("PVRhelloPutGet");
-        PvaClientPutGetPtr putGet = channel->createPutGet();
-        putGet->connect();
-        PvaClientPutDataPtr putData = putGet->getPutData();
-        PVStructurePtr arg = putData->getPVStructure();
-        PVStringPtr pvValue = arg->getSubField<PVString>("argument.value");
-        pvValue->put("World");
-        putGet->putGet();
-        PvaClientGetDataPtr getData = putGet->getGetData();
-        cout << getData->getPVStructure() << endl;
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-    }
+    PvaClientChannelPtr channel = pva->channel("PVRhelloPutGet");
+    PvaClientPutGetPtr putGet = channel->createPutGet();
+    putGet->connect();
+    PvaClientPutDataPtr putData = putGet->getPutData();
+    PVStructurePtr arg = putData->getPVStructure();
+    PVStringPtr pvValue = arg->getSubField<PVString>("argument.value");
+    pvValue->put("World");
+    putGet->putGet();
+    PvaClientGetDataPtr getData = putGet->getGetData();
+    cout << getData->getPVStructure() << endl;
 }
 
 
 int main(int argc,char *argv[])
 {
     PvaClientPtr pva = PvaClient::create();
-    example(pva);
+    try {
+        example(pva);
+    } catch (std::runtime_error e) {
+        cerr << "exception " << e.what() << endl;
+        return 1;
+    }
     return 0;
 }
