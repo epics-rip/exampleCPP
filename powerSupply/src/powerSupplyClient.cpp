@@ -18,96 +18,51 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
-
-static void example(PvaClientPtr const &pvaClient)
+int main(int argc,char *argv[])
 {
-    PvaClientChannelPtr pvaChannel;
+    PvaClientPtr pva = PvaClient::create();
     try {
-        pvaChannel = pvaClient->createChannel("powerSupply");
-        pvaChannel->connect(2.0);
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-        return;
-    }
-    Status status;
-    PvaClientPutGetPtr putGet;
-    PvaClientPutDataPtr putData;
-    PvaClientGetDataPtr getData;
-    try {
-        putGet = pvaChannel->createPutGet(
-            "putField(power.value,voltage.value)getField()");
-        putGet->issueConnect();
-        status = putGet->waitConnect();
-        if(!status.isOK()) {cout << " createPutGet failed\n"; return;}
-        putData = putGet->getPutData();
-        getData = putGet->getGetData();
-        if (!putData || !getData) {cout << " createPutGet failed\n"; return;}
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-        return;
-    }
-
-    PVStructurePtr pvStructure;
-    PVDoublePtr putPower, putVoltage, putCurrent;
-    try {
+        PvaClientChannelPtr pvaChannel = pva->channel("powerSupply"); 
+        PvaClientPutGetPtr putGet(pvaChannel->createPutGet(
+                "putField(power.value,voltage.value)getField()"));
+        putGet->connect();
+        PvaClientPutDataPtr putData(putGet->getPutData());
+        PvaClientGetDataPtr getData(putGet->getGetData());
+        PVStructurePtr pvStructure = putData->getPVStructure();
         pvStructure = putData->getPVStructure();
-        putPower = pvStructure->getSubField<PVDouble>("power.value");
-        putVoltage = pvStructure->getSubField<PVDouble>("voltage.value");
-        putCurrent = pvStructure->getSubField<PVDouble>("current.value");
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-        return;
-    }
-
-    try {
+        PVDoublePtr putPower = pvStructure->getSubField<PVDouble>("power.value");
+        PVDoublePtr putVoltage = pvStructure->getSubField<PVDouble>("voltage.value");
         putPower->put(5.0);
         putVoltage->put(5.0);
         putGet->putGet();
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-        return;
-    }
-
-    PVDoublePtr gotPower, gotVoltage, gotCurrent;
-    try {
+        
         pvStructure = getData->getPVStructure();
-        gotPower = pvStructure->getSubField<PVDouble>("power.value");
+        PVDoublePtr gotPower = pvStructure->getSubField<PVDouble>("power.value");
+        PVDoublePtr gotVoltage = pvStructure->getSubField<PVDouble>("voltage.value"); 
+        PVDoublePtr gotCurrent = pvStructure->getSubField<PVDouble>("current.value");
         if(gotPower->get() == 5.0) cout <<  "returned correct power\n";
-        gotVoltage = pvStructure->getSubField<PVDouble>("voltage.value");
-        if(gotVoltage && gotVoltage->get() == 5.0) cout <<  "returned correct voltage\n";
-        gotCurrent = pvStructure->getSubField<PVDouble>("current.value");
-        if(gotCurrent && gotCurrent->get() == 1.0) cout <<  "returned correct current\n";
-
+        if(gotVoltage->get() == 5.0) cout <<  "returned correct voltage\n";
+        if(gotCurrent->get() == 1.0) cout <<  "returned correct current\n";
+    
         putPower->put(10.0);
         putGet->putGet();
-
+    
         pvStructure = getData->getPVStructure();
         gotPower = pvStructure->getSubField<PVDouble>("power.value");
-        if(gotPower && gotPower->get() == 10.0) cout << "returned correct power\n";
         gotVoltage = pvStructure->getSubField<PVDouble>("voltage.value");
-        if(gotVoltage && gotVoltage->get() == 5.0) cout << "returned correct voltage\n";
         gotCurrent = pvStructure->getSubField<PVDouble>("current.value");
-        if(gotCurrent && gotCurrent->get() == 2.0) cout << "returned correct current\n";
-    } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-        return;
-    }
-
-    try {
+        if(gotPower->get() == 10.0) cout << "returned correct power\n"; 
+        if(gotVoltage->get() == 5.0) cout << "returned correct voltage\n";
+        if(gotCurrent->get() == 2.0) cout << "returned correct current\n";
+        
         putPower->put(5.0);
         putVoltage->put(0.0);
         cout << "NOTE!!! an exception will be thrown because voltage is 0\n";
         putGet->putGet();
     } catch (std::runtime_error e) {
         cout << "exception " << e.what() << endl;
-        return;
+        exit(1);
     }
-}
-
-int main(int argc,char *argv[])
-{
-    PvaClientPtr pva = PvaClient::create();
-    example(pva);
     return 0;
 }
 

@@ -12,7 +12,7 @@
 #include <pv/ntscalar.h>
 
 #define epicsExportSharedSymbols
-#include <pv/exampleLink.h>
+#include <pv/exampleLinkRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
@@ -25,21 +25,21 @@ using std::string;
 
 namespace epics { namespace exampleCPP { namespace exampleLink {
 
-ExampleLinkPtr ExampleLink::create(
+ExampleLinkRecordPtr ExampleLinkRecord::create(
     string const & recordName,
     string const & providerName,
     string const & channelName)
 {
     PVStructurePtr pvStructure = getStandardPVField()->scalarArray(
         pvDouble,"timeStamp");
-    ExampleLinkPtr pvRecord(
-        new ExampleLink(
+    ExampleLinkRecordPtr pvRecord(
+        new ExampleLinkRecord(
            recordName,providerName,channelName,pvStructure));    
     if(!pvRecord->init()) pvRecord.reset();
     return pvRecord;
 }
 
-ExampleLink::ExampleLink(
+ExampleLinkRecord::ExampleLinkRecord(
     string const & recordName,
     string providerName,
     string channelName,
@@ -50,12 +50,12 @@ ExampleLink::ExampleLink(
 {
 }
 
-void ExampleLink::destroy()
+void ExampleLinkRecord::destroy()
 {
     PVRecord::destroy();
 }
 
-bool ExampleLink::init()
+bool ExampleLinkRecord::init()
 {
     initPVRecord();
 
@@ -88,12 +88,12 @@ bool ExampleLink::init()
     return true;
 }
 
-void ExampleLink::process()
+void ExampleLinkRecord::process()
 {
     PVRecord::process();
 }
 
-void ExampleLink::channelCreated(
+void ExampleLinkRecord::channelCreated(
         const Status& status,
         Channel::shared_pointer const & channel)
 {
@@ -102,13 +102,13 @@ void ExampleLink::channelCreated(
     event.signal();
 }
 
-void ExampleLink::channelStateChange(
+void ExampleLinkRecord::channelStateChange(
         Channel::shared_pointer const & channel,
         Channel::ConnectionState connectionState)
 {
 }
 
-void ExampleLink::monitorConnect(
+void ExampleLinkRecord::monitorConnect(
         const epics::pvData::Status& status,
         epics::pvData::Monitor::shared_pointer const & monitor,
         epics::pvData::StructureConstPtr const & structure)
@@ -116,7 +116,7 @@ void ExampleLink::monitorConnect(
    monitor->start();
 }
 
-void ExampleLink::monitorEvent(epics::pvData::MonitorPtr const & monitor)
+void ExampleLinkRecord::monitorEvent(epics::pvData::MonitorPtr const & monitor)
 {
     while(true) {
         MonitorElementPtr monitorElement = monitor->poll();
@@ -140,7 +140,7 @@ void ExampleLink::monitorEvent(epics::pvData::MonitorPtr const & monitor)
     }
 }
 
-void ExampleLink::unlisten(epics::pvData::MonitorPtr const & monitor)
+void ExampleLinkRecord::unlisten(epics::pvData::MonitorPtr const & monitor)
 {
 }
 

@@ -4,12 +4,12 @@ include $(TOP)/configure/CONFIG
 
 helloPutGetSRC = $(TOP)/src
 
-INC += pv/helloPutGet.h
+INC += pv/helloPutGetRecord.h
 
 DBD += helloPutGetRegister.dbd
 
 LIBRARY = helloPutGet
-LIBSRCS += helloPutGet.cpp
+LIBSRCS += helloPutGetRecord.cpp
 LIBSRCS += helloPutGetRegister.cpp
 helloPutGet_LIBS += pvDatabase pvAccess nt pvData Com
 

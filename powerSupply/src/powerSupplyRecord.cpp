@@ -12,7 +12,7 @@
 #include <pv/standardPVField.h>
 
 #define epicsExportSharedSymbols
-#include <pv/powerSupply.h>
+#include <pv/powerSupplyRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
@@ -23,7 +23,7 @@ using std::endl;
 
 namespace epics { namespace exampleCPP {namespace powerSupply { 
 
-PowerSupplyPtr PowerSupply::create(
+PowerSupplyRecordPtr PowerSupplyRecord::create(
     string const & recordName)
 {
     FieldCreatePtr fieldCreate = getFieldCreate();
@@ -35,56 +35,43 @@ PowerSupplyPtr PowerSupply::create(
             add("timeStamp",standardField->timeStamp()) ->
             addNestedStructure("power") ->
                add("value",pvDouble) ->
-               add("alarm",standardField->alarm()) ->
                endNested()->
             addNestedStructure("voltage") ->
                add("value",pvDouble) ->
-               add("alarm",standardField->alarm()) ->
                endNested()->
             addNestedStructure("current") ->
                add("value",pvDouble) ->
-               add("alarm",standardField->alarm()) ->
                endNested()->
             createStructure();
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
-    PowerSupplyPtr pvRecord(
-        new PowerSupply(recordName,pvStructure));
+    PowerSupplyRecordPtr pvRecord(
+        new PowerSupplyRecord(recordName,pvStructure));
     if(!pvRecord->init()) pvRecord.reset();
     return pvRecord;
 }
 
-PowerSupply::PowerSupply(
+PowerSupplyRecord::PowerSupplyRecord(
     string const & recordName,
     PVStructurePtr const & pvStructure)
 : PVRecord(recordName,pvStructure)
 {
 }
 
-PowerSupply::~PowerSupply()
+PowerSupplyRecord::~PowerSupplyRecord()
 {
 }
 
-void PowerSupply::destroy()
+void PowerSupplyRecord::destroy()
 {
     PVRecord::destroy();
 }
 
-bool PowerSupply::init()
+bool PowerSupplyRecord::init()
 {
     initPVRecord();
     PVStructurePtr pvStructure = getPVStructure();
     PVFieldPtr pvField;
     bool result;
-    pvField = pvStructure->getSubField("timeStamp");
-    if(!pvField) {
-        cerr << "no timeStamp" << endl;
-        return false;
-    }
-    result = pvTimeStamp.attach(pvField);
-    if(!result) {
-        cerr << "no timeStamp" << endl;
-        return false;
-    }
     pvField = pvStructure->getSubField("alarm");
     if(!pvField) {
         cerr << "no alarm" << endl;
@@ -110,13 +97,14 @@ bool PowerSupply::init()
         cerr << "no power\n";
         return false;
     }
+    alarm.setMessage("bad voltage");
+    alarm.setSeverity(majorAlarm);
+    pvAlarm.set(alarm);
     return true;
 }
 
-void PowerSupply::process()
+void PowerSupplyRecord::process()
 {
-    timeStamp.getCurrent();
-    pvTimeStamp.set(timeStamp);
     double voltage = pvVoltage->get();
     double power = pvPower->get();
     if(voltage<1e-3 && voltage>-1e-3) {
@@ -127,31 +115,13 @@ void PowerSupply::process()
     }
     double current = power/voltage;
     pvCurrent->put(current);
-    alarm.setMessage("");
-    alarm.setSeverity(noAlarm);
-    pvAlarm.set(alarm);
+    pvAlarm.get(alarm);
+    if(alarm.getSeverity()!=noAlarm) {
+        alarm.setMessage("");
+        alarm.setSeverity(noAlarm);
+        pvAlarm.set(alarm);
+    }
+    PVRecord::process();
 }
-
-void PowerSupply::put(double power,double voltage)
-{
-    pvPower->put(power);
-    pvVoltage->put(voltage);
-}
-
-double PowerSupply::getPower()
-{
-    return pvPower->get();
-}
-
-double PowerSupply::getVoltage()
-{
-    return pvVoltage->get();
-}
-
-double PowerSupply::getCurrent()
-{
-    return pvCurrent->get();
-}
-
 
 }}}

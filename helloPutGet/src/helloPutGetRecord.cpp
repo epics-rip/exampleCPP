@@ -1,8 +1,7 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/* exampleHello.cpp */
-
+/* helloPutGet.cpp */
 /**
  * @author mrk
  * @date 2013.04.02
@@ -11,17 +10,17 @@
 #include <pv/standardField.h>
 
 #define epicsExportSharedSymbols
-#include <pv/exampleHello.h>
+#include <pv/helloPutGetRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
 using std::tr1::static_pointer_cast;
 using std::string;
 
-namespace epics { namespace exampleCPP { namespace database {
+namespace epics { namespace exampleCPP { namespace helloPutGet { 
 
 
-ExampleHelloPtr ExampleHello::create(
+HelloPutGetRecordPtr HelloPutGetRecord::create(
     string const & recordName)
 {
     StandardFieldPtr standardField = getStandardField();
@@ -38,46 +37,43 @@ ExampleHelloPtr ExampleHello::create(
         createStructure();
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
 
-    ExampleHelloPtr pvRecord(
-        new ExampleHello(recordName,pvStructure));
+    HelloPutGetRecordPtr pvRecord(
+        new HelloPutGetRecord(recordName,pvStructure));
     if(!pvRecord->init()) pvRecord.reset();
     return pvRecord;
 }
 
-ExampleHello::ExampleHello(
+HelloPutGetRecord::HelloPutGetRecord(
     string const & recordName,
     PVStructurePtr const & pvStructure)
 : PVRecord(recordName,pvStructure)
 {
 }
 
-ExampleHello::~ExampleHello()
+HelloPutGetRecord::~HelloPutGetRecord()
 {
 }
 
-void ExampleHello::destroy()
+void HelloPutGetRecord::destroy()
 {
     PVRecord::destroy();
 }
 
-bool ExampleHello::init()
+bool HelloPutGetRecord::init()
 {
     
     initPVRecord();
-    PVFieldPtr pvField;
     pvArgumentValue = getPVStructure()->getSubField<PVString>("argument.value");
     if(pvArgumentValue.get()==NULL) return false;
     pvResultValue = getPVStructure()->getSubField<PVString>("result.value");
     if(pvResultValue.get()==NULL) return false;
-    pvTimeStamp.attach(getPVStructure()->getSubField("result.timeStamp"));
     return true;
 }
 
-void ExampleHello::process()
+void HelloPutGetRecord::process()
 {
-    pvResultValue->put(string("Hello ") + pvArgumentValue->get());
-    timeStamp.getCurrent();
-    pvTimeStamp.set(timeStamp);
+    pvResultValue->put("Hello " + pvArgumentValue->get());
+    PVRecord::process();
 }
 
 }}}

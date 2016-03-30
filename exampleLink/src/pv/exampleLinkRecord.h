@@ -1,14 +1,14 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/* exampleLink.h */
+/* exampleLinkRecord.h */
 
 /**
  * @author mrk
  * @date 2013.08.02
  */
-#ifndef EXAMPLELINK_H
-#define EXAMPLELINK_H
+#ifndef EXAMPLELINKRECORD_H
+#define EXAMPLELINKRECORD_H
 
 #ifdef epicsExportSharedSymbols
 #   define exampleLinkEpicsExportSharedSymbols
@@ -35,22 +35,22 @@
 namespace epics { namespace exampleCPP { namespace exampleLink {
 
 
-class ExampleLink;
-typedef std::tr1::shared_ptr<ExampleLink> ExampleLinkPtr;
+class ExampleLinkRecord;
+typedef std::tr1::shared_ptr<ExampleLinkRecord> ExampleLinkRecordPtr;
 
-class epicsShareClass ExampleLink :
+class epicsShareClass ExampleLinkRecord :
     public epics::pvDatabase::PVRecord,
     public epics::pvAccess::ChannelRequester,
     public epics::pvData::MonitorRequester
 {
 public:
-    POINTER_DEFINITIONS(ExampleLink);
-    static ExampleLinkPtr create(
+    POINTER_DEFINITIONS(ExampleLinkRecord);
+    static ExampleLinkRecordPtr create(
         std::string const & recordName,
         std::string const & providerName,
         std::string const & channelName
         );
-    virtual ~ExampleLink() {}
+    virtual ~ExampleLinkRecord() {}
     virtual void destroy();
     virtual bool init();
     virtual void process();
@@ -66,7 +66,7 @@ public:
         epics::pvData::MessageType messageType)
         {
            if(messageType>=epics::pvData::errorMessage) {
-               std::cout << "ExampleLink::message " << message;
+               std::cout << "ExampleLinkRecord::message " << message;
                std::cout << " messageType " << getMessageTypeName(messageType) << std::endl;
            }
         }
@@ -77,7 +77,7 @@ public:
     virtual void monitorEvent(epics::pvData::MonitorPtr const & monitor);
     virtual void unlisten(epics::pvData::MonitorPtr const & monitor);
 private:
-    ExampleLink(std::string const & recordName,
+    ExampleLinkRecord(std::string const & recordName,
         std::string providerName,
         std::string channelName,
         epics::pvData::PVStructurePtr const & pvStructure);
@@ -92,4 +92,4 @@ private:
 
 }}}
 
-#endif  /* EXAMPLELINK_H */
+#endif  /* EXAMPLELINKRECORD_H */

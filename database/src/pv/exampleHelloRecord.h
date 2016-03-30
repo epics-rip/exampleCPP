@@ -1,14 +1,14 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/* exampleHello.h */
+/* exampleHelloRecord.h */
 
 /**
  * @author mrk
  * @date 2013.04.02
  */
-#ifndef EXAMPLEHELLO_H
-#define EXAMPLEHELLO_H
+#ifndef EXAMPLEHELLORECORD_H
+#define EXAMPLEHELLORECORD_H
 
 #ifdef epicsExportSharedSymbols
 #   define exampleHelloEpicsExportSharedSymbols
@@ -30,22 +30,22 @@
 namespace epics { namespace exampleCPP { namespace database {
 
 
-class ExampleHello;
-typedef std::tr1::shared_ptr<ExampleHello> ExampleHelloPtr;
+class ExampleHelloRecord;
+typedef std::tr1::shared_ptr<ExampleHelloRecord> ExampleHelloRecordPtr;
 
-class epicsShareClass ExampleHello :
+class epicsShareClass ExampleHelloRecord :
     public epics::pvDatabase::PVRecord
 {
 public:
-    POINTER_DEFINITIONS(ExampleHello);
-    static ExampleHelloPtr create(
+    POINTER_DEFINITIONS(ExampleHelloRecord);
+    static ExampleHelloRecordPtr create(
         std::string const & recordName);
-    virtual ~ExampleHello();
+    virtual ~ExampleHelloRecord();
     virtual void destroy();
     virtual bool init();
     virtual void process();
 private:
-    ExampleHello(std::string const & recordName,
+    ExampleHelloRecord(std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure);
 
     epics::pvData::PVStringPtr pvArgumentValue;
@@ -57,4 +57,4 @@ private:
 
 }}}
 
-#endif  /* EXAMPLEHELLO_H */
+#endif  /* EXAMPLEHELLORECORD_H */

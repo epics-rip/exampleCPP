@@ -4,14 +4,14 @@ include $(TOP)/configure/CONFIG
 
 exampleDatabaseSRC = $(TOP)/src
 
-INC += pv/exampleHello.h
+INC += pv/exampleHelloRecord.h
 INC += pv/exampleHelloRPC.h
 INC += pv/exampleDatabase.h
 
 DBD += exampleDatabaseRegister.dbd
 
 LIBRARY = exampleDatabase
-LIBSRCS += exampleHello.cpp
+LIBSRCS += exampleHelloRecord.cpp
 LIBSRCS += exampleHelloRPC.cpp
 LIBSRCS += exampleDatabase.cpp
 LIBSRCS += exampleDatabaseRegister.cpp

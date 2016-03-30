@@ -1,14 +1,14 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/* powerSupply.h */
+/* powerSupplyRecord.h */
 
 /**
  * @author mrk
  * @date 2013.04.02
  */
-#ifndef POWERSUPPLY_H
-#define POWERSUPPLY_H
+#ifndef POWERSUPPLYRECORD_H
+#define POWERSUPPLYRECORD_H
 
 
 #ifdef epicsExportSharedSymbols
@@ -32,41 +32,32 @@
 
 namespace epics { namespace exampleCPP {namespace powerSupply { 
 
-epicsShareExtern epics::pvData::PVStructurePtr createPowerSupply();
+class PowerSupplyRecord;
+typedef std::tr1::shared_ptr<PowerSupplyRecord> PowerSupplyRecordPtr;
 
-class PowerSupply;
-typedef std::tr1::shared_ptr<PowerSupply> PowerSupplyPtr;
-
-class epicsShareClass PowerSupply :
+class epicsShareClass PowerSupplyRecord :
     public epics::pvDatabase::PVRecord
 {
 public:
-    POINTER_DEFINITIONS(PowerSupply);
-    static PowerSupplyPtr create(
+    POINTER_DEFINITIONS(PowerSupplyRecord);
+    static PowerSupplyRecordPtr create(
         std::string const & recordName);
-    virtual ~PowerSupply();
+    virtual ~PowerSupplyRecord();
     virtual void destroy();
     virtual bool init();
     virtual void process();
     
 private:
-    PowerSupply(std::string const & recordName,
+    PowerSupplyRecord(std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure);
-    void put(double power,double voltage);
-    double getPower();
-    double getVoltage();
-    double getCurrent();
-
     epics::pvData::PVDoublePtr pvCurrent;
     epics::pvData::PVDoublePtr pvPower;
     epics::pvData::PVDoublePtr pvVoltage;
     epics::pvData::PVAlarm pvAlarm;
-    epics::pvData::PVTimeStamp pvTimeStamp;
     epics::pvData::Alarm alarm;
-    epics::pvData::TimeStamp timeStamp;
 };
 
 
 }}}
 
-#endif  /* POWERSUPPLY_H */
+#endif  /* POWERSUPPLYRECORD_H */

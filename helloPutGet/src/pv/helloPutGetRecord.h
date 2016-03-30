@@ -1,13 +1,13 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/* helloPutGet.h */
+/* helloPutGetRecord.h */
 /**
  * @author mrk
  * @date 2013.04.02
  */
-#ifndef HELLOPUTGET_H
-#define HELLOPUTGET_H
+#ifndef HELLOPUTGETRECORD_H
+#define HELLOPUTGETRECORD_H
 
 #ifdef epicsExportSharedSymbols
 #   define helloPutGetEpicsExportSharedSymbols
@@ -29,31 +29,29 @@
 namespace epics { namespace exampleCPP { namespace helloPutGet { 
 
 
-class HelloPutGet;
-typedef std::tr1::shared_ptr<HelloPutGet> HelloPutGetPtr;
+class HelloPutGetRecord;
+typedef std::tr1::shared_ptr<HelloPutGetRecord> HelloPutGetRecordPtr;
 
-class epicsShareClass HelloPutGet :
+class epicsShareClass HelloPutGetRecord :
     public epics::pvDatabase::PVRecord
 {
 public:
-    POINTER_DEFINITIONS(HelloPutGet);
-    static HelloPutGetPtr create(
+    POINTER_DEFINITIONS(HelloPutGetRecord);
+    static HelloPutGetRecordPtr create(
         std::string const & recordName);
-    virtual ~HelloPutGet();
+    virtual ~HelloPutGetRecord();
     virtual void destroy();
     virtual bool init();
     virtual void process();
 private:
-    HelloPutGet(std::string const & recordName,
+    HelloPutGetRecord(std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure);
 
     epics::pvData::PVStringPtr pvArgumentValue;
     epics::pvData::PVStringPtr pvResultValue;
-    epics::pvData::PVTimeStamp pvTimeStamp;
-    epics::pvData::TimeStamp timeStamp;
 };
 
 
 }}}
 
-#endif  /* HELLOPUTGET_H */
+#endif  /* HELLOPUTGETRECORD_H */

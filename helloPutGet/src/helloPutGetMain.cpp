@@ -12,7 +12,7 @@
 #include <string>
 #include <iostream>
 
-#include <pv/helloPutGet.h>
+#include <pv/helloPutGetRecord.h>
 #include <pv/channelProviderLocal.h>
 #include <pv/serverContext.h>
 
@@ -30,7 +30,7 @@ int main(int argc,char *argv[])
     string recordName;
 
     recordName = "helloPutGet";
-    pvRecord = HelloPutGet::create(recordName);
+    pvRecord = HelloPutGetRecord::create(recordName);
     master->addRecord(pvRecord);
 
     ServerContext::shared_pointer ctx =

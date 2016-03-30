@@ -1,7 +1,8 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/* helloPutGet.cpp */
+/* exampleHello.cpp */
+
 /**
  * @author mrk
  * @date 2013.04.02
@@ -10,17 +11,17 @@
 #include <pv/standardField.h>
 
 #define epicsExportSharedSymbols
-#include <pv/helloPutGet.h>
+#include <pv/exampleHelloRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
 using std::tr1::static_pointer_cast;
 using std::string;
 
-namespace epics { namespace exampleCPP { namespace helloPutGet { 
+namespace epics { namespace exampleCPP { namespace database {
 
 
-HelloPutGetPtr HelloPutGet::create(
+ExampleHelloRecordPtr ExampleHelloRecord::create(
     string const & recordName)
 {
     StandardFieldPtr standardField = getStandardField();
@@ -37,29 +38,29 @@ HelloPutGetPtr HelloPutGet::create(
         createStructure();
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
 
-    HelloPutGetPtr pvRecord(
-        new HelloPutGet(recordName,pvStructure));
+    ExampleHelloRecordPtr pvRecord(
+        new ExampleHelloRecord(recordName,pvStructure));
     if(!pvRecord->init()) pvRecord.reset();
     return pvRecord;
 }
 
-HelloPutGet::HelloPutGet(
+ExampleHelloRecord::ExampleHelloRecord(
     string const & recordName,
     PVStructurePtr const & pvStructure)
 : PVRecord(recordName,pvStructure)
 {
 }
 
-HelloPutGet::~HelloPutGet()
+ExampleHelloRecord::~ExampleHelloRecord()
 {
 }
 
-void HelloPutGet::destroy()
+void ExampleHelloRecord::destroy()
 {
     PVRecord::destroy();
 }
 
-bool HelloPutGet::init()
+bool ExampleHelloRecord::init()
 {
     
     initPVRecord();
@@ -72,7 +73,7 @@ bool HelloPutGet::init()
     return true;
 }
 
-void HelloPutGet::process()
+void ExampleHelloRecord::process()
 {
     pvResultValue->put(string("Hello ") + pvArgumentValue->get());
     timeStamp.getCurrent();

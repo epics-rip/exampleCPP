@@ -1,11 +1,7 @@
-record($(type), "$(name)")
+record(ai, "$(name)")
 {
 	field(PREC, "1")
-	field(EGU, "Counts")
-	field(HOPR, "10")
-	field(LOPR, "0")
-	field(DRVH, "9.9")
-	field(DRVL, "-0.1")
+	field(EGU, "amps")
 	field(HIHI, "8")
 	field(HIGH, "6")
 	field(LOW, "4")

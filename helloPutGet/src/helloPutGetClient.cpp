@@ -20,7 +20,6 @@ using namespace epics::pvaClient;
 
 int main(int argc,char *argv[])
 {
-    cout << "_____helloPutGetClient starting_______\n";
     PvaClientPtr pva = PvaClient::create();
     try {
         PvaClientChannelPtr channel = pva->channel("helloPutGet");
@@ -37,7 +36,6 @@ int main(int argc,char *argv[])
         cout << "exception " << e.what() << endl;
         return 1;
     }
-    cout << "_____helloPutGetClient done_______\n";
     return 0;
 }
 

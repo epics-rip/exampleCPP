@@ -22,4 +22,7 @@ It can also be built by:
 In **configure/RELEASE.local** it may only be necessary to change the definitions
 of **EPICS4_DIR** and **EPICS_BASE**.
 
-## To understand the examples read documentation/arrayPerformance.html
+## More Information
+ 
+
+To understand the examples read documentation/arrayPerformance.html

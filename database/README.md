@@ -38,7 +38,7 @@ of **EPICS4_DIR** and **EPICS_BASE**.
 
 This directory has the following files:
 
-     exampleHello.h
+     exampleHelloRecord.h
      exampleHelloRPC.h
      exampleDatabase.h
   
@@ -47,9 +47,9 @@ This directory has the following files:
 
 This directory has the following files:
 
-### exampleHello.cpp
+### exampleHelloRecord.cpp
    
-Code for an example that is accessed via channelPutGet.
+Code for an example PVRecord that is accessed via channelPutGet.
 
 ### exampleHelloRPC.cpp
    
