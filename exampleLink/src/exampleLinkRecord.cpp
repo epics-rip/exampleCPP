@@ -64,6 +64,7 @@ bool ExampleLinkRecord::init()
     if(!pvValue) {
         return false;
     }
+cout<< "ExampleLinkRecord::init() provider " << providerName << endl;
     ChannelProvider::shared_pointer provider =
         getChannelProviderRegistry()->getProvider(providerName);
     if(!provider) {
@@ -97,6 +98,7 @@ void ExampleLinkRecord::channelCreated(
         const Status& status,
         Channel::shared_pointer const & channel)
 {
+cout << "ExampleLinkRecord::channelCreated status " << status << endl;
     this->status = status;
     this->channel = channel;
     event.signal();
@@ -106,6 +108,7 @@ void ExampleLinkRecord::channelStateChange(
         Channel::shared_pointer const & channel,
         Channel::ConnectionState connectionState)
 {
+cout << "ExampleLinkRecord::channelStateChange connectionState " << connectionState << endl;
 }
 
 void ExampleLinkRecord::monitorConnect(
@@ -113,11 +116,13 @@ void ExampleLinkRecord::monitorConnect(
         epics::pvData::Monitor::shared_pointer const & monitor,
         epics::pvData::StructureConstPtr const & structure)
 {
+cout << "ExampleLinkRecord::monitorConnect status " << status << endl;
    monitor->start();
 }
 
 void ExampleLinkRecord::monitorEvent(epics::pvData::MonitorPtr const & monitor)
 {
+cout << "ExampleLinkRecord::monitorEvent\n";
     while(true) {
         MonitorElementPtr monitorElement = monitor->poll();
         if(!monitorElement) break;

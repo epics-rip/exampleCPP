@@ -16,7 +16,7 @@ exampleLink_LIBS += pvDatabase pvAccess nt pvData ca Com
 PROD_HOST += exampleLinkMain
 exampleLinkMain_SRCS += exampleLinkMain.cpp
 exampleLinkMain_LIBS += exampleLink
-exampleLinkMain_LIBS += pvDatabase pvAccess nt pvData  Com
+exampleLinkMain_LIBS += pvDatabase pvaClient pvAccess nt pvData  Com
 
 PROD_HOST += exampleLinkClient
 exampleLinkClient_SRCS += exampleLinkClient.cpp
