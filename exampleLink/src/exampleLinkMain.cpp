@@ -53,43 +53,37 @@ int main(int argc,char *argv[])
         string val = argv[4];
         if(val=="false") generateLinkedRecord = false;
     }
-    PvaClientPtr pva= PvaClient::create();
     PVDatabasePtr master = PVDatabase::getMaster();
-// If this is not done before 
-//  ExampleLinkRecordPtr pvRecord(ExampleLinkRecord::create(exampleLinkRecordName,provider,recordName));
-//  master->addRecord(pvRecord);
-// and provider is local then failure.
-    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
-    ServerContext::shared_pointer ctx =
-    startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-    if(generateLinkedRecord) {
-        NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
-        PVStructurePtr pvStructure = ntScalarArrayBuilder->
-            value(pvDouble)->
-            addAlarm()->
-            addTimeStamp()->
-            createPVStructure();
-        master->addRecord(PVRecord::create(linkedRecordName,pvStructure));
+    try {
+        ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
+        ServerContext::shared_pointer ctx =
+        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+        PvaClientPtr pva= PvaClient::create();
+        if(generateLinkedRecord) {
+            NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
+            PVStructurePtr pvStructure = ntScalarArrayBuilder->
+                value(pvDouble)->
+                addAlarm()->
+                addTimeStamp()->
+                createPVStructure();
+            master->addRecord(PVRecord::create(linkedRecordName,pvStructure));
+        }
+        ExampleLinkRecordPtr pvRecord(
+            ExampleLinkRecord::create(
+                 exampleLinkRecordName,provider,linkedRecordName));
+
+        master->addRecord(pvRecord);
+        cout << "exampleLink\n";
+        string str;
+        while(true) {
+            cout << "Type exit to stop: \n";
+            getline(cin,str);
+            if(str.compare("exit")==0) break;
+        }
+        ctx->destroy();
+    } catch (std::runtime_error e) {
+        cerr << "exception " << e.what() << endl;
+        return 1;
     }
-    ExampleLinkRecordPtr pvRecord(
-        ExampleLinkRecord::create(
-           exampleLinkRecordName,provider,linkedRecordName));
-
-    master->addRecord(pvRecord);
-
-//    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
-//    ServerContext::shared_pointer ctx =
-//        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-    cout << "exampleLink\n";
-    string str;
-    while(true) {
-        cout << "Type exit to stop: \n";
-        getline(cin,str);
-        if(str.compare("exit")==0) break;
-
-    }
-    ctx->destroy();
-    pva->destroy();
-//epicsThreadSleep(5.0);  // should not be necessary
     return 0;
 }
