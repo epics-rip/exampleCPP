@@ -18,6 +18,11 @@ exampleLinkMain_SRCS += exampleLinkMain.cpp
 exampleLinkMain_LIBS += exampleLink
 exampleLinkMain_LIBS += pvDatabase pvaClient pvAccess nt pvData  Com
 
+PROD_HOST += doubleArrayMain
+doubleArrayMain_SRCS += doubleArrayMain.cpp
+doubleArrayMain_LIBS += pvDatabase pvAccess nt pvData  Com
+
+
 PROD_HOST += exampleLinkClient
 exampleLinkClient_SRCS += exampleLinkClient.cpp
 exampleLinkClient_LIBS += pvaClient pvAccess pvData ca Com

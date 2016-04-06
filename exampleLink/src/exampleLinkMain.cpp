@@ -19,8 +19,6 @@
 
 #include <pv/channelProviderLocal.h>
 #include <pv/serverContext.h>
-#include <pv/pvaClient.h>
-#include <pv/serverContext.h>
 #include <pv/ntscalarArray.h>
 
 #include <pv/exampleLinkRecord.h>
@@ -53,8 +51,8 @@ int main(int argc,char *argv[])
         string val = argv[4];
         if(val=="false") generateLinkedRecord = false;
     }
-    PVDatabasePtr master = PVDatabase::getMaster();
     try {
+        PVDatabasePtr master = PVDatabase::getMaster();
         ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
         ServerContext::shared_pointer ctx =
         startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
@@ -70,7 +68,7 @@ int main(int argc,char *argv[])
         }
         ExampleLinkRecordPtr pvRecord(
             ExampleLinkRecord::create(
-                 exampleLinkRecordName,provider,linkedRecordName));
+                 pva,exampleLinkRecordName,provider,linkedRecordName));
 
         master->addRecord(pvRecord);
         cout << "exampleLink\n";

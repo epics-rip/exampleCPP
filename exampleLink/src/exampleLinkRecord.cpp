@@ -16,6 +16,7 @@
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
+using namespace epics::pvaClient;
 using namespace epics::pvDatabase;
 using std::tr1::static_pointer_cast;
 using std::tr1::dynamic_pointer_cast;
@@ -26,6 +27,7 @@ using std::string;
 namespace epics { namespace exampleCPP { namespace exampleLink {
 
 ExampleLinkRecordPtr ExampleLinkRecord::create(
+    PvaClientPtr  const & pva,
     string const & recordName,
     string const & providerName,
     string const & channelName)
@@ -34,28 +36,20 @@ ExampleLinkRecordPtr ExampleLinkRecord::create(
         pvDouble,"timeStamp");
     ExampleLinkRecordPtr pvRecord(
         new ExampleLinkRecord(
-           recordName,providerName,channelName,pvStructure));    
-    if(!pvRecord->init()) pvRecord.reset();
+           recordName,pvStructure)); 
+    if(!pvRecord->init(pva,channelName,providerName)) pvRecord.reset();
     return pvRecord;
 }
 
 ExampleLinkRecord::ExampleLinkRecord(
     string const & recordName,
-    string providerName,
-    string channelName,
     PVStructurePtr const & pvStructure)
-: PVRecord(recordName,pvStructure),
-  providerName(providerName),
-  channelName(channelName)
+: PVRecord(recordName,pvStructure)
 {
 }
 
-void ExampleLinkRecord::destroy()
-{
-    PVRecord::destroy();
-}
 
-bool ExampleLinkRecord::init()
+bool ExampleLinkRecord::init(PvaClientPtr const & pva,string const & channelName,string const & providerName)
 {
     initPVRecord();
 
@@ -64,27 +58,10 @@ bool ExampleLinkRecord::init()
     if(!pvValue) {
         return false;
     }
-    ChannelProvider::shared_pointer provider =
-        getChannelProviderRegistry()->getProvider(providerName);
-    if(!provider) {
-         cout << getRecordName() << " provider "
-              << providerName << " does not exist" << endl;
-        return false;
-    }
-    ChannelRequester::shared_pointer channelRequester =
-        dynamic_pointer_cast<ChannelRequester>(getPtrSelf());
-    channel = provider->createChannel(channelName,channelRequester);
-    event.wait();
-    if(!status.isOK()) {
-        cout << getRecordName() << " createChannel failed "
-             << status.getMessage() << endl;
-        return false;
-    }
-    PVStructurePtr pvRequest = CreateRequest::create()->createRequest(
-        "value");
-    MonitorRequester::shared_pointer  monitorRequester =
-        dynamic_pointer_cast<MonitorRequester>(getPtrSelf());
-    monitor = channel->createMonitor(monitorRequester,pvRequest);
+    PvaClientChannelPtr pvaClientChannel = pva->channel(channelName,providerName,0.0);
+   PvaClientMonitorRequester::shared_pointer  monitorRequester =
+        dynamic_pointer_cast<PvaClientMonitorRequester>(getPtrSelf());
+    pvaClientChannel->monitor("value",monitorRequester);
     return true;
 }
 
@@ -93,39 +70,13 @@ void ExampleLinkRecord::process()
     PVRecord::process();
 }
 
-void ExampleLinkRecord::channelCreated(
-        const Status& status,
-        Channel::shared_pointer const & channel)
-{
-    this->status = status;
-    this->channel = channel;
-    if(status.isOK() && channel->isConnected()) event.signal();
-}
 
-void ExampleLinkRecord::channelStateChange(
-        Channel::shared_pointer const & channel,
-        Channel::ConnectionState connectionState)
+void ExampleLinkRecord::event(PvaClientMonitorPtr const & monitor)
 {
-    if(connectionState==Channel::CONNECTED) event.signal();
-}
-
-void ExampleLinkRecord::monitorConnect(
-        const epics::pvData::Status& status,
-        epics::pvData::Monitor::shared_pointer const & monitor,
-        epics::pvData::StructureConstPtr const & structure)
-{
-   monitor->start();
-}
-
-void ExampleLinkRecord::monitorEvent(epics::pvData::MonitorPtr const & monitor)
-{
-    while(true) {
-        MonitorElementPtr monitorElement = monitor->poll();
-        if(!monitorElement) break;
-        PVStructurePtr pvStructurePtr = monitorElement->pvStructurePtr;
-        PVDoubleArrayPtr pvDoubleArray = pvStructurePtr->getSubField<PVDoubleArray>("value");
+    while(monitor->poll()) {
+        PVStructurePtr pvStructure = monitor->getData()->getPVStructure();
+        PVDoubleArrayPtr pvDoubleArray = pvStructure->getSubField<PVDoubleArray>("value");
         if(!pvDoubleArray) throw std::runtime_error("value is not a double array");
-
         lock();
         try {
             beginGroupPut();
@@ -137,12 +88,8 @@ void ExampleLinkRecord::monitorEvent(epics::pvData::MonitorPtr const & monitor)
            throw;
         }
         unlock();
-        monitor->release(monitorElement);
+        monitor->releaseEvent();
     }
-}
-
-void ExampleLinkRecord::unlisten(epics::pvData::MonitorPtr const & monitor)
-{
 }
 
 }}}

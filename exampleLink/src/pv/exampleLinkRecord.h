@@ -21,9 +21,7 @@
 #include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
 #include <pv/pvCopy.h>
-#include <pv/pvAccess.h>
-#include <pv/pvDatabase.h>
-#include <pv/serverContext.h>
+#include <pv/pvaClient.h>
 
 #ifdef exampleLinkEpicsExportSharedSymbols
 #   define epicsExportSharedSymbols
@@ -37,57 +35,34 @@ namespace epics { namespace exampleCPP { namespace exampleLink {
 
 class ExampleLinkRecord;
 typedef std::tr1::shared_ptr<ExampleLinkRecord> ExampleLinkRecordPtr;
+typedef std::tr1::weak_ptr<ExampleLinkRecord> ExampleLinkRecordWPtr;
+
 
 class epicsShareClass ExampleLinkRecord :
     public epics::pvDatabase::PVRecord,
-    public epics::pvAccess::ChannelRequester,
-    public epics::pvData::MonitorRequester
+    public epics::pvaClient::PvaClientMonitorRequester
 {
 public:
     POINTER_DEFINITIONS(ExampleLinkRecord);
     static ExampleLinkRecordPtr create(
+        epics::pvaClient::PvaClientPtr const &pva,
         std::string const & recordName,
         std::string const & providerName,
         std::string const & channelName
         );
     virtual ~ExampleLinkRecord() {}
-    virtual void destroy();
-    virtual bool init();
     virtual void process();
-    virtual void channelCreated(
-        const epics::pvData::Status& status,
-        epics::pvAccess::Channel::shared_pointer const & channel);
-    virtual void channelStateChange(
-        epics::pvAccess::Channel::shared_pointer const & channel,
-        epics::pvAccess::Channel::ConnectionState connectionState);
-    virtual std::string getRequesterName() {return channelName;}
-    virtual void message(
-        std::string const & message,
-        epics::pvData::MessageType messageType)
-        {
-           if(messageType>=epics::pvData::errorMessage) {
-               std::cout << "ExampleLinkRecord::message " << message;
-               std::cout << " messageType " << getMessageTypeName(messageType) << std::endl;
-           }
-        }
-    virtual void monitorConnect(
-        const epics::pvData::Status& status,
-        epics::pvData::Monitor::shared_pointer const & monitor,
-        epics::pvData::StructureConstPtr const & structure);
-    virtual void monitorEvent(epics::pvData::MonitorPtr const & monitor);
-    virtual void unlisten(epics::pvData::MonitorPtr const & monitor);
+    void event(epics::pvaClient::PvaClientMonitorPtr const & monitor);
 private:
-    ExampleLinkRecord(std::string const & recordName,
-        std::string providerName,
-        std::string channelName,
+    ExampleLinkRecord(
+        std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure);
-    std::string providerName;
-    std::string channelName;
+    bool init(
+        epics::pvaClient::PvaClientPtr const & pva,
+        std::string const & channelName,
+        std::string const & providerName
+        );
     epics::pvData::PVDoubleArrayPtr pvValue;
-    epics::pvAccess::Channel::shared_pointer channel;
-    epics::pvData::Event event;
-    epics::pvData::Status status;
-    epics::pvData::MonitorPtr monitor;
 };
 
 }}}

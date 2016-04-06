@@ -28,7 +28,7 @@ class MyMonitor : public PvaClientMonitorRequester
 public:
     MyMonitor() {}
     virtual ~MyMonitor() {}
-    virtual void event(PvaClientMonitorPtr monitor)
+    virtual void event(PvaClientMonitorPtr const & monitor)
     {
         testDiag("monitor event");
         PvaClientMonitorDataPtr pvaData = monitor->getData();
