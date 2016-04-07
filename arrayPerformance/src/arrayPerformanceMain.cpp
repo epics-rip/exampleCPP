@@ -33,6 +33,7 @@ using namespace std;
 using std::tr1::static_pointer_cast;
 using namespace epics::pvData;
 using namespace epics::pvAccess;
+using namespace epics::pvaClient;
 using namespace epics::pvDatabase;
 using namespace epics::exampleCPP::arrayPerformance;
 
@@ -70,11 +71,16 @@ int main(int argc,char *argv[])
     cout << providerName << " ";
     cout << nMonitor << " ";
     cout << queueSize << endl;
-    ArrayPerformancePtr arrayPerformance =ArrayPerformance::create(recordName,size,delay);
-    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
-    ServerContext::shared_pointer ctx = 
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+    
     try {
+        PVDatabasePtr master = PVDatabase::getMaster();
+        
+        ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
+        ServerContext::shared_pointer ctx = 
+        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+        ArrayPerformancePtr arrayPerformance =ArrayPerformance::create(recordName,size,delay);
+        master->addRecord(arrayPerformance);
+        arrayPerformance->startThread();
         std::vector<LongArrayMonitorPtr> longArrayMonitor(nMonitor);
         for(size_t i=0; i<nMonitor; ++i) {
            longArrayMonitor[i] = LongArrayMonitorPtr(
@@ -86,18 +92,16 @@ int main(int argc,char *argv[])
         while(true) {
             cout << "Type exit to stop: \n";
             getline(cin,str);
-            if(str.compare("exit")==0) {
-                 for(size_t i=0; i<nMonitor; ++i) {
-                      longArrayMonitor[i]->stop();
-                 }
-                 arrayPerformance->stop();
-                 ctx->destroy();           
-                 exit(0);
-            }
+            if(str.compare("exit")==0) break;
         }
+        for(size_t i=0; i<nMonitor; ++i) {
+            longArrayMonitor[i]->stop();
+        }
+        arrayPerformance->stop();
+        ctx->destroy();
     } catch (std::runtime_error e) {
-        cout << "exception " << e.what() << endl;
-        exit(1);
+        cerr << "exception " << e.what() << endl;
+        return 1;
     }
     return 0;
 }

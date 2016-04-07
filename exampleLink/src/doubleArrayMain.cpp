@@ -43,7 +43,6 @@ int main(int argc,char *argv[])
     try {
         PVDatabasePtr master = PVDatabase::getMaster();
         ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
-        
         NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
         PVStructurePtr pvStructure = ntScalarArrayBuilder->
             value(pvDouble)->
