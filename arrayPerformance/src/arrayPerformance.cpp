@@ -34,19 +34,17 @@ ArrayPerformancePtr ArrayPerformance::create(
          arrayPerformance.reset();
          return arrayPerformance;
     }
-    PVDatabasePtr master = PVDatabase::getMaster();
-    bool result = master->addRecord(arrayPerformance);
-    if(!result) {
-        cout<< "record " << arrayPerformance->getRecordName() << " not added" << endl;
-        arrayPerformance.reset();
-    }
-    arrayPerformance->thread =  std::auto_ptr<epicsThread>(new epicsThread(
-        *arrayPerformance,
+    return arrayPerformance;
+}
+
+void ArrayPerformance::startThread()
+{
+    thread =  std::auto_ptr<epicsThread>(new epicsThread(
+        *this,
         "arrayPerformance",
         epicsThreadGetStackSize(epicsThreadStackSmall),
         epicsThreadPriorityLow));
-    arrayPerformance->thread->start();
-    return arrayPerformance;
+    thread->start();
 }
 
 ArrayPerformance::ArrayPerformance(

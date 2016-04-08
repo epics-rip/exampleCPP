@@ -53,9 +53,9 @@
 <p><b>exampleLink</b> can be started either as a main program of as part of an EPICS V3 IOC.</p>
 <h3>Start as a main program</h3>
 <pre>
-mrk&gt; pwd
+mrk> pwd
 /home/epicsv4/master/exampleCPP/exampleLink
-mrk&gt; bin/$EPICS_HOST_ARCH/exampleLinkMain provider
+mrk> bin/$EPICS_HOST_ARCH/exampleLinkMain provider
 </pre>
 <p><b>provider</b> is optional.
 If specified it must be <b>local</b> or <b>pva</b>.
@@ -63,9 +63,9 @@ The default is <b>pva</b>.
 </p>
 <h3>Start it as part of an EPICS V3 IOC:</h3>
 <pre>
-mrk&gt; pwd
+mrk> pwd
 /home/epicsv4/master/exampleCPP/exampleLink/iocBoot/exampleLink
-mrk&gt; ../../bin/$EPICS_HOST_ARCH/exampleLink arg
+mrk> ../../bin/$EPICS_HOST_ARCH/exampleLink arg
 </pre>
 <p><b>arg</b> must be either <b>st.local</b> or <b>st.remote</b>
 </p>
@@ -73,9 +73,9 @@ mrk&gt; ../../bin/$EPICS_HOST_ARCH/exampleLink arg
 <p>A pvaClient test is available to test exampleLink.
 Start the example and then:</p>
 <pre>
-mrk&gt; pwd
+mrk> pwd
 /home/epicsv4/master/exampleCPP/exampleLink
-mrk&gt; bin/$EPICS_HOST_ARCH/exampleLinkClient
+mrk> bin/$EPICS_HOST_ARCH/exampleLinkClient
 </pre>
 <h2>Discussion</h2>
 <h3>Access Alternatives</h3>
@@ -85,16 +85,13 @@ mrk&gt; bin/$EPICS_HOST_ARCH/exampleLinkClient
     <dd>
     If the other PVRecord is accessed via the master PVDatabase then
     threading issues are up to the implementation.
-    For now this method will not be discussed.</dd>
-  <dt>Access via pvAccess</dt>
+    </dd>
+  <dt>Access via channelProvider pva or ca</dt>
     <dd>
-      If access is via pvAccess then locking is handled by pvAccess.</dd>
-</dl>
-<p>Access via pvAccess can be done either by local or remote channel provider.</p>
-<dl>
-  <dt>Access via channelProviderLocal</dt>
+      If  provider  <b>pva</b> or <b>ca</b> is used then locking is handled by pvAccess.</dd>
+  <dt>Access via channelProvider local</dt>
     <dd>
-    If the local pvAccess server is used the implementation must be careful that it does not
+    If provider  <b>local</b> is used the implementation must be careful that it does not
     cause deadlocks.
     When the process method is called the pvRecord for the process method is locked.
     When it makes a pvAccess get, put, etc request the other record is locked.
@@ -105,13 +102,9 @@ mrk&gt; bin/$EPICS_HOST_ARCH/exampleLinkClient
     be used.
     But this results in more context switches.
     </dd>
-   <dt>Access via remote pvAccess</dt>
-      <dd>If remote pvAccess is used then all locking issues are handled by pvAccess.
-      The linked channel can be a pvRecord in the local pvDatabase or can be implemented
-      by a remote pvAccess server.</dd>
 </dl>
 <h3>Data synchronization</h3>
-<p>If pvAccess is used then it handles data synchronization.
+<p>If pvAccess (provider  <b>pva</b> or <b>ca</b>) is used then it handles data synchronization.
 This is done by making a copy of the data that is transferred between the two pvRecords.
 This is true if either remote or local pvAccess is used.
 Each get, put, etc request results in data being copied between the two records.</p>
@@ -131,19 +124,25 @@ i. e. a main program, or can be part of a V3IOC.</p>
 <pre>
 ...
     PVDatabasePtr master = PVDatabase::getMaster();
+    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
+    ServerContext::shared_pointer ctx =
+    startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+    PvaClientPtr pva= PvaClient::create();
 ... 
     master->addRecord(...
 ...
-    ClientFactory::start();
-    ServerContext::shared_pointer ctx =
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+   cout << "exampleLink\n";
+   string str;
+   while(true) {
+        cout << "Type exit to stop: \n";
+        getline(cin,str);
+        if(str.compare("exit")==0) break;
+   }
 ...
 </pre>
-<p><b>ClientFactory::start()</b> is only necessary if some of the pvRecords
-have pvAccess links.
+<p><b>PvaClientPtr pva= PvaClient::create()</b> is only necessary if some of the pvRecords
+have <b>pva</b> or <b>ca</b> links.
 These must be called before any code that uses links is initialized.
-After these two calls there will be two channel providers: <b>local</b>, and <b>pva</b>.
-
 </p>
 <p>A pvDatabase that is part of a V3IOC has the following in the st.cmd file.</p>
 <pre>
@@ -153,6 +152,91 @@ startPVAClient
 startPVAServer
 ## commands to create pvRecords
 </pre>
+<h2>Using exampleLinkMain to test providers local pva and ca</h2>
+<h3>Options</h3>
+<p>The options supported by exampleLinkMain are shown by:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/exampleLink
+mrk> bin/linux-x86_64/exampleLinkMain -help
+provider exampleLinkRecordName . generateLinkedRecord
+default
+pva exampleLink doubleArray true
+mrk> 
+</pre>
+<p>
+Thus to run it with default options:
+</p>
+<pre>
+bin/linux-x86_64/exampleLinkMain 
+</pre>
+<p>exampleLinkMain creates an instance of ExampleLinkRecord.
+The record name is <b>exampleLinkRecordName</b>.
+The ExampleLinkRecord monitors <b>linkedRecordName</b> using the specified <b>provider</b>.
+</p>
+<h3>Monitor exampleLink</h3>
+<p>After exampleLinkMain is started then in another window:<p>
+<pre>
+pvget -m -r "field()" exampleLink
+</pre>
+<p>This can be kept running while exampleLinkMain is stopped and then restarted with
+other options as long as <b>exampleLinkRecordName</b> is doubleArray.
+</p>
+<h3>exampleLinkClient</h3>
+<p>This makes changes to the record that exampleLink monitors.
+It has the options:
+</p>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/exampleLink
+mrk> bin/linux-x86_64/exampleLinkClient -help
+provider
+default
+pva
+</pre>
+<p><b>NOTE:</b> If exampleLinkMain is stated with provider <b>ca</b>
+then exampleLinkClient must also be run with provider <b>ca</b>
+</p>
+
+<p>exampleLinkClient only works if <b>linkedRecordName</b> is doubleArray.
+</p>
+<h3>Testing via provider local</h3>
+<p>This can be tested via:</p>
+<pre>
+bin/linux-x86_64/exampleLinkMain local 
+</pre>
+<h3>Testing via provider pva</h3>
+<p>This can be done via the default options:</p>
+<pre>
+bin/linux-x86_64/exampleLinkMain 
+</pre>
+
+<p>It can also be run with pva accessing a record in another IOC:</p>
+<pre>
+bin/linux-x86_64/exampleLinkMain pva exampleLink doubleArray  false
+</pre>
+<p>But this only starts running when the following is also started:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/exampleLink
+mrk> bin/linux-x86_64/doubleArrayMain 
+</pre>
+<p><b>NOTE</b> do not leave this running for other exampleLinkMain options.
+</p>
+<h3>Testing via provider ca</h3>
+<p>This can be tested as follows:</p>
+<pre>
+bin/linux-x86_64/exampleLinkMain ca exampleLink doubleArray  false
+</pre>
+
+<p>But a softIoc for record doubleArray must also be started:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/exampleLink/v3IOC
+mrk> softIoc st.cmd
+</pre>
+
+
 <h2>Directory Layout</h2>
 <pre>
 exampleLink
@@ -162,226 +246,31 @@ exampleLink
     src
        pv
           exampleLinkRecord.h
-       code
-          exampleLinkRecord.cpp
-          exampleLinkInclude.dbd
-          exampleLinkRegister.cpp
-          exampleLinkClient.cpp
-          exampleLinkMain.cpp
+       exampleLinkRecord.cpp
+       exampleLinkInclude.dbd
+       exampleLinkRegister.cpp
+       exampleLinkClient.cpp
+       exampleLinkMain.cpp
+       doubleArrayMain.cpp
     ioc
        Db
        src
           exampleLinkInclude.dbd
           exampleLinkMain.cpp
-   iocBoot
-      exampleLink
-         st.local
-         st.remote
+    iocBoot
+        exampleLink
+           st.local
+           st.remote
+    v3IOC
+        db
+            doubleArray.db
+        st.cmd
+        README
          ...
 </pre>
 
-<h2>exampleLink/src/pv</h2>
-<p>exampleLinkRecord.h contains the following:</p>
-<pre>
-...
-class ExampleLinkRecord :
-    public PVRecord,
-    public epics::pvAccess::ChannelRequester,
-    public epics::pvAccess::MonitorRequester
-{
-public:
-    POINTER_DEFINITIONS(ExampleLinkRecord);
-    static ExampleLinkRecordPtr create(
-        std::string const &amp; recordName,
-        std::string const &amp; providerName,
-        std::string const &amp; channelName
-        );
-    virtual ~ExampleLinkRecord() {}
-    virtual void destroy();
-    virtual bool init();
-    virtual void process();
-    virtual void channelCreated(
-        const epics::pvData::Status&amp; status,
-        epics::pvAccess::Channel::shared_pointer const &amp; channel);
-    virtual void channelStateChange(
-        epics::pvAccess::Channel::shared_pointer const &amp; channel,
-        epics::pvAccess::Channel::ConnectionState connectionState);
-    virtual std::string getRequesterName() {return channelName;}
-    virtual void message(
-        std::string const &amp; message,
-        epics::pvData::MessageType messageType);
-    virtual void monitorConnect(
-        const epics::pvData::Status &amp; status,
-        epics::pvData::Monitor::shared_pointer const &amp; monitor,
-        epics::pvData::StructureConstPtr const &amp; structure);
-    virtual void monitorEvent(epics::pvData::MonitorPtr const &amp; monitor);
-    virtual void unlisten(epics::pvData::MonitorPtr const &amp; monitor);
-private:
-...
-</pre>
-<h2>exampleLink/src</h2>
-<h3>ExampleLinkRecord.cpp</h3>
-<p>All the non-static methods are either PVRecord or PVAccess methods
-and will not be discussed further.
-The create method is called to create a new PVRecord instance with code that will issue
-a ChannelGet::get request every time the process method of the instance is called.
-Some other pvAccess client can issue a channelGet, to the record instance, with a request
-to process in order to test the example.</p>
-<p>All of the initialization is done by a combination of the create and init methods so
-lets look at them:</p>
-<pre>
-ExampleLinkRecordPtr ExampleLinkRecord::create(
-    String const &amp; recordName,
-    String const &amp; providerName,
-    String const &amp; channelName)
-{
-    PVStructurePtr pvStructure = getStandardPVField()-&gt;scalarArray(
-        pvDouble,"alarm.timeStamp");
-    ExampleLinkRecordPtr pvRecord(
-        new ExampleLinkRecord(
-           recordName,providerName,channelName,pvStructure));
-    if(!pvRecord-&gt;init()) pvRecord.reset();
-    return pvRecord;
-}
-</pre>
-<p>This first creates a new ExampleLinkRecord instance,
-and then calls the init method and the returns a ExampleLinkRecordPtr.
-Note that if init returns false it returns a pointer to NULL.</p>
-<p>The init method is:</p>
-<pre>
-bool ExampleLinkRecord::init()
-{
-    initPVRecord();
 
-    PVStructurePtr pvStructure = getPVRecordStructure()-&gt;getPVStructure();
-    pvValue = static_pointer_cast&lt;PVDoubleArray&gt;(
-        pvStructure-&gt;getScalarArrayField("value",pvDouble));
-    if(pvValue==NULL) {
-        return false;
-    }
-    ChannelProvider::shared_pointer provider =
-        getChannelProviderRegistry()->getProvider(providerName);
-    if(!provider) {
-         cout &lt;&lt; getRecordName() &lt;&lt; " provider "
-              &lt;&lt; providerName &lt;&lt; " does not exist" &lt;&lt; endl;
-        return false;
-    }
-    ChannelRequester::shared_pointer channelRequester =
-        dynamic_pointer_cast&lt;ChannelRequester&gt;(getPtrSelf());
-    channel = provider-&gt;createChannel(channelName,channelRequester);
-    event.wait();
-    if(!status.isOK()) {
-        cout &lt;&lt; getRecordName() &lt;&lt; " createChannel failed "
-             &lt;&lt; status.getMessage() &lt;&lt; endl;
-        return false;
-    }
-    PVStructurePtr pvRequest = getCreateRequest()-&gt;createRequest(
-        "value");
-    MonitorRequester::shared_pointer  monitorRequester =
-        dynamic_pointer_cast&lt;MonitorRequester&gt;(getPtrSelf());
-    monitor = channel-&gt;createMonitor(monitorRequester,pvRequest);
-    return true;
-}
-</pre>
-<p>This first makes sure the pvStructure has the fields it requires:</p>
-<dl>
-  <dt>value</dt>
-     <dd>This must be a scalarArray of type double.
-       It is where data is copied when the channelGet is issued.</dd>
-</dl>
-<p>Next it makes sure the channelProvider exists.</p>
-<p>Next it creates the channel and waits until it connects.</p>
-<p>Next creates a monitors</p>
-<p>If anything goes wrong during initialization it returns false.
-This a return of true means that it has successfully created a channelGet and is ready
-to issue gets when process is called.</p>
-<p>Look at the code for more details.</p>
-<h3>exampleLinkMain.cpp</h3>
-<p>This is a main program for starting the example.</p>
-<pre>
-int main(int argc,char *argv[])
-{
-    string provider("pva");
-    if(argc&gt;1) provider = argv[1];
-    PVDatabasePtr master = PVDatabase::getMaster();
-    NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
-    PVStructurePtr pvStructure = ntScalarArrayBuilder-&gt;
-        value(pvDouble)-&gt;
-        addAlarm()-&gt;
-        addTimeStamp()-&gt;
-        createPVStructure();
-    master-&gt;addRecord(PVRecord::create("doubleArray",pvStructure));
 
-    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
-    if(provider=="pva") ClientFactory::start();
-
-    ExampleLinkRecordPtr pvRecord(
-        ExampleLinkRecord::create(
-           "exampleLink",provider,"doubleArray")); 
-    master-&gt;addRecord(pvRecord);
-
-    ServerContext::shared_pointer ctx =
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-    cout &lt;&lt; "exampleLink\n";
-    string str;
-    while(true) {
-        cout &lt;&lt; "Type exit to stop: \n";
-        getline(cin,str);
-        if(str.compare("exit")==0) break;
-
-    }
-    ctx-&gt;destroy();
-    return 0;
-}
-</pre>
-<p>The statements</p>
-<pre>
-    string provider("pva");
-    if(argc&gt;1) provider = argv[1];
-</pre>
-<p>allow the caller to provide the name of the provider or use the default.</p>
-<p>The statements</p>
-<pre>
-    PVDatabasePtr master = PVDatabase::getMaster();
-    NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
-    PVStructurePtr pvStructure = ntScalarArrayBuilder-&gt;
-        value(pvDouble)-&gt;
-        addAlarm()-&gt;
-        addTimeStamp()-&gt;
-        createPVStructure();
-    master-&gt;addRecord(PVRecord::create("doubleArray",pvStructure));
-</pre>
-<p>creates a single PVRecord and adds it to master database.</p>
-<p>The statements</p>
-<pre>
-    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
-    if(provider=="pva") ClientFactory::start();
-</pre>
-<p>starts the local channelProvider and if the desired provider for the example is <b>pva</b>
-starts clientFactory. Then pvAccess server is started.
-Note that all this must be done before the next set of code:</p>
-<pre>
-    ExampleLinkRecordPtr pvRecord(
-        ExampleLinkRecord::create(
-           "exampleLink",provider,"doubleArray")); 
-    master-&gt;addRecord(pvRecord);
-</pre>
-<p>This creates the <b>exampleLink</b> record</p>
-<p>The remaining code</p>
-<pre>
-    ServerContext::shared_pointer ctx =
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-    string str;
-    while(true) {
-        cout &lt;&lt; "Type exit to stop: \n";
-        getline(cin,str);
-        if(str.compare("exit")==0) break;
-
-    }
-    ctx-&gt;destroy();
-    return 0;
-</pre>
-<p>waits for the caller to enter exit and then terminates</p>
 <h3>exampleLinkRegister.dbd and exampleLinkRegister.cpp</h3>
 <p>This is the code that supports the <b>exampleLinkCreateRecord</b>
         shell command in <b>exampleLink/iocBoot/exampleLink/st.*</b>.
@@ -396,21 +285,21 @@ static void exampleLinkCallFunc(const iocshArgBuf *args)
     bool result(false);
     string recordName;
     NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
-    PVStructurePtr pvStructure = ntScalarArrayBuilder-&gt;
-        value(pvDouble)-&gt;
-        addAlarm()-&gt;
-        addTimeStamp()-&gt;
+    PVStructurePtr pvStructure = ntScalarArrayBuilder->
+        value(pvDouble)->
+        addAlarm()->
+        addTimeStamp()->
         createPVStructure();
-    result = master-&gt;addRecord(PVRecord::create("doubleArray",pvStructure));
-    if(!result) cout&lt;&lt; "record " &lt;&lt; recordName &lt;&lt; " not added" &lt;&lt; endl;
+    result = master->addRecord(PVRecord::create("doubleArray",pvStructure));
+    if(!result) cout<< "record " << recordName << " not added" << endl;
 
     recordName = args[0].sval;
     char *providerName = args[1].sval;
     char *channelName = args[2].sval;
     ExampleLinkRecordPtr record = ExampleLinkRecord::create(recordName,providerName,channelName);
     if(record) 
-        result = master-&gt;addRecord(record);
-    if(!result) cout &lt;&lt; "recordname" &lt;&lt; " not added" &lt;&lt; endl;
+        result = master->addRecord(record);
+    if(!result) cout << "recordname" << " not added" << endl;
 }
 </pre>
 <p>Note that this is similar to the code in <b>exampleLinkMain.cpp</b>
@@ -437,7 +326,7 @@ include "exampleLinkRegister.dbd"
 It has two startup files.
 <b>st.local</b> is:</p>
 <pre>
-&lt; envPaths
+< envPaths
 cd ${TOP}
 ## Register all support components
 dbLoadDatabase("dbd/exampleLink.dbd")

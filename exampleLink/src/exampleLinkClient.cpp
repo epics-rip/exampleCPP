@@ -20,10 +20,18 @@ using namespace epics::pvaClient;
 
 int main(int argc,char *argv[])
 {
+    string provider("pva");
+    if(argc==2 && string(argv[1])==string("-help")) {
+        cout << "provider" << endl;
+        cout << "default" << endl;
+        cout << provider  << endl;
+        return 0;
+    }
+    if(argc>1) provider = argv[1];
     cout << "_____exampleLinkClient starting_______\n";
     PvaClientPtr pva = PvaClient::create();
     try {
-        PvaClientPutPtr put = pva->channel("doubleArray")->put();
+        PvaClientPutPtr put = pva->channel("doubleArray",provider,5.0)->put();
         PvaClientPutDataPtr putData = put->getData();
         PvaClientMonitorPtr monitor = pva->channel("exampleLink")->monitor("");
         PvaClientMonitorDataPtr pvaData = monitor->getData();

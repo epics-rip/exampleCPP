@@ -19,7 +19,6 @@
 
 #include <pv/channelProviderLocal.h>
 #include <pv/serverContext.h>
-#include <pv/clientFactory.h>
 #include <pv/ntscalarArray.h>
 
 #include <pv/exampleLinkRecord.h>
@@ -28,6 +27,7 @@ using namespace std;
 using std::tr1::static_pointer_cast;
 using namespace epics::pvData;
 using namespace epics::nt;
+using namespace epics::pvaClient;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
 using namespace epics::exampleCPP::exampleLink;
@@ -35,41 +35,53 @@ using namespace epics::exampleCPP::exampleLink;
 int main(int argc,char *argv[])
 {
     string provider("pva");
+    string exampleLinkRecordName("exampleLink");
+    string linkedRecordName("doubleArray");
+    bool generateLinkedRecord(true);
     if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "provider" << endl;
+        cout << "provider exampleLinkRecordName linkedRecordName generateLinkedRecord" << endl;
         cout << "default" << endl;
-        cout << provider;
+        cout << provider << " " << exampleLinkRecordName << " " << linkedRecordName << " true" << endl;
         return 0;
     }
     if(argc>1) provider = argv[1];
-    if(provider=="pva") ClientFactory::start();
-    PVDatabasePtr master = PVDatabase::getMaster();
-    NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
-    PVStructurePtr pvStructure = ntScalarArrayBuilder->
-        value(pvDouble)->
-        addAlarm()->
-        addTimeStamp()->
-        createPVStructure();
-    string recordName("doubleArray");
-    master->addRecord(PVRecord::create(recordName,pvStructure));
-    ExampleLinkRecordPtr pvRecord(
-        ExampleLinkRecord::create(
-           "exampleLink",provider,recordName));
-    master->addRecord(pvRecord);
-
-    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
-    
-    ServerContext::shared_pointer ctx =
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-    cout << "exampleLink\n";
-    string str;
-    while(true) {
-        cout << "Type exit to stop: \n";
-        getline(cin,str);
-        if(str.compare("exit")==0) break;
-
+    if(argc>2) exampleLinkRecordName = argv[2];
+    if(argc>3) linkedRecordName = argv[3];
+    if(argc>4) {
+        string val = argv[4];
+        if(val=="false") generateLinkedRecord = false;
     }
-    ctx->destroy();
-epicsThreadSleep(5.0);  // should not be necessary
+    try {
+        PVDatabasePtr master = PVDatabase::getMaster();
+        ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
+        ServerContext::shared_pointer ctx =
+        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+        PvaClientPtr pva= PvaClient::create();
+        if(generateLinkedRecord) {
+            NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
+            PVStructurePtr pvStructure = ntScalarArrayBuilder->
+                value(pvDouble)->
+                addAlarm()->
+                addTimeStamp()->
+                createPVStructure();
+            master->addRecord(PVRecord::create(linkedRecordName,pvStructure));
+        }
+        ExampleLinkRecordPtr pvRecord(
+            ExampleLinkRecord::create(
+                 pva,exampleLinkRecordName,provider,linkedRecordName));
+
+        master->addRecord(pvRecord);
+        cout << "exampleLink\n";
+        string str;
+        while(true) {
+            cout << "Type exit to stop: \n";
+            getline(cin,str);
+            if(str.compare("exit")==0) break;
+        }
+        ctx->destroy();
+    } catch (std::runtime_error e) {
+        cerr << "exception " << e.what() << endl;
+        return 1;
+    }
     return 0;
 }

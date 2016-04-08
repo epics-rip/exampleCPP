@@ -40,6 +40,7 @@
 using namespace epics::pvData;
 using namespace epics::nt;
 using namespace epics::pvAccess;
+using namespace epics::pvaClient;
 using namespace epics::pvDatabase;
 using namespace epics::exampleCPP::exampleLink;
 using std::cout;
@@ -64,7 +65,7 @@ static void exampleLinkCallFunc(const iocshArgBuf *args)
     if(!recordName || !providerName || !channelName) {
         throw std::runtime_error("exampleLinkCreateRecord invalid number of arguments");
     }
-cout << "exampleLinkCreateRecord recordName " << recordName << " providerName " << providerName << " channelName " << channelName << endl;
+    
     PVDatabasePtr master = PVDatabase::getMaster();
     PVRecordPtr pvRecord;
     bool result(false);
@@ -76,8 +77,8 @@ cout << "exampleLinkCreateRecord recordName " << recordName << " providerName " 
         createPVStructure();
     result = master->addRecord(PVRecord::create(channelName,pvStructure));
     if(!result) cout<< "record " << recordName << " not added" << endl;
-
-    ExampleLinkRecordPtr record = ExampleLinkRecord::create(recordName,providerName,channelName);
+    PvaClientPtr pva= PvaClient::create();
+    ExampleLinkRecordPtr record = ExampleLinkRecord::create(pva,recordName,providerName,channelName);
     if(record) 
         result = master->addRecord(record);
     if(!result) cout << "recordname" << " not added" << endl;
@@ -86,7 +87,6 @@ cout << "exampleLinkCreateRecord recordName " << recordName << " providerName " 
 static void exampleLinkRegister(void)
 {
     static int firstTime = 1;
-cout << "exampleLinkRegister firstTime " << firstTime << endl;
     if (firstTime) {
         firstTime = 0;
         iocshRegister(&exampleLinkFuncDef, exampleLinkCallFunc);

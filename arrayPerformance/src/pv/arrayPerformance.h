@@ -47,6 +47,7 @@ public:
     virtual void process();
     virtual void destroy();
     virtual void run();
+    void startThread();
     void stop();
 private:
      ArrayPerformance(std::string const & recordName,
