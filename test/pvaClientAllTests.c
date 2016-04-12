@@ -11,6 +11,7 @@
  */
 
 #include <stdio.h>
+#include <epicsExit.h>
 #include <epicsThread.h>
 #include <epicsUnitTest.h>
 
