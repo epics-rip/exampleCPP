@@ -13,7 +13,7 @@ LIBSRCS += arrayPerformance.cpp
 LIBSRCS += longArrayGet.cpp
 LIBSRCS += longArrayMonitor.cpp
 LIBSRCS += longArrayPut.cpp
-arrayPerform_LIBS += pvDatabase pvAccess pvData Com
+arrayPerform_LIBS += pvDatabase pvaClient pvAccess pvData Com
 
 PROD_HOST += arrayPerformanceMain
 arrayPerformanceMain_SRCS += arrayPerformanceMain.cpp
