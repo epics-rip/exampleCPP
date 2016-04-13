@@ -23,7 +23,7 @@ arrayPerformanceMain_LIBS += pvDatabase pvaClient pvAccess pvData ca Com
 PROD_HOST += longArrayGetMain
 longArrayGetMain_SRCS += longArrayGetMain.cpp
 longArrayGetMain_LIBS += arrayPerform
-longArrayGetMain_LIBS += pvaClient pvAccess pvData Com
+longArrayGetMain_LIBS += pvaClient pvAccess pvData ca Com
 
 PROD_HOST += longArrayMonitorMain
 longArrayMonitorMain_SRCS += longArrayMonitorMain.cpp
