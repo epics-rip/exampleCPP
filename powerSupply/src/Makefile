@@ -27,7 +27,7 @@ powerSupplyClient_LIBS += pvaClient pvAccess pvData ca Com
 
 PROD_HOST += powerSupplyMonitor
 powerSupplyMonitor_SRCS += powerSupplyMonitor.cpp
-powerSupplyMonitor_LIBS += pvaClient pvAccess pvData Com
+powerSupplyMonitor_LIBS += pvaClient pvAccess pvData ca Com
 
 # shared library ABI version.
 SHRLIB_VERSION ?= 1.0
