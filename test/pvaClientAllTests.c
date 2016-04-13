@@ -11,6 +11,7 @@
  */
 
 #include <stdio.h>
+#include <epicsExit.h>
 #include <epicsThread.h>
 #include <epicsUnitTest.h>
 
@@ -20,8 +21,6 @@ int pvaClientTestPutData(void);
 int pvaClientTestMonitorData(void);
 int pvaClientTestPutGetMonitor(void);
 int pvaClientTestPutGet(void);
-int pvaClientTestMultiDouble(void);
-int pvaClientTestNTMultiChannel(void);
 
 void pvaClientAllTests(void)
 {
@@ -35,8 +34,6 @@ void pvaClientAllTests(void)
     runTest(pvaClientTestMonitorData);
     runTest(pvaClientTestPutGetMonitor);
     runTest(pvaClientTestPutGet);
-    runTest(pvaClientTestMultiDouble);
-    runTest(pvaClientTestNTMultiChannel);
 
     epicsExit(0);
 }

@@ -11,7 +11,7 @@ DBD += exampleLinkRegister.dbd
 LIBRARY = exampleLink
 LIBSRCS += exampleLinkRecord.cpp
 LIBSRCS += exampleLinkRegister.cpp
-exampleLink_LIBS += pvDatabase pvAccess nt pvData ca Com
+exampleLink_LIBS += pvDatabase pvaClient pvAccess nt pvData ca Com
 
 PROD_HOST += exampleLinkMain
 exampleLinkMain_SRCS += exampleLinkMain.cpp
