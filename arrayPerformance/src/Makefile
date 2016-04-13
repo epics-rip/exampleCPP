@@ -34,7 +34,7 @@ longArrayMonitorMain_LIBS += pvaClient pvAccess ca pvData Com
 PROD_HOST += longArrayPutMain
 longArrayPutMain_SRCS += longArrayPutMain.cpp
 longArrayPutMain_LIBS += arrayPerform
-longArrayPutMain_LIBS +=  pvaClient pvAccess pvData Com
+longArrayPutMain_LIBS += pvaClient pvAccess pvData ca Com
 
 
 PROD_HOST += vectorPerformanceMain
