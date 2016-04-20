@@ -69,7 +69,7 @@ static void exampleDoubleArray(PvaClientPtr const &pva,string const & channelNam
 int main(int argc,char *argv[])
 {
     cout << "_____examplePvaClientGet starting_______\n";
-    PvaClientPtr pva= PvaClient::create();
+    PvaClientPtr pva= PvaClient::get("pva ca");
     try {
         exampleDouble(pva,"PVRdouble","pva");
         exampleDoubleArray(pva,"PVRdoubleArray","pva");

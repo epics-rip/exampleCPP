@@ -23,7 +23,7 @@ using namespace epics::pvaClient;
 
 int main(int argc,char *argv[])
 {
-    PvaClientPtr pva = PvaClient::create();
+    PvaClientPtr pva = PvaClient::get("pva");
     try {
         PvaClientMonitorPtr monitor = pva->channel("powerSupply")->monitor("");
         while(true) {

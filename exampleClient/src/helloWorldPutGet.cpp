@@ -37,7 +37,7 @@ static void example(PvaClientPtr const &pva)
 
 int main(int argc,char *argv[])
 {
-    PvaClientPtr pva = PvaClient::create();
+    PvaClientPtr pva = PvaClient::get("pva");
     try {
         example(pva);
     } catch (std::runtime_error e) {

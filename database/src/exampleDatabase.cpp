@@ -219,7 +219,8 @@ void ExampleDatabase::create()
     recordName = "PVRhelloPutGet";
     result = master->addRecord(ExampleHelloRecord::create(recordName));
     if(!result) cout<< "record " << recordName << " not added" << endl;
-    RPCServer::shared_pointer server(new RPCServer());
-    server->registerService("helloRPC",ExampleHelloRPC::create());
+    recordName = "helloRPC";
+    result = master->addRecord(ExampleHelloRPC::create(recordName));
+    if(!result) cout<< "record " << recordName << " not added" << endl;
 }
 

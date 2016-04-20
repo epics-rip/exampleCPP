@@ -98,7 +98,7 @@ MAIN(pvaClientTest)
     testPlan(7);
     testDiag("=== pvaClientTest ===");
 
-    PvaClientPtr pvaClient = PvaClient::create();
+    PvaClientPtr pvaClient = PvaClient::get("pva ca");
     example(pvaClient);
 
     testDone();

@@ -20,7 +20,7 @@ using namespace epics::pvaClient;
 
 int main(int argc,char *argv[])
 {
-    PvaClientPtr pva = PvaClient::create();
+    PvaClientPtr pva = PvaClient::get("pva");
     try {
         PvaClientChannelPtr pvaChannel = pva->channel("powerSupply"); 
         PvaClientPutGetPtr putGet(pvaChannel->createPutGet(

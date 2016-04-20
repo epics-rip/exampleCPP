@@ -47,7 +47,7 @@ void LongArrayGet::stop()
 
 void LongArrayGet::run()
 {
-    PvaClientPtr pva(PvaClient::create());
+    PvaClientPtr pva(PvaClient::get("pva"));
     PvaClientChannelPtr pvaChannel(pva->createChannel(channelName,providerName));
     PvaClientGetPtr pvaGet(pvaChannel->createGet("value,alarm,timeStamp"));
     TimeStamp timeStamp;

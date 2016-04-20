@@ -128,7 +128,7 @@ static void example(
 int main(int argc,char *argv[])
 {
     cout << "_____examplePvaClientNTMulti starting_______\n";
-    PvaClientPtr pva = PvaClient::create();
+    PvaClientPtr pva = PvaClient::get("pva ca");
     size_t num = 4;
     shared_vector<string> channelNames(num);
     channelNames[0] = "PVRdouble";

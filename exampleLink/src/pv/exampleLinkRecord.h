@@ -63,6 +63,8 @@ private:
         std::string const & providerName
         );
     epics::pvData::PVDoubleArrayPtr pvValue;
+    epics::pvaClient::PvaClientMonitorRequester::shared_pointer  monitorRequester;
+    epics::pvaClient::PvaClientMonitorPtr pvaClientMonitor;
 };
 
 }}}

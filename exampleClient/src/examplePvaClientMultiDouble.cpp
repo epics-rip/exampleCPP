@@ -59,7 +59,7 @@ static void example(
 int main(int argc,char *argv[])
 {
     cout << "_____examplePvaClientMultiDouble starting_______\n";
-    PvaClientPtr pva = PvaClient::create();
+    PvaClientPtr pva = PvaClient::get("pva ca");
     try {
         size_t num = 5;
         shared_vector<string> channelNames(num);

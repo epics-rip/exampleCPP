@@ -35,7 +35,7 @@ int main(int argc,char *argv[])
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     ExampleDatabase::create();
     ServerContext::shared_pointer ctx =
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+        startPVAServer("local",0,true,true);
     
     master.reset();
     cout << "exampleDatabase\n";

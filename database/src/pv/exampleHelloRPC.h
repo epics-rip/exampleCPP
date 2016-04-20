@@ -14,10 +14,10 @@
 #   undef epicsExportSharedSymbols
 #endif
 
+#include <pv/pvData.h>
 #include <pv/pvDatabase.h>
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
-#include <pv/rpcServer.h>
 
 #ifdef exampleHelloRPCEpicsExportSharedSymbols
 #   define epicsExportSharedSymbols
@@ -33,19 +33,52 @@ namespace epics { namespace exampleCPP { namespace database {
 class ExampleHelloRPC;
 typedef std::tr1::shared_ptr<ExampleHelloRPC> ExampleHelloRPCPtr;
 
+class ExampleHelloRPCService;
+typedef std::tr1::shared_ptr<ExampleHelloRPCService> ExampleHelloRPCServicePtr;
+
+class epicsShareClass ExampleHelloRPCService:
+    public virtual epics::pvAccess::RPCService
+{
+public:
+    POINTER_DEFINITIONS(ExampleHelloRPCService);
+
+    static ExampleHelloRPCServicePtr create(ExampleHelloRPCPtr const & pvRecord)
+    {
+        return ExampleHelloRPCServicePtr(new ExampleHelloRPCService(pvRecord));
+    } 
+    ~ExampleHelloRPCService() {};
+
+    epics::pvData::PVStructurePtr request(
+        epics::pvData::PVStructurePtr const & args
+    );
+private:
+    ExampleHelloRPCService(ExampleHelloRPCPtr const & pvRecord)
+    : pvRecord(pvRecord) {}
+
+    ExampleHelloRPCPtr pvRecord;
+};
 
 class epicsShareClass ExampleHelloRPC :
-    public epics::pvAccess::RPCService
+    public epics::pvDatabase::PVRecord
 {
 public:
     POINTER_DEFINITIONS(ExampleHelloRPC);
-    static  epics::pvAccess::RPCService::shared_pointer create();
-    epics::pvData::PVStructurePtr request(
-         epics::pvData::PVStructurePtr const & pvArgument)
-         throw (epics::pvAccess::RPCRequestException);
+    static  ExampleHelloRPCPtr create(std::string const & recordName);
+    virtual ~ExampleHelloRPC() {}
+    virtual void destroy() {PVRecord::destroy();}
+    virtual bool init();
+    virtual void process() {PVRecord::process();}
+    virtual epics::pvAccess::Service::shared_pointer getService(
+        epics::pvData::PVStructurePtr const & pvRequest);
+    void put(epics::pvData::PVStringPtr const & pvFrom);
 private :
-    ExampleHelloRPC(epics::pvData::PVStructurePtr const & pvResult);
+    ExampleHelloRPC(
+        std::string const & recordName,
+        epics::pvData::PVStructurePtr const & pvResult);
+
     epics::pvData::PVStructurePtr pvResult;
+    epics::pvAccess::Service::shared_pointer service;
+    friend class ExampleHelloRPCService;
 };
 
 }}}

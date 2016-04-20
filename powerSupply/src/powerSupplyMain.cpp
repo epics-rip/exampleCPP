@@ -36,7 +36,7 @@ int main(int argc,char *argv[])
     master->addRecord(pvRecord);
 
     ServerContext::shared_pointer ctx =
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+        startPVAServer("local",0,true,true);
     
     string str;
     while(true) {
