@@ -126,7 +126,7 @@ MAIN(pvaClientTestPutGetMonitor)
     testPlan(19);
     testDiag("=== pvaClientTestPutGetMonitor ===");
 
-    PvaClientPtr pvaClient = PvaClient::create();
+    PvaClientPtr pvaClient = PvaClient::get("pva");
     exampleDouble(pvaClient);
 
     testDone();

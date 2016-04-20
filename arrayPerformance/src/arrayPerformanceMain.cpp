@@ -77,7 +77,7 @@ int main(int argc,char *argv[])
         
         ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
         ServerContext::shared_pointer ctx = 
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+        startPVAServer("local",0,true,true);
         ArrayPerformancePtr arrayPerformance =ArrayPerformance::create(recordName,size,delay);
         master->addRecord(arrayPerformance);
         arrayPerformance->startThread();

@@ -29,7 +29,9 @@ int main(int argc,char *argv[])
     }
     if(argc>1) provider = argv[1];
     cout << "_____exampleLinkClient starting_______\n";
-    PvaClientPtr pva = PvaClient::create();
+    string providers("pva");
+    if(provider=="ca") providers = "pva ca";
+    PvaClientPtr pva = PvaClient::get(providers);
     try {
         PvaClientPutPtr put = pva->channel("doubleArray",provider,5.0)->put();
         PvaClientPutDataPtr putData = put->getData();

@@ -27,12 +27,12 @@ HelloPutGetRecordPtr HelloPutGetRecord::create(
     FieldCreatePtr fieldCreate = getFieldCreate();
     PVDataCreatePtr pvDataCreate = getPVDataCreate();
     StructureConstPtr  topStructure = fieldCreate->createFieldBuilder()->
+        add("timeStamp",standardField->timeStamp()) ->
         addNestedStructure("argument")->
             add("value",pvString)->
             endNested()->
         addNestedStructure("result") ->
-            add("value",pvString) ->
-            add("timeStamp",standardField->timeStamp()) ->
+            add("value",pvString) ->    
             endNested()->
         createStructure();
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);

@@ -33,7 +33,7 @@ static void exampleProcess(PvaClientPtr const &pva)
 
 int main(int argc,char *argv[])
 {
-    PvaClientPtr pva = PvaClient::create();
+    PvaClientPtr pva = PvaClient::get("pva");
     try {
         exampleProcess(pva);
     } catch (std::runtime_error e) {

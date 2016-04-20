@@ -59,9 +59,8 @@ bool ExampleLinkRecord::init(PvaClientPtr const & pva,string const & channelName
         return false;
     }
     PvaClientChannelPtr pvaClientChannel = pva->channel(channelName,providerName,0.0);
-   PvaClientMonitorRequester::shared_pointer  monitorRequester =
-        dynamic_pointer_cast<PvaClientMonitorRequester>(getPtrSelf());
-    pvaClientChannel->monitor("value",monitorRequester);
+    monitorRequester = dynamic_pointer_cast<PvaClientMonitorRequester>(getPtrSelf());
+    pvaClientMonitor = pvaClientChannel->monitor("value",monitorRequester);
     return true;
 }
 

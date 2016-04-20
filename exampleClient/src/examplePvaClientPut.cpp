@@ -88,7 +88,7 @@ static void examplePVFieldPut(PvaClientPtr const &pva,string const & channelName
 int main(int argc,char *argv[])
 {
     cout << "_____examplePvaClientPut starting_______\n";
-    PvaClientPtr pva = PvaClient::create();
+    PvaClientPtr pva = PvaClient::get("pva ca");
     try {
         exampleDouble(pva,"PVRdouble","pva");
         exampleDoubleArray(pva,"PVRdoubleArray","pva");

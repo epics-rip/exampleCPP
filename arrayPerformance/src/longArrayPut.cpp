@@ -50,7 +50,7 @@ void LongArrayPut::stop()
 
 void LongArrayPut::run()
 {
-    PvaClientPtr pva(PvaClient::create());
+    PvaClientPtr pva(PvaClient::get("pva"));
     PvaClientChannelPtr pvaChannel(pva->createChannel(channelName,providerName));
     PvaClientPutPtr pvaPut(pvaChannel->createPut("value"));
     TimeStamp timeStamp;

@@ -52,7 +52,7 @@ static void exampleMonitor(PvaClientPtr const &pva,string const & recordName,str
 int main(int argc,char *argv[])
 {
     cout << "_____examplePvaClientMonitor starting_______\n";
-    PvaClientPtr pva = PvaClient::create();
+    PvaClientPtr pva = PvaClient::get("pva ca");
     try {
         exampleMonitor(pva,"PVRdouble","pva");
         PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");

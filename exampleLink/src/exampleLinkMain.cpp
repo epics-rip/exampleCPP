@@ -54,9 +54,10 @@ int main(int argc,char *argv[])
     try {
         PVDatabasePtr master = PVDatabase::getMaster();
         ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
+        PvaClientPtr pva= PvaClient::get(provider);
         ServerContext::shared_pointer ctx =
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-        PvaClientPtr pva= PvaClient::create();
+        startPVAServer("local",0,true,true);
+        
         if(generateLinkedRecord) {
             NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
             PVStructurePtr pvStructure = ntScalarArrayBuilder->
@@ -64,12 +65,12 @@ int main(int argc,char *argv[])
                 addAlarm()->
                 addTimeStamp()->
                 createPVStructure();
-            master->addRecord(PVRecord::create(linkedRecordName,pvStructure));
+            PVRecordPtr pvRecord(PVRecord::create(linkedRecordName,pvStructure));
+            master->addRecord(pvRecord);
         }
         ExampleLinkRecordPtr pvRecord(
             ExampleLinkRecord::create(
                  pva,exampleLinkRecordName,provider,linkedRecordName));
-
         master->addRecord(pvRecord);
         cout << "exampleLink\n";
         string str;

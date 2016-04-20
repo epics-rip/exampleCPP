@@ -49,36 +49,47 @@ using std::string;
 
 static StandardPVFieldPtr standardPVField = getStandardPVField();
 
-static const iocshArg testArg0 = { "recordName", iocshArgString };
-static const iocshArg testArg1 = { "providerName", iocshArgString };
-static const iocshArg testArg2 = { "channelName", iocshArgString };
+static const iocshArg testArg0 = { "provider", iocshArgString };
+static const iocshArg testArg1 = { "exampleLinkRecordName", iocshArgString };
+static const iocshArg testArg2 = { "linkedRecordName", iocshArgString };
+static const iocshArg testArg3 = { "generateLinkedRecord", iocshArgString };
 static const iocshArg *testArgs[] = {
-    &testArg0,&testArg1,&testArg2};
+    &testArg0,&testArg1,&testArg2,&testArg3};
 
 static const iocshFuncDef exampleLinkFuncDef = {
-    "exampleLinkCreateRecord", 3, testArgs};
+    "exampleLinkCreateRecord", 4, testArgs};
 static void exampleLinkCallFunc(const iocshArgBuf *args)
 {
-    char *recordName = args[0].sval;
-    char *providerName = args[1].sval;
-    char *channelName = args[2].sval;
-    if(!recordName || !providerName || !channelName) {
-        throw std::runtime_error("exampleLinkCreateRecord invalid number of arguments");
+    string provider("pva");
+    string exampleLinkRecord("exampleLink");
+    string linkedRecordName("doubleArray");
+    bool generateLinkedRecord(true);
+    char *sval = args[0].sval;
+    if(sval) provider = string(sval);
+    sval = args[1].sval;
+    if(sval) exampleLinkRecord = string(sval);
+    sval = args[2].sval;
+    if(sval) linkedRecordName = string(sval);
+    sval = args[3].sval;
+    if(sval) {
+        string value = string(sval);
+        if(value=="false") generateLinkedRecord = false;
     }
-    
     PVDatabasePtr master = PVDatabase::getMaster();
     PVRecordPtr pvRecord;
     bool result(false);
-    NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
-    PVStructurePtr pvStructure = ntScalarArrayBuilder->
-        value(pvDouble)->
-        addAlarm()->
-        addTimeStamp()->
-        createPVStructure();
-    result = master->addRecord(PVRecord::create(channelName,pvStructure));
-    if(!result) cout<< "record " << recordName << " not added" << endl;
-    PvaClientPtr pva= PvaClient::create();
-    ExampleLinkRecordPtr record = ExampleLinkRecord::create(pva,recordName,providerName,channelName);
+    if(generateLinkedRecord) {
+        NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
+        PVStructurePtr pvStructure = ntScalarArrayBuilder->
+            value(pvDouble)->
+            addAlarm()->
+            addTimeStamp()->
+            createPVStructure();
+        result = master->addRecord(PVRecord::create(linkedRecordName,pvStructure));
+        if(!result) cout<< "record " << linkedRecordName << " not added" << endl;
+    }
+    PvaClientPtr pva= PvaClient::get(provider);
+    ExampleLinkRecordPtr record = ExampleLinkRecord::create(pva,exampleLinkRecord,provider,linkedRecordName);
     if(record) 
         result = master->addRecord(record);
     if(!result) cout << "recordname" << " not added" << endl;
@@ -95,4 +106,5 @@ static void exampleLinkRegister(void)
 
 extern "C" {
     epicsExportRegistrar(exampleLinkRegister);
-}
+} 
+    PVDatabasePtr master = PVDatabase::getMaster();

@@ -48,7 +48,7 @@ void LongArrayMonitor::stop()
 
 void LongArrayMonitor::run()
 {
-    PvaClientPtr pva(PvaClient::create());
+    PvaClientPtr pva(PvaClient::get("pva"));
     string  request("record[queueSize=");
     char buff[20];
     sprintf(buff,"%d",queueSize);

@@ -185,7 +185,7 @@ static void testDoubleArray()
 
 MAIN(pvaClientTestMonitorData)
 {
-    pvaClient = PvaClient::create();
+    pvaClient = PvaClient::get("pva");
     fieldCreate = getFieldCreate();
     standardField = getStandardField();
     pvDataCreate = getPVDataCreate();
