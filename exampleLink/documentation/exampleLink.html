@@ -26,11 +26,11 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/exampleLink</h1>
-<h2 class="nocount">Release 1.0 - 2016.03.10</h2>
+<h2 class="nocount">Release 4.2 - 2016.04.25</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
-<b>exampleLink</b> implements a PVRecord that uses pvAccess to access another channel.
+<b>exampleLink</b> implements a PVRecord that that links to  another channel.
 </p>
   <!-- last para of Abstract is boilerplate reference to EPICS -->
       <p>For more information about EPICS generally, please refer to the home page of the <a
@@ -55,20 +55,14 @@
 <pre>
 mrk> pwd
 /home/epicsv4/master/exampleCPP/exampleLink
-mrk> bin/$EPICS_HOST_ARCH/exampleLinkMain provider
+mrk> bin/$EPICS_HOST_ARCH/exampleLinkMain
 </pre>
-<p><b>provider</b> is optional.
-If specified it must be <b>local</b> or <b>pva</b>.
-The default is <b>pva</b>.
-</p>
 <h3>Start it as part of an EPICS V3 IOC:</h3>
 <pre>
 mrk> pwd
 /home/epicsv4/master/exampleCPP/exampleLink/iocBoot/exampleLink
-mrk> ../../bin/$EPICS_HOST_ARCH/exampleLink arg
+mrk> ../../bin/$EPICS_HOST_ARCH/exampleLink st.cmd
 </pre>
-<p><b>arg</b> must be either <b>st.local</b> or <b>st.remote</b>
-</p>
 <h3>exampleLinkClient</h3>
 <p>A pvaClient test is available to test exampleLink.
 Start the example and then:</p>
@@ -125,31 +119,31 @@ i. e. a main program, or can be part of a V3IOC.</p>
 ...
     PVDatabasePtr master = PVDatabase::getMaster();
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
+    PvaClientPtr pva= PvaClient::create("providerList");
     ServerContext::shared_pointer ctx =
-    startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
-    PvaClientPtr pva= PvaClient::create();
+    startPVAServer("local",0,true,true);
+    
 ... 
     master->addRecord(...
 ...
-   cout << "exampleLink\n";
-   string str;
-   while(true) {
+    cout << "exampleLink\n";
+    string str;
+    while(true) {
         cout << "Type exit to stop: \n";
         getline(cin,str);
         if(str.compare("exit")==0) break;
-   }
+    }
 ...
 </pre>
-<p><b>PvaClientPtr pva= PvaClient::create()</b> is only necessary if some of the pvRecords
+<p><b>PvaClientPtr pva= PvaClient::create(providerList)</b> is only necessary if some of the pvRecords
 have <b>pva</b> or <b>ca</b> links.
-These must be called before any code that uses links is initialized.
+This must be called before any code that uses links is initialized.
 </p>
 <p>A pvDatabase that is part of a V3IOC has the following in the st.cmd file.</p>
 <pre>
 ...
 iocInit()
-startPVAClient
-startPVAServer
+startPVAServer local
 ## commands to create pvRecords
 </pre>
 <h2>Using exampleLinkMain to test providers local pva and ca</h2>

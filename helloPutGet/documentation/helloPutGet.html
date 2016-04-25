@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/helloPutGet</h1>
-<h2 class="nocount">Release 1.0 - 2016.03.10</h2>
+<h2 class="nocount">Release 4.2 - 2016.04.25</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -71,6 +71,7 @@ result.value will be "Hello World".
 In addition the timeStamp is set to the time when process is called.</p>
 <p>
 The example can be run on linux as follows:</p>
+<h3>Server</h3>
 <pre>
 mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/helloPutGet
@@ -82,7 +83,12 @@ mrk&gt; pwd
 /home/hg/exampleCPP/master/helloPutGet/iocBoot/helloPutGet
 mrk&gt; ../../../bin/$EPICS_HOST_ARCH/helloPutGet st.cmd
 </pre>
-
+<h3>Client</h3>
+<pre>
+mrk&gt; pwd
+/home/epicsv4/master/exampleCPP/helloPutGet
+mrk&gt; bin/$EPICS_HOST_ARCH/helloPutGetClient
+</pre>
 <h2>Directory Layout</h2>
 <p>
 The directory layout is:

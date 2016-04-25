@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP</h1>
-<h2 class="nocount">Release 4.2 - 2016.02.24</h2>
+<h2 class="nocount">Release 4.2 - 2016.04.22</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -135,10 +135,7 @@ It is a simple HelloWorld example.
 <p>
 This implements HelloWorld that is accessed via channelRPC.
 </p>
-<h3>pvDatabaseRPC</h3>
-<p>
-This is an example service that is accessed via PvAClientChannel::createChannelRPC.
-</p>
+
 
 <h3>exampleLink</h3>
 <p>
@@ -153,6 +150,16 @@ It simulates a power supply.
 <p>
 The example also has an example pvaClient for accessing the PVRecord.
 </p>
+
+<h3>pvDatabaseRPC</h3>
+
+<p>An example of a pvDatabase PVRecord which also supports RPC services.</p>
+<p>The record represents a 2-D position, but also provides an RPC service
+which moves the position through a sequence of points before returning.
+A channel to the record supports the usual operations (such as get, put and
+monitor) but also supports Channel RPC, i.e. the RPC service has the same 
+channel name as the position PV.</p>
+<p>A client ("move") for calling the service is supplied.</p>
 
 <h3>ChannelArchiverService</h3>
 <p>

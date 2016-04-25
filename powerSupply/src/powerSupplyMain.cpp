@@ -46,7 +46,6 @@ int main(int argc,char *argv[])
 
     }
     ctx->destroy();
-epicsThreadSleep(3.0); // should not be necessary
     return 0;
 }
 
