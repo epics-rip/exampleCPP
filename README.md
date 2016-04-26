@@ -63,23 +63,6 @@ requirements.
 
 ## Brief summary of examples.
 
-### helloRPC
-
-A very simple example of an EPICS V4 RPC service: This implements a
-"Hello World" example of a service that is accessed via Channel RPC.
-
-This is a good starting point for writing an RPC service.
-
-
-### ChannelArchiverService
-
-The ChannelArchiver Service is an EPICS V4 client and server which can be
-used to query the data archived by an EPICS Channel Archiver. It includes a
-bash script, gethist, which can parse a wide range of dates and times and
-process the corresponding data. However the service can be queried by any
-client issuing a pvAccess RPC request, such as eget. Requests and responses
-use EPICS V4 normative types. Requests are in the form of an NTURI normative
-type and the results are returned as an NTTable.
 
 
 ### database
@@ -107,6 +90,32 @@ IOC database must be started as follows:
 An example of a PVRecord that implements a "Hello World" service that can be
 accessed via ChannelPutGet.
 
+### helloRPC
+
+A very simple example of an EPICS V4 RPC service: This implements a
+"Hello World" example of a service that is accessed via Channel RPC.
+
+This is a starting point for writing an RPC service without using **pvDatabaseJava**.
+
+But note that example **database** has a similar example implemented via **pvDatabaseJava**, which allows clients to monitor the result of each request.
+
+
+### exampleLink
+
+This implements a pvAccess server that has a record doubleArray and a PVRecord exampleLink that monitors changes to doubleArray. PVRecord exampleLink uses pvAccess client code to monitor for changes in doubleArray.
+It can use provider local, pva, or ca to connect to doubleArray.
+The doubleArray can exist in the same IOC or, with provider pva or ca,
+can exist in another IOC.
+
+The **exampleLink** can be stated as a main program or as part of a V3 IOC.
+
+### powerSupply
+
+This is an example of creating a PVRecord that uses a somewhat complicated
+top level PVStructure. It simulates a power supply.
+
+The example also has an example pvaClient for accessing the PVRecord.
+
 
 ### pvDatabaseRPC
 
@@ -121,22 +130,6 @@ channel name as the position PV.
 A client ("move") for calling the service is supplied.
 
 
-### exampleLink
-
-This implements a V3 IOC that has a PVRecord doubleArray and a PVRecord
-exampleLink that monitors changes to doubleArray. PVRecord exampleLink uses
-pvAccess client code to monitor for changes in doubleArray. It can use 
-either provider local or pva to connect to doubleArray.
-
-
-### powerSupply
-
-This is an example of creating a PVRecord that uses a somewhat complicated
-top level PVStructure. It simulates a power supply.
-
-The example also has an example pvaClient for accessing the PVRecord.
-
-
 ###  arrayPerformance
 
 This is an example that shows performance for an array of longs.
@@ -146,6 +139,17 @@ It has a process method with code that causes the array to be updated at
 selectable rates and sizes!
 
 It also has pvaClient examples that can get, put and monitor the long array record.
+
+
+### ChannelArchiverService
+
+The ChannelArchiver Service is an EPICS V4 client and server which can be
+used to query the data archived by an EPICS Channel Archiver. It includes a
+bash script, gethist, which can parse a wide range of dates and times and
+process the corresponding data. However the service can be queried by any
+client issuing a pvAccess RPC request, such as eget. Requests and responses
+use EPICS V4 normative types. Requests are in the form of an NTURI normative
+type and the results are returned as an NTTable.
 
 
 ### test

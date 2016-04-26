@@ -27,7 +27,7 @@
 <div class="head">
 <h1>EPICS exampleCPP/powerSupply</h1>
 
-<h2 class="nocount">Release 1.0 - 2016.03.10</h2>
+<h2 class="nocount">Release 4.2 - 2016.04.25</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -50,7 +50,7 @@
 <hr />
 
 <h2>Overview</h2>
-<p>his is an example of creating a service that requires a somewhat complicated
+<p>This is an example of creating a service that requires a somewhat complicated
            top level PVStructure.</p>
 
 <p>The example has a top level pvStructure:
@@ -61,32 +61,47 @@ structure
     time_t timeStamp
     structure power
         double value
-        alarm_t alarm
     structure voltage
         double value
-        alarm_t alarm
     structure current
         double value
-        alarm_t alarm
 </pre>
 <p>It is designed to be accessed via a channelPutGet request.
 The client sets power.value and voltage.value
 When the record processes it computes current.value.
 In addition the timeStamp is set to the time when process is called.</p>
+<h2>Start Example</h2>
+<h3>Start Server</h3>
 <p>
 The example can be run on linux as follows:</p>
 <pre>
-mrk&gt; pwd
+mrk> pwd
 /home/epicsv4/master/exampleCPP/powerSupply
-mrk&gt; bin/$EPICS_HOST_ARCH/powerSupplyMain
+mrk> bin/$EPICS_HOST_ARCH/powerSupplyMain
 </pre>
 <p>To start powerSupply as part of a V3IOC:</p>
 <pre>
-mrk&gt; pwd
+mrk> pwd
 /home/hg/exampleCPP/powerSupply/iocBoot/powerSupply
-mrk&gt; ../../../bin/$EPICS_HOST_ARCH/powerSupply st.cmd
+mrk> ../../../bin/$EPICS_HOST_ARCH/powerSupply st.cmd
 </pre>
-
+<h3>Start Monitor</h3>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/powerSupply
+mrk> bin/$EPICS_HOST_ARCH/powerSupplyMonitor
+</pre>
+<h3>Start Client</h3>
+<pre>
+mrk> pwd
+/home/epicsv4/master/exampleCPP/powerSupply
+mrk> bin/$EPICS_HOST_ARCH/powerSupplyClient
+</pre>
+<p><b>NOTE:</b> The client ends by requesting a voltage of 0.
+This results in the power supply record thowing an exception.
+This results in problems including the powerSupplyMonitor no longer updating.
+Needs investigation.
+</p>
 <h2>Directory Layout</h2>
 <p>
 The directory layout is:
@@ -102,9 +117,11 @@ powerSupply
        powerSupplyRecord.cpp
        powerSupplyInclude.dbd
        powerSupplyMain.cpp
+       powerSupplyClient.cpp
+       powerSupplyMonitor.cpp
        powerSupplyRegister.cpp
        powerSupplyRegister.dbd
-       powerSupplyClient.cpp
+       
     ioc
        Db
           ...
@@ -132,6 +149,10 @@ where
      <dd>A main program that runs the example so that it can be accessed
        by a pvAccess client.
      </dd>
+   <dt>powerSupplyClient.cpp</dl>
+       <dd>Client code to test powerSupply</dd>
+   <dt>powerSupplyMonitor.cpp</dl>
+       <dd>Client code to monitor for changes in powerSupply</dd>
    <dt>powerSupplyInclude.dbd</dt>
      <dd>This has a register command so that the powerSupply can be started
        on a V3 IOC via iocsh.
@@ -148,8 +169,6 @@ powerSupplyCreateRecord powerSupply
    <dt>powerSupplyRegister.dbd</dt>
        <dd>This is the file that is used to create the shell command
         powerSupplyCreateRecord.
-    <dt>powerSupplyClient.cpp</dl>
-       <dd>Client code to test powerSupply</dd>
 
    <dt>ioc</dt>
      <dd>This is for building a V3 IOC application.</dd>
@@ -185,7 +204,7 @@ The implementation is in powerSupply.cpp.
 <p>The description consists of</p>
 <pre>
 class PowerSupplyRecord;
-typedef std::tr1::shared_ptr&lt;PowerSupplyRecord&gt; PowerSupplyRecordPtr;
+typedef std::tr1::shared_ptr<PowerSupplyRecord> PowerSupplyRecordPtr;
 
 class PowerSupplyRecord :
     public PVRecord
@@ -239,24 +258,24 @@ PowerSupplyRecordPtr PowerSupplyRecord::create(
     StandardFieldPtr standardField = getStandardField();
     FieldCreatePtr fieldCreate = getFieldCreate();
     PVDataCreatePtr pvDataCreate = getPVDataCreate();
-    StructureConstPtr  topStructure = fieldCreate-&gt;createFieldBuilder()-&gt;
-        add("alarm",standardField-&gt;alarm()) -&gt;
-            add("timeStamp",standardField-&gt;timeStamp()) -&gt;
-            addNestedStructure("power") -&gt;
-               add("value",pvDouble) -&gt;
-               endNested()-&gt;
-            addNestedStructure("voltage") -&gt;
-               add("value",pvDouble) -&gt;
-               endNested()-&gt;
-            addNestedStructure("current") -&gt;
-               add("value",pvDouble) -&gt;
-               endNested()-&gt;
+    StructureConstPtr  topStructure = fieldCreate->createFieldBuilder()->
+        add("alarm",standardField->alarm()) ->
+        add("timeStamp",standardField->timeStamp()) ->
+        addNestedStructure("power") ->
+           add("value",pvDouble) ->
+           endNested()->
+        addNestedStructure("voltage") ->
+           add("value",pvDouble) ->
+           endNested()->
+        addNestedStructure("current") ->
+           add("value",pvDouble) ->
+           endNested()->
         createStructure();
-    PVStructurePtr pvStructure = pvDataCreate-&gt;createPVStructure(topStructure);
+    PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
 
     PowerSupplyRecordPtr pvRecord(
         new PowerSupplyRecord(recordName,pvStructure));
-    if(!pvRecord-&gt;init()) pvRecord.reset();
+    if(!pvRecord->init()) pvRecord.reset();
     return pvRecord;
 }
 </pre>
@@ -300,39 +319,39 @@ bool PowerSupplyRecord::init()
     PVStructurePtr pvStructure = getPVStructure();
     PVFieldPtr pvField;
     bool result;
-    pvField = pvStructure-&gt;getSubField("timeStamp");
+    pvField = pvStructure->getSubField("timeStamp");
     if(!pvField) {
-        cerr &lt;&lt; "no timeStamp" &lt;&lt; endl;
+        cerr << "no timeStamp" << endl;
         return false;
     }
     result = pvTimeStamp.attach(pvField);
     if(!result) {
-        cerr &lt;&lt; "no timeStamp" &lt;&lt; endl;
+        cerr << "no timeStamp" << endl;
         return false;
     }
-    pvField = pvStructure-&gt;getSubField("alarm");
+    pvField = pvStructure->getSubField("alarm");
     if(!pvField) {
-        cerr &lt;&lt; "no alarm" &lt;&lt; endl;
+        cerr << "no alarm" << endl;
         return false;
     }
     result = pvAlarm.attach(pvField);
     if(!result) {
-        cerr &lt;&lt; "no alarm" &lt;&lt; endl;
+        cerr << "no alarm" << endl;
         return false;
     }
-    pvCurrent = pvStructure-&gt;getSubField&lt;PVDouble&gt;("current.value");
+    pvCurrent = pvStructure->getSubField<PVDouble>("current.value");
     if(!pvCurrent) {
-        cerr &lt;&lt; "no current\n";
+        cerr << "no current\n";
         return false;
     }
-    pvVoltage = pvStructure-&gt;getSubField&lt;PVDouble&gt;("voltage.value");
+    pvVoltage = pvStructure->getSubField<PVDouble>("voltage.value");
     if(!pvVoltage) {
-        cerr &lt;&lt; "no current\n";
+        cerr << "no current\n";
         return false;
     }
-    pvPower = pvStructure-&gt;getSubField&lt;PVDouble&gt;("power.value");
+    pvPower = pvStructure->getSubField<PVDouble>("power.value");
     if(!pvPower) {
-        cerr &lt;&lt; "no power\n";
+        cerr << "no power\n";
         return false;
     }
     alarm.setMessage("bad voltage");
@@ -345,16 +364,16 @@ bool PowerSupplyRecord::init()
 <pre>
 void PowerSupplyRecord::process()
 {
-    double voltage = pvVoltage-&gt;get();
-    double power = pvPower-&gt;get();
-    if(voltage&lt;1e-3 && voltage&gt;-1e-3) {
+    double voltage = pvVoltage->get();
+    double power = pvPower->get();
+    if(voltage<1e-3 && voltage>-1e-3) {
         alarm.setMessage("bad voltage");
         alarm.setSeverity(majorAlarm);
         pvAlarm.set(alarm);
         throw std::runtime_error("bad voltage exception");
     }
     double current = power/voltage;
-    pvCurrent-&gt;put(current);
+    pvCurrent->put(current);
     pvAlarm.get(alarm);
     if(alarm.getSeverity()!=noAlarm) {
         alarm.setMessage("");
@@ -377,19 +396,19 @@ int main(int argc,char *argv[])
 
     recordName = "powerSupply";
     pvRecord = PowerSupplyRecord::create(recordName);
-    master-&gt;addRecord(pvRecord);
+    master->addRecord(pvRecord);
 
     ServerContext::shared_pointer ctx =
-        startPVAServer(PVACCESS_ALL_PROVIDERS,0,true,true);
+        startPVAServer("local",0,true,true);
 
     string str;
     while(true) {
-        cout &lt;&lt; "Type exit to stop: \n";
+        cout << "Type exit to stop: \n";
         getline(cin,str);
         if(str.compare("exit")==0) break;
 
     }
-    ctx-&gt;destroy();
+    ctx->destroy();
     return 0;
 }
 </pre>
