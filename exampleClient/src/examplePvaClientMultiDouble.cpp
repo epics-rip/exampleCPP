@@ -34,7 +34,6 @@ static void example(
              if(!isConnected[i]) cout << channelNames[i] << " ";
          }
          cout << endl;
-         multiChannel->destroy();
          return;
     }
     PvaClientMultiGetDoublePtr multiGet(multiChannel->createGet());
@@ -53,14 +52,14 @@ static void example(
              result = multiMonitor->poll();
         }
     }
-    multiChannel->destroy();
 }
 
 int main(int argc,char *argv[])
 {
     cout << "_____examplePvaClientMultiDouble starting_______\n";
-    PvaClientPtr pva = PvaClient::get("pva ca");
     try {
+        PvaClientPtr pva = PvaClient::get("pva ca");
+//PvaClient::setDebug(true);
         size_t num = 5;
         shared_vector<string> channelNames(num);
         channelNames[0] = "PVRdouble01";
@@ -83,10 +82,10 @@ int main(int argc,char *argv[])
             names = freeze(channelNames);
             example(pva,"pva",names);
             example(pva,"ca",names);
-    } else {
-         cout << "DBRdouble00 not found\n";
-    }
-    cout << "_____examplePvaClientMultiDouble done_______\n";
+        } else {
+            cout << "DBRdouble00 not found\n";
+        }
+        cout << "_____examplePvaClientMultiDouble done_______\n";
      } catch (std::runtime_error e) {
         cout << "exception " << e.what() << endl;
         return 1;

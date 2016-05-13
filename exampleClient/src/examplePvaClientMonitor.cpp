@@ -52,8 +52,8 @@ static void exampleMonitor(PvaClientPtr const &pva,string const & recordName,str
 int main(int argc,char *argv[])
 {
     cout << "_____examplePvaClientMonitor starting_______\n";
-    PvaClientPtr pva = PvaClient::get("pva ca");
     try {
+        PvaClientPtr pva = PvaClient::get("pva ca");
         exampleMonitor(pva,"PVRdouble","pva");
         PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");
         pvaChannel->issueConnect();
@@ -66,10 +66,10 @@ int main(int argc,char *argv[])
         } else {
              cout << "DBRdouble00 not found\n";
         }
+        cout << "_____examplePvaClientMonitor done_______\n";
     } catch (std::runtime_error e) {
             cerr << "exception " << e.what() << endl;
             return 1;
     }
-    cout << "_____examplePvaClientMonitor done_______\n";;
     return 0;
 }
