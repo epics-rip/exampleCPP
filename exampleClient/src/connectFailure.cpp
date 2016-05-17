@@ -37,11 +37,14 @@ int main(int argc,char *argv[])
         PvaClientPtr pva= PvaClient::get("pva ca");
 PvaClient::setDebug(true);
         exampleConnect(pva,"PVRdouble","pva");
-cout << "after first call to exampleConnect\n";
+        cout << "after first call to exampleConnect\n";
 epicsThreadSleep(1.0);
 cout << "after epicsThreadSleep\n";
         exampleConnect(pva,"PVRdouble","pva");
-        cout << "_____examplePvaClientGet done_______\n";
+epicsThreadSleep(1.0);
+cout << "after epicsThreadSleep\n";
+        cout << "after first call to exampleConnect\n";
+        cout << "_____connectFailure done_______\n";
     } catch (std::runtime_error e) {
         cerr << "exception " << e.what() << endl;
         return 1;
