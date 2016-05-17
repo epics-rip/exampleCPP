@@ -58,6 +58,11 @@ connectFailure_SRCS += connectFailure.cpp
 connectFailure_LIBS += pvaClient pvAccess nt pvData ca Com
 
 
+PROD_HOST += temp
+temp_SRCS += temp.cpp
+temp_LIBS += pvaClient pvAccess nt pvData ca Com
+
+
 
 #===========================
 

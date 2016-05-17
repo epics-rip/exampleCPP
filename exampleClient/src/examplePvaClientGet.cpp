@@ -40,7 +40,9 @@ static void exampleDouble(PvaClientPtr const &pva,string const & channelName,str
     if(!status.isOK()) {cout << " createGet failed\n"; return;}
     PvaClientGetDataPtr pvaData = pvaGet->getData();
     value = pvaData->getDouble();
+    pvaChannel->destroy();
     cout << "as double " << value << endl;
+    cout << "__exampleDouble__ returning\n";
 }
 
 static void exampleDoubleArray(PvaClientPtr const &pva,string const & channelName,string const & providerName)
@@ -60,7 +62,9 @@ static void exampleDoubleArray(PvaClientPtr const &pva,string const & channelNam
     PvaClientGetPtr pvaGet = pvaChannel->createGet();
     PvaClientGetDataPtr pvaData = pvaGet->getData();
     value = pvaData->getDoubleArray();
+    pvaChannel->destroy();
     cout << "as doubleArray " << value << endl;
+    cout << "__exampleDoubleArray__ returning\n";
 }
 
 int main(int argc,char *argv[])
@@ -75,6 +79,7 @@ PvaClient::setDebug(true);
         pvaChannel->issueConnect();
         Status status = pvaChannel->waitConnect(1.0);
         if(status.isOK()) {
+            pvaChannel->destroy();
             exampleDouble(pva,"DBRdouble00","pva");
             exampleDouble(pva,"DBRdouble00","ca");
             exampleDoubleArray(pva,"DBRdoubleArray","pva");
@@ -82,10 +87,14 @@ PvaClient::setDebug(true);
         } else {
              cout << "DBRdouble00 not found\n";
         }
+epicsThreadSleep(1.0);
+cout << "after epicsThreadSleep\n";
         cout << "_____examplePvaClientGet done_______\n";
     } catch (std::runtime_error e) {
         cerr << "exception " << e.what() << endl;
         return 1;
     }
+epicsThreadSleep(1.0);
+cout << "after epicsThreadSleep\n";
     return 0;
 }
