@@ -53,15 +53,9 @@ getForever_SRCS += getForever.cpp
 getForever_LIBS += pvaClient pvAccess nt pvData ca Com
 
 
-PROD_HOST += connectFailure
-connectFailure_SRCS += connectFailure.cpp
-connectFailure_LIBS += pvaClient pvAccess nt pvData ca Com
-
-
-PROD_HOST += temp
-temp_SRCS += temp.cpp
-temp_LIBS += pvaClient pvAccess nt pvData ca Com
-
+PROD_HOST += testRAII
+testRAII_SRCS += testRAII.cpp
+testRAII_LIBS += pvaClient pvAccess nt pvData ca Com
 
 
 #===========================

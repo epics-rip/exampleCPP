@@ -1,7 +1,7 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/*examplePvaClientGet.cpp */
+/*testRAII.cpp */
 
 /**
  * @author mrk
@@ -19,11 +19,8 @@ using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
 
-static void exampleDouble(PvaClientPtr const &pva,string const & channelName,string const & providerName )
+static void example(PvaClientPtr const &pva,string const & channelName,string const & providerName )
 {
-    cout << "__exampleDouble__ channelName " << channelName << " providerName " << providerName << endl;
-    double value;
-    cout << "long way\n";
     PvaClientChannelPtr pvaChannel = pva->createChannel(channelName,providerName);
     pvaChannel->issueConnect();
     Status status = pvaChannel->waitConnect(2.0);
@@ -32,29 +29,26 @@ static void exampleDouble(PvaClientPtr const &pva,string const & channelName,str
     pvaGet->issueConnect();
     status = pvaGet->waitConnect();
     if(!status.isOK()) {cout << " createGet failed\n"; return;}
-    PvaClientGetDataPtr pvaData = pvaGet->getData();
-    value = pvaData->getDouble();
-    pvaChannel->destroy();
-    cout << "as double " << value << endl;
-    cout << "__exampleDouble__ returning\n";
+    cout << "__example__ returning\n";
 }
 
 
 int main(int argc,char *argv[])
 {
-    cout << "_____examplePvaClientGet starting_______\n";
+    cout << "_____testRAII starting_______\n";
     try {
-        PvaClientPtr pva= PvaClient::get("pva ca");
+        PvaClientPtr pva= PvaClient::get("pva");
 PvaClient::setDebug(true);
-        exampleDouble(pva,"PVRdouble","pva");
-epicsThreadSleep(1.0);
+        example(pva,"PVRdouble","pva");
+epicsThreadSleep(3.0);
 cout << "after epicsThreadSleep\n";
-        cout << "_____examplePvaClientGet done_______\n";
+        cout << "_____testRAII done_______\n";
     } catch (std::runtime_error e) {
         cerr << "exception " << e.what() << endl;
         return 1;
     }
-epicsThreadSleep(1.0);
+    cout << "after pvaClient looses context\n";
+epicsThreadSleep(3.0);
 cout << "after epicsThreadSleep\n";
     return 0;
 }
