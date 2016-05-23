@@ -54,6 +54,7 @@ int main(int argc,char *argv[])
     cout << "_____examplePvaClientMonitor starting_______\n";
     try {
         PvaClientPtr pva = PvaClient::get("pva ca");
+//PvaClient::setDebug(true);
         exampleMonitor(pva,"PVRdouble","pva");
         PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");
         pvaChannel->issueConnect();

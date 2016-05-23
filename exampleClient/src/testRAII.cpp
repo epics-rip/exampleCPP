@@ -39,11 +39,22 @@ static void example(PvaClientPtr const &pva,string const & channelName,string co
 
 int main(int argc,char *argv[])
 {
+    string provider("pva");
+    string channelName("PVRDouble");
+    if(argc==2 && string(argv[1])==string("-help")) {
+        cout << "provider  channelName" << endl;
+        cout << "default" << endl;
+        cout << provider << " " << channelName  << endl;
+        return 0;
+    }
+    if(argc>1) provider = argv[1];
+    if(argc>2) channelName = argv[2];
+    cout << "_____exampleLinkClient starting_______\n";
     cout << "_____testRAII starting_______\n";
     try {
-        PvaClientPtr pva= PvaClient::get("pva");
+        PvaClientPtr pva= PvaClient::get(provider);
 PvaClient::setDebug(true);
-        example(pva,"PVRdouble","pva");
+        example(pva,channelName,provider);
 cout << "after example\n";
 //epicsThreadSleep(3.0);
 //cout << "after epicsThreadSleep\n";
