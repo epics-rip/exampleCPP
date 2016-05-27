@@ -85,27 +85,73 @@ static void monitor(PvaClientPtr const &pva,string const & recordName,string con
      cout << "__monitor returning\n";
 }
 
+static void putGet(PvaClientPtr const &pva)
+{
+
+    cout << "helloWorldPutGet\n";
+    PvaClientChannelPtr channel = pva->channel("PVRhelloPutGet");
+    PvaClientPutGetPtr putGet = channel->createPutGet();
+    putGet->connect();
+    PvaClientPutDataPtr putData = putGet->getPutData();
+    PVStructurePtr arg = putData->getPVStructure();
+    PVStringPtr pvValue = arg->getSubField<PVString>("argument.value");
+    pvValue->put("World");
+    putGet->putGet();
+    PvaClientGetDataPtr getData = putGet->getGetData();
+    cout << getData->getPVStructure() << endl;
+}
+
 
 int main(int argc,char *argv[])
 {
     string provider("pva");
     string channelName("DBRdouble00");
+    size_t ntimes(1);
+    bool debug(false);
     if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "provider  channelName" << endl;
+        cout << "provider channelName ntimes debug" << endl;
         cout << "default" << endl;
-        cout << provider << " " << channelName  << endl;
+        cout << provider << " " <<  channelName << " " << ntimes  << "  " 
+             << (debug ? "true" : "false") << endl;
         return 0;
     }
     if(argc>1) provider = argv[1];
     if(argc>2) channelName = argv[2];
+    if(argc>3) ntimes = strtoul(argv[3],0,0);
+    if(argc>4) {
+        string value(argv[4]);
+        if(value=="true") debug = true;
+    }
+    bool pvaSrv(((provider.find("pva")==string::npos) ? false : true));
+    bool caSrv(((provider.find("ca")==string::npos) ? false : true));
+    cout << "provider \"" << provider << "\""
+         << " pvaSrv " << (pvaSrv ? "true" : "false")
+         << " caSrv " << (caSrv ? "true" : "false")
+         << " channelName " <<  channelName
+         << " ntimes " << ntimes
+         << " debug " << (debug ? "true" : "false") << endl;
+
     cout << "_____testRAII starting_______\n";
     try {
         PvaClientPtr pva= PvaClient::get(provider);
-//PvaClient::setDebug(true);
-        getQuick(pva,channelName,provider);
-        put(pva,channelName,provider);
-        getLongWay(pva,channelName,provider);
-        monitor(pva,channelName,provider);
+        if(debug) PvaClient::setDebug(true);
+        if(pvaSrv) {
+            for(size_t i=0; i<ntimes ; ++i) {
+                getQuick(pva,channelName,"pva");
+                put(pva,channelName,"pva");
+                getLongWay(pva,channelName,"pva");
+                monitor(pva,channelName,"pva");
+                putGet(pva);
+            }
+        }
+        if(caSrv) {
+            for(size_t i=0; i<ntimes ; ++i) {
+                getQuick(pva,channelName,"ca");
+                put(pva,channelName,"ca");
+                getLongWay(pva,channelName,"ca");
+                monitor(pva,channelName,"ca");
+            }
+        }
         cout << "_____testRAII done_______\n";
     } catch (std::runtime_error e) {
         cerr << "exception " << e.what() << endl;

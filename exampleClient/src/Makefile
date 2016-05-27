@@ -52,10 +52,18 @@ PROD_HOST += getForever
 getForever_SRCS += getForever.cpp
 getForever_LIBS += pvaClient pvAccess nt pvData ca Com
 
-
 PROD_HOST += testRAII
 testRAII_SRCS += testRAII.cpp
 testRAII_LIBS += pvaClient pvAccess nt pvData ca Com
+
+PROD_HOST += testRAIIMultiDouble
+testRAIIMultiDouble_SRCS += testRAIIMultiDouble.cpp
+testRAIIMultiDouble_LIBS += pvaClient pvAccess nt pvData ca Com
+
+
+PROD_HOST += testRAIINTMulti
+testRAIINTMulti_SRCS += testRAIINTMulti.cpp
+testRAIINTMulti_LIBS += pvaClient pvAccess nt pvData ca Com
 
 
 #===========================
