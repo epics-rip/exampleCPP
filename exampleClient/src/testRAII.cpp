@@ -57,12 +57,15 @@ static void put(PvaClientPtr const &pva,string const & channelName,string const 
     cout << "__put__ returning\n";
 }
 
-static void monitor(PvaClientPtr const &pva,string const & recordName,string const& provider)
+static void monitor(PvaClientPtr const &pva,string const & channelName,string const& providerName)
 {
-    cout << "__monitor recordName " << recordName << " provider " << provider << "__\n";
-    PvaClientMonitorPtr monitor = pva->channel(recordName,provider)->monitor("value,timeStamp");
+    cout << "__monitor channelName " << channelName << " provider " << providerName << "__\n";
+    PvaClientChannelPtr pvaChannel = pva->channel(channelName,providerName);
+    PvaClientMonitorPtr monitor = pvaChannel->createMonitor("value,timeStamp");
+    monitor->connect();
+    monitor->start();
     PvaClientMonitorDataPtr monitorData = monitor->getData();
-    PvaClientPutPtr put = pva->channel(recordName,provider,2.0)->put("");
+    PvaClientPutPtr put = pva->channel(channelName,providerName,2.0)->put("");
     PvaClientPutDataPtr putData = put->getData();
     for(size_t ntimes=0; ntimes<5; ++ntimes)
     {
@@ -137,10 +140,10 @@ int main(int argc,char *argv[])
         if(debug) PvaClient::setDebug(true);
         if(pvaSrv) {
             for(size_t i=0; i<ntimes ; ++i) {
-                getQuick(pva,channelName,"pva");
-                put(pva,channelName,"pva");
-                getLongWay(pva,channelName,"pva");
-                monitor(pva,channelName,"pva");
+                getQuick(pva,channelName,provider);
+                put(pva,channelName,provider);
+                getLongWay(pva,channelName,provider);
+                monitor(pva,channelName,provider);
                 putGet(pva);
             }
         }

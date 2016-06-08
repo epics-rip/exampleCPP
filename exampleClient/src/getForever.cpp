@@ -20,12 +20,25 @@ using namespace epics::pvaClient;
 
 int main(int argc,char *argv[])
 {
-    cout << "_____getForever starting_______\n";
+    string provider("pva");
+    string recordName("PVRdouble");
+    if(argc==2 && string(argv[1])==string("-help")) {
+        cout << "provider recordName" << endl;
+        cout << "default" << endl;
+        cout << provider << " " <<  recordName  << endl;
+        return 0;
+    }
+    if(argc>1) provider = argv[1];
+    if(argc>2) recordName = argv[2];
+    cout << "_____getForever starting__ "
+         << " provider " << provider 
+         << " recordName " << recordName 
+         << endl;
     try {
-        PvaClientPtr pva= PvaClient::get("pva");
-        
+        PvaClientPtr pva= PvaClient::get(provider);
+        PvaClientChannelPtr channel(pva->channel(recordName,provider));
         while(true) {
-            double value =  pva->channel("PVRdouble")->get()->getData()->getDouble();
+            double value = channel->get()->getData()->getDouble();
             cout << "value " << value << endl;
             int c = std::cin.peek();  // peek character
             if ( c == EOF ) continue;

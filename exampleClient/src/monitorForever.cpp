@@ -1,6 +1,6 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
-
+    
 /*monitorForever.cpp */
 
 /**
@@ -20,26 +20,58 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
+class epicsShareClass ClientMonitorRequester :
+   public PvaClientMonitorRequester
+{
+public:
+    virtual void event(PvaClientMonitorPtr const & monitor)
+    {
+        while(monitor->poll()) {
+            PvaClientMonitorDataPtr monitorData = monitor->getData();
+            cout << "monitor " << monitorData->getDouble() << endl;
+            cout << "changed\n";
+            monitorData->showChanged(cout);
+            cout << "overrun\n";
+            monitorData->showOverrun(cout);
+            monitor->releaseEvent();
+        }
+    }
+};
+
 int main(int argc,char *argv[])
 {
+    string provider("pva");
+    string channelName("DBRdouble00");
+    bool debug(false);
+    if(argc==2 && string(argv[1])==string("-help")) {
+        cout << "provider channelName  debug" << endl;
+        cout << "default" << endl;
+        cout << provider << " " <<  channelName << " "
+             << (debug ? "true" : "false") << endl;
+        return 0;
+    }
+    if(argc>1) provider = argv[1];
+    if(argc>2) channelName = argv[2];
+    if(argc>3) {
+        string value(argv[3]);
+        if(value=="true") debug = true;
+    }
+    bool pvaSrv(((provider.find("pva")==string::npos) ? false : true));
+    bool caSrv(((provider.find("ca")==string::npos) ? false : true));
+    cout << "provider \"" << provider << "\""
+         << " pvaSrv " << (pvaSrv ? "true" : "false")
+         << " caSrv " << (caSrv ? "true" : "false")
+         << " channelName " <<  channelName
+         << " debug " << (debug ? "true" : "false") << endl;
+
     cout << "_____monitorForever starting_______\n";
     try {
-        PvaClientPtr pva = PvaClient::get("pva");
-        PvaClientMonitorPtr monitor = pva->channel("PVRdouble")->monitor("");
-        PvaClientMonitorDataPtr monitorData = monitor->getData();
+        PvaClientPtr pva = PvaClient::get(provider);
+        if(debug) PvaClient::setDebug(true);
+        PvaClientMonitorRequester::shared_pointer monitorRequester(new ClientMonitorRequester());
+        PvaClientMonitorPtr monitor = 
+            pva->channel(channelName,provider)->monitor("value,timeStamp",monitorRequester);
         while(true) {
-            epicsThreadSleep(.1);
-            while(monitor->poll()) {
-                monitorData = monitor->getData();
-                cout << "monitor " << monitorData->getDouble() << endl;
-                cout << "changed\n";
-                monitorData->showChanged(cout);
-                cout << "overrun\n";
-                monitorData->showOverrun(cout);
-                monitor->releaseEvent();
-            }
-            int c = std::cin.peek();  // peek character
-            if ( c == EOF ) continue;
             cout << "Type exit to stop: \n";
             string str;
             getline(cin,str);

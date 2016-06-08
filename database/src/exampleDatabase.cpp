@@ -32,6 +32,8 @@
 #include <pv/exampleDatabase.h>
 #include <pv/exampleHelloRecord.h>
 #include <pv/exampleHelloRPC.h>
+#include <pv/traceRecord.h>
+#include <pv/removeRecord.h>
 
 using namespace std;
 using std::tr1::static_pointer_cast;
@@ -197,6 +199,8 @@ void ExampleDatabase::create()
     createRecords(master,pvDouble,"PVRdouble03");
     createRecords(master,pvDouble,"PVRdouble04");
     createRecords(master,pvDouble,"PVRdouble05");
+    master->addRecord(TraceRecord::create("PVRtraceRecord"));
+    master->addRecord(RemoveRecord::create("PVRremoveRecord"));
 
     NTEnumBuilderPtr ntEnumBuilder = NTEnum::createBuilder();
     PVStructurePtr pvStructure = ntEnumBuilder->

@@ -25,7 +25,8 @@ static void example(
 {
     cout << "_example provider " << provider << " channels " << channelNames << "_\n";
     size_t num = channelNames.size();
-    PvaClientMultiChannelPtr multiChannel(PvaClientMultiChannel::create(pva,channelNames,provider));
+    PvaClientMultiChannelPtr multiChannel(
+        PvaClientMultiChannel::create(pva,channelNames,provider));
     Status status = multiChannel->connect();
     if(!status.isSuccess()) {
          cout << "Did not connect: ";
