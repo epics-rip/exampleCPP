@@ -138,17 +138,15 @@ int main(int argc,char *argv[])
     try {
         PvaClientPtr pva= PvaClient::get(provider);
         if(debug) PvaClient::setDebug(true);
-        if(pvaSrv) {
-            for(size_t i=0; i<ntimes ; ++i) {
+        for(size_t i=0; i<ntimes ; ++i) {
+            if(pvaSrv) {
                 getQuick(pva,channelName,provider);
                 put(pva,channelName,provider);
                 getLongWay(pva,channelName,provider);
                 monitor(pva,channelName,provider);
                 putGet(pva);
             }
-        }
-        if(caSrv) {
-            for(size_t i=0; i<ntimes ; ++i) {
+            if(caSrv) {
                 getQuick(pva,channelName,"ca");
                 put(pva,channelName,"ca");
                 getLongWay(pva,channelName,"ca");
