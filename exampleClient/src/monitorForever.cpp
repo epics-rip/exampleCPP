@@ -58,6 +58,10 @@ int main(int argc,char *argv[])
     }
     bool pvaSrv(((provider.find("pva")==string::npos) ? false : true));
     bool caSrv(((provider.find("ca")==string::npos) ? false : true));
+    if(pvaSrv&&caSrv) {
+        cerr<< "multiple providers are not allowed\n";
+        return 1;
+    }
     cout << "provider \"" << provider << "\""
          << " pvaSrv " << (pvaSrv ? "true" : "false")
          << " caSrv " << (caSrv ? "true" : "false")
