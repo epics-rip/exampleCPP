@@ -106,14 +106,12 @@ void LongArrayPut::run()
             if(numChannelPut>=iterBetweenCreateChannelPut) createPut = true;
         }
         if(createPut) {
-             pvaPut->destroy();
              pvaPut = pvaChannel->createPut("value");
              numChannelPut = 0;
         }
         ++numChannelCreate;
         if(iterBetweenCreateChannel!=0) {
             if(numChannelCreate>=iterBetweenCreateChannel) {
-                pvaChannel->destroy();
                 pvaChannel = pva->createChannel(channelName,providerName);
                 pvaPut = pvaChannel->createPut("value");
                 numChannelCreate = 0;

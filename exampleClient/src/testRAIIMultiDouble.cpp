@@ -1,7 +1,7 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/*examplePvaClientMultiDouble.cpp */
+/*testRAIIMultiDouble.cpp.cpp */
 
 /**
  * @author mrk
@@ -12,6 +12,7 @@
 #include <iostream>
 
 #include <pv/pvaClientMultiChannel.h>
+#include <epicsThread.h>
 
 using namespace std;
 using namespace epics::pvData;
@@ -23,7 +24,7 @@ static void example(
      string provider,
      shared_vector<const string> const &channelNames)
 {
-    cout << "_example provider " << provider << " channels " << channelNames << "_\n";
+    cout << "_example provider " << provider << " channels " << channelNames << endl;
     size_t num = channelNames.size();
     PvaClientMultiChannelPtr multiChannel(
         PvaClientMultiChannel::create(pva,channelNames,provider));
@@ -57,36 +58,57 @@ static void example(
 
 int main(int argc,char *argv[])
 {
-    cout << "_____examplePvaClientMultiDouble starting_______\n";
+    string provider("pva");
+    size_t nelements(5);
+    size_t ntimes(1);
+    bool debug(false);
+    if(argc==2 && string(argv[1])==string("-help")) {
+        cout << "provider nelements ntimes debug" << endl;
+        cout << "default" << endl;
+        cout << provider << " " <<  nelements << " " << ntimes  << " " << (debug ? "true" : "false") << endl;
+        return 0;
+    }
+    if(argc>1) provider = argv[1];
+    if(argc>2) nelements = strtoul(argv[2],0,0);
+    if(argc>3) ntimes = strtoul(argv[3],0,0);
+    if(argc>4) {
+        string value(argv[4]);
+        if(value=="true") debug = true;
+    }
+    if(nelements<1) nelements = 1;
+    if(nelements>5) nelements = 5;
+    bool pvaSrv((provider.find("pva")==string::npos ? false : true));
+    bool caSrv((provider.find("ca")==string::npos ? false : true));
+    cout << "provider \"" << provider << "\""
+         << " pvaSrv " << (pvaSrv ? "true" : "false")
+         << " caSrv " << (caSrv ? "true" : "false")
+         << " nelements " <<  nelements
+         << " ntimes " << ntimes
+         << " debug " << (debug ? "true" : "false") << endl;
+    cout << "_____testRAIIMultiDouble.cpp starting_______\n";
     try {
-        PvaClientPtr pva = PvaClient::get("pva ca");
-//PvaClient::setDebug(true);
-        size_t num = 5;
+
+        PvaClientPtr pva = PvaClient::get(provider);
+        if(debug) PvaClient::setDebug(true);
+        size_t num = nelements;
         shared_vector<string> channelNames(num);
-        channelNames[0] = "PVRdouble01";
-        channelNames[1] = "PVRint";
-        channelNames[2] = "PVRdouble03";
-        channelNames[3] = "PVRdouble04";
-        channelNames[4] = "PVRdouble05";
+        channelNames[0] = "DBRdouble01";
+        if(nelements>1) channelNames[1] = "DBRint01";
+        if(nelements>2)channelNames[2] = "DBRdouble03";
+        if(nelements>3)channelNames[3] = "DBRdouble04";
+        if(nelements>4)channelNames[4] = "DBRdouble05";
         shared_vector<const string> names(freeze(channelNames));
-        example(pva,"pva",names);
-        PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","pva");
-        pvaChannel->issueConnect();
-        Status status = pvaChannel->waitConnect(1.0);
-        if(status.isOK()) {
-            channelNames = shared_vector<string>(num);
-            channelNames[0] = "DBRdouble01";
-            channelNames[1] = "DBRint01";
-            channelNames[2] = "DBRdouble03";
-            channelNames[3] = "DBRdouble04";
-            channelNames[4] = "DBRdouble05";
-            names = freeze(channelNames);
-            example(pva,"pva",names);
-            example(pva,"ca",names);
-        } else {
-            cout << "DBRdouble00 not found\n";
+        if(pvaSrv) {
+            for(size_t i=0; i<ntimes ; ++i) {
+                example(pva,"pva",names);
+            }
         }
-        cout << "_____examplePvaClientMultiDouble done_______\n";
+        if(caSrv) {
+            for(size_t i=0; i<ntimes ; ++i) {
+                example(pva,"ca",names);
+            }
+        }
+        cout << "_____testRAIIMultiDouble.cpp done_______\n";
      } catch (std::runtime_error e) {
         cout << "exception " << e.what() << endl;
         return 1;

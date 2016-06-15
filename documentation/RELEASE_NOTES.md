@@ -1,4 +1,4 @@
-Release 4.2
+EPICS V4 release 4.6
 ===========
 
 Summary of changes since release 4.1:
@@ -18,7 +18,7 @@ Summary of changes since release 4.1:
   * test
 
 
-Release 4.1 (2015/10/08)
+EPICS V4 release 4.5
 ========================
 
 The only significant change since release 4.0 is:

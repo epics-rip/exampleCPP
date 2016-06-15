@@ -108,14 +108,12 @@ void LongArrayGet::run()
             if(numChannelGet>=iterBetweenCreateChannelGet) createGet = true;
         }
         if(createGet) {
-             pvaGet->destroy();
              pvaGet = pvaChannel->createGet("value,timeStamp,alarm");
              numChannelGet = 0;
         }
         ++numChannelCreate;
         if(iterBetweenCreateChannel!=0) {
             if(numChannelCreate>=iterBetweenCreateChannel) {
-                pvaChannel->destroy();
                 pvaChannel = pva->createChannel(channelName,providerName);
                 pvaGet = pvaChannel->createGet("value,timeStamp,alarm");
                 numChannelCreate = 0;
