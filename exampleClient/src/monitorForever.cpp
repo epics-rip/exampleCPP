@@ -20,7 +20,7 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
-class epicsShareClass ClientMonitorRequester :
+class ClientMonitorRequester :
    public PvaClientMonitorRequester
 {
 public:
