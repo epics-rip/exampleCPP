@@ -1,14 +1,14 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/* exampleLinkRecord.h */
+/* doubleArrayRecord.h */
 
 /**
  * @author mrk
- * @date 2013.08.02
+ * @date 2016.06.17
  */
-#ifndef EXAMPLELINKRECORD_H
-#define EXAMPLELINKRECORD_H
+#ifndef DOUBLEARRAYRECORD_H
+#define DOUBLEARRAYRECORD_H
 
 #ifdef epicsExportSharedSymbols
 #   define exampleLinkEpicsExportSharedSymbols
@@ -33,28 +33,25 @@
 namespace epics { namespace exampleCPP { namespace exampleLink {
 
 
-class ExampleLinkRecord;
-typedef std::tr1::shared_ptr<ExampleLinkRecord> ExampleLinkRecordPtr;
-typedef std::tr1::weak_ptr<ExampleLinkRecord> ExampleLinkRecordWPtr;
+class DoubleArrayRecord;
+typedef std::tr1::shared_ptr<DoubleArrayRecord> DoubleArrayRecordPtr;
+typedef std::tr1::weak_ptr<DoubleArrayRecord> DoubleArrayRecordWPtr;
 
 
-class epicsShareClass ExampleLinkRecord :
-    public epics::pvDatabase::PVRecord,
-    public epics::pvaClient::PvaClientMonitorRequester
+class epicsShareClass DoubleArrayRecord :
+    public epics::pvDatabase::PVRecord
 {
 public:
-    POINTER_DEFINITIONS(ExampleLinkRecord);
-    static ExampleLinkRecordPtr create(
+    POINTER_DEFINITIONS(DoubleArrayRecord);
+    static DoubleArrayRecordPtr create(
         epics::pvaClient::PvaClientPtr const &pva,
         std::string const & recordName,
         std::string const & providerName,
         std::string const & channelName
         );
-    virtual ~ExampleLinkRecord() {}
-    virtual void process();
-    void event(epics::pvaClient::PvaClientMonitorPtr const & monitor);
+    virtual ~DoubleArrayRecord() {}
 private:
-    ExampleLinkRecord(
+    DoubleArrayRecord(
         std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure);
     bool init(
@@ -62,11 +59,8 @@ private:
         std::string const & channelName,
         std::string const & providerName
         );
-    epics::pvData::PVDoubleArrayPtr pvValue;
-    epics::pvaClient::PvaClientMonitorRequester::shared_pointer  monitorRequester;
-    epics::pvaClient::PvaClientMonitorPtr pvaClientMonitor;
 };
 
 }}}
 
-#endif  /* EXAMPLELINKRECORD_H */
+#endif  /* DOUBLEARRAYRECORD_H */
