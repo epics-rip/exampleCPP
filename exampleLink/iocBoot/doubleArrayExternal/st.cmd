@@ -7,9 +7,8 @@ dbLoadDatabase("dbd/exampleLink.dbd")
 exampleLink_registerRecordDeviceDriver(pdbbase)
 
 ## Load record instance
-dbLoadRecords("db/ai.db","name=exampleLinkAI");
+dbLoadRecords("db/dbArray.db","name=doubleArrayExternal,type=DOUBLE");
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
-startPVAServer local
-exampleLinkCreateRecord pva exampleLink doubleArray true
+startPVAServer

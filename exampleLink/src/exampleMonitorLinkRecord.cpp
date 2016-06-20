@@ -1,7 +1,7 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/* exampleLink.cpp */
+/* exampleMonitorLinkRecord.cpp */
 
 /**
  * @author mrk
@@ -12,7 +12,7 @@
 #include <pv/ntscalar.h>
 
 #define epicsExportSharedSymbols
-#include <pv/exampleLinkRecord.h>
+#include <pv/exampleMonitorLinkRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
@@ -26,7 +26,7 @@ using std::string;
 
 namespace epics { namespace exampleCPP { namespace exampleLink {
 
-ExampleLinkRecordPtr ExampleLinkRecord::create(
+ExampleMonitorLinkRecordPtr ExampleMonitorLinkRecord::create(
     PvaClientPtr  const & pva,
     string const & recordName,
     string const & providerName,
@@ -34,14 +34,14 @@ ExampleLinkRecordPtr ExampleLinkRecord::create(
 {
     PVStructurePtr pvStructure = getStandardPVField()->scalarArray(
         pvDouble,"timeStamp");
-    ExampleLinkRecordPtr pvRecord(
-        new ExampleLinkRecord(
+    ExampleMonitorLinkRecordPtr pvRecord(
+        new ExampleMonitorLinkRecord(
            recordName,pvStructure)); 
     if(!pvRecord->init(pva,channelName,providerName)) pvRecord.reset();
     return pvRecord;
 }
 
-ExampleLinkRecord::ExampleLinkRecord(
+ExampleMonitorLinkRecord::ExampleMonitorLinkRecord(
     string const & recordName,
     PVStructurePtr const & pvStructure)
 : PVRecord(recordName,pvStructure)
@@ -49,7 +49,7 @@ ExampleLinkRecord::ExampleLinkRecord(
 }
 
 
-bool ExampleLinkRecord::init(PvaClientPtr const & pva,string const & channelName,string const & providerName)
+bool ExampleMonitorLinkRecord::init(PvaClientPtr const & pva,string const & channelName,string const & providerName)
 {
     initPVRecord();
 
@@ -64,13 +64,13 @@ bool ExampleLinkRecord::init(PvaClientPtr const & pva,string const & channelName
     return true;
 }
 
-void ExampleLinkRecord::process()
+void ExampleMonitorLinkRecord::process()
 {
     PVRecord::process();
 }
 
 
-void ExampleLinkRecord::event(PvaClientMonitorPtr const & monitor)
+void ExampleMonitorLinkRecord::event(PvaClientMonitorPtr const & monitor)
 {
     while(monitor->poll()) {
         PVStructurePtr pvStructure = monitor->getData()->getPVStructure();

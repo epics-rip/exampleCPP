@@ -21,7 +21,9 @@
 #include <pv/serverContext.h>
 #include <pv/ntscalarArray.h>
 
-#include <pv/exampleLinkRecord.h>
+#include <pv/exampleMonitorLinkRecord.h>
+#include <pv/exampleGetLinkRecord.h>
+#include <pv/examplePutLinkRecord.h>
 
 using namespace std;
 using std::tr1::static_pointer_cast;
@@ -35,17 +37,17 @@ using namespace epics::exampleCPP::exampleLink;
 int main(int argc,char *argv[])
 {
     string provider("pva");
-    string exampleLinkRecordName("exampleLink");
+    string exampleMonitorLinkRecordName("exampleMonitorLink");
     string linkedRecordName("doubleArray");
     bool generateLinkedRecord(true);
     if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "provider exampleLinkRecordName linkedRecordName generateLinkedRecord" << endl;
+        cout << "provider exampleMonitorLinkRecordName linkedRecordName generateLinkedRecord" << endl;
         cout << "default" << endl;
-        cout << provider << " " << exampleLinkRecordName << " " << linkedRecordName << " true" << endl;
+        cout << provider << " " << exampleMonitorLinkRecordName << " " << linkedRecordName << " true" << endl;
         return 0;
     }
     if(argc>1) provider = argv[1];
-    if(argc>2) exampleLinkRecordName = argv[2];
+    if(argc>2) exampleMonitorLinkRecordName = argv[2];
     if(argc>3) linkedRecordName = argv[3];
     if(argc>4) {
         string val = argv[4];
@@ -68,11 +70,19 @@ int main(int argc,char *argv[])
             PVRecordPtr pvRecord(PVRecord::create(linkedRecordName,pvStructure));
             master->addRecord(pvRecord);
         }
-        ExampleLinkRecordPtr pvRecord(
-            ExampleLinkRecord::create(
-                 pva,exampleLinkRecordName,provider,linkedRecordName));
-        master->addRecord(pvRecord);
-        cout << "exampleLink\n";
+        ExampleMonitorLinkRecordPtr pvMonitorRecord(
+            ExampleMonitorLinkRecord::create(
+                 pva,exampleMonitorLinkRecordName,provider,linkedRecordName));
+        master->addRecord(pvMonitorRecord);
+        ExampleGetLinkRecordPtr pvGetRecord(
+            ExampleGetLinkRecord::create(
+                 pva,"exampleGetLink",provider,linkedRecordName));
+        master->addRecord(pvGetRecord);
+        ExamplePutLinkRecordPtr pvPutRecord(
+            ExamplePutLinkRecord::create(
+                 pva,"examplePutLink",provider,linkedRecordName));
+        master->addRecord(pvPutRecord);
+        cout << "exampleMonitorLink\n";
         string str;
         while(true) {
             cout << "Type exit to stop: \n";

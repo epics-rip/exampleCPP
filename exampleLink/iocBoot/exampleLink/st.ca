@@ -11,5 +11,7 @@ dbLoadRecords("db/dbArray.db","name=doubleArray,type=DOUBLE");
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
-startPVAServer local
-exampleLinkCreateRecord ca exampleLink doubleArray false
+startPVAServer
+exampleMonitorLinkCreateRecord ca exampleMonitorLink doubleArray
+exampleGetLinkCreateRecord ca
+examplePutLinkCreateRecord ca
