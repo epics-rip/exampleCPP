@@ -1,7 +1,7 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/* exampleHelloRPC.cpp */
+/* exampleHelloRPCRecord.cpp */
 
 /**
  * @author mrk
@@ -11,7 +11,7 @@
 #include <pv/standardField.h>
 #include <sstream>
 #define epicsExportSharedSymbols
-#include <pv/exampleHelloRPC.h>
+#include <pv/exampleHelloRPCRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
@@ -22,7 +22,7 @@ using namespace std;
 
 namespace epics { namespace exampleCPP { namespace database {
 
-PVStructurePtr ExampleHelloRPCService::request(PVStructurePtr const & pvArgument)
+PVStructurePtr ExampleHelloRPCRecordService::request(PVStructurePtr const & pvArgument)
 {
     PVStringPtr pvFrom = pvArgument->getSubField<PVString>("value");
     if(!pvFrom) {
@@ -35,7 +35,7 @@ PVStructurePtr ExampleHelloRPCService::request(PVStructurePtr const & pvArgument
     return pvRecord->pvResult;
 }
 
-ExampleHelloRPCPtr  ExampleHelloRPC::create(string const & recordName)
+ExampleHelloRPCRecordPtr  ExampleHelloRPCRecord::create(string const & recordName)
 {
     FieldCreatePtr fieldCreate = getFieldCreate();
     PVDataCreatePtr pvDataCreate = getPVDataCreate();
@@ -43,13 +43,13 @@ ExampleHelloRPCPtr  ExampleHelloRPC::create(string const & recordName)
         add("value",pvString)->
         createStructure();
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
-    ExampleHelloRPCPtr pvRecord(
-        new ExampleHelloRPC(recordName,pvStructure));
+    ExampleHelloRPCRecordPtr pvRecord(
+        new ExampleHelloRPCRecord(recordName,pvStructure));
     if(!pvRecord->init()) pvRecord.reset();
     return pvRecord;
 }
 
-ExampleHelloRPC::ExampleHelloRPC(
+ExampleHelloRPCRecord::ExampleHelloRPCRecord(
     string const & recordName,
     PVStructurePtr const & pvResult)
 : PVRecord(recordName,pvResult),
@@ -57,22 +57,22 @@ ExampleHelloRPC::ExampleHelloRPC(
 {
 }
 
-bool ExampleHelloRPC::init()
+bool ExampleHelloRPCRecord::init()
 {
     initPVRecord();
-    service = ExampleHelloRPCService::create(
-        std::tr1::dynamic_pointer_cast<ExampleHelloRPC>(
+    service = ExampleHelloRPCRecordService::create(
+        std::tr1::dynamic_pointer_cast<ExampleHelloRPCRecord>(
             shared_from_this()));
     return true;
 }
 
 
-Service::shared_pointer ExampleHelloRPC::getService(PVStructurePtr const & pvRequest)
+Service::shared_pointer ExampleHelloRPCRecord::getService(PVStructurePtr const & pvRequest)
 {
      return service;
 }
 
-void ExampleHelloRPC::put(PVStringPtr const &pvFrom)
+void ExampleHelloRPCRecord::put(PVStringPtr const &pvFrom)
 {
     lock();
     beginGroupPut();
