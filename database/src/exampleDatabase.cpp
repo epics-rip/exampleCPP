@@ -31,7 +31,7 @@
 #define epicsExportSharedSymbols
 #include <pv/exampleDatabase.h>
 #include <pv/exampleHelloRecord.h>
-#include <pv/exampleHelloRPC.h>
+#include <pv/exampleHelloRPCRecord.h>
 #include <pv/traceRecord.h>
 #include <pv/removeRecord.h>
 
@@ -223,8 +223,8 @@ void ExampleDatabase::create()
     recordName = "PVRhelloPutGet";
     result = master->addRecord(ExampleHelloRecord::create(recordName));
     if(!result) cout<< "record " << recordName << " not added" << endl;
-    recordName = "helloRPC";
-    result = master->addRecord(ExampleHelloRPC::create(recordName));
+    recordName = "PVRhelloRPC";
+    result = master->addRecord(ExampleHelloRPCRecord::create(recordName));
     if(!result) cout<< "record " << recordName << " not added" << endl;
 }
 

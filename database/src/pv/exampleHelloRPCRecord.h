@@ -1,16 +1,16 @@
 // Copyright information and license terms for this software can be
 // found in the file LICENSE that is included with the distribution
 
-/* exampleHelloRPC.h */
+/* exampleHelloRPCRecord.h */
 /**
  * @author mrk
  * @date 2013.04.02
  */
-#ifndef EXAMPLEHELLORPC_H
-#define EXAMPLEHELLORPC_H
+#ifndef EXAMPLEHELLORPCRECORD_H
+#define EXAMPLEHELLORPCRECORD_H
 
 #ifdef epicsExportSharedSymbols
-#   define exampleHelloRPCEpicsExportSharedSymbols
+#   define exampleHelloRPCRecordEpicsExportSharedSymbols
 #   undef epicsExportSharedSymbols
 #endif
 
@@ -19,9 +19,9 @@
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
 
-#ifdef exampleHelloRPCEpicsExportSharedSymbols
+#ifdef exampleHelloRPCRecordEpicsExportSharedSymbols
 #   define epicsExportSharedSymbols
-#	undef exampleHelloRPCEpicsExportSharedSymbols
+#	undef exampleHelloRPCRecordEpicsExportSharedSymbols
 #endif
 
 #include <shareLib.h>
@@ -30,41 +30,41 @@
 namespace epics { namespace exampleCPP { namespace database {
 
 
-class ExampleHelloRPC;
-typedef std::tr1::shared_ptr<ExampleHelloRPC> ExampleHelloRPCPtr;
+class ExampleHelloRPCRecord;
+typedef std::tr1::shared_ptr<ExampleHelloRPCRecord> ExampleHelloRPCRecordPtr;
 
-class ExampleHelloRPCService;
-typedef std::tr1::shared_ptr<ExampleHelloRPCService> ExampleHelloRPCServicePtr;
+class ExampleHelloRPCRecordService;
+typedef std::tr1::shared_ptr<ExampleHelloRPCRecordService> ExampleHelloRPCRecordServicePtr;
 
-class epicsShareClass ExampleHelloRPCService:
+class epicsShareClass ExampleHelloRPCRecordService:
     public virtual epics::pvAccess::RPCService
 {
 public:
-    POINTER_DEFINITIONS(ExampleHelloRPCService);
+    POINTER_DEFINITIONS(ExampleHelloRPCRecordService);
 
-    static ExampleHelloRPCServicePtr create(ExampleHelloRPCPtr const & pvRecord)
+    static ExampleHelloRPCRecordServicePtr create(ExampleHelloRPCRecordPtr const & pvRecord)
     {
-        return ExampleHelloRPCServicePtr(new ExampleHelloRPCService(pvRecord));
+        return ExampleHelloRPCRecordServicePtr(new ExampleHelloRPCRecordService(pvRecord));
     } 
-    ~ExampleHelloRPCService() {};
+    ~ExampleHelloRPCRecordService() {};
 
     epics::pvData::PVStructurePtr request(
         epics::pvData::PVStructurePtr const & args
     );
 private:
-    ExampleHelloRPCService(ExampleHelloRPCPtr const & pvRecord)
+    ExampleHelloRPCRecordService(ExampleHelloRPCRecordPtr const & pvRecord)
     : pvRecord(pvRecord) {}
 
-    ExampleHelloRPCPtr pvRecord;
+    ExampleHelloRPCRecordPtr pvRecord;
 };
 
-class epicsShareClass ExampleHelloRPC :
+class epicsShareClass ExampleHelloRPCRecord :
     public epics::pvDatabase::PVRecord
 {
 public:
-    POINTER_DEFINITIONS(ExampleHelloRPC);
-    static  ExampleHelloRPCPtr create(std::string const & recordName);
-    virtual ~ExampleHelloRPC() {}
+    POINTER_DEFINITIONS(ExampleHelloRPCRecord);
+    static  ExampleHelloRPCRecordPtr create(std::string const & recordName);
+    virtual ~ExampleHelloRPCRecord() {}
     virtual void destroy() {PVRecord::destroy();}
     virtual bool init();
     virtual void process() {PVRecord::process();}
@@ -72,15 +72,15 @@ public:
         epics::pvData::PVStructurePtr const & pvRequest);
     void put(epics::pvData::PVStringPtr const & pvFrom);
 private :
-    ExampleHelloRPC(
+    ExampleHelloRPCRecord(
         std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvResult);
 
     epics::pvData::PVStructurePtr pvResult;
     epics::pvAccess::Service::shared_pointer service;
-    friend class ExampleHelloRPCService;
+    friend class ExampleHelloRPCRecordService;
 };
 
 }}}
 
-#endif  /* EXAMPLEHELLORPC_H */
+#endif  /* EXAMPLEHELLORPCRECORD_H */
