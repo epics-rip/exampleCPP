@@ -18,6 +18,23 @@ using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
 
+class  ChannelStateChangeRequester :
+     public PvaClientChannelStateChangeRequester
+{
+    bool connected;
+public:
+    POINTER_DEFINITIONS(ChannelStateChangeRequester);
+    ChannelStateChangeRequester()
+    : connected(true)
+     {}
+    virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected )
+    {
+        cout << "channelStateChange state " << (isConnected ? "true" : "false") << endl; 
+        connected = isConnected;
+    }
+    bool isConnected() {return connected;}
+};
+
 int main(int argc,char *argv[])
 {
     string provider("pva");
@@ -56,9 +73,16 @@ int main(int argc,char *argv[])
         PvaClientPtr pva= PvaClient::get(provider);
         if(debug) PvaClient::setDebug(true);
         PvaClientChannelPtr channel(pva->channel(channelName,provider));
+        ChannelStateChangeRequester::shared_pointer stateChangeRequester(
+            new ChannelStateChangeRequester());
+        channel->setStateChangeRequester(stateChangeRequester);
         while(true) {
-            double value = channel->get()->getData()->getDouble();
-            cout << "value " << value << endl;
+            if(stateChangeRequester->isConnected()) {
+                double value = channel->get()->getData()->getDouble();
+                cout << "value " << value << endl;
+            } else {
+                cout <<"did not issue get because connection lost\n";
+            }
             int c = std::cin.peek();  // peek character
             if ( c == EOF ) continue;
             cout << "Type exit to stop: \n";

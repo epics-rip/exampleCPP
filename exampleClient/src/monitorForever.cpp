@@ -23,7 +23,12 @@ using namespace epics::pvaClient;
 class ClientMonitorRequester :
    public PvaClientMonitorRequester
 {
+    bool unlistenCalled;
 public:
+    POINTER_DEFINITIONS(ClientMonitorRequester);
+    ClientMonitorRequester()
+    : unlistenCalled(false)
+    {}
     virtual void event(PvaClientMonitorPtr const & monitor)
     {
         while(monitor->poll()) {
@@ -36,6 +41,12 @@ public:
             monitor->releaseEvent();
         }
     }
+    virtual void unlisten()
+    {
+         cout << "ClientMonitorRequester::unlisten\n";
+         unlistenCalled = true;
+    }
+    bool isUnlisten() {return unlistenCalled;}
 };
 
 int main(int argc,char *argv[])
@@ -72,13 +83,17 @@ int main(int argc,char *argv[])
     try {
         PvaClientPtr pva = PvaClient::get(provider);
         if(debug) PvaClient::setDebug(true);
-        PvaClientMonitorRequester::shared_pointer monitorRequester(new ClientMonitorRequester());
+        ClientMonitorRequester::shared_pointer monitorRequester(new ClientMonitorRequester());
         PvaClientMonitorPtr monitor = 
             pva->channel(channelName,provider)->monitor("value,timeStamp",monitorRequester);
         while(true) {
             cout << "Type exit to stop: \n";
             string str;
             getline(cin,str);
+            if(monitorRequester->isUnlisten()) {
+                cout << "exiting because unlisten was called\n";
+                break;
+            }
             if(str.compare("exit")==0) break;
         }
     } catch (std::runtime_error e) {
