@@ -52,7 +52,7 @@ public:
 int main(int argc,char *argv[])
 {
     string provider("pva");
-    string channelName("DBRdouble00");
+    string channelName("PVRdouble");
     bool debug(false);
     if(argc==2 && string(argv[1])==string("-help")) {
         cout << "provider channelName  debug" << endl;
