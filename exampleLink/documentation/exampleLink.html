@@ -126,10 +126,10 @@ i. e. a main program, or can be part of a V3IOC.</p>
 ... 
     master->addRecord(...
 ...
-    cout << "exampleLink\n";
+    cout &lt;&lt; "exampleLink\n";
     string str;
     while(true) {
-        cout << "Type exit to stop: \n";
+        cout &lt;&lt; "Type exit to stop: \n";
         getline(cin,str);
         if(str.compare("exit")==0) break;
     }
@@ -150,13 +150,13 @@ startPVAServer local
 <h3>Options</h3>
 <p>The options supported by exampleLinkMain are shown by:</p>
 <pre>
-mrk> pwd
+mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/exampleLink
 mrk> bin/linux-x86_64/exampleLinkMain -help
 provider exampleLinkRecordName . generateLinkedRecord
 default
 pva exampleLink doubleArray true
-mrk> 
+mrk&gt;
 </pre>
 <p>
 Thus to run it with default options:
@@ -168,8 +168,9 @@ bin/linux-x86_64/exampleLinkMain
 The record name is <b>exampleLinkRecordName</b>.
 The ExampleLinkRecord monitors <b>linkedRecordName</b> using the specified <b>provider</b>.
 </p>
+
 <h3>Monitor exampleLink</h3>
-<p>After exampleLinkMain is started then in another window:<p>
+<p>After exampleLinkMain is started then in another window:</p>
 <pre>
 pvget -m -r "field()" exampleLink
 </pre>
@@ -181,9 +182,9 @@ other options as long as <b>exampleLinkRecordName</b> is doubleArray.
 It has the options:
 </p>
 <pre>
-mrk> pwd
+mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/exampleLink
-mrk> bin/linux-x86_64/exampleLinkClient -help
+mrk&gt; bin/linux-x86_64/exampleLinkClient -help
 provider
 default
 pva
@@ -211,9 +212,9 @@ bin/linux-x86_64/exampleLinkMain pva exampleLink doubleArray  false
 </pre>
 <p>But this only starts running when the following is also started:</p>
 <pre>
-mrk> pwd
+mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/exampleLink
-mrk> bin/linux-x86_64/doubleArrayMain 
+mrk&gt; bin/linux-x86_64/doubleArrayMain 
 </pre>
 <p><b>NOTE</b> do not leave this running for other exampleLinkMain options.
 </p>
@@ -285,7 +286,7 @@ static void exampleLinkCallFunc(const iocshArgBuf *args)
         addTimeStamp()->
         createPVStructure();
     result = master->addRecord(PVRecord::create("doubleArray",pvStructure));
-    if(!result) cout<< "record " << recordName << " not added" << endl;
+    if(!result) cout&lt;&lt; "record " &lt;&lt; recordName &lt;&lt; " not added" &lt;&lt; endl;
 
     recordName = args[0].sval;
     char *providerName = args[1].sval;
@@ -293,7 +294,7 @@ static void exampleLinkCallFunc(const iocshArgBuf *args)
     ExampleLinkRecordPtr record = ExampleLinkRecord::create(recordName,providerName,channelName);
     if(record) 
         result = master->addRecord(record);
-    if(!result) cout << "recordname" << " not added" << endl;
+    if(!result) cout &lt;&lt; "recordname" &lt;&lt; " not added" &lt;&lt; endl;
 }
 </pre>
 <p>Note that this is similar to the code in <b>exampleLinkMain.cpp</b>
@@ -320,7 +321,7 @@ include "exampleLinkRegister.dbd"
 It has two startup files.
 <b>st.local</b> is:</p>
 <pre>
-< envPaths
+&lt; envPaths
 cd ${TOP}
 ## Register all support components
 dbLoadDatabase("dbd/exampleLink.dbd")

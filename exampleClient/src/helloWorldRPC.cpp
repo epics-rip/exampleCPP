@@ -78,7 +78,7 @@ static void exampleMore(PvaClientPtr const &pva,string const & channelName)
         createStructure();
     PVStructurePtr pvRequest = pvDataCreate->createPVStructure(topStructure);
     PVStringPtr pvArgument = pvRequest->getSubField<PVString>("value");
-    PvaClientRPCPtr rpc(pva->channel(channelName)->createRPC(pvRequest));
+    PvaClientRPCPtr rpc(pva->channel(channelName)->createRPC());
     pvArgument->put("World");
     cout << "send " << pvArgument->get() << endl;
     PVStructurePtr pvResult = rpc->request(pvRequest);
@@ -102,7 +102,7 @@ static void exampleEvenMore(PvaClientPtr const &pva,string const & channelName)
     Status status = pvaChannel->waitConnect(2.0);
     if(!status.isOK()) {cout << " connect failed\n"; return;}
     ClientRPCRequester::shared_pointer requester(new ClientRPCRequester());
-    PvaClientRPCPtr rpc(pvaChannel->createRPC(pvRequest));
+    PvaClientRPCPtr rpc(pvaChannel->createRPC());
     rpc->issueConnect();
     status = rpc->waitConnect();
     if(!status.isOK()) {cout << " rpc connect failed\n"; return;}

@@ -37,20 +37,18 @@ using namespace epics::exampleCPP::exampleLink;
 int main(int argc,char *argv[])
 {
     string provider("pva");
-    string exampleMonitorLinkRecordName("exampleMonitorLink");
     string linkedRecordName("doubleArray");
     bool generateLinkedRecord(true);
     if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "provider exampleMonitorLinkRecordName linkedRecordName generateLinkedRecord" << endl;
+        cout << "provider  linkedRecordName generateLinkedRecord" << endl;
         cout << "default" << endl;
-        cout << provider << " " << exampleMonitorLinkRecordName << " " << linkedRecordName << " true" << endl;
+        cout << provider << " " << " " << linkedRecordName << " true" << endl;
         return 0;
     }
     if(argc>1) provider = argv[1];
-    if(argc>2) exampleMonitorLinkRecordName = argv[2];
-    if(argc>3) linkedRecordName = argv[3];
-    if(argc>4) {
-        string val = argv[4];
+    if(argc>2) linkedRecordName = argv[2];
+    if(argc>3) {
+        string val = argv[3];
         if(val=="false") generateLinkedRecord = false;
     }
     try {
@@ -72,7 +70,7 @@ int main(int argc,char *argv[])
         }
         ExampleMonitorLinkRecordPtr pvMonitorRecord(
             ExampleMonitorLinkRecord::create(
-                 pva,exampleMonitorLinkRecordName,provider,linkedRecordName));
+                 pva, "exampleMonitorLink",provider,linkedRecordName));
         master->addRecord(pvMonitorRecord);
         ExampleGetLinkRecordPtr pvGetRecord(
             ExampleGetLinkRecord::create(
