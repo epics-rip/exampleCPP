@@ -1,11 +1,13 @@
 EPICS V4 release 4.6
 ===========
 
+## Version 4.2
+
 Summary of changes since release 4.1:
 
 * HelloWorld has been renamed helloRPC.
 
-* The following examples have been added from pvDatabaseCPP:
+* The following examples have been moved from pvDatabaseCPP:
   * arrayPerformance
   * database
   * exampleLink
@@ -13,7 +15,7 @@ Summary of changes since release 4.1:
   * powerSupply
   * pvDatabaseRPC
 
-* The following have been added from pvaClientCPP:
+* The following have been moved from pvaClientCPP:
   * exampleClient
   * test
 
