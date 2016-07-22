@@ -115,6 +115,21 @@ static void exampleEvenMore(PvaClientPtr const &pva,string const & channelName)
     cout << "send " << pvArgument->get() << endl;
     rpc->request(pvRequest,requester);
     requester->waitResponse();
+    rpc->setResponseTimeout(.001);
+    pvArgument->put("Once again");
+    cout << "send " << pvArgument->get() << endl;
+    try {
+        rpc->request(pvRequest, requester);
+        requester->waitResponse();
+    } catch (std::runtime_error e) {
+          cerr << "Expected exception " << e.what() << endl;  
+    }
+    try {
+        rpc->request(pvRequest, requester);
+        rpc->request(pvRequest, requester);
+    } catch (std::runtime_error e) {
+          cerr << "Expected exception " << e.what() << endl;  
+    }
 }
 
 

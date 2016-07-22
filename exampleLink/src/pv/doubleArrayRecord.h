@@ -50,15 +50,15 @@ public:
         std::string const & channelName
         );
     virtual ~DoubleArrayRecord() {}
-private:
-    DoubleArrayRecord(
-        std::string const & recordName,
-        epics::pvData::PVStructurePtr const & pvStructure);
     bool init(
         epics::pvaClient::PvaClientPtr const & pva,
         std::string const & channelName,
         std::string const & providerName
         );
+private:
+    DoubleArrayRecord(
+        std::string const & recordName,
+        epics::pvData::PVStructurePtr const & pvStructure);
 };
 
 }}}
