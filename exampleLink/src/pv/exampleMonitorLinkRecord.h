@@ -53,15 +53,15 @@ public:
     virtual ~ExampleMonitorLinkRecord() {}
     virtual void process();
     void event(epics::pvaClient::PvaClientMonitorPtr const & monitor);
-private:
-    ExampleMonitorLinkRecord(
-        std::string const & recordName,
-        epics::pvData::PVStructurePtr const & pvStructure);
     bool init(
         epics::pvaClient::PvaClientPtr const & pva,
         std::string const & channelName,
         std::string const & providerName
         );
+private:
+    ExampleMonitorLinkRecord(
+        std::string const & recordName,
+        epics::pvData::PVStructurePtr const & pvStructure);
     epics::pvData::PVDoubleArrayPtr pvValue;
     epics::pvaClient::PvaClientMonitorRequester::shared_pointer  monitorRequester;
     epics::pvaClient::PvaClientMonitorPtr pvaClientMonitor;

@@ -51,15 +51,15 @@ public:
         );
     virtual ~ExampleGetLinkRecord() {}
     virtual void process();
-private:
-    ExampleGetLinkRecord(
-        std::string const & recordName,
-        epics::pvData::PVStructurePtr const & pvStructure);
     bool init(
         epics::pvaClient::PvaClientPtr const & pva,
         std::string const & channelName,
         std::string const & providerName
         );
+private:
+    ExampleGetLinkRecord(
+        std::string const & recordName,
+        epics::pvData::PVStructurePtr const & pvStructure);
     epics::pvData::PVDoubleArrayPtr pvValue;
     epics::pvaClient::PvaClientGetPtr pvaClientGet;
 };

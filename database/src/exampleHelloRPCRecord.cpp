@@ -8,6 +8,7 @@
  * @date 2013.04.02
  */
 
+#include <epicsThread.h>
 #include <pv/standardField.h>
 #include <sstream>
 #define epicsExportSharedSymbols
@@ -79,8 +80,10 @@ void ExampleHelloRPCRecord::put(PVStringPtr const &pvFrom)
     PVStringPtr pvTo = pvResult->getSubField<PVString>("value");
     pvTo->put("Hello " + pvFrom->get());
     process();
+    epicsThreadSleep(1.0);  // simulate service that takes time
     endGroupPut();
     unlock();
+    
 }
 
 }}}
