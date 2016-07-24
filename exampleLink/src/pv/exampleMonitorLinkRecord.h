@@ -53,6 +53,7 @@ public:
     virtual ~ExampleMonitorLinkRecord() {}
     virtual void process();
     void event(epics::pvaClient::PvaClientMonitorPtr const & monitor);
+    virtual bool init() {return false;}
     bool init(
         epics::pvaClient::PvaClientPtr const & pva,
         std::string const & channelName,

@@ -51,6 +51,7 @@ public:
         );
     virtual ~ExamplePutLinkRecord() {}
     virtual void process();
+    virtual bool init() {return false;}
     bool init(
         epics::pvaClient::PvaClientPtr const & pva,
         std::string const & channelName,

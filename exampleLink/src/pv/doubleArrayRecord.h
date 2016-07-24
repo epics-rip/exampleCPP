@@ -50,6 +50,7 @@ public:
         std::string const & channelName
         );
     virtual ~DoubleArrayRecord() {}
+    virtual bool init() {return false;}
     bool init(
         epics::pvaClient::PvaClientPtr const & pva,
         std::string const & channelName,
