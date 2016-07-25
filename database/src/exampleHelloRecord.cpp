@@ -40,7 +40,7 @@ ExampleHelloRecordPtr ExampleHelloRecord::create(
 
     ExampleHelloRecordPtr pvRecord(
         new ExampleHelloRecord(recordName,pvStructure));
-    if(!pvRecord->init()) pvRecord.reset();
+    pvRecord->initPVRecord();
     return pvRecord;
 }
 
@@ -49,28 +49,18 @@ ExampleHelloRecord::ExampleHelloRecord(
     PVStructurePtr const & pvStructure)
 : PVRecord(recordName,pvStructure)
 {
-}
-
-ExampleHelloRecord::~ExampleHelloRecord()
-{
-}
-
-void ExampleHelloRecord::destroy()
-{
-    PVRecord::destroy();
-}
-
-bool ExampleHelloRecord::init()
-{
-    
-    initPVRecord();
     PVFieldPtr pvField;
     pvArgumentValue = getPVStructure()->getSubField<PVString>("argument.value");
-    if(pvArgumentValue.get()==NULL) return false;
+    if(!pvArgumentValue) {
+        throw std::logic_error(
+        recordName + " argument.value not in PVRecord");
+    }
     pvResultValue = getPVStructure()->getSubField<PVString>("result.value");
-    if(pvResultValue.get()==NULL) return false;
+    if(!pvResultValue) {
+        throw std::logic_error(
+        recordName + " result.value not in PVRecord");
+    }
     pvTimeStamp.attach(getPVStructure()->getSubField("result.timeStamp"));
-    return true;
 }
 
 void ExampleHelloRecord::process()
