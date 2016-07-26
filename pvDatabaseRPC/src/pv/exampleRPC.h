@@ -1,7 +1,7 @@
-// Copyright information and license terms for this software can be
-// found in the file LICENSE that is included with the distribution
-
-/* exampleRPC.h */
+/*
+ * Copyright information and license terms for this software can be
+ * found in the file LICENSE that is included with the distribution
+ */
 
 /**
  * @author dgh
@@ -98,9 +98,8 @@ public:
     POINTER_DEFINITIONS(ExampleRPC);
     static ExampleRPCPtr create(
         std::string const & recordName);
-    virtual ~ExampleRPC();
-    virtual void destroy();
-    virtual bool init();
+    virtual ~ExampleRPC() {}
+    virtual bool init() {return false;}
     virtual void process();
     virtual epics::pvAccess::Service::shared_pointer getService(
         epics::pvData::PVStructurePtr const & pvRequest);
@@ -112,6 +111,7 @@ private:
 
     ExampleRPC(std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure);
+    void initPvt();
 
     epics::pvData::PVTimeStamp pvTimeStamp;
     epics::pvData::TimeStamp timeStamp;

@@ -1,7 +1,7 @@
-// Copyright information and license terms for this software can be
-// found in the file LICENSE that is included with the distribution
-
-/* exampleRPC.cpp */
+/*
+ * Copyright information and license terms for this software can be
+ * found in the file LICENSE that is included with the distribution
+ */
 
 /**
  * @author dgh
@@ -141,7 +141,7 @@ ExampleRPCPtr ExampleRPC::create(
 
     ExampleRPCPtr pvRecord(
         new ExampleRPC(recordName,pvStructure));
-    if(!pvRecord->init()) pvRecord.reset();
+    pvRecord->initPvt();
     return pvRecord;
 }
 
@@ -152,16 +152,7 @@ ExampleRPC::ExampleRPC(
 {    
 }
 
-ExampleRPC::~ExampleRPC()
-{
-}
-
-void ExampleRPC::destroy()
-{
-    PVRecord::destroy();
-}
-
-bool ExampleRPC::init()
+void ExampleRPC::initPvt()
 {
     
     initPVRecord();
@@ -172,7 +163,6 @@ bool ExampleRPC::init()
 
     PVFieldPtr pvField;
     pvTimeStamp.attach(getPVStructure()->getSubField("timeStamp"));
-    return true;
 }
 
 epics::pvAccess::Service::shared_pointer ExampleRPC::getService(
