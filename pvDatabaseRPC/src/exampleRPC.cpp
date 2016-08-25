@@ -98,7 +98,7 @@ PVStructurePtr AbortService::request(
 ) throw (epics::pvAccess::RPCRequestException)
 {
     try {
-        pvRecord->device->abort();
+        pvRecord->getDevice()->abort();
     }
     catch (IllegalOperationException & e) {
         throw epics::pvAccess::RPCRequestException(
@@ -143,7 +143,7 @@ PVStructurePtr ConfigureService::request(
     }
 
     try {
-        pvRecord->device->configure(newPoints);
+        pvRecord->getDevice()->configure(newPoints);
     }
     catch (IllegalOperationException & e) {
         throw epics::pvAccess::RPCRequestException(
@@ -157,7 +157,7 @@ PVStructurePtr RunService::request(
 ) throw (epics::pvAccess::RPCRequestException)
 {
     try {
-        pvRecord->device->runScan();
+        pvRecord->getDevice()->runScan();
     }
     catch (IllegalOperationException & e) {
         throw epics::pvAccess::RPCRequestException(
@@ -172,7 +172,7 @@ PVStructurePtr PauseService::request(
 ) throw (epics::pvAccess::RPCRequestException)
 {
     try {
-        pvRecord->device->pause();
+        pvRecord->getDevice()->pause();
     }
     catch (IllegalOperationException & e) {
         throw epics::pvAccess::RPCRequestException(
@@ -186,7 +186,7 @@ PVStructurePtr ResumeService::request(
 ) throw (epics::pvAccess::RPCRequestException)
 {
     try {
-        pvRecord->device->resume();
+        pvRecord->getDevice()->resume();
     }
     catch (IllegalOperationException & e) {
         throw epics::pvAccess::RPCRequestException(
@@ -200,7 +200,7 @@ PVStructurePtr StopService::request(
 ) throw (epics::pvAccess::RPCRequestException)
 {
     try {
-        pvRecord->device->stopScan();
+        pvRecord->getDevice()->stopScan();
     }
     catch (IllegalOperationException & e) {
         throw epics::pvAccess::RPCRequestException(
@@ -226,7 +226,7 @@ PVStructurePtr RewindService::request(
 {
     int n = getRequestedSteps(args);
     try {
-        pvRecord->device->rewind(n);
+        pvRecord->getDevice()->rewind(n);
     }
     catch (IllegalOperationException & e) {
         throw epics::pvAccess::RPCRequestException(
@@ -245,14 +245,25 @@ void ScanService::request(
     PVStructurePtr const & args,
     epics::pvAccess::RPCResponseCallback::shared_pointer const & callback)
 {
-    pvRecord->device->runScan();
+    pvRecord->getDevice()->runScan();
     ScanService::Callback::shared_pointer cb = ScanService::Callback::create(shared_from_this());
-    cb->callback = callback;
-    pvRecord->device->registerCallback(cb);
+    this->rpcCallback = callback;
+    this->deviceCallback = cb;
+    pvRecord->getDevice()->registerCallback(cb);
 }
  
 
-void ScanService::Callback::stateChanged(Device::State state)
+void ScanService::handleError(const std::string & message)
+{
+    rpcCallback->requestDone(
+        Status(Status::STATUSTYPE_ERROR, std::string(message)),
+        PVStructure::shared_pointer());
+
+    pvRecord->getDevice()->unregisterCallback(
+         deviceCallback);
+}
+
+void ScanService::stateChanged(Device::State state)
 {
     if (state == Device::READY)
     {
@@ -264,19 +275,29 @@ void ScanService::Callback::stateChanged(Device::State state)
     }
 }
 
-void ScanService::Callback::handleError(const std::string & message)
+void ScanService::scanComplete()
 {
-    callback->requestDone(
-        Status(Status::STATUSTYPE_ERROR, std::string(message)),
-        PVStructure::shared_pointer());
-
-    service->pvRecord->device->unregisterCallback(shared_from_this());
+    rpcCallback->requestDone(Status::Ok, getPVDataCreate()->createPVStructure(makeResultStructure()));
+    pvRecord->getDevice()->unregisterCallback(deviceCallback);
 }
 
-void ScanService::Callback::scanComplete()
+
+void ScanService::update(int flags)
 {
-    callback->requestDone(Status::Ok, getPVDataCreate()->createPVStructure(makeResultStructure()));
-    service->pvRecord->device->unregisterCallback(shared_from_this());
+    if ((flags & Device::Callback::SCAN_COMPLETE) != 0)
+    {
+       scanComplete();
+    }
+    else if ((flags & Device::Callback::STATE_CHANGED) != 0)
+    {
+        Device::State state = pvRecord->getDevice()->getState();
+        stateChanged(state);
+    }
+}
+
+void ScanService::Callback::update(int flags)
+{
+    service->update(flags);
 }
 
 
@@ -285,21 +306,45 @@ ExampleRPC::Callback::shared_pointer ExampleRPC::Callback::create(ExampleRPCPtr 
     return ExampleRPC::Callback::shared_pointer(new ExampleRPC::Callback(record));
 }
 
-void ExampleRPC::Callback::setpointChanged(Point sp)
+void ExampleRPC::Callback::update(int flags)
 {
-    record->setpointChanged(sp);
+    record->update(flags);
 }
 
-void ExampleRPC::setpointChanged(Point sp)
+void ExampleRPC::update(int flags)
 {
     lock();
     try {
         TimeStamp timeStamp;
         timeStamp.getCurrent();
         beginGroupPut();
-        pvx->put(sp.x);
-        pvy->put(sp.y);
-        pvTimeStamp_sp.set(timeStamp);
+
+        if ((flags & Device::Callback::SETPOINT_CHANGED) != 0)
+        {
+            Point sp = device->getPositionSetpoint();
+            pvx->put(sp.x);
+            pvy->put(sp.y);
+            pvTimeStamp_sp.set(timeStamp);
+        }
+
+        if ((flags & Device::Callback::READBACK_CHANGED) != 0)
+        {
+            Point rb = device->getPositionReadback();
+            pvx_rb->put(rb.x);
+            pvy_rb->put(rb.y);
+            pvTimeStamp_rb.set(timeStamp);
+        }
+
+        if ((flags & Device::Callback::STATE_CHANGED) != 0)
+        {
+            int index = static_cast<int>(device->getState());
+            if (index != pvStateIndex->get())
+            {
+                pvStateIndex->put(index);
+                pvTimeStamp_st.set(timeStamp);
+            }
+        }
+
         pvTimeStamp.set(timeStamp);
         endGroupPut();
     }
@@ -311,60 +356,6 @@ void ExampleRPC::setpointChanged(Point sp)
     unlock();
 }
 
-void ExampleRPC::Callback::readbackChanged(Point rb)
-{
-    record->readbackChanged(rb);
-}
-
-void ExampleRPC::readbackChanged(Point rb)
-{
-    lock();
-    try {
-        TimeStamp timeStamp;
-        timeStamp.getCurrent();
-        beginGroupPut();
-        pvx_rb->put(rb.x);
-        pvy_rb->put(rb.y);
-        pvTimeStamp_rb.set(timeStamp);
-        pvTimeStamp.set(timeStamp);
-        endGroupPut();
-    }
-    catch(...)
-    {
-        unlock();
-        throw;
-    }
-    unlock();
-}
-
-void ExampleRPC::Callback::stateChanged(Device::State state)
-{
-    record->stateChanged(state);
-}
-
-void ExampleRPC::stateChanged(Device::State state)
-{
-    lock();
-    try {
-        TimeStamp timeStamp;
-        timeStamp.getCurrent();
-        beginGroupPut();
-        int index = static_cast<int>(device->getState());
-        if (index != pvStateIndex->get())
-        {
-            pvTimeStamp_st.set(timeStamp);
-            pvStateIndex->put(index);
-        }
-        pvTimeStamp.set(timeStamp);
-        endGroupPut();
-        }
-        catch(...)
-        {
-            unlock();
-            throw;
-        }
-    unlock();
-}
 
 
 ExampleRPCPtr ExampleRPC::create(

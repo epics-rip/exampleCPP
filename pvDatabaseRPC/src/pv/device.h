@@ -71,23 +71,19 @@ public:
    public:
        POINTER_DEFINITIONS(Callback);
 
-       virtual void setpointChanged(Point sp) {}
-       virtual void readbackChanged(Point rb){}
-       virtual void stateChanged(State state) {}
-       virtual void scanComplete() {}
+       virtual void update(int flags) = 0;
+
+       const static int SETPOINT_CHANGED  = 0x1;
+       const static int READBACK_CHANGED  = 0x2;
+       const static int STATE_CHANGED     = 0x4;
+       const static int SCAN_COMPLETE     = 0x8;
    };
 
     void registerCallback(Callback::shared_pointer const & callback);
 
     bool unregisterCallback(Callback::shared_pointer const & callback);
 
-    void setpointCallback(Point sp);
-
-    void readCallback(Point rb);
-
-    void stateCallback(State state);
-
-    void scanComplete();
+    void update();
 
     Point getPositionSetpoint();
 
@@ -118,7 +114,10 @@ private:
 
     void setStateImpl(State state);
 
+    void scanComplete();
+
     State state;
+    int flags;
 
     Point positionSP;
     Point positionRB;

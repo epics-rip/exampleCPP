@@ -273,7 +273,6 @@ PVStructurePtr createConfigArgs(int argc, char *argv[])
     }
 
 	arguments->getSubField<PVStructureArray>("value")->replace(freeze(values));
-std::cout << "createConfigArgs\n" << arguments << std::endl;
     return arguments;
 }
 
