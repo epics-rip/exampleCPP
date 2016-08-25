@@ -253,20 +253,13 @@ public:
 
         virtual void setpointChanged(Point sp)
         {
-            std::cout << "ScanService::Callback::setpointChanged" << std::endl;
         }
         virtual void readbackChanged(Point rb)
         {
-            std::cout << "ScanService::Callback::readbackChanged" << std::endl;
         }
-        virtual void stateChanged(Device::State state); /*
-        {
-            std::cout << "ScanService::Callback::stateChanged" << std::endl;
-        }*/
-        virtual void scanComplete(); /*
-        {
-            std::cout << "ScanService::Callback::scanComplete" << std::endl;
-        }*/
+        virtual void stateChanged(Device::State state);
+
+        virtual void scanComplete();
 
     //private:
         Callback(ScanServicePtr service)
@@ -316,9 +309,10 @@ public:
         POINTER_DEFINITIONS(Callback);
         static Callback::shared_pointer create(ExampleRPCPtr const & record);
 
-       virtual void setpointChanged(Point sp);
-       virtual void readbackChanged(Point rb);
-       virtual void stateChanged(Device::State state);
+        virtual void setpointChanged(Point sp);
+        virtual void readbackChanged(Point rb);
+        virtual void stateChanged(Device::State state);
+        virtual void update(int flags) {}
 
     private:
         Callback(ExampleRPCPtr record)
