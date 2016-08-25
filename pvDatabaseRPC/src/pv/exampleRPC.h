@@ -19,6 +19,8 @@
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
 
+#include <pv/device.h>
+
 #ifdef exampleRPCEpicsExportSharedSymbols
 #   define epicsExportSharedSymbols
 #	undef exampleRPCEpicsExportSharedSymbols
@@ -29,11 +31,30 @@
 
 namespace epics { namespace exampleCPP { namespace exampleRPC { 
 
-class ExampleRPCService;
-typedef std::tr1::shared_ptr<ExampleRPCService> ExampleRPCServicePtr;
 
-class ExampleRPCServiceAsync;
-typedef std::tr1::shared_ptr<ExampleRPCServiceAsync> ExampleRPCServiceAsyncPtr;
+class AbortService;
+typedef std::tr1::shared_ptr<AbortService> AbortServicePtr;
+
+class ConfigureService;
+typedef std::tr1::shared_ptr<ConfigureService> ConfigureServicePtr;
+
+class RunService;
+typedef std::tr1::shared_ptr<RunService> RunServicePtr;
+
+class PauseService;
+typedef std::tr1::shared_ptr<PauseService> PauseServicePtr;
+
+class ResumeService;
+typedef std::tr1::shared_ptr<ResumeService> ResumeServicePtr;
+
+class StopService;
+typedef std::tr1::shared_ptr<StopService> StopServicePtr;
+
+class RewindService;
+typedef std::tr1::shared_ptr<RewindService> RewindServicePtr;
+
+class ScanService;
+typedef std::tr1::shared_ptr<ScanService> ScanServicePtr;
 
 
 class ExampleRPC;
@@ -41,23 +62,25 @@ typedef std::tr1::shared_ptr<ExampleRPC> ExampleRPCPtr;
 
 
 
-class epicsShareClass ExampleRPCService :
+
+
+class epicsShareClass AbortService :
     public virtual epics::pvAccess::RPCService
 {
 public:
-    POINTER_DEFINITIONS(ExampleRPCService);
+    POINTER_DEFINITIONS(AbortService);
 
-    static ExampleRPCService::shared_pointer create(ExampleRPCPtr const & pvRecord)
+    static AbortService::shared_pointer create(ExampleRPCPtr const & pvRecord)
     {
-        return ExampleRPCServicePtr(new ExampleRPCService(pvRecord));
+        return AbortServicePtr(new AbortService(pvRecord));
     }
-    ~ExampleRPCService() {};
+    ~AbortService() {};
  
     epics::pvData::PVStructurePtr request(
         epics::pvData::PVStructure::shared_pointer const & args
     ) throw (epics::pvAccess::RPCRequestException);
 private:
-    ExampleRPCService(ExampleRPCPtr const & pvRecord)
+    AbortService(ExampleRPCPtr const & pvRecord)
     : pvRecord(pvRecord)
     {
     }
@@ -66,21 +89,205 @@ private:
 };
 
 
-class ExampleRPCServiceAsync :
-    public epics::pvAccess::RPCServiceAsync
+class epicsShareClass ConfigureService :
+    public virtual epics::pvAccess::RPCService
 {
 public:
-    POINTER_DEFINITIONS(ExampleRPCServiceAsync);
+    POINTER_DEFINITIONS(ConfigureService);
 
-    static ExampleRPCServiceAsync::shared_pointer create(ExampleRPCPtr const & pvRecord)
+    static ConfigureService::shared_pointer create(ExampleRPCPtr const & pvRecord)
     {
-        return ExampleRPCServiceAsyncPtr(new ExampleRPCServiceAsync(pvRecord));
+        return ConfigureServicePtr(new ConfigureService(pvRecord));
+    }
+    ~ConfigureService() {};
+ 
+    epics::pvData::PVStructurePtr request(
+        epics::pvData::PVStructure::shared_pointer const & args
+    ) throw (epics::pvAccess::RPCRequestException);
+private:
+    ConfigureService(ExampleRPCPtr const & pvRecord)
+    : pvRecord(pvRecord)
+    {
+    }
+
+    ExampleRPCPtr pvRecord;
+};
+
+
+class epicsShareClass RunService :
+    public virtual epics::pvAccess::RPCService
+{
+public:
+    POINTER_DEFINITIONS(RunService);
+
+    static RunService::shared_pointer create(ExampleRPCPtr const & pvRecord)
+    {
+        return RunServicePtr(new RunService(pvRecord));
+    }
+    ~RunService() {};
+ 
+    epics::pvData::PVStructurePtr request(
+        epics::pvData::PVStructure::shared_pointer const & args
+    ) throw (epics::pvAccess::RPCRequestException);
+private:
+    RunService(ExampleRPCPtr const & pvRecord)
+    : pvRecord(pvRecord)
+    {
+    }
+
+    ExampleRPCPtr pvRecord;
+};
+
+class PauseService :
+    public virtual epics::pvAccess::RPCService
+{
+public:
+    POINTER_DEFINITIONS(PauseService);
+
+    static PauseService::shared_pointer create(ExampleRPCPtr const & pvRecord)
+    {
+        return PauseServicePtr(new PauseService(pvRecord));
+    }
+    ~PauseService() {};
+ 
+    epics::pvData::PVStructurePtr request(
+        epics::pvData::PVStructure::shared_pointer const & args
+    ) throw (epics::pvAccess::RPCRequestException);
+private:
+    PauseService(ExampleRPCPtr const & pvRecord)
+    : pvRecord(pvRecord)
+    {
+    }
+
+    ExampleRPCPtr pvRecord;
+};
+
+class ResumeService :
+    public virtual epics::pvAccess::RPCService
+{
+public:
+    POINTER_DEFINITIONS(ResumeService);
+
+    static ResumeService::shared_pointer create(ExampleRPCPtr const & pvRecord)
+    {
+        return ResumeServicePtr(new ResumeService(pvRecord));
+    }
+    ~ResumeService() {};
+ 
+    epics::pvData::PVStructurePtr request(
+        epics::pvData::PVStructure::shared_pointer const & args
+    ) throw (epics::pvAccess::RPCRequestException);
+private:
+    ResumeService(ExampleRPCPtr const & pvRecord)
+    : pvRecord(pvRecord)
+    {
+    }
+
+    ExampleRPCPtr pvRecord;
+};
+
+class StopService :
+    public virtual epics::pvAccess::RPCService
+{
+public:
+    POINTER_DEFINITIONS(StopService);
+
+    static StopService::shared_pointer create(ExampleRPCPtr const & pvRecord)
+    {
+        return StopServicePtr(new StopService(pvRecord));
+    }
+    ~StopService() {};
+ 
+    epics::pvData::PVStructurePtr request(
+        epics::pvData::PVStructure::shared_pointer const & args
+    ) throw (epics::pvAccess::RPCRequestException);
+private:
+    StopService(ExampleRPCPtr const & pvRecord)
+    : pvRecord(pvRecord)
+    {
+    }
+
+    ExampleRPCPtr pvRecord;
+};
+
+class RewindService :
+    public virtual epics::pvAccess::RPCService
+{
+public:
+    POINTER_DEFINITIONS(RewindService);
+
+    static RewindService::shared_pointer create(ExampleRPCPtr const & pvRecord)
+    {
+        return RewindServicePtr(new RewindService(pvRecord));
+    }
+    ~RewindService() {};
+ 
+    epics::pvData::PVStructurePtr request(
+        epics::pvData::PVStructure::shared_pointer const & args
+    ) throw (epics::pvAccess::RPCRequestException);
+
+private:
+    int getRequestedSteps(epics::pvData::PVStructurePtr const & args);
+
+private:
+    RewindService(ExampleRPCPtr const & pvRecord)
+    : pvRecord(pvRecord)
+    {
+    }
+
+    ExampleRPCPtr pvRecord;
+};
+
+class ScanService :
+    public epics::pvAccess::RPCServiceAsync,
+    public std::tr1::enable_shared_from_this<ScanService>
+{
+public:
+    POINTER_DEFINITIONS(ScanService);
+
+    class Callback : public Device::Callback
+    {
+    public:
+        POINTER_DEFINITIONS(Callback);
+        static Callback::shared_pointer create(ScanServicePtr const & record);
+
+        virtual void setpointChanged(Point sp)
+        {
+            std::cout << "ScanService::Callback::setpointChanged" << std::endl;
+        }
+        virtual void readbackChanged(Point rb)
+        {
+            std::cout << "ScanService::Callback::readbackChanged" << std::endl;
+        }
+        virtual void stateChanged(Device::State state); /*
+        {
+            std::cout << "ScanService::Callback::stateChanged" << std::endl;
+        }*/
+        virtual void scanComplete(); /*
+        {
+            std::cout << "ScanService::Callback::scanComplete" << std::endl;
+        }*/
+
+    //private:
+        Callback(ScanServicePtr service)
+        : service(service)
+        {}
+
+        void handleError(const std::string & message);
+
+        ScanServicePtr service;
+        epics::pvAccess::RPCResponseCallback::shared_pointer callback;
+    };
+
+    static ScanService::shared_pointer create(ExampleRPCPtr const & pvRecord)
+    {
+        return ScanServicePtr(new ScanService(pvRecord));
     }
 
    void request(epics::pvData::PVStructurePtr const & args,
                 epics::pvAccess::RPCResponseCallback::shared_pointer const & callback);
 private:
-    ExampleRPCServiceAsync(ExampleRPCPtr const & pvRecord)
+    ScanService(ExampleRPCPtr const & pvRecord)
     : pvRecord(pvRecord)
     {
     }
@@ -88,8 +295,7 @@ private:
     ExampleRPCPtr pvRecord;
 };
 
-class ExampleRPC;
-typedef std::tr1::shared_ptr<ExampleRPC> ExampleRPCPtr;
+
 
 class epicsShareClass ExampleRPC :
     public epics::pvDatabase::PVRecord
@@ -103,20 +309,50 @@ public:
     virtual void process();
     virtual epics::pvAccess::Service::shared_pointer getService(
         epics::pvData::PVStructurePtr const & pvRequest);
-    void put(double x, double y);
 
-    bool takeControl();
-    void releaseControl();
+    class Callback : public Device::Callback
+    {
+    public:
+        POINTER_DEFINITIONS(Callback);
+        static Callback::shared_pointer create(ExampleRPCPtr const & record);
+
+       virtual void setpointChanged(Point sp);
+       virtual void readbackChanged(Point rb);
+       virtual void stateChanged(Device::State state);
+
+    private:
+        Callback(ExampleRPCPtr record)
+        : record(record)
+        {}
+        ExampleRPCPtr record;
+    };
+
+       virtual void setpointChanged(Point sp);
+       virtual void readbackChanged(Point rb);
+       virtual void stateChanged(Device::State state);
+
 private:
 
     ExampleRPC(std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure);
     void initPvt();
 
+    epics::pvData::PVDoublePtr      pvx;
+    epics::pvData::PVDoublePtr      pvy;
+    epics::pvData::PVDoublePtr      pvx_rb;
+    epics::pvData::PVDoublePtr      pvy_rb;
+
+    epics::pvData::PVIntPtr         pvStateIndex;
+    epics::pvData::PVStringArrayPtr pvStateChoices;
+
     epics::pvData::PVTimeStamp pvTimeStamp;
-    epics::pvData::TimeStamp timeStamp;
-    epics::pvData::Mutex taskMutex;
-    epics::pvAccess::Service::shared_pointer service;
+    epics::pvData::PVTimeStamp pvTimeStamp_sp;
+    epics::pvData::PVTimeStamp pvTimeStamp_rb;
+    epics::pvData::PVTimeStamp pvTimeStamp_st;
+
+    bool firstTime;
+public:
+    DevicePtr device;
 };
 
 
