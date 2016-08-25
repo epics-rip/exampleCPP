@@ -2,11 +2,11 @@
  * Copyright information and license terms for this software can be
  * found in the file LICENSE that is included with the distribution
  */
-
 /**
  * @author dgh
  * @date 2015.12.08
  */
+
 #ifndef EXAMPLERPC_H
 #define EXAMPLERPC_H
 
@@ -57,10 +57,9 @@ class ScanService;
 typedef std::tr1::shared_ptr<ScanService> ScanServicePtr;
 
 
+
 class ExampleRPC;
 typedef std::tr1::shared_ptr<ExampleRPC> ExampleRPCPtr;
-
-
 
 
 
@@ -245,38 +244,22 @@ class ScanService :
 public:
     POINTER_DEFINITIONS(ScanService);
 
+    virtual void update(int flags);
+
     class Callback : public Device::Callback
     {
     public:
         POINTER_DEFINITIONS(Callback);
         static Callback::shared_pointer create(ScanServicePtr const & record);
 
-        virtual void setpointChanged(Point sp)
-        {
-            std::cout << "ScanService::Callback::setpointChanged" << std::endl;
-        }
-        virtual void readbackChanged(Point rb)
-        {
-            std::cout << "ScanService::Callback::readbackChanged" << std::endl;
-        }
-        virtual void stateChanged(Device::State state); /*
-        {
-            std::cout << "ScanService::Callback::stateChanged" << std::endl;
-        }*/
-        virtual void scanComplete(); /*
-        {
-            std::cout << "ScanService::Callback::scanComplete" << std::endl;
-        }*/
+        virtual void update(int flags);
 
-    //private:
+    private:
         Callback(ScanServicePtr service)
         : service(service)
         {}
 
-        void handleError(const std::string & message);
-
         ScanServicePtr service;
-        epics::pvAccess::RPCResponseCallback::shared_pointer callback;
     };
 
     static ScanService::shared_pointer create(ExampleRPCPtr const & pvRecord)
@@ -291,6 +274,16 @@ private:
     : pvRecord(pvRecord)
     {
     }
+
+    virtual void stateChanged(Device::State state);
+
+    virtual void scanComplete();
+
+    void handleError(const std::string & message);
+
+    epics::pvAccess::RPCResponseCallback::shared_pointer rpcCallback;
+
+    Callback::shared_pointer deviceCallback;
 
     ExampleRPCPtr pvRecord;
 };
@@ -316,9 +309,7 @@ public:
         POINTER_DEFINITIONS(Callback);
         static Callback::shared_pointer create(ExampleRPCPtr const & record);
 
-       virtual void setpointChanged(Point sp);
-       virtual void readbackChanged(Point rb);
-       virtual void stateChanged(Device::State state);
+        virtual void update(int flags);
 
     private:
         Callback(ExampleRPCPtr record)
@@ -327,9 +318,9 @@ public:
         ExampleRPCPtr record;
     };
 
-       virtual void setpointChanged(Point sp);
-       virtual void readbackChanged(Point rb);
-       virtual void stateChanged(Device::State state);
+    virtual void update(int flags);
+
+    DevicePtr getDevice() { return device; }
 
 private:
 
@@ -351,7 +342,7 @@ private:
     epics::pvData::PVTimeStamp pvTimeStamp_st;
 
     bool firstTime;
-public:
+
     DevicePtr device;
 };
 

@@ -64,42 +64,29 @@ bool Device::unregisterCallback(Device::Callback::shared_pointer const & callbac
     return found;
 }
 
-void Device::setpointCallback(Point sp)
-{
-    epics::pvData::Lock lock(mutex);
-    std::vector<Callback::shared_pointer> callbacks = this->callbacks;
-    for (std::vector<Callback::shared_pointer>::iterator it = callbacks.begin();
-         it != callbacks.end(); ++it)
-       (*it)->setpointChanged(sp);
-}
-
-void Device::readCallback(Point rb)
-{
-    epics::pvData::Lock lock(mutex);
-    std::vector<Callback::shared_pointer> callbacks = this->callbacks;
-    for (std::vector<Callback::shared_pointer>::iterator it = callbacks.begin();
-         it != callbacks.end(); ++it)
-        (*it)->readbackChanged(rb);
-}
-
-void Device::stateCallback(State state)
-{
-    epics::pvData::Lock lock(mutex);
-    std::vector<Callback::shared_pointer> callbacks = this->callbacks;
-    for (std::vector<Callback::shared_pointer>::iterator it = callbacks.begin();
-         it != callbacks.end(); ++it)
-        (*it)->stateChanged(state);
-}
-
 void Device::scanComplete()
 {
-    epics::pvData::Lock lock(mutex);
-    std::vector<Callback::shared_pointer> callbacks = this->callbacks;
-    for (std::vector<Callback::shared_pointer>::iterator it = callbacks.begin();
-         it != callbacks.end(); ++it)
-        (*it)->scanComplete();
+    flags |= Device::Callback::SCAN_COMPLETE;
 }
 
+
+void Device::update()
+{
+    epics::pvData::Lock lock(mutex);
+    std::vector<Callback::shared_pointer> callbacks = this->callbacks;
+
+    if (flags != 0)
+    {
+        for (std::vector<Callback::shared_pointer>::iterator
+                 it = callbacks.begin();
+             it != callbacks.end(); ++it)
+        {
+            (*it)->update(flags);
+        }
+
+        flags = 0;
+    }
+}
 
 Device::Device()
 : state(IDLE), index(0)
@@ -110,7 +97,7 @@ Device::Device()
         epicsThreadGetStackSize(epicsThreadStackSmall),
         epicsThreadPriorityLow));
         startThread();
-    }
+}
 
 void Device::run()
 {
@@ -159,12 +146,9 @@ void Device::run()
                     stopScan();
                 }
             }
-            /*std::cout << toString(state) << " "
-                      << positionSP      << " "
-                      << positionRB      << " "
-                      << index    << std::endl;*/
         }
         catch (...) { abort(); }
+        update();
     }
 }
 
@@ -193,19 +177,19 @@ void Device::setSetpoint(Point sp)
 void Device::setSetpointImpl(Point sp)
 {
     positionSP = sp;
-    setpointCallback(sp);
+    flags |= Device::Callback::SETPOINT_CHANGED;
 }
 
 void Device::setReadbackImpl(Point rb)
 {
     positionRB = rb;
-    readCallback(rb);
+    flags |= Device::Callback::READBACK_CHANGED;
 }
 
 void Device::setStateImpl(State state)
 {
     this->state = state;
-    stateCallback(state);  
+    flags |= Device::Callback::STATE_CHANGED;  
 }
 
 
@@ -315,7 +299,7 @@ void Device::rewind(int n)
         }
         if (n > 0)
         {
-            unsigned un = static_cast<unsigned>(n);
+            size_t un = static_cast<size_t>(n);
             std::cout << "Rewind(" << n << ")" << std::endl;
             if (un < index)
                 index -= un+1;
