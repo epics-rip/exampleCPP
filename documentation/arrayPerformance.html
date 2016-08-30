@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/arrayPerformance</h1>
-<h2 class="nocount">Release 4.2 - 2016.04.25</h2>
+<h2 class="nocount">2016.08.29</h2>
 
 
 <h2 class="nocount">Abstract</h2>
@@ -35,11 +35,6 @@ of large arrays and can also be used to check for memory leaks.
 Checking for memory leaks can be accomplished by running the programs with valgrind
 or some other memory check program.
 </p>
-  <!-- last para of Abstract is boilerplate reference to EPICS -->
-      <p>For more information about EPICS generally, please refer to the home page of the <a
-       href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
-      Control System</a>.</p>
-
 
 </div> <!-- head -->
 
@@ -105,14 +100,14 @@ bin/$EPICS_HOST_ARCH/longArrayPutMain
 Examples are:</p>
 <pre>
 mrk&gt; bin/$EPICS_HOST_ARCH/arrayPerformanceMain
-arrayPerformance 10000000 0.0001 local 1 2 0
+arrayPerformance 10000000 0.0001 local 1 2
 ...
-arrayPerformance value 54 time 1.01735 Iterations/sec 26.5396 megaElements/sec 265.396
- monitors/sec 27 first 80 last 80 changed {1, 2} overrun {} megaElements/sec 261.057
-arrayPerformance value 81 time 1.03442 Iterations/sec 26.1016 megaElements/sec 261.016
- monitors/sec 26 first 106 last 106 changed {1, 2} overrun {} megaElements/sec 259.798
-arrayPerformance value 108 time 1.0396 Iterations/sec 25.9715 megaElements/sec 259.715
- monitors/sec 26 first 132 last 132 changed {1, 2} overrun {} megaElements/sec 252.812
+arrayPerformance value 691 time 1.00585 Iterations/sec 19.8837 megaElements/sec 198.837
+ monitors/sec 20 first 691 last 691 changed {1, 2} overrun {} megaElements/sec 192.453
+arrayPerformance value 709 time 1.00279 Iterations/sec 17.9499 megaElements/sec 179.499
+ monitors/sec 19 first 710 last 710 changed {1, 2} overrun {} megaElements/sec 184.922
+arrayPerformance value 729 time 1.01898 Iterations/sec 19.6274 megaElements/sec 196.274
+ monitors/sec 20 first 730 last 730 changed {1, 2} overrun {} megaElements/sec 195.467
 ...
 </pre>
 <pre>

@@ -26,17 +26,12 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/exampleLink</h1>
-<h2 class="nocount">Release 4.2 - 2016.04.25</h2>
+<h2 class="nocount">2016.08.30</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
 <b>exampleLink</b> implements a PVRecord that that links to  another channel.
 </p>
-  <!-- last para of Abstract is boilerplate reference to EPICS -->
-      <p>For more information about EPICS generally, please refer to the home page of the <a
-       href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
-      Control System</a>.</p>
-
 
 </div> <!-- head -->
 
@@ -49,7 +44,12 @@
 <hr />
 
 <h2>Overview</h2>
-<p>This example shows how a PVRecord can have support that accesses other channel.</p>
+<p>This example shows how a PVRecord can have support that accesses another channel.
+It creates records named exampleMonitorLink, exampleGetLink, and examplePutLink.
+Each has a link to another channel.
+The process method of the records use pvaChannelMonitor, pvaChannelGet,
+and pvaChannelPut to connect to the other channel.
+</p>
 <p><b>exampleLink</b> can be started either as a main program of as part of an EPICS V3 IOC.</p>
 <h3>Start as a main program</h3>
 <pre>
@@ -172,7 +172,7 @@ The ExampleLinkRecord monitors <b>linkedRecordName</b> using the specified <b>pr
 <h3>Monitor exampleLink</h3>
 <p>After exampleLinkMain is started then in another window:</p>
 <pre>
-pvget -m -r "field()" exampleLink
+pvget -m -r "field()" exampleMonitorLink
 </pre>
 <p>This can be kept running while exampleLinkMain is stopped and then restarted with
 other options as long as <b>exampleLinkRecordName</b> is doubleArray.
@@ -265,78 +265,6 @@ exampleLink
 </pre>
 
 
-
-<h3>exampleLinkRegister.dbd and exampleLinkRegister.cpp</h3>
-<p>This is the code that supports the <b>exampleLinkCreateRecord</b>
-        shell command in <b>exampleLink/iocBoot/exampleLink/st.*</b>.
-</p>
-<p>The following is from <b>exampleLinkRegister.cpp</b>
-</p>
-<pre>
-static void exampleLinkCallFunc(const iocshArgBuf *args)
-{
-    PVDatabasePtr master = PVDatabase::getMaster();
-    PVRecordPtr pvRecord;
-    bool result(false);
-    string recordName;
-    NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
-    PVStructurePtr pvStructure = ntScalarArrayBuilder->
-        value(pvDouble)->
-        addAlarm()->
-        addTimeStamp()->
-        createPVStructure();
-    result = master->addRecord(PVRecord::create("doubleArray",pvStructure));
-    if(!result) cout&lt;&lt; "record " &lt;&lt; recordName &lt;&lt; " not added" &lt;&lt; endl;
-
-    recordName = args[0].sval;
-    char *providerName = args[1].sval;
-    char *channelName = args[2].sval;
-    ExampleLinkRecordPtr record = ExampleLinkRecord::create(recordName,providerName,channelName);
-    if(record) 
-        result = master->addRecord(record);
-    if(!result) cout &lt;&lt; "recordname" &lt;&lt; " not added" &lt;&lt; endl;
-}
-</pre>
-<p>Note that this is similar to the code in <b>exampleLinkMain.cpp</b>
-</p>
-<h2>exampleLink/ioc</h2>
-<p>This is standard way to create support for a V3 IOC.
-</p>
-<h3>exampleLink/ioc/Db</h3>
-<p>This is used by the example to create a DBRecord named exampleLinkAI
-</p>
-<h3>exampleLink/ioc/src</h3>
-<p><b>exampleLinkInclude.dbd</b></p>
-<pre>
-include "base.dbd"
-include "PVAServerRegister.dbd"
-include "PVAClientRegister.dbd"
-include "registerChannelProviderLocal.dbd"
-include "exampleLinkRegister.dbd"
-</pre>
-<p>Has V3 IOC includes for the example</p>
-<p><b>exampleLinkMain.cpp</b>  is standard V3 IOC code.</p>
-<h2>exampleLink/iocBoot/exampleLink</h2>
-<p>This is where a V3 IOC that includes <b>exampleLink</b> is started.
-It has two startup files.
-<b>st.local</b> is:</p>
-<pre>
-&lt; envPaths
-cd ${TOP}
-## Register all support components
-dbLoadDatabase("dbd/exampleLink.dbd")
-exampleLink_registerRecordDeviceDriver(pdbbase)
-
-## Load record instance
-dbLoadRecords("db/ai.db","name=exampleLinkAI");
-
-cd ${TOP}/iocBoot/${IOC}
-iocInit()
-startPVAServer
-exampleLinkCreateRecord exampleLink local doubleArray
-</pre>
-<p><b>st.remote</b> is the similar except that it asks for provider pva instead of local.
-It also issues iocsh command <b>startPVAClient</b></p>
 </div> <!-- class="contents" -->
 </body>
 </html>
