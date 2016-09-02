@@ -15,16 +15,19 @@
 #   undef epicsExportSharedSymbols
 #endif
 
+#include <epicsThread.h>
+#include <pv/point.h>
 #include <pv/pvDatabase.h>
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
 
-#include <pv/device.h>
 
 #ifdef exampleRPCEpicsExportSharedSymbols
 #   define epicsExportSharedSymbols
 #	undef exampleRPCEpicsExportSharedSymbols
 #endif
+
+#include <pv/device.h>
 
 #include <shareLib.h>
 
@@ -137,7 +140,7 @@ private:
     ExampleRPCPtr pvRecord;
 };
 
-class PauseService :
+class epicsShareClass PauseService :
     public virtual epics::pvAccess::RPCService
 {
 public:
@@ -161,7 +164,7 @@ private:
     ExampleRPCPtr pvRecord;
 };
 
-class ResumeService :
+class epicsShareClass ResumeService :
     public virtual epics::pvAccess::RPCService
 {
 public:
@@ -185,7 +188,7 @@ private:
     ExampleRPCPtr pvRecord;
 };
 
-class StopService :
+class epicsShareClass StopService :
     public virtual epics::pvAccess::RPCService
 {
 public:
@@ -209,7 +212,7 @@ private:
     ExampleRPCPtr pvRecord;
 };
 
-class RewindService :
+class epicsShareClass RewindService :
     public virtual epics::pvAccess::RPCService
 {
 public:
@@ -237,7 +240,7 @@ private:
     ExampleRPCPtr pvRecord;
 };
 
-class ScanService :
+class epicsShareClass ScanService :
     public epics::pvAccess::RPCServiceAsync,
     public std::tr1::enable_shared_from_this<ScanService>
 {
