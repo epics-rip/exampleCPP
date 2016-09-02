@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP</h1>
-<h2 class="nocount">Release 4.2.0-SNAPSHOT - 2016.04.22</h2>
+<h2 class="nocount">Release 4.3.0-SNAPSHOT - 2016.09.02</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -137,6 +137,28 @@ This implements HelloWorld that is accessed via channelRPC.
 </p>
 
 
+<h3>pvDatabaseRPC</h3>
+<p>
+An example of a pvDatabase PVRecord which also supports multiple RPC services.
+</p>
+<p>It illustrates synchronous and asynchronous RPC services, selecting services
+based on the supplied pvRequest and using EPICS V4 to talk to an existing
+object which has no knowledge of EPICS and call its methods, so creating 
+distributed objects.</p>
+
+<p>It represents a device which has a 2D position setpoint and readback as well
+as a state. Each field has a time stamp, as does the record itself.
+The device can be controlled through a client using RPC commands
+to move through a sequence of points as well as conventionally by putting to
+the setpoint. Commands are: configuring the set of points, starting a scan
+(blocking or non-blocking), pausing and resuming, rewinding and stopping/aborting.</p>
+<p>
+A client ("control") for calling the services is supplied.
+</p>
+
+<p>Documentation:<a href="../pvDatabaseRPC/documentation/pvDatabaseRPC.html">pvDatabaseRPC</a></p>
+
+
 <h3>exampleLink</h3>
 <p>
 This implements a V3 IOC that has a PVRecord doubleArray and a PVRecord exampleLink that monitors changes to doubleArray. PVRecord exampleLink uses pvAccess client code to monitor for changes in doubleArray. It can use either provider local, pva, or ca to connect to doubleArray.
@@ -154,17 +176,6 @@ It simulates a power supply.
 <p>
 The example also has an example pvaClient for accessing the PVRecord.
 </p>
-
-<h3>pvDatabaseRPC</h3>
-
-<p>An example of a pvDatabase PVRecord which also supports RPC services.</p>
-<p>The record represents a 2-D position, but also provides an RPC service
-which moves the position through a sequence of points before returning.
-A channel to the record supports the usual operations (such as get, put and
-monitor) but also supports Channel RPC, i.e. the RPC service has the same 
-channel name as the position PV.</p>
-<p>A client ("move") for calling the service is supplied.</p>
-
 
 <h3>arrayPerformance</h3>
 <p>
