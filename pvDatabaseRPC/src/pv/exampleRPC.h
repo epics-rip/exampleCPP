@@ -15,19 +15,16 @@
 #   undef epicsExportSharedSymbols
 #endif
 
-#include <epicsThread.h>
-#include <pv/point.h>
 #include <pv/pvDatabase.h>
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
 
+#include <pv/device.h>
 
 #ifdef exampleRPCEpicsExportSharedSymbols
 #   define epicsExportSharedSymbols
 #	undef exampleRPCEpicsExportSharedSymbols
 #endif
-
-#include <pv/device.h>
 
 #include <shareLib.h>
 
