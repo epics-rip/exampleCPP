@@ -11,11 +11,28 @@
 #ifndef EXAMPLERPC_POINT_H
 #define EXAMPLERPC_POINT_H
 
+
+#ifdef epicsExportSharedSymbols
+#   define pointExportSharedSymbols
+#   undef epicsExportSharedSymbols
+#endif
+
+#include <pv/pvDatabase.h>
+
+#include <epicsThread.h>
+
 #include <iostream>
+
+#ifdef pointExportSharedSymbols
+#   define epicsExportSharedSymbols
+#	undef pointExportSharedSymbols
+#endif
+
+#include <shareLib.h>
 
 namespace epics { namespace exampleCPP { namespace exampleRPC {
 
-class Point
+epicsShareClass class Point
 {
 public:
     Point()
