@@ -94,7 +94,7 @@ static StructureConstPtr makeRecordStructure()
 
 PVStructurePtr AbortService::request(
     PVStructure::shared_pointer const & args
-) throw (epics::pvAccess::RPCRequestException)
+)
 {
     try {
         pvRecord->getDevice()->abort();
@@ -109,7 +109,7 @@ PVStructurePtr AbortService::request(
 
 PVStructurePtr ConfigureService::request(
     PVStructure::shared_pointer const & args
-) throw (epics::pvAccess::RPCRequestException)
+)
 {
     PVStructureArrayPtr valueField = args->getSubField<PVStructureArray>("value");
     if (valueField.get() == 0)
@@ -153,7 +153,7 @@ PVStructurePtr ConfigureService::request(
 
 PVStructurePtr RunService::request(
     PVStructure::shared_pointer const & args
-) throw (epics::pvAccess::RPCRequestException)
+)
 {
     try {
         pvRecord->getDevice()->runScan();
@@ -168,7 +168,7 @@ PVStructurePtr RunService::request(
 
 PVStructurePtr PauseService::request(
     PVStructure::shared_pointer const & args
-) throw (epics::pvAccess::RPCRequestException)
+)
 {
     try {
         pvRecord->getDevice()->pause();
@@ -182,7 +182,7 @@ PVStructurePtr PauseService::request(
 
 PVStructurePtr ResumeService::request(
     PVStructure::shared_pointer const & args
-) throw (epics::pvAccess::RPCRequestException)
+)
 {
     try {
         pvRecord->getDevice()->resume();
@@ -196,7 +196,7 @@ PVStructurePtr ResumeService::request(
 
 PVStructurePtr StopService::request(
     PVStructure::shared_pointer const & args
-) throw (epics::pvAccess::RPCRequestException)
+)
 {
     try {
         pvRecord->getDevice()->stopScan();
@@ -221,7 +221,7 @@ int RewindService::getRequestedSteps(PVStructurePtr const & args)
 
 PVStructurePtr RewindService::request(
     PVStructure::shared_pointer const & args
-) throw (epics::pvAccess::RPCRequestException)
+)
 {
     int n = getRequestedSteps(args);
     try {
@@ -350,7 +350,8 @@ void ExampleRPC::update(int flags)
     catch(...)
     {
         unlock();
-        throw;
+        throw epics::pvAccess::RPCRequestException(
+            Status::STATUSTYPE_ERROR,"update error");
     }
     unlock();
 }
