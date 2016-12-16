@@ -99,7 +99,7 @@ PVStructurePtr AbortService::request(
     try {
         pvRecord->getDevice()->abort();
     }
-    catch (IllegalOperationException & e) {
+    catch (std::runtime_error & e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -144,7 +144,7 @@ PVStructurePtr ConfigureService::request(
     try {
         pvRecord->getDevice()->configure(newPoints);
     }
-    catch (IllegalOperationException & e) {
+    catch (std::runtime_error & e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -158,7 +158,7 @@ PVStructurePtr RunService::request(
     try {
         pvRecord->getDevice()->runScan();
     }
-    catch (IllegalOperationException & e) {
+    catch (std::runtime_error & e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -173,7 +173,7 @@ PVStructurePtr PauseService::request(
     try {
         pvRecord->getDevice()->pause();
     }
-    catch (IllegalOperationException & e) {
+    catch (std::runtime_error & e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -187,7 +187,7 @@ PVStructurePtr ResumeService::request(
     try {
         pvRecord->getDevice()->resume();
     }
-    catch (IllegalOperationException & e) {
+    catch (std::runtime_error & e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -201,7 +201,7 @@ PVStructurePtr StopService::request(
     try {
         pvRecord->getDevice()->stopScan();
     }
-    catch (IllegalOperationException & e) {
+    catch (std::runtime_error & e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -227,7 +227,7 @@ PVStructurePtr RewindService::request(
     try {
         pvRecord->getDevice()->rewind(n);
     }
-    catch (IllegalOperationException & e) {
+    catch (std::runtime_error & e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -489,7 +489,7 @@ void ExampleRPC::process()
             pvTimeStamp_sp.set(timeStamp);
         }
     }
-    catch (IllegalOperationException & o)
+    catch (std::runtime_error & o)
     {
         // If write to device fails restore values
         Point sp = device->getPositionSetpoint();

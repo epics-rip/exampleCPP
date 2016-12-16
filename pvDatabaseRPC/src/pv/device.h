@@ -31,14 +31,6 @@
 
 namespace epics { namespace exampleCPP { namespace exampleRPC {
 
-class epicsShareClass IllegalOperationException : public std::runtime_error
-{
-public:
-    IllegalOperationException(const std::string & message)
-    : runtime_error(message)
-    {
-    }
-};
 
 class Device;
 typedef std::tr1::shared_ptr<Device> DevicePtr;
