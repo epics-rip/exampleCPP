@@ -137,7 +137,7 @@ private:
     ExampleRPCPtr pvRecord;
 };
 
-class PauseService :
+class epicsShareClass PauseService :
     public virtual epics::pvAccess::RPCService
 {
 public:
@@ -161,7 +161,7 @@ private:
     ExampleRPCPtr pvRecord;
 };
 
-class ResumeService :
+class epicsShareClass ResumeService :
     public virtual epics::pvAccess::RPCService
 {
 public:
@@ -185,7 +185,7 @@ private:
     ExampleRPCPtr pvRecord;
 };
 
-class StopService :
+class epicsShareClass StopService :
     public virtual epics::pvAccess::RPCService
 {
 public:
@@ -209,7 +209,7 @@ private:
     ExampleRPCPtr pvRecord;
 };
 
-class RewindService :
+class epicsShareClass RewindService :
     public virtual epics::pvAccess::RPCService
 {
 public:
@@ -237,7 +237,7 @@ private:
     ExampleRPCPtr pvRecord;
 };
 
-class ScanService :
+class epicsShareClass ScanService :
     public epics::pvAccess::RPCServiceAsync,
     public std::tr1::enable_shared_from_this<ScanService>
 {

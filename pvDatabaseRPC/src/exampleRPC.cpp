@@ -10,14 +10,13 @@
 
 #include <pv/standardField.h>
 
-#define epicsExportSharedSymbols
-#include <pv/exampleRPC.h>
-
 #include <pv/standardField.h>
 #include <pv/standardPVField.h>
 
 #include <epicsThread.h>
 
+#define epicsExportSharedSymbols
+#include <pv/exampleRPC.h>
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;

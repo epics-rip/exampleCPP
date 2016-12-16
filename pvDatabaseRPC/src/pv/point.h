@@ -32,7 +32,7 @@
 
 namespace epics { namespace exampleCPP { namespace exampleRPC {
 
-epicsShareClass class Point
+class epicsShareClass Point
 {
 public:
     Point()

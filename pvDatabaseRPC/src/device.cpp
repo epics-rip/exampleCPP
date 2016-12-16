@@ -8,12 +8,15 @@
  *
  */
 
-#include <pv/device.h>
+
 
 #include <epicsThread.h>
 
 #include <cmath>
 #include <sstream>
+
+#define epicsExportSharedSymbols
+#include <pv/device.h>
 
 namespace epics { namespace exampleCPP { namespace exampleRPC {
 
