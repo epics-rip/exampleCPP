@@ -73,10 +73,11 @@ int main(int argc,char *argv[])
     try {
         PvaClientPtr pva= PvaClient::get(provider);
         if(debug) PvaClient::setDebug(true);
-        PvaClientChannelPtr channel(pva->channel(channelName,provider,0.0));
+        PvaClientChannelPtr channel(pva->createChannel(channelName,provider));
         ChannelStateChangeRequester::shared_pointer stateChangeRequester(
             new ChannelStateChangeRequester());
         channel->setStateChangeRequester(stateChangeRequester);
+        channel->issueConnect();
         PvaClientGetPtr pvaClientGet;
         while(true) {
             if(stateChangeRequester->isConnected()) {
