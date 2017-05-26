@@ -20,6 +20,24 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
+class  ChannelStateChangeRequester :
+     public PvaClientChannelStateChangeRequester
+{
+    bool connected;
+public:
+    POINTER_DEFINITIONS(ChannelStateChangeRequester);
+    ChannelStateChangeRequester()
+    : connected(false)
+     {}
+    virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected )
+    {
+        cout << "channelStateChange state " << (isConnected ? "true" : "false") << endl; 
+        connected = isConnected;
+    }
+    bool isConnected() {return connected;}
+};
+
+
 class ClientMonitorRequester :
    public PvaClientMonitorRequester
 {
@@ -85,13 +103,29 @@ int main(int argc,char *argv[])
          << " debug " << (debug ? "true" : "false") << endl;
 
     cout << "_____monitorForever starting_______\n";
+    PvaClientPtr pva = PvaClient::get(provider);
     try {
-        PvaClientPtr pva = PvaClient::get(provider);
         if(debug) PvaClient::setDebug(true);
+        PvaClientChannelPtr channel;
+        ChannelStateChangeRequester::shared_pointer stateChangeRequester(
+            new ChannelStateChangeRequester());
         ClientMonitorRequester::shared_pointer monitorRequester(new ClientMonitorRequester());
-        PvaClientMonitorPtr monitor = 
-            pva->channel(channelName,provider)->monitor(request,monitorRequester);
+        PvaClientMonitorPtr monitor;
         while(true) {
+            if(!channel) {
+                 channel = pva->createChannel(channelName,provider);
+                 channel->setStateChangeRequester(stateChangeRequester);
+                 channel->issueConnect();
+            }
+            if(stateChangeRequester->isConnected()) {
+                if(!monitor) {
+                      monitor = channel->monitor(request,monitorRequester);
+                      epicsThreadSleep(1.0);
+                      continue;
+                }
+            } else {
+                cout <<"channel not connected\n";
+            }
             cout << "Type exit to stop: \n";
             string str;
             getline(cin,str);
@@ -99,7 +133,13 @@ int main(int argc,char *argv[])
                 cout << "exiting because unlisten was called\n";
                 break;
             }
-            if(str.compare("exit")==0) break;
+            if(str.compare("exit")==0){
+                 break;
+            }
+            if(str.compare("disconnect")==0){
+                 channel.reset();
+                 monitor.reset();
+            }
         }
     } catch (std::runtime_error e) {
             cerr << "exception " << e.what() << endl;
