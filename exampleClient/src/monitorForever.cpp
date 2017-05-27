@@ -145,5 +145,9 @@ int main(int argc,char *argv[])
             cerr << "exception " << e.what() << endl;
             return 1;
     }
+cout << "before epicsThreadSleep\n";
+pva.reset();
+epicsThreadSleep(1.0);
+cout << "after epicsThreadSleep\n";
     return 0;
 }
