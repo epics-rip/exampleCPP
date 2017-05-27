@@ -69,6 +69,10 @@ testRAIINTMulti_SRCS += testRAIINTMulti.cpp
 testRAIINTMulti_LIBS += pvaClient pvAccess nt pvData ca Com
 
 
+PROD_HOST += testClientFactory
+testClientFactory_SRCS += testClientFactory.cpp
+testClientFactory_LIBS += pvaClient pvAccess nt pvData ca Com
+
 #===========================
 
 include $(TOP)/configure/RULES

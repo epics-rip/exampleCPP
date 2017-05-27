@@ -70,8 +70,8 @@ int main(int argc,char *argv[])
          << " debug " << (debug ? "true" : "false") << endl;
 
     cout << "_____getForever starting__\n";
-    try {
-        PvaClientPtr pva= PvaClient::get(provider);
+    PvaClientPtr pva= PvaClient::get(provider);
+    try {   
         if(debug) PvaClient::setDebug(true);
         PvaClientChannelPtr channel(pva->createChannel(channelName,provider));
         ChannelStateChangeRequester::shared_pointer stateChangeRequester(
