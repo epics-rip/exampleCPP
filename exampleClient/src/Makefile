@@ -47,6 +47,11 @@ PROD_HOST += monitorForever
 monitorForever_SRCS += monitorForever.cpp
 monitorForever_LIBS += pvaClient pvAccess nt pvData ca Com
 
+PROD_HOST += monitorChannel
+monitorChannel_SRCS += monitorChannel.cpp
+monitorChannel_LIBS += pvaClient pvAccess nt pvData ca Com
+
+
 PROD_HOST += getForever
 getForever_SRCS += getForever.cpp
 getForever_LIBS += pvaClient pvAccess nt pvData ca Com
