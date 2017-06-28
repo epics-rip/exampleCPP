@@ -30,9 +30,8 @@ int main(int argc,char *argv[])
     cout << "_____testClientFactory starting_______\n";
     
     try {
-ClientFactory::start(); //IF THIS IS UNCOMMENTED THEN ALL OK
-        PvaClientPtr pva = PvaClient::get("pva");
         PvaClient::setDebug(true);
+        PvaClientPtr pva = PvaClient::get("pva");
         while(true) {
             cout << "Type exit to stop: \n";
             string str;

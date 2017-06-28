@@ -25,13 +25,11 @@ class ClientMonitor;
 typedef std::tr1::shared_ptr<ClientMonitor> ClientMonitorPtr;
 
 class ClientMonitor :
-    public PvaClientChannelStateChangeRequester,
     public PvaClientMonitorRequester,
     public std::tr1::enable_shared_from_this<ClientMonitor>
 {
 private:
-    PvaMonitorPtr pvaMonitor;
-    bool isStarted;
+    PvaClientMonitorPtr pvaClientMonitor;
 public:
     POINTER_DEFINITIONS(ClientMonitor);
 
@@ -47,7 +45,6 @@ public:
     }
 
     ClientMonitor()
-    : isStarted(false)
     {
     }
     void init(
@@ -56,15 +53,10 @@ public:
         const string & providerName,
         const string  & request)
     {
-           pvaMonitor = PvaMonitor::create(pvaClient,channelName,providerName,request,
-           shared_from_this(),shared_from_this());
-           isStarted = true;
+           pvaClientMonitor = PvaClientMonitor::create(pvaClient,channelName,providerName,request,
+           PvaClientChannelStateChangeRequesterPtr(),shared_from_this());
     }
     
-    virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected )
-    {
-        cout << "channelStateChange isConnected " << (isConnected ? "true" : "false") << endl; 
-    }
     virtual void event(PvaClientMonitorPtr const & monitor)
     {
         while(monitor->poll()) {
@@ -77,65 +69,10 @@ public:
             monitor->releaseEvent();
         }
     }
-    virtual void unlisten()
-    {
-         cout << "ClientMonitorRequester::unlisten\n";
+    PvaClientMonitorPtr getPvaClientMonitor() {
+        return pvaClientMonitor;
     }
 
-    void status()
-    {
-        Channel::ConnectionState connectionState = pvaMonitor->getPvaClientChannel()->
-             getChannel()->getConnectionState();
-        cout << "connectionState " << Channel::ConnectionStateNames[connectionState] << endl;
-    }
-
-    void start()
-    {
-        if(pvaMonitor->getPvaClientChannel()->getChannel()->getConnectionState()
-        !=Channel::ConnectionState::CONNECTED)
-        {
-             cout << "not connected\n";
-             return;
-        }
-        if(isStarted)
-        {
-             cout << "already started\n";
-             return;
-        }
-    
-        PvaClientMonitorPtr clientMonitor = pvaMonitor->getPvaClientMonitor();
-        if(!clientMonitor)
-        {
-             cout << "monitor no created\n";
-             return;
-        }
-        clientMonitor->start();
-        isStarted = true;
-    }
-
-    void stop()
-    {
-        if(pvaMonitor->getPvaClientChannel()->getChannel()->getConnectionState()
-        !=Channel::ConnectionState::CONNECTED)
-        {
-             cout << "not connected\n";
-             return;
-        }
-        if(!isStarted)
-        {
-             cout << "already stopped\n";
-             return;
-        }
-    
-        PvaClientMonitorPtr clientMonitor = pvaMonitor->getPvaClientMonitor();
-        if(!clientMonitor)
-        {
-             cout << "monitor not created\n";
-             return;
-        }
-        clientMonitor->stop();
-        isStarted = false;
-    }
 };
 
 typedef std::tr1::shared_ptr<ClientMonitor> ClientMonitorPtr;
@@ -181,16 +118,12 @@ int main(int argc,char *argv[])
                  cout << "Type help exit status start stop\n";
                  continue;
             }
-            if(str.compare("status")==0){
-                 clientMonitor->status();
-                 continue;
-            }
             if(str.compare("start")==0){
-                 clientMonitor->start();
+                 clientMonitor->getPvaClientMonitor()->start(request);
                  continue;
             }
             if(str.compare("stop")==0){
-                 clientMonitor->stop();
+                 clientMonitor->getPvaClientMonitor()->stop();
                  continue;
             }
             if(str.compare("exit")==0){
