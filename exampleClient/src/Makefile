@@ -4,6 +4,18 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 
+PROD_HOST += getForever
+getForever_SRCS += getForever.cpp
+getForever_LIBS += pvaClient pvAccess nt pvData ca Com
+
+PROD_HOST += putForever
+putForever_SRCS += putForever.cpp
+putForever_LIBS += pvaClient pvAccess nt pvData ca Com
+
+PROD_HOST += monitorChannel
+monitorChannel_SRCS += monitorChannel.cpp
+monitorChannel_LIBS += pvaClient pvAccess nt pvData ca Com
+
 
 PROD_HOST += examplePvaClientProcess
 examplePvaClientProcess_SRCS += examplePvaClientProcess.cpp
@@ -47,14 +59,9 @@ PROD_HOST += monitorForever
 monitorForever_SRCS += monitorForever.cpp
 monitorForever_LIBS += pvaClient pvAccess nt pvData ca Com
 
-PROD_HOST += monitorChannel
-monitorChannel_SRCS += monitorChannel.cpp
-monitorChannel_LIBS += pvaClient pvAccess nt pvData ca Com
 
 
-PROD_HOST += getForever
-getForever_SRCS += getForever.cpp
-getForever_LIBS += pvaClient pvAccess nt pvData ca Com
+
 
 PROD_HOST += putUnionForever
 putUnionForever_SRCS += putUnionForever.cpp

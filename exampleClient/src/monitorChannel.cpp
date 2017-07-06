@@ -9,12 +9,9 @@
 
 /* Author: Marty Kraimer */
 
-#include <epicsThread.h>
-
 #include <iostream>
 
 #include <pv/pvaClient.h>
-#include <pv/clientFactory.h>
 
 using namespace std;
 using namespace epics::pvData;
@@ -129,6 +126,9 @@ int main(int argc,char *argv[])
             if(str.compare("exit")==0){
                  break;
             }
+            bool isConnected = clientMonitor->
+                getPvaClientMonitor()->getPvaClientChannel()->getChannel()->isConnected();
+            cout << "isConnected " << (isConnected ? "true" : "false") << endl;
         }
     } catch (std::runtime_error e) {
             cerr << "exception " << e.what() << endl;
