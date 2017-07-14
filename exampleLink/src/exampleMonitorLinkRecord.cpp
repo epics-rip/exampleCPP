@@ -58,9 +58,11 @@ bool ExampleMonitorLinkRecord::init(PvaClientPtr const & pva,string const & chan
     if(!pvValue) {
         return false;
     }
-    PvaClientChannelPtr pvaClientChannel = pva->channel(channelName,providerName,0.0);
     monitorRequester = dynamic_pointer_cast<PvaClientMonitorRequester>(getPtrSelf());
-    pvaClientMonitor = pvaClientChannel->monitor("value",monitorRequester);
+    pvaClientMonitor = PvaClientMonitor::create(
+        pva,channelName,providerName,"value",
+        PvaClientChannelStateChangeRequesterPtr(),
+        monitorRequester);
     return true;
 }
 

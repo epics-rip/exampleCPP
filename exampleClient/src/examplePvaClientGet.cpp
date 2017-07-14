@@ -9,7 +9,6 @@
 
 /* Author: Marty Kraimer */
 #include <iostream>
-#include <epicsThread.h>
 
 #include <pv/pvaClient.h>
 
@@ -73,7 +72,6 @@ int main(int argc,char *argv[])
     cout << "_____examplePvaClientGet starting_______\n";
     try {
         PvaClientPtr pva= PvaClient::get("pva ca");
-//PvaClient::setDebug(true);
         exampleDouble(pva,"PVRdouble","pva");
         exampleDoubleArray(pva,"PVRdoubleArray","pva");
         PvaClientChannelPtr pvaChannel = pva->createChannel("DBRdouble00","ca");

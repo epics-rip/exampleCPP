@@ -4,17 +4,17 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 
-PROD_HOST += getForever
-getForever_SRCS += getForever.cpp
-getForever_LIBS += pvaClient pvAccess nt pvData ca Com
+PROD_HOST += getNoBlock
+getNoBlock_SRCS += getNoBlock.cpp
+getNoBlock_LIBS += pvaClient pvAccess nt pvData ca Com
 
-PROD_HOST += putForever
-putForever_SRCS += putForever.cpp
-putForever_LIBS += pvaClient pvAccess nt pvData ca Com
+PROD_HOST += putNoBlock
+putNoBlock_SRCS += putNoBlock.cpp
+putNoBlock_LIBS += pvaClient pvAccess nt pvData ca Com
 
-PROD_HOST += monitorChannel
-monitorChannel_SRCS += monitorChannel.cpp
-monitorChannel_LIBS += pvaClient pvAccess nt pvData ca Com
+PROD_HOST += monitorNoBlock
+monitorNoBlock_SRCS += monitorNoBlock.cpp
+monitorNoBlock_LIBS += pvaClient pvAccess nt pvData ca Com
 
 
 PROD_HOST += examplePvaClientProcess
@@ -55,35 +55,12 @@ PROD_HOST += helloWorldPutGet
 helloWorldPutGet_SRCS += helloWorldPutGet.cpp
 helloWorldPutGet_LIBS += pvaClient pvAccess nt pvData ca Com
 
-PROD_HOST += monitorForever
-monitorForever_SRCS += monitorForever.cpp
-monitorForever_LIBS += pvaClient pvAccess nt pvData ca Com
 
 
+PROD_HOST += putUnion
+putUnion_SRCS += putUnion.cpp
+putUnion_LIBS += pvaClient pvAccess nt pvData ca Com
 
-
-
-PROD_HOST += putUnionForever
-putUnionForever_SRCS += putUnionForever.cpp
-putUnionForever_LIBS += pvaClient pvAccess nt pvData ca Com
-
-PROD_HOST += testRAII
-testRAII_SRCS += testRAII.cpp
-testRAII_LIBS += pvaClient pvAccess nt pvData ca Com
-
-PROD_HOST += testRAIIMultiDouble
-testRAIIMultiDouble_SRCS += testRAIIMultiDouble.cpp
-testRAIIMultiDouble_LIBS += pvaClient pvAccess nt pvData ca Com
-
-
-PROD_HOST += testRAIINTMulti
-testRAIINTMulti_SRCS += testRAIINTMulti.cpp
-testRAIINTMulti_LIBS += pvaClient pvAccess nt pvData ca Com
-
-
-PROD_HOST += testClientFactory
-testClientFactory_SRCS += testClientFactory.cpp
-testClientFactory_LIBS += pvaClient pvAccess nt pvData ca Com
 
 #===========================
 

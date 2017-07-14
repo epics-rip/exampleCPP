@@ -11,27 +11,25 @@
 #include <iostream>
 
 #include <pv/pvaClient.h>
-#include <pv/convert.h>
 
 using namespace std;
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
-class ClientPut;
-typedef std::tr1::shared_ptr<ClientPut> ClientPutPtr;
+class ClientGet;
+typedef std::tr1::shared_ptr<ClientGet> ClientGetPtr;
 
-class ClientPut :
+class ClientGet :
     public PvaClientChannelStateChangeRequester
 {
 private:
     string request;
     PvaClientChannelPtr pvaClientChannel;
-    PvaClientPutPtr pvaClientPut;
-    PvaClientPutDataPtr putData;
+    PvaClientGetPtr pvaClientGet;
 public:
-    POINTER_DEFINITIONS(ClientPut);
-    ClientPut(
+    POINTER_DEFINITIONS(ClientGet);
+    ClientGet(
         const string &request,
         const PvaClientChannelPtr & pvaClientChannel)
     : request(request),
@@ -39,38 +37,32 @@ public:
     {
     }
     
-    static ClientPutPtr create(
+    static ClientGetPtr create(
         PvaClientPtr const &pvaClient,
         const string & channelName,
         const string & providerName,
         const string  & request)
     {
         PvaClientChannelPtr pvaClientChannel = pvaClient->createChannel(channelName,providerName);
-        ClientPutPtr clientPut(new ClientPut(request,pvaClientChannel));
-        pvaClientChannel->setStateChangeRequester(clientPut);
+        ClientGetPtr clientGet(new ClientGet(request,pvaClientChannel));
+        pvaClientChannel->setStateChangeRequester(clientGet);
         pvaClientChannel->issueConnect();
-        return clientPut;
+        return clientGet;
     }
 
     virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected)
     {
-        if(isConnected&&!pvaClientPut)
+        if(isConnected&&!pvaClientGet)
         {
-           pvaClientPut  = pvaClientChannel->createPut(request);
-           pvaClientPut->issueConnect();
+           pvaClientGet  = pvaClientChannel->createGet(request);
+           pvaClientGet->issueConnect();
         }
     }
 
-    PvaClientPutPtr getPvaClientPut()
+    PvaClientGetPtr getPvaClientGet()
     {
-        return  pvaClientPut;
-    }
-
-    PvaClientPutDataPtr getData()
-    {
-         if(!putData) putData = pvaClientPut->getData();
-         return putData;
-    }
+        return  pvaClientGet;
+    }   
 };
 
 
@@ -78,7 +70,7 @@ int main(int argc,char *argv[])
 {
     string providerName("pva");
     string channelName("PVRdouble");
-    string request("value");
+    string request("value,alarm,timeStamp");
     bool debug(false);
     if(argc==2 && string(argv[1])==string("-help")) {
         cout << "providerName channelName request debug" << endl;
@@ -108,13 +100,12 @@ int main(int argc,char *argv[])
          << " request " << request
          << " debug " << (debug ? "true" : "false") << endl;
 
-    cout << "_____getForever starting__\n";
+    cout << "_____getNoBlock starting__\n";
     
     try {   
         if(debug) PvaClient::setDebug(true);
-        ConvertPtr convert = getConvert();
         PvaClientPtr pva= PvaClient::get(providerName);
-        ClientPutPtr clientPut(ClientPut::create(pva,channelName,providerName,request));
+        ClientGetPtr clientGet(ClientGet::create(pva,channelName,providerName,request));
         while(true) {
             int c = std::cin.peek();  // peek character
             if ( c == EOF ) continue;
@@ -122,19 +113,20 @@ int main(int argc,char *argv[])
             string str;
             getline(cin,str);
             if(str.compare("exit")==0) break;
-            PvaClientPutPtr pvaClientPut = clientPut->getPvaClientPut();
-            if(!pvaClientPut) {
+            PvaClientGetPtr pvaClientGet = clientGet->getPvaClientGet();
+            if(!pvaClientGet) {
                 cout << "not connected\n";
             } else {
-                try {
-                    PvaClientPutDataPtr putData = clientPut->getData();
-                    PVScalarPtr pvScalar(putData->getScalarValue());
-                    convert->fromString(pvScalar,str);
-                    pvaClientPut->put();
-                } catch (std::runtime_error e) {
-                     cout << "str " << str << " is not a valid value\n";
+                pvaClientGet->get();
+                PvaClientGetDataPtr data = pvaClientGet->getData();
+                BitSetPtr bitSet =  data->getChangedBitSet();
+                if(bitSet->cardinality()>0) {
+                    cout << "changed\n";
+                    data->showChanged(cout);
+                    cout << "bitSet " << *bitSet << endl;
                 }
             }
+            
         }
     } catch (std::runtime_error e) {
         cerr << "exception " << e.what() << endl;

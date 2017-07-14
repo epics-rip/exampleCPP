@@ -18,11 +18,7 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 using namespace epics::pvDatabase;
-using std::tr1::static_pointer_cast;
-using std::tr1::dynamic_pointer_cast;
-using std::cout;
-using std::endl;
-using std::string;
+using namespace std;
 
 namespace epics { namespace exampleCPP { namespace exampleLink {
 

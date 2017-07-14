@@ -21,13 +21,12 @@ using namespace epics::pvaClient;
 
 
 LongArrayPut::LongArrayPut(
-    string const &providerName,
     string const & channelName,
     size_t arraySize,
     int iterBetweenCreateChannel,
     int iterBetweenCreateChannelPut,
     double delayTime)
-: providerName(providerName),
+:
   channelName(channelName),
   arraySize(arraySize),
   iterBetweenCreateChannel(iterBetweenCreateChannel),
@@ -51,7 +50,7 @@ void LongArrayPut::stop()
 void LongArrayPut::run()
 {
     PvaClientPtr pva(PvaClient::get("pva"));
-    PvaClientChannelPtr pvaChannel(pva->createChannel(channelName,providerName));
+    PvaClientChannelPtr pvaChannel(pva->createChannel(channelName));
     PvaClientPutPtr pvaPut(pvaChannel->createPut("value"));
     TimeStamp timeStamp;
     TimeStamp timeStampLast;
@@ -112,7 +111,7 @@ void LongArrayPut::run()
         ++numChannelCreate;
         if(iterBetweenCreateChannel!=0) {
             if(numChannelCreate>=iterBetweenCreateChannel) {
-                pvaChannel = pva->createChannel(channelName,providerName);
+                pvaChannel = pva->createChannel(channelName);
                 pvaPut = pvaChannel->createPut("value");
                 numChannelCreate = 0;
             }

@@ -20,12 +20,11 @@ using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
 LongArrayGet::LongArrayGet(
-        string  providerName,
         string  channelName,
         int iterBetweenCreateChannel,
         int iterBetweenCreateChannelGet,
         double delayTime)
-: providerName(providerName),
+:
   channelName(channelName),
   iterBetweenCreateChannel(iterBetweenCreateChannel),
   iterBetweenCreateChannelGet(iterBetweenCreateChannelGet),
@@ -48,7 +47,7 @@ void LongArrayGet::stop()
 void LongArrayGet::run()
 {
     PvaClientPtr pva(PvaClient::get("pva"));
-    PvaClientChannelPtr pvaChannel(pva->createChannel(channelName,providerName));
+    PvaClientChannelPtr pvaChannel(pva->createChannel(channelName));
     PvaClientGetPtr pvaGet(pvaChannel->createGet("value,alarm,timeStamp"));
     TimeStamp timeStamp;
     TimeStamp timeStampLast;
@@ -114,7 +113,7 @@ void LongArrayGet::run()
         ++numChannelCreate;
         if(iterBetweenCreateChannel!=0) {
             if(numChannelCreate>=iterBetweenCreateChannel) {
-                pvaChannel = pva->createChannel(channelName,providerName);
+                pvaChannel = pva->createChannel(channelName);
                 pvaGet = pvaChannel->createGet("value,timeStamp,alarm");
                 numChannelCreate = 0;
             }

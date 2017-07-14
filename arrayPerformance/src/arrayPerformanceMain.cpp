@@ -43,18 +43,16 @@ int main(int argc,char *argv[])
     recordName = "arrayPerformance";
     size_t size = 10000000;
     double delay = .0001;
-    string providerName("local");
     size_t nMonitor = 1;
     int queueSize = 2;
 
     if(argc==2 && string(argv[1])==string("-help")) {
         cout << "recordName size";
-        cout << " delay providerName nMonitor queueSize" << endl;
+        cout << " delay nMonitor queueSize" << endl;
         cout << "default" << endl;
         cout << recordName << " ";
         cout << size << " ";
         cout << delay << " ";
-        cout << providerName << " ";
         cout << nMonitor << " ";
         cout << queueSize << endl;
         return 0;
@@ -62,13 +60,11 @@ int main(int argc,char *argv[])
     if(argc>1) recordName = argv[1];
     if(argc>2) size = strtoul(argv[2],0,0);
     if(argc>3) delay = atof(argv[3]);
-    if(argc>4) providerName = argv[4];
-    if(argc>5) nMonitor = strtoul(argv[5],0,0);
-    if(argc>6) queueSize = strtol(argv[6],0,0);
+    if(argc>4) nMonitor = strtoul(argv[4],0,0);
+    if(argc>5) queueSize = strtol(argv[5],0,0);
     cout << recordName << " ";
     cout << size << " ";
     cout << delay << " ";
-    cout << providerName << " ";
     cout << nMonitor << " ";
     cout << queueSize << endl;
     
@@ -84,7 +80,7 @@ int main(int argc,char *argv[])
         std::vector<LongArrayMonitorPtr> longArrayMonitor(nMonitor);
         for(size_t i=0; i<nMonitor; ++i) {
            longArrayMonitor[i] = LongArrayMonitorPtr(
-               new LongArrayMonitor(providerName,recordName,queueSize));
+               new LongArrayMonitor(recordName,queueSize));
         }
         
         cout << "arrayPerformance\n";

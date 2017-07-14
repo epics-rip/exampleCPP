@@ -26,19 +26,11 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/exampleClient</h1>
-<h2 class="nocount">2016.08.29</h2>
+<h2 class="nocount">2017.07.12</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
 <b>exampleClient</b> has examples for <b>pvaClientCPP</b>
-</p>
-<p>
-<a
-      href="http://epics-pvdata.sourceforge.net/informative/developerGuide/developerGuide.html">
-      developerGuide.html
-</a> 
-Provides tutorial information on how to use pvaClient.
-Many of the examples are adapted from the examples shown here.
 </p>
 
 </div> <!-- head -->
@@ -50,6 +42,112 @@ Many of the examples are adapted from the examples shown here.
 <!-- Place what you would like in the Table of Contents, inside the contents div -->
 <div id="contents" class="contents">	  
 <hr />
+
+
+<h2>monitorNoBlock</h2>
+<p>This is an example that creates a PvaClientMonitor that never blocks.
+It automatically handles channel connect and disconnects and also creates a monitor when the
+channel first connects.
+</p>
+<p>This example is of interest to those implementing monitors for Display Managers.
+</p> 
+<p>The example supports help as follows:</p>
+<pre>
+mrk> bin/linux-x86_64/monitorNoBlock -help
+provider channelName request debug
+default
+pva PVRdouble "value,alarm,timeStamp" false
+</pre>
+The arguments are:
+<dl>
+   <dt>provider</dt>
+     <dd>
+      This can be either <b>pva</b> or <b>ca</b>.
+      <b>ca</b> only works if channelName is a accessable via the ca network protocol,
+      e. g. it is the name of a DBRecord in a V3 IOC.
+     </dd>
+   <dt>channelName</dt>
+     <dd>
+       The name of the channel.
+     </dd>
+   <dt>request</dt>
+     <dd>A request as defined in the convert facility of pvData</dd>
+   <dt>debug</dt>
+     <dd>
+      If true then debug messages are displayed/
+     </dd>
+</dl>
+<p>
+The example implements a class <b>ClientMonitor</b> which has a single callback
+for receiving monitor events.
+PvaClientMonitor handled channel change of state events and automatically creates and starts
+a monitor when the channel first connects.
+</p>
+
+
+<h2>getNoBlock</h2>
+<p>This is an example that creates a PvaClientGet that never blocks waiting for a channel to connect.
+It implements a class that implements PvaClientChannelStateChangeRequester.
+The example creates a PvaClientGet when the channel first connects.
+</p>
+<p>This example supports help as follows:</p>
+<pre>
+mrk> bin/linux-x86_64/getNoBlock -help
+providerName channelName request debug
+default
+pva PVRdouble "value,alarm,timeStamp" false
+</pre>
+The arguments are:
+<dl>
+   <dt>provider</dt>
+     <dd>
+      This can be either <b>pva</b> or <b>ca</b>.
+      <b>ca</b> only works if channelName is a accessable via the ca network protocol,
+      e. g. it is the name of a DBRecord in a V3 IOC.
+     </dd>
+   <dt>channelName</dt>
+     <dd>
+       The name of the channel.
+     </dd>
+   <dt>request</dt>
+     <dd>A request as defined in the convert facility of pvData</dd>
+   <dt>debug</dt>
+     <dd>
+      If true then debug messages are displayed/
+     </dd>
+</dl>
+
+<h2>putNoBlock</h2>
+<p>This is an example that creates a PvaClientPut that never blocks waiting for a channel to connect.
+It implements a class that implements PvaClientChannelStateChangeRequester.
+The example creates a PvaClientPut when the channel first connects.
+</p>
+<p>This example supports help as follows:</p>
+<pre>
+mrk> bin/linux-x86_64/putNoBlock -help
+providerName channelName request debug
+default
+pva PVRdouble "value" false
+</pre>
+The arguments are:
+<dl>
+   <dt>provider</dt>
+     <dd>
+      This can be either <b>pva</b> or <b>ca</b>.
+      <b>ca</b> only works if channelName is a accessable via the ca network protocol,
+      e. g. it is the name of a DBRecord in a V3 IOC.
+     </dd>
+   <dt>channelName</dt>
+     <dd>
+       The name of the channel.
+     </dd>
+   <dt>request</dt>
+     <dd>A request as defined in the convert facility of pvData</dd>
+   <dt>debug</dt>
+     <dd>
+      If true then debug messages are displayed/
+     </dd>
+</dl>
 
 <h2>examplePvaClientGet</h2>
 <p>This has a number of examples:</p>
@@ -78,6 +176,7 @@ Many of the examples are adapted from the examples shown here.
         have a value field.
      </dd>
 </dl>
+
 <h2>examplePvaClientMonitor</h2>
 <p>This is an example of creating a monitor on a channel.
 It monitors a scalar double field.
@@ -106,100 +205,19 @@ pvaClientMultiGetDouble, pvaClientMultiPutDouble, and pvaClientMultiMonitorDoubl
 <p>This is an example of issuing a PvaClientRPC request.
 It does <b>not</b> use pva.</p>
 
-<h2>getForever</h2>
-<p>This example uses pvaClientGet. It supports help as follows:</p>
-<pre>
-mrk> pwd
-/home/epicsv4/release4_6/exampleCPP/exampleClient
-mrk> bin/$EPICS_HOST_ARCH/getForever -help
-provider channelName  debug
-default
-pva PVRdouble false
-mrk> 
-</pre>
-The arguments are:
-<dl>
-   <dt>provider</dt>
-     <dd>
-      This can be either <b>pva</b> or <b>ca</b>.
-      <b>ca</b> only works if channelName is a accessable via the ca network protocol,
-      e. g. it is the name of a DBRecord in a V3 IOC.
-     </dd>
-   <dt>channelName</dt>
-     <dd>
-       The name of the channel.
-     </dd>
-   <dt>debug</dt>
-     <dd>
-      If true then debug messages are displayed/
-     </dd>
-</dl>
-<p>When run an attempt is made to connect to channelName, create a pvaClientGet,
-and a get is issued. If any of these fails an error message is issued and the process
-terminates.
-</p>
-<p>If successful the result of the get is shown and then the process waits for
-input from the console. If exit is entered the process terminates.
-</p>
+<h2>helloWorldPutGet</h2>
 <p>
-If the get fails, e. g. the channel has disconnected since the last get,
-an error message is displayed and the process terminates.
-If the get is successful then the result is displayed and the process again waits for
-console input.
+<b>NEEDS DESCRIPTION</b>
 </p>
+<h2>helloWorldRPC</h2>
 <p>
-Note that if a channel disconnects and reconnects between gets the process should continuue
-to work.
+<b>NEEDS DESCRIPTION</b>
+</p>
+<h2>putUnion</h2>
+<p>
+<b>NEEDS DESCRIPTION</b>
 </p>
 
-<h2>monitorForever</h2>
-<p>This example uses pvaClientMonitor. It supports help as follows:</p>
-<pre>
-mrk> pwd
-/home/epicsv4/release4_6/exampleCPP/exampleClient
-mrk> bin/$EPICS_HOST_ARCH/monitorForever -help
-provider channelName  debug
-default
-pva PVRdouble false
-mrk> 
-</pre>
-The arguments are:
-<dl>
-   <dt>provider</dt>
-     <dd>
-      This can be either <b>pva</b> or <b>ca</b>.
-      <b>ca</b> only works if channelName is a accessable via the ca network protocol,
-      e. g. it is the name of a DBRecord in a V3 IOC.
-     </dd>
-   <dt>channelName</dt>
-     <dd>
-       The name of the channel.
-     </dd>
-   <dt>debug</dt>
-     <dd>
-      If true then debug messages are displayed/
-     </dd>
-</dl>
-<p>When run an attempt is made to connect to channelName, create a pvaClientMonitor, and starts monitoring.
-If any of these fail an error message is issued and the process
-terminates.
-</p>
-<p>If successful then output is displayed for each monitor event.
-The process also waits for
-input from the console.
-If exit is entered the process terminates.
-If unlisten was called since the last console intput a message is displayed
-and the process terminates, otherwise the process continues.
-</p>
-<p>
-Note that if a channel disconnects and reconnects between console input
-the process should continuue to work.
-</p>
-
-<h2>testRAII, testRAIIMultiDouble, and testRAIINTMulti</h2>
-<p>These were created to help test if pvaClientCPP properly implements RAII,
-e. g, Resource Allocation Is Initialization.
-</p>
 
 </div> <!-- class="contents" -->
 </body>

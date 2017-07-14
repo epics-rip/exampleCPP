@@ -37,13 +37,11 @@ class epicsShareClass  LongArrayMonitor :
 {
 public:
     LongArrayMonitor(
-        std::string const & providerName,
         std::string const & channelName,
         int queueSize = 2);
     virtual void run();
     void stop();
 private:
-    std::string providerName;
     std::string channelName;
     int queueSize;
     std::auto_ptr<epicsThread> thread;

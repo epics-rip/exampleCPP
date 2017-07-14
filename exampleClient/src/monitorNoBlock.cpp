@@ -102,7 +102,7 @@ int main(int argc,char *argv[])
          << " request " << request
          << " debug " << (debug ? "true" : "false") << endl;
 
-    cout << "_____monitorChannel starting_______\n";
+    cout << "_____monitorNoBlock starting_______\n";
     cout << "Type help for help\n"; 
     try {
         if(debug) PvaClient::setDebug(true);
