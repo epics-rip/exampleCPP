@@ -12,5 +12,4 @@ dbLoadRecords("db/dbCounter.db","name=powerSupplyCounter");
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
-startPVAServer
 powerSupplyCreateRecord powerSupply

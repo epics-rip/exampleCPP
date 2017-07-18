@@ -21,7 +21,7 @@ helloPutGetMain_LIBS += pvDatabase pvAccess pvData Com
 PROD_HOST += helloPutGetClient
 helloPutGetClient_SRCS += helloPutGetClient.cpp
 helloPutGetClient_LIBS += pvaClient
-helloPutGetClient_LIBS += pvAccess pvData ca Com
+helloPutGetClient_LIBS += pvAccess pvAccessCA pvData ca Com
 
 # shared library ABI version.
 SHRLIB_VERSION ?= 1.0

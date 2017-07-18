@@ -28,12 +28,12 @@ exampleLink_LIBS += pvDatabase pvaClient pvAccess nt pvData ca Com
 PROD_HOST += exampleLinkMain
 exampleLinkMain_SRCS += exampleLinkMain.cpp
 exampleLinkMain_LIBS += exampleLink
-exampleLinkMain_LIBS += pvDatabase pvaClient pvAccess nt pvData ca Com
+exampleLinkMain_LIBS += pvDatabase pvaClient pvAccess pvAccessCA nt pvData ca Com
 
 
 PROD_HOST += exampleLinkClient
 exampleLinkClient_SRCS += exampleLinkClient.cpp
-exampleLinkClient_LIBS += pvaClient pvAccess pvData ca Com
+exampleLinkClient_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
 
 
 # shared library ABI version.

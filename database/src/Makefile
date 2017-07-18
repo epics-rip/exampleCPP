@@ -21,11 +21,11 @@ exampleDatabase_LIBS += pvDatabase pvAccess nt pvData Com
 PROD_HOST += exampleDatabaseMain
 exampleDatabaseMain_SRCS += exampleDatabaseMain.cpp
 exampleDatabaseMain_LIBS += exampleDatabase
-exampleDatabaseMain_LIBS += pvDatabase pvAccess nt pvData Com
+exampleDatabaseMain_LIBS += pvDatabase pvAccess pvAccessCA nt pvData Com
 
 PROD_HOST += exampleHelloRPCClient
 exampleHelloRPCClient_SRCS += exampleHelloRPCClient.cpp
-exampleHelloRPCClient_LIBS += pvaClient pvAccess nt pvData ca Com
+exampleHelloRPCClient_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
 
 
 # shared library ABI version.

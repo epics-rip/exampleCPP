@@ -11,8 +11,5 @@ dbLoadRecords("db/ai.db","name=helloPutGetAI");
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
-epicsThreadSleep(1.0)
 helloPutGetCreateRecord helloPutGet
-startPVAServer
-pvdbl
 
