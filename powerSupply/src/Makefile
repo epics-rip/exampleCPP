@@ -30,7 +30,7 @@ powerSupplyMonitor_SRCS += powerSupplyMonitor.cpp
 powerSupplyMonitor_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
 
 # shared library ABI version.
-SHRLIB_VERSION ?= 1.0
+SHRLIB_VERSION ?= 1.1
 
 
 include $(TOP)/configure/RULES

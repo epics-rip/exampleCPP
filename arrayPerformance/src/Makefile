@@ -43,7 +43,7 @@ vectorPerformanceMain_LIBS +=  pvData Com
 
 
 # shared library ABI version.
-SHRLIB_VERSION ?= 1.0
+SHRLIB_VERSION ?= 1.1
 
 
 include $(TOP)/configure/RULES
