@@ -42,13 +42,13 @@ MB=${MB:-"NO_MICROBENCH"}
 ###########################################
 # Dependent module branches
 
-PVCOMMON_BRANCH="release-4.2"
-PVDATA_BRANCH="release-6.0"
-NORMATIVETYPES_BRANCH="release-5.1"
-PVACCESS_BRANCH="release-5.0"
-PVACLIENT_BRANCH="release-4.2"
-PVASRV_BRANCH="release-0.12"
-PVDATABASE_BRANCH="release-4.2"
+PVCOMMON_BRANCH="master"
+PVDATA_BRANCH="master"
+NORMATIVETYPES_BRANCH="master"
+PVACCESS_BRANCH="master"
+PVACLIENT_BRANCH="master"
+PVASRV_BRANCH="master"
+PVDATABASE_BRANCH="master"
 
 ###########################################
 # Fetch and unpack dependencies

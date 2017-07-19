@@ -62,7 +62,7 @@ int main(int argc,char *argv[])
     cout << iterBetweenCreateChannelGet  << " ";
     cout << delayTime << endl;
     try {
-        LongArrayGetPtr longArrayGet(new LongArrayGet("pva",
+        LongArrayGetPtr longArrayGet(new LongArrayGet(
               channelName,
               iterBetweenCreateChannel,
               iterBetweenCreateChannelGet,
@@ -73,8 +73,7 @@ int main(int argc,char *argv[])
             getline(cin,str);
             if(str.compare("exit")==0) {
                  longArrayGet->stop();
-epicsThreadSleep(2.0); // should not be necessary
-                 exit(0);
+                 break;
             }
         }
     } catch (std::runtime_error e) {

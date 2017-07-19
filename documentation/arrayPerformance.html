@@ -26,8 +26,6 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/arrayPerformance</h1>
-<h2 class="nocount">2016.08.29</h2>
-
 
 <h2 class="nocount">Abstract</h2>
 <p>arrayPerformance provides main programs that demonstrate performance
@@ -51,8 +49,7 @@ or some other memory check program.
 <dl>
    <dt>arrayPerformanceMain</dt>
      <dd>This is server and also a configurable number of longArrayMonitor clients.
-     The clients can use either the local or
-    remote providers. The monitor code is the same code that is used by longArrayMonitorMain.
+     The monitor code is the same code that is used by longArrayMonitorMain.
      </dd>
    <dt>longArrayMonitorMain</dt>
      <dd>Remote client that monitors the array served by arrayPerformanceMain.</dd>
@@ -66,7 +63,7 @@ or some other memory check program.
 mrk&gt; pwd
 /home/hg/exampleCPP/arrayPerformance
 mrk&gt; bin/$EPICS_HOST_ARCH/arrayPerformanceMain -help
-recordName size delay providerName nMonitor queueSize
+recordName size delay nMonitor queueSize
 default
 arrayPerformance 10000000 0.0001 local 1 2
 
@@ -146,11 +143,6 @@ get kiloElements/sec 8726.34
      <dd>The size for the long array of the value field.</dd>
   <dt>delay</dt>
       <dd>The time in seconds to sleep after each iteration.</dd>
-  <dt>providerName</dt>
-      <dd>The name of the channel provider for the longArrayMonitors 
-      created by the main program. This must be either <b>local</b>
-      or <b>pva</b>.
-      </dd>
   <dt>nMonitor</dt>
      <dd>The number of longArrayMonitors to create.</dd>
   <dt>queueSize</dt>

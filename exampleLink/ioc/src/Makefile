@@ -28,7 +28,7 @@ exampleLink_SRCS_vxWorks += -nil-
 exampleLink_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
 
 exampleLink_LIBS += exampleLink
-exampleLink_LIBS += pvDatabase pvaClient pvaSrv pvAccess nt pvData Com
+exampleLink_LIBS += pvDatabase pvaClient pvaSrv pvAccessCA pvAccessIOC nt pvData Com
 exampleLink_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #===========================

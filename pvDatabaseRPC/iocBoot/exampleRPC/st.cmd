@@ -12,8 +12,5 @@ dbLoadRecords("db/dbCounter.db","name=pvDatabaseRPCCounter");
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
 dbl
-epicsThreadSleep(1.0)
 exampleRPCCreateRecord mydevice
-startPVAServer
-pvdbl
 

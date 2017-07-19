@@ -53,15 +53,14 @@ int main(int argc,char *argv[])
     if(argc>1) channelName = argv[1];
     if(argc>2) queueSize = strtol(argv[2],0,0);
     try {
-        LongArrayMonitorPtr longArrayMonitor(new LongArrayMonitor("pva",channelName,queueSize));
+        LongArrayMonitorPtr longArrayMonitor(new LongArrayMonitor(channelName,queueSize));
         string str;
         while(true) {
             cout << "Type exit to stop: \n";
             getline(cin,str);
             if(str.compare("exit")==0) {
                  longArrayMonitor->stop();
-epicsThreadSleep(2.0); // should not be necessary
-                 exit(0);
+                 break;
             }
         }
     } catch (std::runtime_error e) {

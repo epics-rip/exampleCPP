@@ -24,11 +24,9 @@ using namespace epics::pvaClient;
 using namespace std;
 
 LongArrayMonitor::LongArrayMonitor(
-   string  const &providerName,
     string  const & channelName,
     int queueSize)
 : 
-  providerName(providerName),
   channelName(channelName),
   queueSize(queueSize)
 {
@@ -54,7 +52,7 @@ void LongArrayMonitor::run()
     sprintf(buff,"%d",queueSize);
     request += buff;
     request += "]field(value,timeStamp,alarm)";
-    PvaClientMonitorPtr monitor = pva->channel(channelName,providerName,2.0)->monitor(request);
+    PvaClientMonitorPtr monitor = pva->channel(channelName)->monitor(request);
     TimeStamp timeStamp;
     TimeStamp timeStampLast;
     timeStampLast.getCurrent();

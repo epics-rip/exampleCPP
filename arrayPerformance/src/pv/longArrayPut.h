@@ -37,7 +37,6 @@ class epicsShareClass  LongArrayPut :
 {
 public:
     LongArrayPut(
-        std::string const & providerName,
         std::string const & channelName,
         size_t arraySize = 100,
         int iterBetweenCreateChannel = 0,
@@ -46,7 +45,6 @@ public:
     virtual void run();
     void stop();
 private:
-    std::string providerName;
     std::string channelName;
     size_t arraySize;
     int iterBetweenCreateChannel;

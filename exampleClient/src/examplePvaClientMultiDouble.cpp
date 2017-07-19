@@ -60,7 +60,6 @@ int main(int argc,char *argv[])
     cout << "_____examplePvaClientMultiDouble starting_______\n";
     try {
         PvaClientPtr pva = PvaClient::get("pva ca");
-//PvaClient::setDebug(true);
         size_t num = 5;
         shared_vector<string> channelNames(num);
         channelNames[0] = "PVRdouble01";

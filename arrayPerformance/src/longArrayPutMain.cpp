@@ -66,7 +66,6 @@ int main(int argc,char *argv[])
     try {
         LongArrayPutPtr longArrayPut(
             new LongArrayPut(
-              "pva",
               channelName,
               arraySize,
               iterBetweenCreateChannel,
@@ -79,8 +78,7 @@ int main(int argc,char *argv[])
             getline(cin,str);
             if(str.compare("exit")==0) {
                  longArrayPut->stop();
-epicsThreadSleep(2.0); // should not be necessary
-                 exit(0);
+                 break;
             }
         }
     } catch (std::runtime_error e) {

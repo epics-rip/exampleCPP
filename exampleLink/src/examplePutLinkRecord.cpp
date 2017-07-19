@@ -57,14 +57,21 @@ bool ExamplePutLinkRecord::init(PvaClientPtr const & pva,string const & channelN
     if(!pvValue) {
         return false;
     }
-    pvaClientPut = pva->channel(channelName,providerName)->createPut();
+    pvaClientPut = PvaClientPut::create(pva,channelName,providerName,"value");
     return true;
 }
 
 void ExamplePutLinkRecord::process()
 {
-    pvaClientPut->getData()->putDoubleArray(pvValue->view());
-    pvaClientPut->put();
+    string message("");
+    try {
+          shared_vector<const double> value(pvValue->view());
+          pvaClientPut->getData()->putDoubleArray(pvValue->view());
+          pvaClientPut->put();
+    } catch (std::runtime_error e) {
+        message = e.what();
+        cout << "ExampleGetLinkRecord " << message << endl;
+    }
     PVRecord::process();
 }
 

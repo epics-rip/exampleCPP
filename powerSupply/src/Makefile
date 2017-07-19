@@ -18,19 +18,19 @@ PROD_HOST += powerSupplyMain
 powerSupplyMain_SRCS += powerSupplyMain.cpp
 powerSupplyMain_LIBS += powerSupply
 powerSupplyMain_LIBS += pvDatabase
-powerSupplyMain_LIBS += pvAccess pvData Com
+powerSupplyMain_LIBS += pvAccess pvAccessCA pvData Com
 
 PROD_HOST += powerSupplyClient
 powerSupplyClient_SRCS += powerSupplyClient.cpp
-powerSupplyClient_LIBS += pvaClient pvAccess pvData ca Com
+powerSupplyClient_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
 
 
 PROD_HOST += powerSupplyMonitor
 powerSupplyMonitor_SRCS += powerSupplyMonitor.cpp
-powerSupplyMonitor_LIBS += pvaClient pvAccess pvData ca Com
+powerSupplyMonitor_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
 
 # shared library ABI version.
-SHRLIB_VERSION ?= 1.0
+SHRLIB_VERSION ?= 1.1
 
 
 include $(TOP)/configure/RULES

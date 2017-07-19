@@ -11,4 +11,3 @@ dbLoadRecords("db/dbArray.db","name=doubleArrayExternal,type=DOUBLE");
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
-startPVAServer

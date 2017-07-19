@@ -3,7 +3,7 @@
 TOP = ..
 include $(TOP)/configure/CONFIG
 
-PROD_LIBS += pvaClient pvAccess nt pvData ca Com
+PROD_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
 
 TESTPROD_HOST += pvaClientTest
 pvaClientTest_SRCS = pvaClientTest 

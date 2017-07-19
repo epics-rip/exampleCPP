@@ -37,7 +37,6 @@ class epicsShareClass  LongArrayGet :
 {
 public:
     LongArrayGet(
-        std::string  providerName,
         std::string  channelName,
         int iterBetweenCreateChannel,
         int iterBetweenCreateChannelGet,
@@ -46,7 +45,6 @@ public:
     virtual void run();
     void stop();
 private:
-    std::string  providerName;
     std::string  channelName;
     int iterBetweenCreateChannel;
     int iterBetweenCreateChannelGet;
