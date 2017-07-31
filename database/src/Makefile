@@ -17,6 +17,9 @@ LIBSRCS += exampleDatabase.cpp
 LIBSRCS += exampleDatabaseRegister.cpp
 exampleDatabase_LIBS += pvDatabase pvAccess nt pvData Com
 
+# shared library ABI version.
+SHRLIB_VERSION ?= 4.3.0
+
 
 PROD_HOST += exampleDatabaseMain
 exampleDatabaseMain_SRCS += exampleDatabaseMain.cpp
@@ -26,10 +29,6 @@ exampleDatabaseMain_LIBS += pvDatabase pvAccess pvAccessCA nt pvData Com
 PROD_HOST += exampleHelloRPCClient
 exampleHelloRPCClient_SRCS += exampleHelloRPCClient.cpp
 exampleHelloRPCClient_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
-
-
-# shared library ABI version.
-SHRLIB_VERSION ?= 1.1
 
 
 include $(TOP)/configure/RULES

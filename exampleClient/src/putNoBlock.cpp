@@ -132,7 +132,7 @@ int main(int argc,char *argv[])
                     convert->fromString(pvScalar,str);
                     pvaClientPut->put();
                 } catch (std::runtime_error e) {
-                     cout << "str " << str << " is not a valid value\n";
+                     cout << "exception " << e.what() << endl;
                 }
             }
         }
