@@ -14,6 +14,9 @@ LIBSRCS += powerSupplyRecord.cpp
 LIBSRCS += powerSupplyRegister.cpp
 powerSupply_LIBS += pvDatabase pvAccess nt pvData Com
 
+# shared library ABI version.
+SHRLIB_VERSION ?= 4.3.0
+
 PROD_HOST += powerSupplyMain
 powerSupplyMain_SRCS += powerSupplyMain.cpp
 powerSupplyMain_LIBS += powerSupply
@@ -28,9 +31,6 @@ powerSupplyClient_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
 PROD_HOST += powerSupplyMonitor
 powerSupplyMonitor_SRCS += powerSupplyMonitor.cpp
 powerSupplyMonitor_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
-
-# shared library ABI version.
-SHRLIB_VERSION ?= 1.1
 
 
 include $(TOP)/configure/RULES

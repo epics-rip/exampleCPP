@@ -15,6 +15,10 @@ DBD += examplePutLinkRegister.dbd
 DBD += doubleArrayRegister.dbd
 
 LIBRARY = exampleLink
+
+# shared library ABI version.
+SHRLIB_VERSION ?= 4.3.0
+
 LIBSRCS += exampleMonitorLinkRecord.cpp
 LIBSRCS += exampleGetLinkRecord.cpp
 LIBSRCS += examplePutLinkRecord.cpp
@@ -34,10 +38,6 @@ exampleLinkMain_LIBS += pvDatabase pvaClient pvAccess pvAccessCA nt pvData ca Co
 PROD_HOST += exampleLinkClient
 exampleLinkClient_SRCS += exampleLinkClient.cpp
 exampleLinkClient_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
-
-
-# shared library ABI version.
-SHRLIB_VERSION ?= 1.1
 
 
 include $(TOP)/configure/RULES

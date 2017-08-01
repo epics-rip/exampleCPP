@@ -15,6 +15,10 @@ LIBSRCS += longArrayMonitor.cpp
 LIBSRCS += longArrayPut.cpp
 arrayPerform_LIBS += pvDatabase pvaClient pvAccess pvAccessCA pvData Com
 
+# shared library ABI version.
+SHRLIB_VERSION ?= 4.3.0
+
+
 PROD_HOST += arrayPerformanceMain
 arrayPerformanceMain_SRCS += arrayPerformanceMain.cpp
 arrayPerformanceMain_LIBS += arrayPerform
@@ -41,9 +45,6 @@ PROD_HOST += vectorPerformanceMain
 vectorPerformanceMain_SRCS += vectorPerformanceMain.cpp
 vectorPerformanceMain_LIBS +=  pvData Com
 
-
-# shared library ABI version.
-SHRLIB_VERSION ?= 1.1
 
 
 include $(TOP)/configure/RULES

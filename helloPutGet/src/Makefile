@@ -13,6 +13,9 @@ LIBSRCS += helloPutGetRecord.cpp
 LIBSRCS += helloPutGetRegister.cpp
 helloPutGet_LIBS += pvDatabase pvAccess nt pvData Com
 
+# shared library ABI version.
+SHRLIB_VERSION ?= 4.3.0
+
 PROD_HOST += helloPutGetMain
 helloPutGetMain_SRCS += helloPutGetMain.cpp
 helloPutGetMain_LIBS += helloPutGet
@@ -22,9 +25,6 @@ PROD_HOST += helloPutGetClient
 helloPutGetClient_SRCS += helloPutGetClient.cpp
 helloPutGetClient_LIBS += pvaClient
 helloPutGetClient_LIBS += pvAccess pvAccessCA pvData ca Com
-
-# shared library ABI version.
-SHRLIB_VERSION ?= 1.1
 
 
 include $(TOP)/configure/RULES
