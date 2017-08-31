@@ -27,7 +27,7 @@ powerSupply_SRCS_vxWorks += -nil-
 powerSupply_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
 
 powerSupply_LIBS += powerSupply
-powerSupply_LIBS += pvDatabase pvaSrv pvAccessIOC pvData Com
+powerSupply_LIBS += pvDatabase pvaSrv pvAccessIOC pvAccess pvAccessCA nt pvData
 powerSupply_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #===========================
