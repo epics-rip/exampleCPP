@@ -26,6 +26,12 @@ helloPutGetClient_SRCS += helloPutGetClient.cpp
 helloPutGetClient_LIBS += pvaClient
 helloPutGetClient_LIBS += pvAccess pvAccessCA pvData ca Com
 
+PROD_HOST += helloNoWaitPutGetClient
+helloNoWaitPutGetClient_SRCS += helloNoWaitPutGetClient.cpp
+helloNoWaitPutGetClient_LIBS += pvaClient
+helloNoWaitPutGetClient_LIBS += pvAccess pvAccessCA pvData ca Com
+
+
 
 include $(TOP)/configure/RULES
 

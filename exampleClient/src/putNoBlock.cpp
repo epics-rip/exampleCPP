@@ -11,7 +11,6 @@
 #include <iostream>
 
 #include <pv/pvaClient.h>
-#include <pv/convert.h>
 
 using namespace std;
 using namespace epics::pvData;
@@ -22,20 +21,37 @@ class ClientPut;
 typedef std::tr1::shared_ptr<ClientPut> ClientPutPtr;
 
 class ClientPut :
-    public PvaClientChannelStateChangeRequester
+    public PvaClientChannelStateChangeRequester,
+    public PvaClientPutRequester,
+    public std::tr1::enable_shared_from_this<ClientPut>
 {
 private:
+    string channelName;
+    string providerName;
     string request;
+    bool channelConnected;
+    bool putConnected;
+
     PvaClientChannelPtr pvaClientChannel;
     PvaClientPutPtr pvaClientPut;
-    PvaClientPutDataPtr putData;
+
+    void init(PvaClientPtr const &pvaClient)
+    {
+        pvaClientChannel = pvaClient->createChannel(channelName,providerName);
+        pvaClientChannel->setStateChangeRequester(shared_from_this());
+        pvaClientChannel->issueConnect();
+    }
 public:
     POINTER_DEFINITIONS(ClientPut);
     ClientPut(
-        const string &request,
-        const PvaClientChannelPtr & pvaClientChannel)
-    : request(request),
-      pvaClientChannel(pvaClientChannel)
+        const string &channelName,
+        const string &providerName,
+        const string &request)
+    : channelName(channelName),
+      providerName(providerName),
+      request(request),
+      channelConnected(false),
+      putConnected(false)
     {
     }
     
@@ -45,32 +61,57 @@ public:
         const string & providerName,
         const string  & request)
     {
-        PvaClientChannelPtr pvaClientChannel = pvaClient->createChannel(channelName,providerName);
-        ClientPutPtr clientPut(new ClientPut(request,pvaClientChannel));
-        pvaClientChannel->setStateChangeRequester(clientPut);
-        pvaClientChannel->issueConnect();
-        return clientPut;
+        ClientPutPtr client(ClientPutPtr(
+             new ClientPut(channelName,providerName,request)));
+        client->init(pvaClient);
+        return client;
     }
 
     virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected)
     {
-        if(isConnected&&!pvaClientPut)
-        {
-           pvaClientPut  = pvaClientChannel->createPut(request);
-           pvaClientPut->issueConnect();
+        channelConnected = isConnected;
+        if(isConnected) {
+            if(!pvaClientPut) {
+                pvaClientPut = pvaClientChannel->createPut(request);
+                pvaClientPut->setRequester(shared_from_this());
+                pvaClientPut->issueConnect();
+            }
         }
     }
 
-    PvaClientPutPtr getPvaClientPut()
+    virtual void channelPutConnect(
+        const epics::pvData::Status& status,
+        PvaClientPutPtr const & clientPut)
     {
-        return  pvaClientPut;
+        putConnected = true;
+        cout << "channelPutConnect " << channelName << " status " << status << endl;
     }
 
-    PvaClientPutDataPtr getData()
+    
+    virtual void putDone(
+        const epics::pvData::Status& status,
+        PvaClientPutPtr const & clientPut)
     {
-         if(!putData) putData = pvaClientPut->getData();
-         return putData;
+         cout << "putDone " << channelName << " status " << status << endl;
     }
+
+    void put(const string & value)
+    {
+        if(!channelConnected) {
+            cout << channelName << " channel not connected\n";
+            return;
+        }
+        if(!putConnected) {
+            cout << channelName << " channelPut not connected\n";
+            return;
+        }
+        PvaClientPutDataPtr putData = pvaClientPut->getData();
+        PVScalarPtr pvScalar(putData->getScalarValue());
+        ConvertPtr convert = getConvert();
+        convert->fromString(pvScalar,value);
+        pvaClientPut->put();
+    }
+
 };
 
 
@@ -112,7 +153,6 @@ int main(int argc,char *argv[])
     
     try {   
         if(debug) PvaClient::setDebug(true);
-        ConvertPtr convert = getConvert();
         PvaClientPtr pva= PvaClient::get(providerName);
         ClientPutPtr clientPut(ClientPut::create(pva,channelName,providerName,request));
         while(true) {
@@ -122,18 +162,11 @@ int main(int argc,char *argv[])
             string str;
             getline(cin,str);
             if(str.compare("exit")==0) break;
-            PvaClientPutPtr pvaClientPut = clientPut->getPvaClientPut();
-            if(!pvaClientPut) {
-                cout << "not connected\n";
-            } else {
-                try {
-                    PvaClientPutDataPtr putData = clientPut->getData();
-                    PVScalarPtr pvScalar(putData->getScalarValue());
-                    convert->fromString(pvScalar,str);
-                    pvaClientPut->put();
-                } catch (std::runtime_error e) {
-                     cout << "exception " << e.what() << endl;
-                }
+            try {
+                clientPut->put(str);
+            } catch (std::runtime_error e) {
+                cerr << "exception " << e.what() << endl;
+                continue;
             }
         }
     } catch (std::runtime_error e) {
