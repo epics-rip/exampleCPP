@@ -16,7 +16,7 @@
 #include <sstream>
 
 #define epicsExportSharedSymbols
-#include <pv/device.h>
+#include <pv/exampleRPC.h>
 
 namespace epics { namespace exampleCPP { namespace exampleRPC {
 

@@ -5,7 +5,7 @@ include $(TOP)/configure/CONFIG
 exampleRPCSRC = $(TOP)/src
 
 INC += pv/exampleRPC.h
-INC += pv/device.h
+//INC += pv/device.h
 INC += pv/point.h
 
 DBD += exampleRPCRegister.dbd

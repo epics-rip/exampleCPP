@@ -56,7 +56,7 @@ public:
     void startThread() { thread->start(); }
     void stop() {}
 
-   class epicsShareClass Callback : public std::tr1::enable_shared_from_this<Callback>
+   class Callback : public std::tr1::enable_shared_from_this<Callback>
    {
    public:
        POINTER_DEFINITIONS(Callback);
