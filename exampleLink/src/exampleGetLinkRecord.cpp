@@ -57,7 +57,8 @@ bool ExampleGetLinkRecord::init(PvaClientPtr const & pva,string const & channelN
     if(!pvValue) {
         return false;
     }
-    pvaClientGet = PvaClientGet::create(pva,channelName,providerName,"value");
+    PvaClientChannelPtr  pvaClientChannel(pva->createChannel(channelName,providerName));
+    pvaClientGet = pvaClientChannel->createGet("value");
     return true;
 }
 

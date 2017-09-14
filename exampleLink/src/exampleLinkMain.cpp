@@ -88,7 +88,6 @@ int main(int argc,char *argv[])
             getline(cin,str);
             if(str.compare("exit")==0) break;
         }
-        ctx->destroy();
     } catch (std::runtime_error e) {
         cerr << "exception " << e.what() << endl;
         return 1;

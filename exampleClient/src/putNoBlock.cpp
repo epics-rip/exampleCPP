@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include <pv/pvaClient.h>
+#include <pv/convert.h>
 
 using namespace std;
 using namespace epics::pvData;
