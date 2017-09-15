@@ -10,20 +10,10 @@
 #ifndef EXAMPLERPC_H
 #define EXAMPLERPC_H
 
-#ifdef epicsExportSharedSymbols
-#   define exampleRPCEpicsExportSharedSymbols
-#   undef epicsExportSharedSymbols
-#endif
-
 #include <pv/pvDatabase.h>
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
 #include <pv/point.h>
-
-#ifdef exampleRPCEpicsExportSharedSymbols
-#   define epicsExportSharedSymbols
-#	undef exampleRPCEpicsExportSharedSymbols
-#endif
 
 #include <shareLib.h>
 

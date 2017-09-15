@@ -15,7 +15,6 @@
 
 #include <epicsThread.h>
 
-#define epicsExportSharedSymbols
 #include <pv/exampleRPC.h>
 
 using namespace epics::pvData;
