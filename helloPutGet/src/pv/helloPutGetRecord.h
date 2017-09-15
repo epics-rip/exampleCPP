@@ -10,19 +10,9 @@
 #ifndef HELLOPUTGETRECORD_H
 #define HELLOPUTGETRECORD_H
 
-#ifdef epicsExportSharedSymbols
-#   define helloPutGetEpicsExportSharedSymbols
-#   undef epicsExportSharedSymbols
-#endif
-
 #include <pv/pvDatabase.h>
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
-
-#ifdef helloPutGetEpicsExportSharedSymbols
-#   define epicsExportSharedSymbols
-#	undef helloPutGetEpicsExportSharedSymbols
-#endif
 
 #include <shareLib.h>
 

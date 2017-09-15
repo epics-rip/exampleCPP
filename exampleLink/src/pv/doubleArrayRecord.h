@@ -10,11 +10,6 @@
 #ifndef DOUBLEARRAYRECORD_H
 #define DOUBLEARRAYRECORD_H
 
-#ifdef epicsExportSharedSymbols
-#   define exampleLinkEpicsExportSharedSymbols
-#   undef epicsExportSharedSymbols
-#endif
-
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
 #include <pv/alarm.h>
@@ -22,11 +17,6 @@
 #include <pv/pvDatabase.h>
 #include <pv/pvCopy.h>
 #include <pv/pvaClient.h>
-
-#ifdef exampleLinkEpicsExportSharedSymbols
-#   define epicsExportSharedSymbols
-#	undef exampleLinkEpicsExportSharedSymbols
-#endif
 
 #include <shareLib.h>
 

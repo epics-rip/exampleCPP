@@ -10,11 +10,6 @@
 #ifndef EXAMPLEMONITORLINKRECORD_H
 #define EXAMPLEMONITORLINKRECORD_H
 
-#ifdef epicsExportSharedSymbols
-#   define exampleMonitorLinkEpicsExportSharedSymbols
-#   undef epicsExportSharedSymbols
-#endif
-
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
 #include <pv/alarm.h>
@@ -23,10 +18,6 @@
 #include <pv/pvCopy.h>
 #include <pv/pvaClient.h>
 
-#ifdef exampleMonitorLinkEpicsExportSharedSymbols
-#   define epicsExportSharedSymbols
-#	undef exampleMonitorLinkEpicsExportSharedSymbols
-#endif
 
 #include <shareLib.h>
 

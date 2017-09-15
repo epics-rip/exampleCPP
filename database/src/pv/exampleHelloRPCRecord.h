@@ -10,20 +10,10 @@
 #ifndef EXAMPLEHELLORPCRECORD_H
 #define EXAMPLEHELLORPCRECORD_H
 
-#ifdef epicsExportSharedSymbols
-#   define exampleHelloRPCRecordEpicsExportSharedSymbols
-#   undef epicsExportSharedSymbols
-#endif
-
 #include <pv/pvData.h>
 #include <pv/pvDatabase.h>
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
-
-#ifdef exampleHelloRPCRecordEpicsExportSharedSymbols
-#   define epicsExportSharedSymbols
-#	undef exampleHelloRPCRecordEpicsExportSharedSymbols
-#endif
 
 #include <shareLib.h>
 

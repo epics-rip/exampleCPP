@@ -11,21 +11,12 @@
 #define POWERSUPPLYRECORD_H
 
 
-#ifdef epicsExportSharedSymbols
-#   define powerSupplyEpicsExportSharedSymbols
-#   undef epicsExportSharedSymbols
-#endif
-
 #include <pv/timeStamp.h>
 #include <pv/alarm.h>
 #include <pv/pvTimeStamp.h>
 #include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
 
-#ifdef powerSupplyEpicsExportSharedSymbols
-#   define epicsExportSharedSymbols
-#	undef powerSupplyEpicsExportSharedSymbols
-#endif
 
 #include <shareLib.h>
 

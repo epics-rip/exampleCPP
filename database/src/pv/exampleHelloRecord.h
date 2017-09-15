@@ -10,19 +10,10 @@
 #ifndef EXAMPLEHELLORECORD_H
 #define EXAMPLEHELLORECORD_H
 
-#ifdef epicsExportSharedSymbols
-#   define exampleHelloEpicsExportSharedSymbols
-#   undef epicsExportSharedSymbols
-#endif
 
 #include <pv/pvDatabase.h>
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
-
-#ifdef exampleHelloEpicsExportSharedSymbols
-#   define epicsExportSharedSymbols
-#	undef exampleHelloEpicsExportSharedSymbols
-#endif
 
 #include <shareLib.h>
 
