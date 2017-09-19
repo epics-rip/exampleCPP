@@ -72,6 +72,7 @@ public:
 
     virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected)
     {
+        cout << "channeStateChange " << (isConnected ? "true" : "false") << endl;
         channelConnected = isConnected;
         if(isConnected) {
             if(!pvaClientPutGet) {
