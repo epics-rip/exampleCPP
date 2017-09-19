@@ -26,6 +26,51 @@ using std::string;
 
 namespace epics { namespace exampleCPP { namespace exampleLink {
 
+class LinkRecordRequesterImpl :
+    public PvaClientChannelStateChangeRequester,
+    public PvaClientMonitorRequester
+{
+    ExampleMonitorLinkRecordWPtr exampleMonitorLinkRecord;
+    PvaClient::weak_pointer pvaClient;
+public:
+    POINTER_DEFINITIONS(LinkRecordRequesterImpl);
+
+    LinkRecordRequesterImpl(
+        ExampleMonitorLinkRecordPtr const & exampleMonitorLinkRecord,
+        PvaClientPtr const &pvaClient)
+    : exampleMonitorLinkRecord(exampleMonitorLinkRecord),
+      pvaClient(pvaClient)
+    {}
+    virtual ~LinkRecordRequesterImpl() {
+        if(PvaClient::getDebug()) std::cout << "~LinkRecordRequesterImpl" << std::endl;
+    }
+
+    virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected)
+    {
+        ExampleMonitorLinkRecordPtr monitorLinkRecord(exampleMonitorLinkRecord.lock());
+        if(!monitorLinkRecord) return;
+        monitorLinkRecord->channelStateChange(channel,isConnected);  
+    }
+
+    virtual void monitorConnect(
+        Status const & status,
+        PvaClientMonitorPtr const & monitor,
+        StructureConstPtr const & structure)
+    {
+        ExampleMonitorLinkRecordPtr monitorLinkRecord(exampleMonitorLinkRecord.lock());
+        if(!monitorLinkRecord) return;
+        monitorLinkRecord->monitorConnect(status,monitor,structure);  
+    }
+
+    virtual void event(PvaClientMonitorPtr const & monitor)
+    {
+        ExampleMonitorLinkRecordPtr monitorLinkRecord(exampleMonitorLinkRecord.lock());
+        if(!monitorLinkRecord) return;
+        monitorLinkRecord->event(monitor);  
+    }   
+};
+
+
 ExampleMonitorLinkRecordPtr ExampleMonitorLinkRecord::create(
     PvaClientPtr  const & pva,
     string const & recordName,
@@ -37,6 +82,9 @@ ExampleMonitorLinkRecordPtr ExampleMonitorLinkRecord::create(
     ExampleMonitorLinkRecordPtr pvRecord(
         new ExampleMonitorLinkRecord(
            recordName,pvStructure)); 
+    LinkRecordRequesterImplPtr linkRecordRequester(
+        LinkRecordRequesterImplPtr(new LinkRecordRequesterImpl(pvRecord,pva)));
+    pvRecord->linkRecordRequester = linkRecordRequester;
     if(!pvRecord->init(pva,channelName,providerName)) pvRecord.reset();
     return pvRecord;
 }
@@ -44,25 +92,28 @@ ExampleMonitorLinkRecordPtr ExampleMonitorLinkRecord::create(
 ExampleMonitorLinkRecord::ExampleMonitorLinkRecord(
     string const & recordName,
     PVStructurePtr const & pvStructure)
-: PVRecord(recordName,pvStructure)
+: PVRecord(recordName,pvStructure),
+  channelConnected(false),
+  monitorConnected(false),
+  isStarted(false)
 {
 }
 
 
-bool ExampleMonitorLinkRecord::init(PvaClientPtr const & pva,string const & channelName,string const & providerName)
+bool ExampleMonitorLinkRecord::init(
+    PvaClientPtr const & pvaClient,
+    string const & channelName,
+    string const & providerName)
 {
     initPVRecord();
-
     PVStructurePtr pvStructure = getPVRecordStructure()->getPVStructure();
     pvValue = pvStructure->getSubField<PVDoubleArray>("value");
     if(!pvValue) {
         return false;
     }
-    monitorRequester = dynamic_pointer_cast<PvaClientMonitorRequester>(getPtrSelf());
-    pvaClientMonitor = PvaClientMonitor::create(
-        pva,channelName,providerName,"value",
-        PvaClientChannelStateChangeRequesterPtr(),
-        monitorRequester);
+    pvaClientChannel = pvaClient->createChannel(channelName,providerName);
+    pvaClientChannel->setStateChangeRequester(linkRecordRequester);
+    pvaClientChannel->issueConnect();
     return true;
 }
 
@@ -71,6 +122,30 @@ void ExampleMonitorLinkRecord::process()
     PVRecord::process();
 }
 
+void ExampleMonitorLinkRecord::channelStateChange(
+    PvaClientChannelPtr const & channel, bool isConnected)
+{
+    channelConnected = isConnected;
+    if(isConnected) {
+        if(!pvaClientMonitor) {
+            pvaClientMonitor = pvaClientChannel->createMonitor("value");
+            pvaClientMonitor->setRequester(linkRecordRequester);
+            pvaClientMonitor->issueConnect();
+        }
+    }
+}
+
+void ExampleMonitorLinkRecord::monitorConnect(
+    Status const & status,
+    PvaClientMonitorPtr const & monitor,
+    StructureConstPtr const & structure)
+{
+    if(!status.isOK()) return;
+    monitorConnected = true;
+    if(isStarted) return;
+    isStarted = true;
+    pvaClientMonitor->start();
+}
 
 void ExampleMonitorLinkRecord::event(PvaClientMonitorPtr const & monitor)
 {

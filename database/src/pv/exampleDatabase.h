@@ -10,17 +10,7 @@
 #ifndef EXAMPLEDATABASE_H
 #define EXAMPLEDATABASE_H
 
-#ifdef epicsExportSharedSymbols
-#   define exampledatabaseEpicsExportSharedSymbols
-#   undef epicsExportSharedSymbols
-#endif
-
 #include <pv/pvDatabase.h>
-
-#ifdef exampledatabaseEpicsExportSharedSymbols
-#   define epicsExportSharedSymbols
-#	undef exampledatabaseEpicsExportSharedSymbols
-#endif
 
 #include <shareLib.h>
 

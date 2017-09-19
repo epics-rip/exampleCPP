@@ -57,7 +57,8 @@ bool ExamplePutLinkRecord::init(PvaClientPtr const & pva,string const & channelN
     if(!pvValue) {
         return false;
     }
-    pvaClientPut = PvaClientPut::create(pva,channelName,providerName,"value");
+    PvaClientChannelPtr  pvaClientChannel(pva->createChannel(channelName,providerName));
+    pvaClientPut = pvaClientChannel->createPut("value");
     return true;
 }
 

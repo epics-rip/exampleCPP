@@ -21,19 +21,38 @@ class ClientGet;
 typedef std::tr1::shared_ptr<ClientGet> ClientGetPtr;
 
 class ClientGet :
-    public PvaClientChannelStateChangeRequester
+    public PvaClientChannelStateChangeRequester,
+    public PvaClientGetRequester,
+    public std::tr1::enable_shared_from_this<ClientGet>
 {
 private:
+    string channelName;
+    string providerName;
     string request;
+    bool channelConnected;
+    bool getConnected;
+
     PvaClientChannelPtr pvaClientChannel;
     PvaClientGetPtr pvaClientGet;
+
+    void init(PvaClientPtr const &pvaClient)
+    {
+        pvaClientChannel = pvaClient->createChannel(channelName,providerName);
+        pvaClientChannel->setStateChangeRequester(shared_from_this());
+        pvaClientChannel->issueConnect();
+    }
+
 public:
     POINTER_DEFINITIONS(ClientGet);
     ClientGet(
-        const string &request,
-        const PvaClientChannelPtr & pvaClientChannel)
-    : request(request),
-      pvaClientChannel(pvaClientChannel)
+        const string &channelName,
+        const string &providerName,
+        const string &request)
+    : channelName(channelName),
+      providerName(providerName),
+      request(request),
+      channelConnected(false),
+      getConnected(false)
     {
     }
     
@@ -43,26 +62,60 @@ public:
         const string & providerName,
         const string  & request)
     {
-        PvaClientChannelPtr pvaClientChannel = pvaClient->createChannel(channelName,providerName);
-        ClientGetPtr clientGet(new ClientGet(request,pvaClientChannel));
-        pvaClientChannel->setStateChangeRequester(clientGet);
-        pvaClientChannel->issueConnect();
-        return clientGet;
+       ClientGetPtr client(ClientGetPtr(
+             new ClientGet(channelName,providerName,request)));
+        client->init(pvaClient);
+        return client;
     }
 
     virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected)
     {
-        if(isConnected&&!pvaClientGet)
-        {
-           pvaClientGet  = pvaClientChannel->createGet(request);
-           pvaClientGet->issueConnect();
+        channelConnected = isConnected;
+        if(isConnected) {
+            if(!pvaClientGet) {
+                pvaClientGet = pvaClientChannel->createGet(request);
+                pvaClientGet->setRequester(shared_from_this());
+                pvaClientGet->issueConnect();
+            }
         }
     }
 
-    PvaClientGetPtr getPvaClientGet()
+    virtual void channelGetConnect(
+        const epics::pvData::Status& status,
+        PvaClientGetPtr const & clientGet)
     {
-        return  pvaClientGet;
-    }   
+         getConnected = true;
+         cout << "channelGetConnect " << channelName << " status " << status << endl;
+    }
+
+    virtual void getDone(
+        const epics::pvData::Status& status,
+        PvaClientGetPtr const & clientGet)
+    {
+        cout << "channelGetDone " << channelName << " status " << status << endl;
+    }
+
+    void get()
+    {
+        
+        if(!channelConnected) {
+            cout << channelName << " channel not connected\n";
+            return;
+        }
+        if(!getConnected) {
+            cout << channelName << " channelGet not connected\n";
+            return;
+        }
+        pvaClientGet->get();
+        PvaClientGetDataPtr data = pvaClientGet->getData();
+        BitSetPtr bitSet =  data->getChangedBitSet();
+        if(bitSet->cardinality()>0) {
+             cout << "changed " << channelName << endl;
+             data->showChanged(cout);
+             cout << "bitSet " << *bitSet << endl;
+        }
+    }
+   
 };
 
 
@@ -113,19 +166,7 @@ int main(int argc,char *argv[])
             string str;
             getline(cin,str);
             if(str.compare("exit")==0) break;
-            PvaClientGetPtr pvaClientGet = clientGet->getPvaClientGet();
-            if(!pvaClientGet) {
-                cout << "not connected\n";
-            } else {
-                pvaClientGet->get();
-                PvaClientGetDataPtr data = pvaClientGet->getData();
-                BitSetPtr bitSet =  data->getChangedBitSet();
-                if(bitSet->cardinality()>0) {
-                    cout << "changed\n";
-                    data->showChanged(cout);
-                    cout << "bitSet " << *bitSet << endl;
-                }
-            }
+            clientGet->get();
             
         }
     } catch (std::runtime_error e) {

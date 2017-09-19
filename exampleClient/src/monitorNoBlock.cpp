@@ -22,13 +22,43 @@ class ClientMonitor;
 typedef std::tr1::shared_ptr<ClientMonitor> ClientMonitorPtr;
 
 class ClientMonitor :
+    public PvaClientChannelStateChangeRequester,
     public PvaClientMonitorRequester,
     public std::tr1::enable_shared_from_this<ClientMonitor>
 {
 private:
+    string channelName;
+    string providerName;
+    string request;
+    bool channelConnected;
+    bool monitorConnected;
+    bool isStarted;
+
+    PvaClientChannelPtr pvaClientChannel;
     PvaClientMonitorPtr pvaClientMonitor;
+
+    void init(PvaClientPtr const &pvaClient)
+    {
+
+        pvaClientChannel = pvaClient->createChannel(channelName,providerName);
+        pvaClientChannel->setStateChangeRequester(shared_from_this());
+        pvaClientChannel->issueConnect();
+    }
+
 public:
     POINTER_DEFINITIONS(ClientMonitor);
+    ClientMonitor(
+        const string &channelName,
+        const string &providerName,
+        const string &request)
+    : channelName(channelName),
+      providerName(providerName),
+      request(request),
+      channelConnected(false),
+      monitorConnected(false),
+      isStarted(false)
+    {
+    }
 
     static ClientMonitorPtr create(
         PvaClientPtr const &pvaClient,
@@ -36,22 +66,38 @@ public:
         const string & providerName,
         const string  & request)
     {
-        ClientMonitorPtr clientMonitor(new ClientMonitor());
-        clientMonitor->init(pvaClient,channelName,providerName,request);
-        return clientMonitor;
+        ClientMonitorPtr client(ClientMonitorPtr(
+             new ClientMonitor(channelName,providerName,request)));
+        client->init(pvaClient);
+        return client;
+    }
+
+    virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected)
+    {
+        cout << "channelStateChange " << channelName << " isConnected " << (isConnected ? "true" : "false") << endl;
+        channelConnected = isConnected;
+        if(isConnected) {
+            if(!pvaClientMonitor) {
+                pvaClientMonitor = pvaClientChannel->createMonitor(request);
+                pvaClientMonitor->setRequester(shared_from_this());
+                pvaClientMonitor->issueConnect();
+            }
+        }
     }
 
     ClientMonitor()
     {
     }
-    void init(
-        PvaClientPtr const &pvaClient,
-        const string & channelName,
-        const string & providerName,
-        const string  & request)
+
+    virtual void monitorConnect(epics::pvData::Status const & status,
+        PvaClientMonitorPtr const & monitor, epics::pvData::StructureConstPtr const & structure)
     {
-           pvaClientMonitor = PvaClientMonitor::create(pvaClient,channelName,providerName,request,
-           PvaClientChannelStateChangeRequesterPtr(),shared_from_this());
+        cout << "monitorConnect " << channelName << " status " << status << endl;
+        if(!status.isOK()) return;
+        monitorConnected = true;
+        if(isStarted) return;
+        isStarted = true;
+        pvaClientMonitor->start();
     }
     
     virtual void event(PvaClientMonitorPtr const & monitor)
@@ -68,6 +114,24 @@ public:
     }
     PvaClientMonitorPtr getPvaClientMonitor() {
         return pvaClientMonitor;
+    }
+
+    void stop()
+    {
+         if(isStarted) {
+             isStarted = false;
+             pvaClientMonitor->stop();
+         }
+    }
+
+    void start(const string &request)
+    {
+         if(!channelConnected || !monitorConnected)
+         {
+              cout << "notconnected\n";
+         }
+         isStarted = true;
+         pvaClientMonitor->start(request);
     }
 
 };
@@ -116,11 +180,13 @@ int main(int argc,char *argv[])
                  continue;
             }
             if(str.compare("start")==0){
-                 clientMonitor->getPvaClientMonitor()->start(request);
+                 cout << "request?\n";
+                 getline(cin,request);
+                 clientMonitor->start(request);
                  continue;
             }
             if(str.compare("stop")==0){
-                 clientMonitor->getPvaClientMonitor()->stop();
+                 clientMonitor->stop();
                  continue;
             }
             if(str.compare("exit")==0){

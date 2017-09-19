@@ -10,20 +10,10 @@
 #ifndef LONGARRAYMONITOR_H
 #define LONGARRAYMONITOR_H
 
-#ifdef epicsExportSharedSymbols
-#   define longarraymonitorEpicsExportSharedSymbols
-#   undef epicsExportSharedSymbols
-#endif
-
 #include <epicsThread.h>
 #include <pv/pvaClient.h>
 
-
-#ifdef longarraymonitorEpicsExportSharedSymbols
-#   define epicsExportSharedSymbols
-#	undef longarraymonitorEpicsExportSharedSymbols
-#   include <shareLib.h>
-#endif
+#include <shareLib.h>
 
 
 namespace epics { namespace exampleCPP { namespace arrayPerformance {

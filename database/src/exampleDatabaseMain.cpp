@@ -47,6 +47,5 @@ int main(int argc,char *argv[])
         if(str.compare("exit")==0) break;
 
     }
-    ctx->destroy();
     return 0;
 }

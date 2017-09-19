@@ -11,19 +11,10 @@
 #define LONGARRAYGET_H
 
 
-#ifdef epicsExportSharedSymbols
-#   define longarraygetEpicsExportSharedSymbols
-#   undef epicsExportSharedSymbols
-#endif
-
 #include <epicsThread.h>
 #include <pv/pvaClient.h>
 
-#ifdef longarraygetEpicsExportSharedSymbols
-#   define epicsExportSharedSymbols
-#	undef longarraygetEpicsExportSharedSymbols
-#   include <shareLib.h>
-#endif
+#include <shareLib.h>
 
 namespace epics { namespace exampleCPP { namespace arrayPerformance {
 

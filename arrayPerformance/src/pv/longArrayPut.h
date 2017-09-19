@@ -11,19 +11,10 @@
 #define LONGARRAYPUT_H
 
 
-#ifdef epicsExportSharedSymbols
-#   define longarrayputEpicsExportSharedSymbols
-#   undef epicsExportSharedSymbols
-#endif
-
 #include <epicsThread.h>
 #include <pv/pvaClient.h>
 
-#ifdef longarrayputEpicsExportSharedSymbols
-#   define epicsExportSharedSymbols
-#	undef longarrayputEpicsExportSharedSymbols
-#   include <shareLib.h>
-#endif
+#include <shareLib.h>
 
 namespace epics { namespace exampleCPP { namespace arrayPerformance {
 
