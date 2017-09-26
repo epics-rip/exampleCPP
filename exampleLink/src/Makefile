@@ -35,11 +35,6 @@ exampleLinkMain_LIBS += exampleLink
 exampleLinkMain_LIBS += pvDatabase pvaClient pvAccess pvAccessCA nt pvData ca Com
 
 
-PROD_HOST += exampleLinkClient
-exampleLinkClient_SRCS += exampleLinkClient.cpp
-exampleLinkClient_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
-
-
 include $(TOP)/configure/RULES
 
 

@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP</h1>
-<h2 class="nocount">Release 4.4.0-SNAPSHOT - 2017.07.12</h2>
+<h2 class="nocount">Release 4.3 - 2017.09.26</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -36,7 +36,7 @@ It also has a test that is run via:</p>
 make runtests
 </pre>
 <p>
-This release of exampleCPP is one of the components of EPICS V4 Release 4.6.
+This release of exampleCPP is one of the components of EPICS V4 Release 4.7.
 </p>
 
   <!-- last para of Abstract is boilerplate reference to EPICS -->
@@ -92,16 +92,14 @@ make
 An example of a proper <b>RELEASE.local</b> is:
 </p>
 <pre>
-EPICS4_DIR=/home/epicsv4/release4_6
+EPICS4_DIR=/home/epicsv4/release4_7
 EXAMPLE=${EPICS4_DIR}/exampleCPP
 PVDATABASE=${EPICS4_DIR}/pvDatabaseCPP
 PVACLIENT=${EPICS4_DIR}/pvaClientCPP
-PVASRV=${EPICS4_DIR}/pvaSrv
+PVA2PVA=${EPICS4_DIR}/pva2pva
 PVACCESS=${EPICS4_DIR}/pvAccessCPP
 NORMATIVETYPES=${EPICS4_DIR}/normativeTypesCPP
 PVDATA=${EPICS4_DIR}/pvDataCPP
-PVCOMMON=${EPICS4_DIR}/pvCommonCPP
-
 EPICS_BASE=/home/install/epics/base
 </pre>
 
@@ -118,11 +116,6 @@ Each example has a <b>README.md</b> file. See it for how to build the example if
 does not exist or if the example has special requirements.
 </p>
 
-<h3>exampleCPP and exampleJava</h3>
-<p>Each example that appears in both <b>exampleJava</b> and <b>exampleCPP</b>
-are compatible, i. e. a client from one can communicate with a server
-from the other.
-</p>
 
 <h2>Brief summary of examples and links to documentation</h2>
 <h3>database</h3>
@@ -146,8 +139,22 @@ In order to run the examples, <b>database</b> must also be built and then the IO
 <pre>
 mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
-mrk&gt; ../../bin/$EPICS_HOST_ARCH/exampleDatabase st.cmd
+mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
 </pre>
+<h3>exampleLink</h3>
+<p>
+This implements a server that has records exampleGetLink, exampleMonitorLink, and examplePutLink.
+Each has a link to another record.
+The other record can be in the same server or in another server including a V3 IOC DBRecord.
+</p>
+<p>
+The example records can use provider local, pva, dbPv, or ca to connect to doubleArray.
+</p>
+<p>
+exampleLink can be stated as a main program or as part of a V3 IOC.
+</p>
+<p>Documentation:<a href="./exampleLink.html">exampleLink</a></p>
+
 <h3>helloPutGet</h3>
 <p>
 Implements a PVRecord that is an example of a PVRecord intended to ba accessed via channelPutGet.
@@ -181,20 +188,6 @@ A client ("control") for calling the services is supplied.
 
 <p>Documentation:<a href="./pvDatabaseRPC.html">pvDatabaseRPC</a></p>
 
-
-<h3>exampleLink</h3>
-<p>
-This implements a server that has records exampleGetLink, exampleMonitorLink, and examplePutLink.
-Each has a link to another record (default name is doubleArray).
-The other record can be in the same server or in another server including a V3 IOC DBRecord.
-</p>
-<p>
-The example records can use provider local, pva, dbPv, or ca to connect to doubleArray.
-</p>
-<p>
-exampleLink can be stated as a main program or as part of a V3 IOC.
-</p>
-<p>Documentation:<a href="./exampleLink.html">exampleLink</a></p>
 
 <h3>powerSupply</h3>
 <p>

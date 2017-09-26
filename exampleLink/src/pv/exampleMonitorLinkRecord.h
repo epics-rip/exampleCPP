@@ -27,8 +27,8 @@ namespace epics { namespace exampleCPP { namespace exampleLink {
 class ExampleMonitorLinkRecord;
 typedef std::tr1::shared_ptr<ExampleMonitorLinkRecord> ExampleMonitorLinkRecordPtr;
 typedef std::tr1::weak_ptr<ExampleMonitorLinkRecord> ExampleMonitorLinkRecordWPtr;
-class LinkRecordRequesterImpl;
-typedef std::tr1::shared_ptr<LinkRecordRequesterImpl> LinkRecordRequesterImplPtr;
+class MonitorLinkRecordRequester;
+typedef std::tr1::shared_ptr<MonitorLinkRecordRequester> MonitorLinkRecordRequesterPtr;
 
 
 class epicsShareClass ExampleMonitorLinkRecord :
@@ -55,19 +55,23 @@ private:
     ExampleMonitorLinkRecord(
         std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure);
+    
     bool channelConnected;
     bool monitorConnected;
-    bool isStarted;
+    bool setAlarmGood;
     epics::pvData::PVDoubleArrayPtr pvValue;
+    epics::pvData::PVStructurePtr pvAlarmField;
+    epics::pvData::PVAlarm pvAlarm;
+    epics::pvData::Alarm alarm;
     epics::pvaClient::PvaClientChannelPtr pvaClientChannel;
-    LinkRecordRequesterImplPtr linkRecordRequester;
+    MonitorLinkRecordRequesterPtr linkRecordRequester;
     epics::pvaClient::PvaClientMonitorPtr pvaClientMonitor;
 public:
     void channelStateChange(
          epics::pvaClient::PvaClientChannelPtr const & channel,
          bool isConnected);
     void monitorConnect(
-        epics::pvData::Status const & status,
+        const epics::pvData::Status& status,
         epics::pvaClient::PvaClientMonitorPtr const & monitor,
         epics::pvData::StructureConstPtr const & structure);
     void event(epics::pvaClient::PvaClientMonitorPtr const & monitor);

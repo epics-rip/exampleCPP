@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/pvDatabaseRPC</h1>
-<h2 class="nocount">2016.09.02</h2>
+<h2 class="nocount">2017.09.25</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -62,41 +62,60 @@ the setpoint.</p>
 
 <h2>Start Service</h2>
 
-<p>In the exampleJava/pvDatabaseRPC directory</p>
-
-<p>On Linux</p>
-
-<pre><code>./bin/$EPICS_HOST_ARCH/exampleRPCMain
-</code></pre>
+<pre>
+mrk&gt; pwd
+/home/epicsv4/masterCPP/exampleCPP/pvDatabaseRPC/iocBoot/exampleRPC
+mrk&gt; ../../bin/linux-x86_64/exampleRPC st.cmd 
+</pre>
 
 
 <h2>Set position using pvput</h2>
 
-<p>When the device is in the idle state its setpoint can be set using a Channel Put in the conventional way: With pvput in your path</p>
+<p>When the device is in the idle state its setpoint can be set using pvput:</p>
 
-<pre><code>pvput -r positionSP.value mydevice 1 2
-</code></pre>
+<pre>
+pvput -r positionSP.value mydevice 1 2
+</pre>
 <p>will set the setpoint to the point (1,2).</p>
 
 <h2>To run client (control)</h2>
-
-<p>In the exampleJava/pvDatabaseRPC directory</p>
-
-<p>On Linux</p>
-
-<pre><code>./bin/$EPICS_HOST_ARCH/control &lt;command&gt; [&lt;args&gt;]
-</code></pre>
-
+<p>The control client accepts a number of commands:
+</p>
+<pre>
+mrk&gt; pwd
+/home/epicsv4/masterCPP/exampleCPP/pvDatabaseRPC
+mrk&gt; bin/linux-x86_64/control help
+Usage:
+Run application supplying the arguments:
+ &lt;command&gt; [&lt;command-arguments&gt;]
+Controls a device (mydevice)
+Available commands are:
+help
+configure
+run
+pause
+resume
+rewind
+stop
+scan
+abort.
+&lt;command-arguments&gt; is command-dependent.
+For help on commands run supplying the arguments:
+help &lt;command&gt;
+mrk&gt; 
+</pre>
 <p>E.g.</p>
-<pre><code>./bin/$EPICS_HOST_ARCH/control help
-./bin/$EPICS_HOST_ARCH/control configure 1 2 10 20
-./bin/$EPICS_HOST_ARCH/control run
-./bin/$EPICS_HOST_ARCH/control pause
-./bin/$EPICS_HOST_ARCH/control resume
-./bin/$EPICS_HOST_ARCH/control rewind 5
-./bin/$EPICS_HOST_ARCH/control stop
-./bin/$EPICS_HOST_ARCH/control scan
-./bin/$EPICS_HOST_ARCH/control abort</code></pre>
+<pre>
+./bin/linux-x86_64/control help
+./bin/linux-x86_64/control configure 1 2 10 20
+./bin/linux-x86_64/control run
+./bin/linux-x86_64/control pause
+./bin/linux-x86_64/control resume
+./bin/linux-x86_64/control rewind 5
+./bin/linux-x86_64/control stop
+./bin/linux-x86_64/control scan
+./bin/linux-x86_64/control abort
+</pre>
 
 
 

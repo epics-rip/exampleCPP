@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/exampleClient</h1>
-<h2 class="nocount">2017.07.12</h2>
+<h2 class="nocount">2017.09.23</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -43,14 +43,24 @@
 <div id="contents" class="contents">	  
 <hr />
 
-
-<h2>monitorNoBlock</h2>
+<h2>Non-blocking Examples</h2>
+<p>These are examples that never block while waiting for a channel to connect.
+They are good examples for use by display manager tools that want to access channels
+via pvAccessCPP. The examples all use pvaClientCPP rather than pvAccessCPP itself.
+</p>
+<p>Each example implements a class that can be used as a starting point for
+imlementing pvAccess channel connections for a display manager.
+</p>
+<h3>monitorNoBlock</h3>
 <p>This is an example that creates a PvaClientMonitor that never blocks.
 It automatically handles channel connect and disconnects and also creates a monitor when the
 channel first connects.
 </p>
-<p>This example is of interest to those implementing monitors for Display Managers.
-</p> 
+<p>
+The example implements a class <b>ClientMonitor</b>, which implements PvaClientChannelStateChangeRequester,
+and PvaClientMonitorRequester.
+</p>
+
 <p>The example supports help as follows:</p>
 <pre>
 mrk> bin/linux-x86_64/monitorNoBlock -help
@@ -77,18 +87,14 @@ The arguments are:
       If true then debug messages are displayed/
      </dd>
 </dl>
-<p>
-The example implements a class <b>ClientMonitor</b> which has a single callback
-for receiving monitor events.
-PvaClientMonitor handled channel change of state events and automatically creates and starts
-a monitor when the channel first connects.
+
+<h3>getNoBlock</h3>
+<p>This is an example that creates a PvaClientGet that never blocks.
+It automatically handles channel connect and disconnects and also creates a PvaClientGet when the channel first connects.
 </p>
-
-
-<h2>getNoBlock</h2>
-<p>This is an example that creates a PvaClientGet that never blocks waiting for a channel to connect.
-It implements a class that implements PvaClientChannelStateChangeRequester.
-The example creates a PvaClientGet when the channel first connects.
+<p>
+The example implements a class <b>ClientMonitor</b>, which implements PvaClientChannelStateChangeRequester,
+and PvaClientGetRequester.
 </p>
 <p>This example supports help as follows:</p>
 <pre>
@@ -117,10 +123,13 @@ The arguments are:
      </dd>
 </dl>
 
-<h2>putNoBlock</h2>
-<p>This is an example that creates a PvaClientPut that never blocks waiting for a channel to connect.
-It implements a class that implements PvaClientChannelStateChangeRequester.
-The example creates a PvaClientPut when the channel first connects.
+<h3>putNoBlock</h3>
+<p>This is an example that creates a PvaClientPut that never blocks.
+It automatically handles channel connect and disconnects and also creates a PvaClientPut when the channel first connects.
+</p>
+<p>
+The example implements a class <b>ClientMonitor</b>, which implements PvaClientChannelStateChangeRequester,
+and PvaClientPutRequester.
 </p>
 <p>This example supports help as follows:</p>
 <pre>
@@ -149,7 +158,44 @@ The arguments are:
      </dd>
 </dl>
 
-<h2>examplePvaClientGet</h2>
+<h3>putUnion</h3>
+<p>This is another example that creates a PvaClientPut that never blocks.
+It automatically handles channel connect and disconnects and also creates a PvaClientPut when the channel first connects.
+</p>
+<p>
+The example implements a class <b>ClientMonitor</b>, which implements PvaClientChannelStateChangeRequester,
+and PvaClientPutRequester.
+</p>
+<p>
+This example must be connected to a field that has type <b>pvUnion</b>.
+</p>
+<p>This example supports help as follows:</p>
+<pre>
+mrk> bin/linux-x86_64/putUnion -help
+channelName request debug
+default
+PVRrestrictedUnion  "value" debug false
+</pre>
+The arguments are:
+<dl>
+   <dt>channelName</dt>
+     <dd>
+       The name of the channel.
+     </dd>
+   <dt>request</dt>
+     <dd>A request as defined in the convert facility of pvData</dd>
+   <dt>debug</dt>
+     <dd>
+      If true then debug messages are displayed/
+     </dd>
+</dl>
+
+<h2>Blocking Examples</h2>
+<p>These are examples only work if a channel is already connected when the client starts.
+They are examples that could be used by scripting tools.
+</p>
+
+<h3>examplePvaClientGet</h3>
 <p>This has a number of examples:</p>
 <dl>
    <dt>exampleDouble</dt>
@@ -162,61 +208,35 @@ The arguments are:
       <dd>
          Like exampleDouble except the data is a scalarArray.
      </dd>
-   <dt>exampleCADouble</dt>
-      <dd>
-         This is like exampleDouble except it uses provider <b>ca</b>.
-     </dd>
-   <dt>exampleCADoubleArray</dt>
-      <dd>
-         This is like exampleDoubleArray except it uses provider <b>ca</b>.
-     </dd>
-   <dt>examplePowerSupply</dt>
-      <dd>
-       This is an example of getting data from a channel that does not
-        have a value field.
-     </dd>
 </dl>
 
-<h2>examplePvaClientMonitor</h2>
+<h3>examplePvaClientMonitor</h3>
 <p>This is an example of creating a monitor on a channel.
 It monitors a scalar double field.
 It also issues puts to the same channel so that it can make the monitors occur.
 </p>
-<h2>examplePvaClientPut</h2>
+<h3>examplePvaClientPut</h3>
 <p>This has the folllowing examples:</p>
 <dl>
-   <dt>examplePut</dt>
-     <dd>This shows use of get, put, and monitor.</dd>
-   <dt>examplePVFieldPut</dt>
-     <dd>This does a put and then a get.</dd>
+   <dt>exampleDouble</dt>
+     <dd>This shows use of get, put, and monitor to a numeric scalar field.</dd>
+   <dt>exampleDoubleArray</dt>
+     <dd>This shows use of get, put, and monitor to a numeric scalar array field.</dd>
 </dl>
-<h2>examplePvaClientProcess</h2>
+<h3>examplePvaClientProcess</h3>
 <p>This example makes a process request to a channel.</p>
 
-<h2>examplePvaClientMultiDouble</h2>
+<h3>examplePvaClientMultiDouble</h3>
 <p>This is an example of using pvaClientMultiChannel,
 pvaClientMultiGetDouble, pvaClientMultiPutDouble, and pvaClientMultiMonitorDouble.
 </p>
-<h2>examplePvaClientNTMulti</h2>
+<h3>examplePvaClientNTMulti</h3>
 <p>This is an example of using pvaClientMultiChannel to get data as an NTMultiChannel.</p>
-<h2>helloWorldPutGet</h2>
+<h3>helloWorldPutGet</h3>
 <p>This is an example of issuing a channelPutGet.</p>
-<h2>helloWorldRPC</h2>
+<h3>helloWorldRPC</h3>
 <p>This is an example of issuing a PvaClientRPC request.
 It does <b>not</b> use pva.</p>
-
-<h2>helloWorldPutGet</h2>
-<p>
-<b>NEEDS DESCRIPTION</b>
-</p>
-<h2>helloWorldRPC</h2>
-<p>
-<b>NEEDS DESCRIPTION</b>
-</p>
-<h2>putUnion</h2>
-<p>
-<b>NEEDS DESCRIPTION</b>
-</p>
 
 
 </div> <!-- class="contents" -->

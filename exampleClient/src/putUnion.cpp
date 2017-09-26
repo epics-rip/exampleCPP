@@ -21,25 +21,32 @@ using namespace epics::pvaClient;
 static PVDataCreatePtr pvDataCreate = getPVDataCreate();
 static ConvertPtr convert = getConvert();
 
+class ClientPut;
+typedef std::tr1::shared_ptr<ClientPut> ClientPutPtr;
 
-class  ChannelStateChangeRequester :
-     public PvaClientChannelStateChangeRequester
+class ClientPut :
+    public PvaClientChannelStateChangeRequester,
+    public PvaClientPutRequester,
+    public std::tr1::enable_shared_from_this<ClientPut>
 {
-    bool connected;
-public:
-    POINTER_DEFINITIONS(ChannelStateChangeRequester);
-    ChannelStateChangeRequester()
-    : connected(false)
-     {}
-    virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected )
-    {
-        cout << "channelStateChange state " << (isConnected ? "true" : "false") << endl; 
-        connected = isConnected;
-    }
-    bool isConnected() {return connected;}
-};
+private:
+    string channelName;
+    string providerName;
+    string request;
+    bool channelConnected;
+    bool putConnected;
 
-vector<string> split(string const & blankSeparatedList) {
+    PvaClientChannelPtr pvaClientChannel;
+    PvaClientPutPtr pvaClientPut;
+
+    void init(PvaClientPtr const &pvaClient)
+    {
+        pvaClientChannel = pvaClient->createChannel(channelName,providerName);
+        pvaClientChannel->setStateChangeRequester(shared_from_this());
+        pvaClientChannel->issueConnect();
+    }
+    vector<string> split(string const & blankSeparatedList)
+    {
         string::size_type numValues = 1;
         string::size_type index=0;
         while(true) {
@@ -58,6 +65,112 @@ vector<string> split(string const & blankSeparatedList) {
         }
         return valueList;
     }
+public:
+    POINTER_DEFINITIONS(ClientPut);
+    ClientPut(
+        const string &channelName,
+        const string &providerName,
+        const string &request)
+    : channelName(channelName),
+      providerName(providerName),
+      request(request),
+      channelConnected(false),
+      putConnected(false)
+    {
+    }
+    
+    static ClientPutPtr create(
+        PvaClientPtr const &pvaClient,
+        const string & channelName,
+        const string & providerName,
+        const string  & request)
+    {
+        ClientPutPtr client(ClientPutPtr(
+             new ClientPut(channelName,providerName,request)));
+        client->init(pvaClient);
+        return client;
+    }
+
+    virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected)
+    {
+        channelConnected = isConnected;
+        if(isConnected) {
+            if(!pvaClientPut) {
+                pvaClientPut = pvaClientChannel->createPut(request);
+                pvaClientPut->setRequester(shared_from_this());
+                pvaClientPut->issueConnect();
+            }
+        }
+    }
+
+    virtual void channelPutConnect(
+        const epics::pvData::Status& status,
+        PvaClientPutPtr const & clientPut)
+    {
+        putConnected = true;
+        cout << "channelPutConnect " << channelName << " status " << status << endl;
+    }
+
+    
+    virtual void putDone(
+        const epics::pvData::Status& status,
+        PvaClientPutPtr const & clientPut)
+    {
+         cout << "putDone " << channelName << " status " << status << endl;
+    }
+
+    void put(const string & value)
+    {
+        if(!channelConnected) {
+            cout << channelName << " channel not connected\n";
+            return;
+        }
+        if(!putConnected) {
+            cout << channelName << " channelPut not connected\n";
+            return;
+        }
+        
+        cout << "value " << value << endl;
+        PvaClientPutDataPtr putData = pvaClientPut->getData();
+        PVFieldPtr pvField = putData->getPVStructure()->getPVFields()[0];
+        if(!pvField) {
+             throw std::runtime_error("no value field");
+        }
+        if(pvField->getField()->getType()!=union_) {
+             throw std::runtime_error("value is not a PVUnion");
+        }
+        PVUnionPtr pvUnion = std::tr1::static_pointer_cast<PVUnion>(pvField);
+        UnionConstPtr u = pvUnion->getUnion();
+        vector<string> items = split(value);
+        int nitems = items.size();
+        bool isArray = (nitems==1) ? false : true;
+        if(isArray) {
+            if(u->isVariant()) {
+               PVStringArrayPtr pvStringArray = 
+                    pvDataCreate->createPVScalarArray<PVStringArray>();
+               convert->fromStringArray(pvStringArray,0,nitems,items,0);
+               pvUnion->set(pvStringArray);
+           } else {
+               PVStringArrayPtr pvStringArray = 
+                    pvUnion->select<PVStringArray>("stringArray");
+               convert->fromStringArray(pvStringArray,0,nitems,items,0);
+           }
+        } else {
+            if(u->isVariant()) {
+                PVStringPtr pvString = pvDataCreate->createPVScalar<PVString>();
+                pvString->put(value);
+                pvUnion->set(pvString);
+            } else {
+                PVStringPtr pvString = pvUnion->select<PVString>("string");
+                pvString->put(value);
+            }
+        }
+        putData->getChangedBitSet()->set(pvUnion->getFieldOffset());
+        pvaClientPut->put();
+    }
+};
+
+
 
 int main(int argc,char *argv[])
 {
@@ -70,7 +183,7 @@ int main(int argc,char *argv[])
         cout << "default" << endl;
         cout <<  channelName << " " 
              << " " << '"' << request << '"'
-             << " debug " << (debug ? "true" : "false") << endl;
+             << " " << (debug ? "true" : "false") << endl;
         return 0;
     }
     if(argc>1) channelName = argv[1];
@@ -85,73 +198,22 @@ int main(int argc,char *argv[])
          << endl;
     cout << "_____PutUnionForever starting__\n";
     try {
-        PvaClientPtr pva= PvaClient::get(provider);
         if(debug) PvaClient::setDebug(true);
-        PvaClientChannelPtr channel(pva->channel(channelName,provider,0.0));
-        ChannelStateChangeRequester::shared_pointer stateChangeRequester(
-            new ChannelStateChangeRequester());
-        channel->setStateChangeRequester(stateChangeRequester);
-        PvaClientPutPtr pvaClientPut = channel->put(request);
-        PvaClientPutDataPtr putData = pvaClientPut->getData();
-        PVFieldPtr pvField = putData->getPVStructure()->getPVFields()[0];
-        if(!pvField) throw std::runtime_error("no value field");
-        if(pvField->getField()->getType()!=union_) throw std::runtime_error("value is not a PVUnion");
-        PVUnionPtr pvUnion = std::tr1::static_pointer_cast<PVUnion>(pvField);
-        UnionConstPtr u = pvUnion->getUnion();
-        if(!u->isVariant()) {
-            FieldConstPtr field = u->getField("string");
-            if(!field) throw std::runtime_error("union does not have a field named string");
-            if(field->getType()!=scalar) throw std::runtime_error("union field string is not a scalar");
-            ScalarConstPtr scalar = std::tr1::static_pointer_cast<const Scalar>(field);
-            if(scalar->getScalarType()!=pvString) {
-                 throw std::runtime_error("union field string does not have type string");
-            }
-            field = u->getField("stringArray");
-            if(!field) throw std::runtime_error("union does not have a field named stringArray");
-            if(field->getType()!=scalarArray) {
-                throw std::runtime_error("union field stringArray is not a scalarArray");
-            }
-            ScalarArrayConstPtr scalarArray = std::tr1::static_pointer_cast<const ScalarArray>(field);
-            if(scalarArray->getElementType()!=pvString) {
-                throw std::runtime_error("union field stringArray does not have elementType string");
-            }
-        }
-        string value("firstPut");
+        PvaClientPtr pva= PvaClient::get(provider);
+        ClientPutPtr clientPut(ClientPut::create(pva,channelName,provider,request));
         while(true) {
-            if(stateChangeRequester->isConnected()) {
-               cout << "value " << value << endl;
-               vector<string> items = split(value);
-               int nitems = items.size();
-               bool isArray = (nitems==1) ? false : true;
-               if(isArray) {
-                   if(u->isVariant()) {
-                       PVStringArrayPtr pvStringArray = pvDataCreate->createPVScalarArray<PVStringArray>();
-                       convert->fromStringArray(pvStringArray,0,nitems,items,0);
-                       pvUnion->set(pvStringArray);
-                   } else {
-                        PVStringArrayPtr pvStringArray = pvUnion->select<PVStringArray>("stringArray");
-                        convert->fromStringArray(pvStringArray,0,nitems,items,0);
-                   }
-               } else {
-                    if(u->isVariant()) {
-                        PVStringPtr pvString = pvDataCreate->createPVScalar<PVString>();
-                        pvString->put(value);
-                        pvUnion->set(pvString);
-                    } else {
-                        PVStringPtr pvString = pvUnion->select<PVString>("string");
-                        pvString->put(value);
-                    }
-                }
-                putData->getChangedBitSet()->set(pvUnion->getFieldOffset());
-                pvaClientPut->put();
-            } else {
-                cout <<"did not issue get because connection lost\n";
-            }
             int c = std::cin.peek();  // peek character
             if ( c == EOF ) continue;
             cout << "Type exit to stop: \n";
-            getline(cin,value);
-            if(value.compare("exit")==0) break;
+            string str;
+            getline(cin,str);
+            if(str.compare("exit")==0) break;
+            try {
+                clientPut->put(str);
+            } catch (std::runtime_error e) {
+                cerr << "exception " << e.what() << endl;
+                continue;
+            }
         }
     } catch (std::runtime_error e) {
         cerr << "exception " << e.what() << endl;

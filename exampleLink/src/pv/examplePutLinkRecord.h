@@ -27,6 +27,8 @@ namespace epics { namespace exampleCPP { namespace exampleLink {
 class ExamplePutLinkRecord;
 typedef std::tr1::shared_ptr<ExamplePutLinkRecord> ExamplePutLinkRecordPtr;
 typedef std::tr1::weak_ptr<ExamplePutLinkRecord> ExamplePutLinkRecordWPtr;
+class PutLinkRecordRequester;
+typedef std::tr1::shared_ptr<PutLinkRecordRequester> PutLinkRecordRequesterPtr;
 
 
 class epicsShareClass ExamplePutLinkRecord :
@@ -52,8 +54,27 @@ private:
     ExamplePutLinkRecord(
         std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure);
+    bool channelConnected;
+    bool isPutConnected;
+    bool isPutDone;
+    bool setAlarmGood;
     epics::pvData::PVDoubleArrayPtr pvValue;
+    epics::pvData::PVStructurePtr pvAlarmField;
+    epics::pvData::PVAlarm pvAlarm;
+    epics::pvData::Alarm alarm;
+    epics::pvaClient::PvaClientChannelPtr pvaClientChannel;
+    PutLinkRecordRequesterPtr linkRecordRequester;
     epics::pvaClient::PvaClientPutPtr pvaClientPut;
+public:
+    void channelStateChange(
+         epics::pvaClient::PvaClientChannelPtr const & channel,
+         bool isConnected);
+    void channelPutConnect(
+        const epics::pvData::Status& status,
+        epics::pvaClient::PvaClientPutPtr const & clientPut);
+    void putDone(
+        const epics::pvData::Status& status,
+        epics::pvaClient::PvaClientPutPtr const & clientPut);
 };
 
 }}}
