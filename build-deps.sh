@@ -9,7 +9,7 @@ PVDATA=$HOME/.source/pvDataCPP
 PVACCESS=$HOME/.source/pvAccessCPP
 NORMATIVETYPES=$HOME/.source/normativeTypesCPP
 PVACLIENT=$HOME/.source/pvaClientCPP
-PVASRV=$HOME/.source/pvaSrv
+PVA2PVA=$HOME/.source/pva2pva
 PVDATABASE=$HOME/.source/pvDatabaseCPP
 EOF
 cat configure/RELEASE.local
@@ -22,7 +22,7 @@ git clone --quiet --depth 5 --branch "${BRPVD:-master}" https://github.com/epics
 git clone --quiet --depth 5 --branch "${BRPVA:-master}" https://github.com/epics-base/pvAccessCPP.git pvAccessCPP
 git clone --quiet --depth 5 --branch "${BRNT:-master}" https://github.com/epics-base/normativeTypesCPP.git normativeTypesCPP
 git clone --quiet --depth 5 --branch "${BRPVAClient:-master}" https://github.com/epics-base/pvaClientCPP.git pvaClientCPP
-git clone --quiet --depth 5 --branch "${BRPVASRV:-master}" https://github.com/epics-base/pvaSrv.git pvaSrv
+git clone --quiet --depth 5 --branch "${BRPVA2PVA:-master}" https://github.com/epics-base/pva2pva.git pva2pva
 git clone --quiet --depth 5 --branch "${BRPVDATABASE:-master}" https://github.com/epics-base/pvDatabaseCPP.git pvDatabaseCPP
 
 (cd epics-base && git log -n1 )
@@ -87,7 +87,7 @@ PVACCESS=$HOME/.source/pvAccessCPP
 NORMATIVETYPES=$HOME/.source/normativeTypesCPP
 EOF
 
-cat << EOF > pvaSrv/configure/RELEASE.local
+cat << EOF > pva2pva/configure/RELEASE.local
 PVDATA=$HOME/.source/pvDataCPP
 EPICS_BASE=$HOME/.source/epics-base
 PVACCESS=$HOME/.source/pvAccessCPP
@@ -105,5 +105,5 @@ make -j2 -C pvDataCPP
 make -j2 -C pvAccessCPP
 make -j2 -C normativeTypesCPP
 make -j2 -C pvaClientCPP
-make -j2 -C pvaSrv
+make -j2 -C pva2pva
 make -j2 -C pvDatabaseCPP
