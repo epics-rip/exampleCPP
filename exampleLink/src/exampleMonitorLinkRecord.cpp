@@ -26,23 +26,23 @@ using std::string;
 
 namespace epics { namespace exampleCPP { namespace exampleLink {
 
-class LinkRecordRequesterImpl :
+class MonitorLinkRecordRequester :
     public PvaClientChannelStateChangeRequester,
     public PvaClientMonitorRequester
 {
     ExampleMonitorLinkRecordWPtr exampleMonitorLinkRecord;
     PvaClient::weak_pointer pvaClient;
 public:
-    POINTER_DEFINITIONS(LinkRecordRequesterImpl);
+    POINTER_DEFINITIONS(MonitorLinkRecordRequester);
 
-    LinkRecordRequesterImpl(
+    MonitorLinkRecordRequester(
         ExampleMonitorLinkRecordPtr const & exampleMonitorLinkRecord,
         PvaClientPtr const &pvaClient)
     : exampleMonitorLinkRecord(exampleMonitorLinkRecord),
       pvaClient(pvaClient)
     {}
-    virtual ~LinkRecordRequesterImpl() {
-        if(PvaClient::getDebug()) std::cout << "~LinkRecordRequesterImpl" << std::endl;
+    virtual ~MonitorLinkRecordRequester() {
+        if(PvaClient::getDebug()) std::cout << "~MonitorLinkRecordRequester" << std::endl;
     }
 
     virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected)
@@ -53,7 +53,7 @@ public:
     }
 
     virtual void monitorConnect(
-        Status const & status,
+        const Status& status,
         PvaClientMonitorPtr const & monitor,
         StructureConstPtr const & structure)
     {
@@ -78,12 +78,12 @@ ExampleMonitorLinkRecordPtr ExampleMonitorLinkRecord::create(
     string const & channelName)
 {
     PVStructurePtr pvStructure = getStandardPVField()->scalarArray(
-        pvDouble,"timeStamp");
+        pvDouble,"timeStamp,alarm");
     ExampleMonitorLinkRecordPtr pvRecord(
-        new ExampleMonitorLinkRecord(
-           recordName,pvStructure)); 
-    LinkRecordRequesterImplPtr linkRecordRequester(
-        LinkRecordRequesterImplPtr(new LinkRecordRequesterImpl(pvRecord,pva)));
+        new ExampleMonitorLinkRecord(recordName,pvStructure)); 
+    
+    MonitorLinkRecordRequesterPtr linkRecordRequester(
+        MonitorLinkRecordRequesterPtr(new MonitorLinkRecordRequester(pvRecord,pva)));
     pvRecord->linkRecordRequester = linkRecordRequester;
     if(!pvRecord->init(pva,channelName,providerName)) pvRecord.reset();
     return pvRecord;
@@ -95,7 +95,7 @@ ExampleMonitorLinkRecord::ExampleMonitorLinkRecord(
 : PVRecord(recordName,pvStructure),
   channelConnected(false),
   monitorConnected(false),
-  isStarted(false)
+  setAlarmGood(false)
 {
 }
 
@@ -109,7 +109,14 @@ bool ExampleMonitorLinkRecord::init(
     PVStructurePtr pvStructure = getPVRecordStructure()->getPVStructure();
     pvValue = pvStructure->getSubField<PVDoubleArray>("value");
     if(!pvValue) {
-        return false;
+        throw std::runtime_error("value is not a double array");
+    }
+    pvAlarmField = pvStructure->getSubField<PVStructure>("alarm");
+    if(!pvAlarmField) {
+        throw std::runtime_error("no alarm field");
+    }
+    if(!pvAlarm.attach(pvAlarmField)) {
+        throw std::runtime_error(string("bad alarm field"));
     }
     pvaClientChannel = pvaClient->createChannel(channelName,providerName);
     pvaClientChannel->setStateChangeRequester(linkRecordRequester);
@@ -127,24 +134,52 @@ void ExampleMonitorLinkRecord::channelStateChange(
 {
     channelConnected = isConnected;
     if(isConnected) {
+        setAlarmGood = true;
         if(!pvaClientMonitor) {
             pvaClientMonitor = pvaClientChannel->createMonitor("value");
             pvaClientMonitor->setRequester(linkRecordRequester);
             pvaClientMonitor->issueConnect();
         }
+        return;
     }
+    lock();
+    try {
+        beginGroupPut();
+        alarm.setMessage("disconnected");
+        alarm.setSeverity(invalidAlarm);
+        pvAlarm.set(alarm);
+        process();
+        endGroupPut();
+    } catch(...) {
+       unlock();
+       throw;
+    }
+    unlock();
 }
 
 void ExampleMonitorLinkRecord::monitorConnect(
-    Status const & status,
+    const Status& status,
     PvaClientMonitorPtr const & monitor,
     StructureConstPtr const & structure)
 {
-    if(!status.isOK()) return;
-    monitorConnected = true;
-    if(isStarted) return;
-    isStarted = true;
-    pvaClientMonitor->start();
+    if(status.isOK()) {
+        monitorConnected = true;
+        return;
+    }
+    lock();
+        monitorConnected = false;
+        try {
+            beginGroupPut();
+            alarm.setMessage(status.getMessage());
+            alarm.setSeverity(invalidAlarm);
+            pvAlarm.set(alarm);
+            process();
+            endGroupPut();
+        } catch(...) {
+           unlock();
+           throw;
+        }
+    unlock();
 }
 
 void ExampleMonitorLinkRecord::event(PvaClientMonitorPtr const & monitor)
@@ -156,6 +191,12 @@ void ExampleMonitorLinkRecord::event(PvaClientMonitorPtr const & monitor)
         lock();
         try {
             beginGroupPut();
+            if(setAlarmGood) {
+                setAlarmGood = false;
+                alarm.setMessage("connected");
+                alarm.setSeverity(noAlarm);
+                pvAlarm.set(alarm);
+            }
             pvValue->replace(pvDoubleArray->view());
             process();
             endGroupPut();

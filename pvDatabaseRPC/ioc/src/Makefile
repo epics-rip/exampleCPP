@@ -27,7 +27,7 @@ exampleRPC_SRCS_vxWorks += -nil-
 exampleRPC_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
 
 exampleRPC_LIBS += exampleRPC
-exampleRPC_LIBS += pvDatabase pvaSrv pvAccessIOC pvAccess pvAccessCA nt pvData
+exampleRPC_LIBS += pvDatabase qsrv pvAccessIOC pvAccess pvAccessCA nt pvData
 exampleRPC_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #===========================

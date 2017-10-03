@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/helloRPC</h1>
-<h2 class="nocount">2016.08.30</h2>
+<h2 class="nocount">2017.09.26</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -46,24 +46,26 @@
 
 <h2>Running</h2>
 <h3>Server</h3>
-<p>On linux in the helloRPC directory enter:</p>
+<p>On linux enter:</p>
 <pre>
-bin/$EPICS_HOST_ARCH/helloService
+mrk> pwd
+/home/epicsv4/masterCPP/exampleCPP/helloRPC
+mrk> bin/linux-x86_64/HelloService
 </pre>
-<p>There is also a <b>scripts/helloService.bat</b> file for windows.
-</p>
+
 <h3>Client</h3>
 <p>On linux in the helloRPC directory the following are examples of running the client</p>
 <pre>
-bin/$EPICS_HOST_ARCH//helloClient
+mrk> pwd
+/home/epicsv4/masterCPP/exampleCPP/helloRPC
+mrk> bin/linux-x86_64/HelloClient
 Hello anonymous
-mrk> scripts/helloClient Me
-Hello Me
-mrk> 
 </pre>
 <h2>Some Details</h2>
-<p>This is a starting point for writing an RPC service without using <strong>pvDatabaseJava</strong>.</p>
-<p>But note that example <strong>database</strong> has a similar example implemented via <strong>pvDatabaseCPP</strong>, which allows clients to monitor the result of each request.</p>
+<p>This is a starting point for writing an RPC service without using
+<b>pvDatabaseCPP</b>.
+</p>
+<p>But note that example <b>database</b> has a similar example implemented via <b>pvDatabaseCPP</b>, which allows clients to monitor the result of each request.</p>
 
 
 </div> <!-- class="contents" -->

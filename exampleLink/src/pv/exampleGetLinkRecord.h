@@ -27,7 +27,8 @@ namespace epics { namespace exampleCPP { namespace exampleLink {
 class ExampleGetLinkRecord;
 typedef std::tr1::shared_ptr<ExampleGetLinkRecord> ExampleGetLinkRecordPtr;
 typedef std::tr1::weak_ptr<ExampleGetLinkRecord> ExampleGetLinkRecordWPtr;
-
+class GetLinkRecordRequester;
+typedef std::tr1::shared_ptr<GetLinkRecordRequester> GetLinkRecordRequesterPtr;
 
 class epicsShareClass ExampleGetLinkRecord :
     public epics::pvDatabase::PVRecord
@@ -52,8 +53,27 @@ private:
     ExampleGetLinkRecord(
         std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure);
+    bool channelConnected;
+    bool isGetConnected;
+    bool isGetDone;
+    bool setAlarmGood;
     epics::pvData::PVDoubleArrayPtr pvValue;
+    epics::pvData::PVStructurePtr pvAlarmField;
+    epics::pvData::PVAlarm pvAlarm;
+    epics::pvData::Alarm alarm;
+    epics::pvaClient::PvaClientChannelPtr pvaClientChannel;
+    GetLinkRecordRequesterPtr linkRecordRequester;
     epics::pvaClient::PvaClientGetPtr pvaClientGet;
+public:
+    void channelStateChange(
+         epics::pvaClient::PvaClientChannelPtr const & channel,
+         bool isConnected);
+    void channelGetConnect(
+        const epics::pvData::Status& status,
+        epics::pvaClient::PvaClientGetPtr const & clientGet);
+    void getDone(
+        const epics::pvData::Status& status,
+        epics::pvaClient::PvaClientGetPtr const & clientGet);
 };
 
 }}}

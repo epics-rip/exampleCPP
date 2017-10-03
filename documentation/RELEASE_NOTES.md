@@ -1,7 +1,31 @@
-EPICS V4 release 4.6
-===========
 
-## Version 4.2
+EPICS V4 release 4.7
+====================
+
+exampleCPP release 4.3
+----------------------
+
+Summary of changes since release 4.2:
+
+* exampleClient
+  * new example using the non-blocking features of pvaClient are implemented.
+
+* exampleLink
+  * major changes to use the non-blocking features of pvaClient.
+  * examples for monitor, get, and put links.
+  * now works if linked channel is not available when ioc is started.
+
+* minor changes to other examples.
+
+
+
+
+
+EPICS V4 release 4.6
+====================
+
+exampleCPP release 4.2
+----------------------
 
 Summary of changes since release 4.1:
 

@@ -72,6 +72,7 @@ public:
 
     virtual void channelStateChange(PvaClientChannelPtr const & channel, bool isConnected)
     {
+        cout << "channeStateChange " << (isConnected ? "true" : "false") << endl;
         channelConnected = isConnected;
         if(isConnected) {
             if(!pvaClientPutGet) {
@@ -209,14 +210,12 @@ int main(int argc,char *argv[])
         PvaClientPtr pva= PvaClient::get(providerName);
         ClientPutGetPtr clientPutGet(ClientPutGet::create(pva,channelName,providerName,request));
         while(true) {
-            int c = std::cin.peek();  // peek character
-            if ( c == EOF ) continue;
-            cout << "Type exit to stop: \n";
+            cout << "enter command\n";
             string str;
             getline(cin,str);
             if(str.compare("help")==0){
-                 cout << "Type help exit putGet getPut getGet\n";
-                 continue;
+                 cout << "exit putGet getPut getGet\n";
+                 getline(cin,str);
             }
             if(str.compare("putGet")==0){
                  cout << "value?\n";

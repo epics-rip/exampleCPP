@@ -1,0 +1,2 @@
+# Examples are always installed in place
+INSTALL_LOCATION = $(TOP)

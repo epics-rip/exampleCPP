@@ -26,10 +26,10 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/database</h1>
-<h2 class="nocount">2016.08.29</h2>
+<h2 class="nocount">2017.09.22</h2>
 
 <h2 class="nocount">Abstract</h2>
-<p>database provides an IOC with a combination of V3 DBRecords, PVRecords, and also starts pvaSrv.
+<p>database provides an IOC with a combination of V3 DBRecords, PVRecords, and also starts qsrv.
 It also provides a main program that has only the PVRecords.
 </p>
 
@@ -44,6 +44,12 @@ It also provides a main program that has only the PVRecords.
 <hr />
 
 <h2>Overview</h2>
+<p>This creates various types of PVRecords.
+By looking at how each type is created a user can use this as model of how to create other records.
+This example also shows how to register ioc shell commands for creating record instances
+and also to start channel providers pva, local, and qsrv.
+</p>
+
 <p>The database can be started either as a main program of as part of an EPICS V3 IOC.</p>
 <h3>Start as a main program</h3>
 <pre>
@@ -58,7 +64,7 @@ mrk&gt; pwd
 mrk&gt; ../../bin/$EPICS_HOST_ARCH/exampleDatabase st.cmd 
 </pre>
 <p>The database has both iocCore DBRecords and pvDatabase PVRecords.
-Since pvaSrv is also started, the DBRecords can be accesed via either channelAccess or pvAccess.
+Since qsrv is also started, the DBRecords can be accesed via either channelAccess or pvAccess.
 For example both caget and pvget can be used to access the DBRecords.
 </p>
 <h3>V4 PVRecords</h3>
@@ -66,6 +72,7 @@ For example both caget and pvget can be used to access the DBRecords.
 a main program or as part of a V3 IOC.</p>
 <p>The following are the PVRecords plus helloRPC, which is accessed via channelRPC:</p>
 <pre>
+PVRBigRecord
 PVRboolean
 PVRbooleanArray
 PVRbyte
@@ -115,8 +122,15 @@ PVRvariantUnionArray
 <h3>V3 DB Records</h3>
 <p>If the database is started as a V3 IOC, the following DBRecords are present:</p>
 <pre>
-DBRbo00
-DBRbo01
+DBRstringArray01
+DBRdoubleArray
+DBRbyteArray01
+DBRshortArray01
+DBRintArray01
+DBRfloatArray01
+DBRdoubleArray01
+DBRint00
+DBRint01
 DBRstring00
 DBRstring01
 DBRstring02
@@ -127,22 +141,8 @@ DBRstring06
 DBRstring07
 DBRstring08
 DBRstring09
-DBRbyteArray01
-DBRdoubleArray
-DBRdoubleArray01
-DBRfloatArray01
-DBRintArray01
-DBRshortArray01
-DBRstringArray01
-DBRenum01
-DBRmbbo00
-DBRmbbo02
-DBRcalc00
 DBRcounter01
-DBRmbbiwierd
-DBRint00
-DBRint01
-DBRao01
+DBRcalc00
 DBRdouble00
 DBRdouble01
 DBRdouble02
@@ -153,6 +153,13 @@ DBRdouble06
 DBRdouble07
 DBRdouble08
 DBRdouble09
+DBRao01
+DBRenum01
+DBRmbbo00
+DBRmbbo02
+DBRbo00
+DBRbo01
+DBRmbbiwierd
 </pre>
 <h2>database/src/pv</h2>
 <p>This directory has the following files:</p>
@@ -183,7 +190,7 @@ DBRdouble09
    <dt>exampleDatabaseMain.cpp</dt>
       <dd>Code that allows the PVRecords to be available via a standalone main program.</dd>
 </dl>
-<h3>database/src/code/exampleDatabase.cpp</h3>
+<h3>database/src/exampleDatabase.cpp</h3>
 <p>This has a number of private methods:</p>
 <dl>
    <dt>createRecords</dt>
@@ -201,6 +208,41 @@ DBRdouble09
       <dd>Creates a record with a value field that a structureArray.</dd>
    <dt>createDumbPowerSupplyRecord</dt>
       <dd>Creates a record with a value field that a structureArray.</dd>
+   <dt>createBigRecord</dt>
+      <dd>Creates the following record:
+<pre>
+PVRBigRecord
+structure 
+    time_t timeStamp &lt;undefined&gt; 0
+    structure scalar
+        structure boolean
+            boolean value false
+        structure byte
+            byte value 0
+        structure long
+            long value 0
+        structure double
+            double value 0
+        structure string
+            string value 
+    structure scalarArray
+        structure boolean
+            boolean[] value []
+        structure byte
+            byte[] value []
+        structure long
+            long[] value []
+        structure double
+            double[] value []
+        structure string
+            string[] value []
+    structure[] structureArray
+    union restrictedUnion
+        (none)
+    any variantUnion
+        (none)
+</pre>
+      </dd>
 </dl>
 
 <p><b>ExampleDatabase::create</b>
@@ -224,6 +266,8 @@ example database.</p>
        <dd>Creates <b>PVRvariantUnionArray</b> </dd>
    <dt>createDumbPowerSupplyRecord</dt>
        <dd>Creates <b>PVRdumbPowerSupply</b> </dd>
+   <dt>createBigRecord</dt>
+       <dd>Creates <b>PVRBigRecord</b> </dd>
    <dt>addRecord for PVRhelloPutGet</dt>
         <dd>Creates <b>PVRhelloPutGet</b> </dd>
    <dt>registerService for helloRPC</dt>
@@ -248,7 +292,7 @@ They are used when the example database is started as part of a V3 IOC.</p>
            <dt>include "registerChannelProviderLocal.dbd"</dt>
                <dd>This is to start local provider from pvDatabaseCPP</dd>
            <dt>include "dbPv.dbd"</dt>
-               <dd>This is to start <b>pvaSrv</b></dd>
+               <dd>This is to start <b>qsrv</b></dd>
            <dt>include "exampleDatabaseRegister.dbd"</dt>
                 <dd>This is to create the iocsh commmand <b>exampleDatabase</b></dd>
         </dl>
@@ -262,8 +306,6 @@ They are used when the example database is started as part of a V3 IOC.</p>
 <dl>
    <dt>exampleDatabase</dt>
      <dd>This creates the PVRecords.</dd>
-   <dt>startPVAServer</dt>
-      <dd>This starts the local channel provider and pvAccess</dd>
 </dl>
 
 

@@ -26,11 +26,11 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/helloPutGet</h1>
-<h2 class="nocount">2016.08.30</h2>
+<h2 class="nocount">2017.09.29</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
-<b>helloPutGet</b> implements a simple channelRPC putGet.
+<b>helloPutGet</b> implements a channelPutGet that simulates a Remote Procedure Call.
 </p>
 
 </div> <!-- head -->
@@ -48,14 +48,14 @@
 </p>
 <pre>
 structure
+    time_t timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
     structure argument
         string value
     structure result
         string value
-        time_t timeStamp
-            long secondsPastEpoch
-            int nanoseconds
-            int userTag
 </pre>
 <p>It is designed to be accessed via a channelPutGet request.
 The client sets argument.value
@@ -69,112 +69,85 @@ The example can be run on linux as follows:</p>
 <h3>Server</h3>
 <pre>
 mrk&gt; pwd
-/home/epicsv4/master/exampleCPP/helloPutGet
-mrk&gt; bin/$EPICS_HOST_ARCH/helloPutGetMain
+/home/epicsv4/masterCPP/exampleCPP/helloPutGet
+mrk&gt; bin/linux-x86_64/helloPutGetMain
 </pre>
 <p>To start helloPutGet as part of a V3IOC:</p>
 <pre>
 mrk&gt; pwd
 /home/hg/exampleCPP/master/helloPutGet/iocBoot/helloPutGet
-mrk&gt; ../../../bin/$EPICS_HOST_ARCH/helloPutGet st.cmd
+mrk&gt; ../../../bin/linux-x86_64/helloPutGet st.cmd
 </pre>
-<h3>Client</h3>
+<h3>Hello World Client</h3>
+<p>This example requires that the server is running.
+In addition start a monitor as follows:
+</p>
+<pre>
+pvget -r "field()"  -m helloPutGet
+</pre>
+<p>When the following is executed:
+</p>
 <pre>
 mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/helloPutGet
-mrk&gt; bin/$EPICS_HOST_ARCH/helloPutGetClient
+mrk&gt; bin/linux-x86_64helloPutGetClient
 </pre>
-<h2>Directory Layout</h2>
-<p>
-The directory layout is:
+<p>The pvget shows:</p>
+<pre>
+helloPutGet
+structure 
+    time_t timeStamp 2017-09-26T09:32:05.560 0
+    structure argument
+        string value World
+    structure result
+        string value Hello World
+</pre>
+<h3>Non Blocking Client</h3>
+<p>A client with more functionality is also available.
+It can be started either before of after the server is started.
+It options are:
 </p>
 <pre>
-helloPutGet
-    configure
-       ExampleRELEASE.local
-       ...
-    src
-       pv
-          helloPutGetRecord.h
-       helloPutGetRecord.cpp
-       helloPutGetInclude.dbd
-       helloPutGetMain.cpp
-       helloPutGetRegister.cpp
-       helloPutGetRegister.dbd
-       helloPutGetClient.cpp
-    ioc
-       Db
-          ...
-       src
-          helloPutGetInclude.dbd
-          helloPutGetMain.cpp
-   iocBoot
-      helloPutGet
-         st.cmd
-         ...
+mrk&gt; pwd
+/home/epicsv4/masterCPP/exampleCPP/helloPutGet
+mrk&gt; bin/linux-x86_64/helloNoWaitPutGetClient -help
+providerName channelName request debug
+default
+pva helloPutGet "putField(argument)getField(result)" false
 </pre>
-where
-<dl>
-  <dt>ExampleRELEASE.local</dt>
-     <dd>
-     If you make a copy of helloPutGet and use it
-     to create a new server,
-    This is the file that must be copied to RELEASE.local
-     and edited.</dd>
-   <dt>helloPutGetRecord.h</dt>
-     <dd>The header file for helloPutGet.</dd>
-   <dt>helloPutGetRecord.cpp</dt>
-     <dd>The helloPutGet implementation.</dd>
-   <dt>helloPutGetMain.cpp</dt>
-     <dd>A main program that runs the example so that it can be accessed
-       by a pvAccess client.
-     </dd>
-   <dt>helloPutGetInclude.dbd</dt>
-     <dd>This has a register command so that the putGet can be started
-       on a V3 IOC via iocsh.
-      </dd>
-   <dt>helloPutGetRegister.cpp</dt>
-      <dd>This has the code to start the putGet via the following iocsh
-       command.
-         <pre>
-helloPutGetCreateRecord helloPutGet
-         </pre>
-       Multiple commands can be issued to create multiple putGet records.
-       </dd>
-   <dt>helloPutGetRegister.dbd</dt>
-       <dd>This is the file that is used to create the shell command
-        helloPutGetCreateRecord.
-       </dd>
-    <dt>helloPutGetClient.cpp</dt>
-       <dd>Client code to test helloPutGet</dd>
-
-   <dt>ioc</dt>
-     <dd>This is for building a V3 IOC application.</dd>
-   <dt>ioc/Db</dt>
-     <dd>This has template files for creating V3 records.</dd>
-   <dt>ioc/src</dt>
-     <dd>The files for running a V3 IOC.</dd>
-   <dt>iocBoot/helloPutGet</dt>
-      <dd>A place to start helloPutGet as part of a V3IOC.
-       It has a st.cmd file that starts the ioc and also starts pvAccess
-      and the example.</dd>
-</dl>
-<p>If only a main program is desired then the directory layout is:</p>
+<p>After it is started as follows:
+</p>
 <pre>
-helloPutGet
-    configure
-       ExampleRELEASE.local
-       ...
-    src
-       pv
-          helloPutGetRecord.h
-       code
-          helloPutGetRecord.cpp
-          helloPutGetMain.cpp
+mrk&gt; bin/linux-x86_64/helloNoWaitPutGetClient
 </pre>
-<p>Thus if only a main program is required the directory layout is simple.</p>
-<p>Also many sites will want to build the src directory in an area
-separate from where the iocs are build.</p>
+<p>Then it accepts several commands.
+To see the commands just type help:
+</p>
+<pre>
+help
+exit putGet getPut getGet
+</pre>
+<p>The commands are:</p>
+<dl>
+   <dt>exit</dt>
+      <dd>
+       The program terminates.
+      </dd>
+   <dt>putGet</dt>
+      <dd>
+       The client is prompted for a value, which is sent to the server
+       via a putGet request.
+      </dd>
+   <dt>getPut</dt>
+      <dd>
+       A getPut request is sent to the server and the result displayed.
+      </dd>
+   <dt>getGet</dt>
+      <dd>
+      A getGet request is sent to the server and the result displayed.
+      </dd>
+</dl>
+
 
 </div> <!-- class="contents" -->
 </body>
