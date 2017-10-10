@@ -20,7 +20,6 @@
 
 namespace epics { namespace exampleCPP { namespace database {
 
-
 class ExampleHelloRPCRecord;
 typedef std::tr1::shared_ptr<ExampleHelloRPCRecord> ExampleHelloRPCRecordPtr;
 
@@ -29,8 +28,7 @@ typedef std::tr1::shared_ptr<ExampleHelloRPCRecord> ExampleHelloRPCRecordPtr;
  *
  */
 class epicsShareClass ExampleHelloRPCRecord :
-    public epics::pvDatabase::PVRecord,
-    public virtual epics::pvAccess::RPCService
+    public epics::pvDatabase::PVRecord
 {
 public:
     POINTER_DEFINITIONS(ExampleHelloRPCRecord);
@@ -45,29 +43,15 @@ public:
      /**
       * @brief Get the ExampleRPC service.
       */
-    virtual epics::pvAccess::Service::shared_pointer getService(
+    virtual epics::pvAccess::RPCServiceAsync::shared_pointer getService(
         epics::pvData::PVStructurePtr const & pvRequest);
-    /**
-      * @brief Process a request from the client
-      *
-      * @param args The request from the client
-      * @return The result.
-      */
-    epics::pvData::PVStructurePtr request(
-        epics::pvData::PVStructurePtr const & args
-    );
+    
     virtual ~ExampleHelloRPCRecord() {}
-    virtual bool init() {return false;}
+    virtual bool init() {return true;}
 private :
     ExampleHelloRPCRecord(
         std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvTop);
-
-    epics::pvData::PVStructurePtr put(
-        epics::pvData::PVStringPtr const & pvFrom);
-
-    epics::pvData::PVStructurePtr pvTop;
-    epics::pvAccess::Service::shared_pointer service;
 };
 
 }}}

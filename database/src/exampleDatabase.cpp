@@ -26,6 +26,7 @@
 #include <pv/traceRecord.h>
 #include <pv/ntscalar.h>
 #include <pv/ntscalarArray.h>
+#include <pv/ntunion.h>
 #include <pv/ntenum.h>
 
 #define epicsExportSharedSymbols
@@ -68,13 +69,15 @@ static void createRestrictedUnionRecord(
     PVDatabasePtr const &master,
     string const &recordName)
 {
-    StructureConstPtr top = fieldCreate->createFieldBuilder()->
-         addNestedUnion("value")->
-             add("string",pvString)->
-             addArray("stringArray",pvString)->
-             endNested()->
-         createStructure();
-    PVStructurePtr pvStructure = pvDataCreate->createPVStructure(top);
+    UnionConstPtr u = getFieldCreate()->createFieldBuilder()->
+        add("string",pvString)->
+        addArray("stringArray",pvString)->
+        createUnion();
+
+    PVStructurePtr pvStructure= NTUnion::createBuilder()->
+        value(u)->
+        addTimeStamp()->
+        createPVStructure();
     PVRecordPtr pvRecord = PVRecord::create(recordName,pvStructure);
     bool result = master->addRecord(pvRecord);
     if(!result) cout<< "record " << recordName << " not added" << endl;
@@ -84,10 +87,10 @@ static void createVariantUnionRecord(
     PVDatabasePtr const &master,
     string const &recordName)
 {
-    StructureConstPtr top = fieldCreate->createFieldBuilder()->
-         add("value",fieldCreate->createVariantUnion())->
-         createStructure();
-    PVStructurePtr pvStructure = pvDataCreate->createPVStructure(top);
+    
+    PVStructurePtr pvStructure= NTUnion::createBuilder()->
+        addTimeStamp()->
+        createPVStructure();
     PVRecordPtr pvRecord = PVRecord::create(recordName,pvStructure);
     bool result = master->addRecord(pvRecord);
     if(!result) cout<< "record " << recordName << " not added" << endl;
@@ -98,6 +101,7 @@ static void createRestrictedUnionArrayRecord(
     string const &recordName)
 {
     StructureConstPtr top = fieldCreate->createFieldBuilder()->
+         add("timeStamp",standardField->timeStamp()) ->
          addNestedUnionArray("value")->
              add("string",pvString)->
              addArray("stringArray",pvString)->
@@ -114,6 +118,7 @@ static void createVariantUnionArrayRecord(
     string const &recordName)
 {
     StructureConstPtr top = fieldCreate->createFieldBuilder()->
+         add("timeStamp",standardField->timeStamp()) ->
          addArray("value",fieldCreate->createVariantUnion())->
          createStructure();
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(top);
