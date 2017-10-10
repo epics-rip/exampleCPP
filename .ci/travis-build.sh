@@ -2,7 +2,7 @@
 set -e -x
 
 export EPICS_HOST_ARCH=`sh $HOME/.source/epics-base/startup/EpicsHostArch`
-export EPICS_PVA_ADDR_LIST=localhost
+export EPICS_PVA_ADDR_LIST=127.255.255.255
 
 # set RTEMS to eg. "4.9" or "4.10"
 # requires qemu, bison, flex, texinfo, install-info

@@ -47,7 +47,7 @@ PVDATA_BRANCH="master"
 NORMATIVETYPES_BRANCH="master"
 PVACCESS_BRANCH="master"
 PVACLIENT_BRANCH="master"
-PVASRV_BRANCH="master"
+PVA2PVA_BRANCH="master"
 PVDATABASE_BRANCH="master"
 
 ###########################################
@@ -67,7 +67,7 @@ installE4 pvData ${PVDATA_BRANCH}
 installE4 normativeTypes ${NORMATIVETYPES_BRANCH}
 installE4 pvAccess ${PVACCESS_BRANCH}
 installE4 pvaClient ${PVACLIENT_BRANCH}
-installE4 pvaSrv ${PVASRV_BRANCH}
+installE4 pva2pva ${PVA2PVA_BRANCH}
 installE4 pvDatabase ${PVDATABASE_BRANCH}
 
 ###########################################
