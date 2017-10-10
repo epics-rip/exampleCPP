@@ -107,7 +107,20 @@ public:
             return;
         }
         PvaClientPutDataPtr putData = pvaClientPut->getData();
-        PVScalarPtr pvScalar(putData->getScalarValue());
+        PVStructurePtr pvStructure = putData->getPVStructure();
+        while(true) {
+            if(pvStructure->getSubField("value")) break;
+            PVFieldPtr pvField = pvStructure->getPVFields()[0];
+            pvStructure = std::tr1::dynamic_pointer_cast<PVStructure>(pvField);
+            if(!pvStructure) {
+               cout << channelName << " invalid pvStructure\n";
+               return;
+            }
+        }
+        PVScalarPtr pvScalar(pvStructure->getSubField<PVScalar>("value"));
+        if(!pvScalar) {
+            cout << channelName << " value is no a scalar\n";
+        }
         ConvertPtr convert = getConvert();
         convert->fromString(pvScalar,value);
         pvaClientPut->put();

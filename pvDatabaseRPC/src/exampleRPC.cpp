@@ -76,7 +76,7 @@ static StructureConstPtr makePointTopStructure()
 static StructureConstPtr makeRecordStructure()
 {
     static StructureConstPtr recordStructure;
-    if (recordStructure.get() == 0)
+    if (!recordStructure)
     {
         FieldCreatePtr fieldCreate = getFieldCreate();
 
