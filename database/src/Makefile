@@ -6,12 +6,14 @@ exampleDatabaseSRC = $(TOP)/src
 
 INC += pv/exampleHelloRecord.h
 INC += pv/exampleHelloRPCRecord.h
+INC += pv/exampleSoftRecord.h
 INC += pv/exampleDatabase.h
 
 DBD += exampleDatabaseRegister.dbd
 
 LIBRARY = exampleDatabase
 LIBSRCS += exampleHelloRecord.cpp
+LIBSRCS += exampleSoftRecord.cpp
 LIBSRCS += exampleHelloRPCRecord.cpp
 LIBSRCS += exampleDatabase.cpp
 LIBSRCS += exampleDatabaseRegister.cpp

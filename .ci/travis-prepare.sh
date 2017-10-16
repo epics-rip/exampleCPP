@@ -32,8 +32,6 @@ then
   fi
 fi
 
-cd "$CURDIR"
-
 cat << EOF > $CURDIR/configure/RELEASE.local
 EPICS_BASE=$HOME/.source/epics-base
 EOF

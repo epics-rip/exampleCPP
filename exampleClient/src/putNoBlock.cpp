@@ -108,24 +108,45 @@ public:
         }
         PvaClientPutDataPtr putData = pvaClientPut->getData();
         PVStructurePtr pvStructure = putData->getPVStructure();
+        PVScalarPtr pvScalar(pvStructure->getSubField<PVScalar>("value"));
+        PVScalarArrayPtr pvScalarArray(pvStructure->getSubField<PVScalarArray>("value"));
         while(true) {
-            if(pvStructure->getSubField("value")) break;
-            PVFieldPtr pvField = pvStructure->getPVFields()[0];
+            if(pvScalar) break;
+            if(pvScalarArray) break;
+            PVFieldPtr pvField(pvStructure->getPVFields()[0]);
+            pvScalar = std::tr1::dynamic_pointer_cast<PVScalar>(pvField);
+            if(pvScalar) break;
+            pvScalarArray = std::tr1::dynamic_pointer_cast<PVScalarArray>(pvField);
+            if(pvScalarArray) break;
             pvStructure = std::tr1::dynamic_pointer_cast<PVStructure>(pvField);
             if(!pvStructure) {
-               cout << channelName << " invalid pvStructure\n";
+               cout << channelName << " did not find a pvScalar field\n";
                return;
             }
         }
-        PVScalarPtr pvScalar(pvStructure->getSubField<PVScalar>("value"));
-        if(!pvScalar) {
-            cout << channelName << " value is no a scalar\n";
-        }
         ConvertPtr convert = getConvert();
-        convert->fromString(pvScalar,value);
+        if(pvScalar) {
+            convert->fromString(pvScalar,value);
+            pvaClientPut->put();
+        } else {
+            vector<string> values;
+            size_t pos = 0;
+            size_t n = 1;
+            while(true)
+            {
+                size_t offset = value.find(" ",pos);
+                if(offset==string::npos) {
+                    values.push_back(value.substr(pos));
+                    break;
+                }
+                values.push_back(value.substr(pos,offset-pos));
+                pos = offset+1;
+                n++;    
+            }
+            convert->fromStringArray(pvScalarArray,0,n,values,0);        
+        }
         pvaClientPut->put();
     }
-
 };
 
 
