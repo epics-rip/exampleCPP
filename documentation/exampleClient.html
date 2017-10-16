@@ -26,11 +26,19 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/exampleClient</h1>
-<h2 class="nocount">2017.09.23</h2>
+<h2 class="nocount">2017.01.14</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
 <b>exampleClient</b> has examples for <b>pvaClientCPP</b>
+</p>
+<p>
+<b>NOTE:</b>
+This document is mainly for developers, i. e. people who want to create client code
+for communicating with servers that can be accessed via the
+<b>EPICS 7</b> channel providers <b>pva</b>
+or <b>ca</b>. 
+Thus while reading this document please also look at the code.
 </p>
 
 </div> <!-- head -->
@@ -93,7 +101,7 @@ The arguments are:
 It automatically handles channel connect and disconnects and also creates a PvaClientGet when the channel first connects.
 </p>
 <p>
-The example implements a class <b>ClientMonitor</b>, which implements PvaClientChannelStateChangeRequester,
+The example implements a class <b>ClientGet</b>, which implements PvaClientChannelStateChangeRequester,
 and PvaClientGetRequester.
 </p>
 <p>This example supports help as follows:</p>
@@ -128,7 +136,7 @@ The arguments are:
 It automatically handles channel connect and disconnects and also creates a PvaClientPut when the channel first connects.
 </p>
 <p>
-The example implements a class <b>ClientMonitor</b>, which implements PvaClientChannelStateChangeRequester,
+The example implements a class <b>ClientPut</b>, which implements PvaClientChannelStateChangeRequester,
 and PvaClientPutRequester.
 </p>
 <p>This example supports help as follows:</p>
@@ -157,13 +165,16 @@ The arguments are:
       If true then debug messages are displayed/
      </dd>
 </dl>
+<p>Note that the example can only do a put to a single field, which
+most be either a scalar or scalarArray.
+</p>
 
 <h3>putUnion</h3>
 <p>This is another example that creates a PvaClientPut that never blocks.
 It automatically handles channel connect and disconnects and also creates a PvaClientPut when the channel first connects.
 </p>
 <p>
-The example implements a class <b>ClientMonitor</b>, which implements PvaClientChannelStateChangeRequester,
+The example implements a class <b>ClientPut</b>, which implements PvaClientChannelStateChangeRequester,
 and PvaClientPutRequester.
 </p>
 <p>
@@ -236,7 +247,7 @@ pvaClientMultiGetDouble, pvaClientMultiPutDouble, and pvaClientMultiMonitorDoubl
 <p>This is an example of issuing a channelPutGet.</p>
 <h3>helloWorldRPC</h3>
 <p>This is an example of issuing a PvaClientRPC request.
-It does <b>not</b> use pva.</p>
+</p>
 
 
 </div> <!-- class="contents" -->
