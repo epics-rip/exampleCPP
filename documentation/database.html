@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/database</h1>
-<h2 class="nocount">2017.10.14</h2>
+<h2 class="nocount">2017.10.21</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>database provides an IOC with a combination of V3 DBRecords, PVRecords, and also starts qsrv.
@@ -167,6 +167,7 @@ DBRmbbo02
 DBRbo00
 DBRbo01
 DBRmbbiwierd
+DBRbusy
 </pre>
 <h2>database/src/pv</h2>
 <p>This directory has the following files:</p>
@@ -430,6 +431,19 @@ They are used when the example database is started as part of a V3 IOC.</p>
         <dl>
            <dt>include "base.dbd"</dt>
               <dd>This is from iocCore</dd>
+           <dt>include "simpleBusyRecord.dbd"</dt>
+              <dd>
+                 <p>
+                 This is a DBRecord that is a simplified version of the synapps busy record.
+                 It is a record that sets pact=True when a 1 is written to it and to False when
+                 a 0 is written to it.
+                 </p>
+                 <p>
+                 It can be used to test the ca provider from both pvAccessCPP and pvAccessJava.
+                 It can also be used to test qsrv from pva2pva.
+                 Each of these implements put with and without callback.  
+                 </p>
+              </dd>
            <dt>include "PVAServerRegister.dbd"</dt>
               <dd>This is to create the iocsh commmand <b>startPVAServer</b></dd>
            <dt>include "registerChannelProviderLocal.dbd"</dt>

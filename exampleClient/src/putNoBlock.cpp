@@ -127,7 +127,6 @@ public:
         ConvertPtr convert = getConvert();
         if(pvScalar) {
             convert->fromString(pvScalar,value);
-            pvaClientPut->put();
         } else {
             vector<string> values;
             size_t pos = 0;
