@@ -10,6 +10,7 @@
 
 #include <pv/lock.h>
 #include <pv/pvData.h>
+#include <pv/timeStamp.h>
 
 #define epicsExportSharedSymbols
 #include <pv/arrayPerformance.h>
