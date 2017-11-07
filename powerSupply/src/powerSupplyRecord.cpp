@@ -8,6 +8,7 @@
  * @date 2013.04.02
  */
 
+#include <pv/pvData.h>
 #include <pv/standardField.h>
 #include <pv/standardPVField.h>
 
