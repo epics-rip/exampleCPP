@@ -33,5 +33,8 @@ powerSupplyMonitor_SRCS += powerSupplyMonitor.cpp
 powerSupplyMonitor_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
 
 
+PROD_SYS_LIBS_WIN32 += ws2_32
+
+
 include $(TOP)/configure/RULES
 

@@ -33,5 +33,8 @@ exampleHelloRPCClient_SRCS += exampleHelloRPCClient.cpp
 exampleHelloRPCClient_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
 
 
+PROD_SYS_LIBS_WIN32 += ws2_32
+
+
 include $(TOP)/configure/RULES
 

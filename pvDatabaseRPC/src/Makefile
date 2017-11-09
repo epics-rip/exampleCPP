@@ -28,6 +28,8 @@ PROD_HOST += control
 control_SRCS += positionClient.cpp
 control_LIBS += pvAccess pvAccessCA pvData Com
 
+PROD_SYS_LIBS_WIN32 += ws2_32
+
 
 include $(TOP)/configure/RULES
 
