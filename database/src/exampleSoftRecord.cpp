@@ -9,10 +9,11 @@
  */
 
 #include <pv/standardField.h>
+#include <pv/ntscalar.h>
 
 #define epicsExportSharedSymbols
 #include <pv/exampleSoftRecord.h>
-#include <pv/ntscalar.h>
+
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
