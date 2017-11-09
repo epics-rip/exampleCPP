@@ -32,6 +32,7 @@
 #include <pv/standardPVField.h>
 #include <pv/pvAccess.h>
 #include <pv/ntscalarArray.h>
+#include <pv/pvaClient.h>
 #include <pv/pvDatabase.h>
 
 #include <epicsExport.h>

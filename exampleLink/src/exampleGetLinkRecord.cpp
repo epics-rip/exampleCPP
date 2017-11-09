@@ -10,6 +10,7 @@
 
 #include <pv/standardPVField.h>
 #include <pv/ntscalar.h>
+#include <pv/pvaClient.h>
 
 #define epicsExportSharedSymbols
 #include <pv/exampleGetLinkRecord.h>
