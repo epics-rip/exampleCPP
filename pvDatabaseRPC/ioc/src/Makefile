@@ -30,6 +30,8 @@ exampleRPC_LIBS += exampleRPC
 exampleRPC_LIBS += pvDatabase qsrv pvAccessIOC pvAccess pvAccessCA nt pvData
 exampleRPC_LIBS += $(EPICS_BASE_IOC_LIBS)
 
+PROD_SYS_LIBS_WIN32 += ws2_32
+
 #===========================
 
 include $(TOP)/configure/RULES

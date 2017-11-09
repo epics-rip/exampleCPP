@@ -31,6 +31,8 @@ exampleLink_LIBS += exampleLink
 exampleLink_LIBS += pvDatabase pvaClient qsrv pvAccessIOC pvAccess pvAccessCA nt pvData
 exampleLink_LIBS += $(EPICS_BASE_IOC_LIBS)
 
+PROD_SYS_LIBS_WIN32 += ws2_32
+
 #===========================
 
 include $(TOP)/configure/RULES

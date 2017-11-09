@@ -34,8 +34,8 @@ exampleDatabase_LIBS += exampleDatabase
 exampleDatabase_LIBS += pvDatabase qsrv pvAccessIOC pvAccess pvAccessCA nt pvData
 exampleDatabase_LIBS += example
 exampleDatabase_LIBS += $(EPICS_BASE_IOC_LIBS)
+exampleDatabase_SYS_LIBS_WIN32 += ws2_32
 
-PROD_SYS_LIBS_WIN32 += ws2_32
 
 #===========================
 
