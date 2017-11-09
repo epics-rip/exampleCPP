@@ -35,6 +35,8 @@ exampleDatabase_LIBS += pvDatabase qsrv pvAccessIOC pvAccess pvAccessCA nt pvDat
 exampleDatabase_LIBS += example
 exampleDatabase_LIBS += $(EPICS_BASE_IOC_LIBS)
 
+PROD_SYS_LIBS_WIN32 += ws2_32
+
 #===========================
 
 include $(TOP)/configure/RULES
