@@ -105,8 +105,8 @@ static long process(simpleBusyRecord *prec)
 
 static long special(struct dbAddr *paddr, int after)
 {
-    if(after==0) return 0;
     struct dbCommon *prec = paddr->precord;
+    if(after==0) return 0;
     if(prec->pact==FALSE) return 0;
     prec->rset->process(prec);
     return 0;
