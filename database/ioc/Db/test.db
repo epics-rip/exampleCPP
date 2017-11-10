@@ -96,6 +96,22 @@ record(mbbo,"DBRmbbo00") {
     field(TTVL,"0xd")
     field(FTVL,"0xe")
     field(FFVL,"0xf")
+    field(ZRST,"0x0")
+    field(ONST,"0x1")
+    field(TWST,"0x2")
+    field(THST,"0x3")
+    field(FRST,"0x4")
+    field(FVST,"0x5")
+    field(SXST,"0x6")
+    field(SVST,"0x7")
+    field(EIST,"0x8")
+    field(NIST,"0x9")
+    field(TEST,"0xa")
+    field(ELST,"0xb")
+    field(TVST,"0xc")
+    field(TTST,"0xd")
+    field(FTST,"0xe")
+    field(FFVL,"0xf")
 }
 
 record(mbbi,"DBRmbbiwierd") {
@@ -115,7 +131,7 @@ record(bo,"DBRbo01") {
     field(ONAM,"one")
 }
 
-record(mbbo,"DBRmbbo02") {
+record(mbbo,"DBRmbbo01") {
     field(VAL,"1")
     field(ZRST,"zero")
     field(ONST,"one")

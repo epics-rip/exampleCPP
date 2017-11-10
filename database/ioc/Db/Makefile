@@ -19,6 +19,7 @@ DB += dbEnum.db
 DB += dbCounter.db
 DB += dbDouble.db
 DB += test.db
+DB += dbSimpleBusy.db
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add

@@ -8,8 +8,13 @@ include $(TOP)/configure/CONFIG
 #==================================================
 # Build an IOC support library
 #
+LIBRARY_IOC += example
 
 DBD += exampleDatabase.dbd
+DBDINC += simpleBusyRecord
+
+example_SRCS += simpleBusyRecord.c
+example_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #=============================
 # build an ioc application
@@ -28,7 +33,11 @@ exampleDatabase_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
 
 exampleDatabase_LIBS += exampleDatabase
 exampleDatabase_LIBS += pvDatabase qsrv pvAccessIOC pvAccess pvAccessCA nt pvData
+exampleDatabase_LIBS += example
 exampleDatabase_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+PROD_SYS_LIBS_WIN32 += ws2_32
+
 
 #===========================
 

@@ -32,6 +32,8 @@ helloNoWaitPutGetClient_LIBS += pvaClient
 helloNoWaitPutGetClient_LIBS += pvAccess pvAccessCA pvData ca Com
 
 
+PROD_SYS_LIBS_WIN32 += ws2_32
+
 
 include $(TOP)/configure/RULES
 

@@ -34,6 +34,8 @@ exampleLinkMain_SRCS += exampleLinkMain.cpp
 exampleLinkMain_LIBS += exampleLink
 exampleLinkMain_LIBS += pvDatabase pvaClient pvAccess pvAccessCA nt pvData ca Com
 
+PROD_SYS_LIBS_WIN32 += ws2_32
+
 
 include $(TOP)/configure/RULES
 

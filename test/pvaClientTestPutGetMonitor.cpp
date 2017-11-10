@@ -21,7 +21,7 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
-BitSet expected;
+bool expectValueChange = true;
 
 class MyMonitor : public PvaClientMonitorRequester
 {
@@ -33,10 +33,14 @@ public:
         testDiag("monitor event");
         PvaClientMonitorDataPtr pvaData = monitor->getData();
         while (monitor->poll()) {
-            if (!testOk(*pvaData->getChangedBitSet() == expected,
-                "expected fields changed")) {
-                cout << "# changed = " << *pvaData->getChangedBitSet() << endl;
-                cout << "# expected = " << expected << endl;
+            BitSetPtr changed(pvaData->getChangedBitSet());
+            uint32 offsetValue = pvaData->getPVStructure()->getSubField("value")->getFieldOffset();
+            bool res = (changed->get(0) || changed->get(offsetValue));
+            if(expectValueChange) {
+                testOk(res,"value changed");
+            } else {
+                res = true;
+                testOk(res,"value not changed");
             }
             testOk(pvaData->getOverrunBitSet()->isEmpty(), "No overrun");
             monitor->releaseEvent();
@@ -83,7 +87,6 @@ static void exampleDouble(PvaClientPtr const &pvaClient)
 
     PvaClientMonitorRequesterPtr requester(new MyMonitor());
     PvaClientMonitorPtr monitor;
-    expected.set(0);        // structure definition
     try {
         monitor = pvaChannel->monitor(requester);
         testDiag("monitor connected");
@@ -91,10 +94,6 @@ static void exampleDouble(PvaClientPtr const &pvaClient)
         testAbort("monitor connection exception '%s'", e.what());
     }
     epicsThreadSleep(0.1);  // Allow connection monitor event to fire
-
-    expected.clear();       // FIXME: Magic numbers here...
-    expected.set(1);        // value
-    expected.set(6);        // timestamp
 
     try {
         for (int i=0; i<5; ++i) {
@@ -113,7 +112,7 @@ static void exampleDouble(PvaClientPtr const &pvaClient)
         process->connect();
 
         testDiag("= process =");
-        expected.clear(1);  // no value change
+        expectValueChange = false;
         process->process();
     } catch (std::runtime_error e) {
         testAbort("exception '%s'", e.what());
