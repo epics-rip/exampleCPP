@@ -91,8 +91,8 @@ static long init_record(simpleBusyRecord *prec, int pass)
 
 static long process(simpleBusyRecord *prec)
 {
-    recGblGetTimeStamp(prec);
     unsigned short monitor_mask = DBE_VALUE;
+    recGblGetTimeStamp(prec);
     db_post_events(prec, &prec->val, monitor_mask);
     if(prec->val!=0) {
         prec->pact = TRUE;
