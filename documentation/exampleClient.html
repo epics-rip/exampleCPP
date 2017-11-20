@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/exampleClient</h1>
-<h2 class="nocount">2017.01.14</h2>
+<h2 class="nocount">2017.11.20</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -168,6 +168,80 @@ The arguments are:
 <p>Note that the example can only do a put to a single field, which
 most be either a scalar or scalarArray.
 </p>
+
+<h3>getFieldNoBlock.</h3>
+<p>This is an example that calls <b>Channel::getField</b> , i. e.
+it gets the introspection interface for a field of a channel.
+</p>
+<p>This example supports help as follows:</p>
+<pre>
+mrk> bin/linux-x86_64/getFieldNoBlock -help
+providerName channelName request debug
+default
+pva PVRdouble false
+</pre>
+<p>After it is started than each time you enter a field name
+the introspection interface for the specified field is displayed.
+A null field name returns the complete introspection interface for the channel.
+When <b>exit</b> is entered the example terminates.
+</p>
+<p>
+An example is:
+</p>
+<pre>
+mrk> bin/linux-x86_64/getFieldNoBlock ca DBRdouble00
+providerName ca debug false
+_____getFieldNoBlock starting__
+Type exit, or a fieldname, or just enter return
+getDone
+epics:nt/NTScalar:1.0
+    double value
+    alarm_t alarm
+        int severity
+        int status
+        string message
+    time_t timeStamp
+        long secondsPastEpoch
+        int nanoseconds
+        int userTag
+    display_t display
+        double limitLow
+        double limitHigh
+        string description
+        string format
+        string units
+    control_t control
+        double limitLow
+        double limitHigh
+        double minStep
+    valueAlarm_t valueAlarm
+        boolean active
+        double lowAlarmLimit
+        double lowWarningLimit
+        double highWarningLimit
+        double highAlarmLimit
+        int lowAlarmSeverity
+        int lowWarningSeverity
+        int highWarningSeverity
+        int highAlarmSeverity
+        double hysteresis
+
+Type exit, or a fieldname, or just enter return
+value
+getDone
+double
+Type exit, or a fieldname, or just enter return
+timeStamp
+getDone
+time_t
+    long secondsPastEpoch
+    int nanoseconds
+    int userTag
+
+Type exit, or a fieldname, or just enter return
+exit
+mrk> 
+</pre>
 
 <h3>putUnion</h3>
 <p>This is another example that creates a PvaClientPut that never blocks.

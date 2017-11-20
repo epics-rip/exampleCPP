@@ -16,6 +16,9 @@ PROD_HOST += monitorNoBlock
 monitorNoBlock_SRCS += monitorNoBlock.cpp
 monitorNoBlock_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
 
+PROD_HOST += getFieldNoBlock
+getFieldNoBlock_SRCS += getFieldNoBlock.cpp
+getFieldNoBlock_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
 
 PROD_HOST += examplePvaClientProcess
 examplePvaClientProcess_SRCS += examplePvaClientProcess.cpp
