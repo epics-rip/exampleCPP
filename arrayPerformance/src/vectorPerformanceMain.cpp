@@ -21,6 +21,7 @@
 
 #include <epicsThread.h>
 #include <pv/timeStamp.h>
+#include <pv/lock.h>
 
 
 using namespace std;
