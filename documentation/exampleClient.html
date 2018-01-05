@@ -26,20 +26,21 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/exampleClient</h1>
-<h2 class="nocount">2017.11.20</h2>
+<h2 class="nocount">2018.01.05</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
 <b>exampleClient</b> has examples for <b>pvaClientCPP</b>
 </p>
 <p>
-<b>NOTE:</b>
-This document is mainly for developers, i. e. people who want to create client code
-for communicating with servers that can be accessed via the
-<b>EPICS 7</b> channel providers <b>pva</b>
-or <b>ca</b>. 
-Thus while reading this document please also look at the code.
+<a
+      href="http://epics-pvdata.sourceforge.net/informative/developerGuide/developerGuide.html">
+      developerGuide
+</a> 
+Provides tutorial information on how to use pvaClient.
+Many of the examples are adapted from exampleClient.
 </p>
+
 
 </div> <!-- head -->
 
@@ -59,22 +60,14 @@ via pvAccessCPP. The examples all use pvaClientCPP rather than pvAccessCPP itsel
 <p>Each example implements a class that can be used as a starting point for
 imlementing pvAccess channel connections for a display manager.
 </p>
-<h3>monitorNoBlock</h3>
-<p>This is an example that creates a PvaClientMonitor that never blocks.
-It automatically handles channel connect and disconnects and also creates a monitor when the
-channel first connects.
-</p>
-<p>
-The example implements a class <b>ClientMonitor</b>, which implements PvaClientChannelStateChangeRequester,
-and PvaClientMonitorRequester.
-</p>
-
-<p>The example supports help as follows:</p>
+<h3>get</h3>
+<p>This example uses PvaClientGet. It supports help as follows:</p>
 <pre>
-mrk> bin/linux-x86_64/monitorNoBlock -help
-provider channelName request debug
+mrk> bin/linux-x86_64/get -help
+-p provider -r request -d debug channelNames
 default
-pva PVRdouble "value,alarm,timeStamp" false
+-p pva -r value,alarm,timeStamp -d false PVRdouble
+mrk> 
 </pre>
 The arguments are:
 <dl>
@@ -84,32 +77,46 @@ The arguments are:
       <b>ca</b> only works if channelName is a accessable via the ca network protocol,
       e. g. it is the name of a DBRecord in a V3 IOC.
      </dd>
-   <dt>channelName</dt>
-     <dd>
-       The name of the channel.
-     </dd>
    <dt>request</dt>
-     <dd>A request as defined in the convert facility of pvData</dd>
+     <dd>
+      The request for creating the channel get,
+     </dd>
    <dt>debug</dt>
      <dd>
-      If true then debug messages are displayed/
+      If true then debug messages are displayed.
      </dd>
+   <dt>channelNames</dt>
+     <dd>
+       A list of channel names.
+     </dd>
+
 </dl>
 
-<h3>getNoBlock</h3>
-<p>This is an example that creates a PvaClientGet that never blocks.
-It automatically handles channel connect and disconnects and also creates a PvaClientGet when the channel first connects.
-</p>
 <p>
-The example implements a class <b>ClientGet</b>, which implements PvaClientChannelStateChangeRequester,
-and PvaClientGetRequester.
+When the example is started a PvaClientChannel is created and issueConnect is called.
+The first time the channel connects a PvaChannelGet is created and issueConnect is called.
 </p>
-<p>This example supports help as follows:</p>
+<p>The example then enters a forever loop the lets the client enter commands.
+Two commands are accepted:</p>
+<dl>
+   <dt>exit</dt>
+     <dd>The example terminates.</dd>
+   <dt>get</dt>
+     <dd>A channel get is requested. The results are displayed.</dd>
+</dl>
+
+<p>
+Note that if a channel disconnects and reconnects between gets the example should continuue
+to work.
+</p>
+<h3>put</h3>
+<p>This example uses PvaClientPut. It supports help as follows:</p>
 <pre>
-mrk> bin/linux-x86_64/getNoBlock -help
-providerName channelName request debug
+mrk> bin/linux-x86_64/put -help
+-p provider -r request -d debug channelNames
 default
-pva PVRdouble "value,alarm,timeStamp" false
+-p pva -r value -d false PVRdouble
+mrk> 
 </pre>
 The arguments are:
 <dl>
@@ -119,32 +126,48 @@ The arguments are:
       <b>ca</b> only works if channelName is a accessable via the ca network protocol,
       e. g. it is the name of a DBRecord in a V3 IOC.
      </dd>
-   <dt>channelName</dt>
-     <dd>
-       The name of the channel.
-     </dd>
    <dt>request</dt>
-     <dd>A request as defined in the convert facility of pvData</dd>
+     <dd>
+      The request for creating the channel put,
+     </dd>
    <dt>debug</dt>
      <dd>
-      If true then debug messages are displayed/
+      If true then debug messages are displayed.
      </dd>
+   <dt>channelNames</dt>
+     <dd>
+       A list of channel names.
+     </dd>
+
 </dl>
 
-<h3>putNoBlock</h3>
-<p>This is an example that creates a PvaClientPut that never blocks.
-It automatically handles channel connect and disconnects and also creates a PvaClientPut when the channel first connects.
-</p>
 <p>
-The example implements a class <b>ClientPut</b>, which implements PvaClientChannelStateChangeRequester,
-and PvaClientPutRequester.
+When the example is started a PvaClientChannel is created and issueConnect is called.
+The first time the channel connects a PvaChannelPut is created and issueConnect is called.
 </p>
-<p>This example supports help as follows:</p>
+<p>The example then enters a forever loop the lets the client enter commands.
+Two commands are accepted:</p>
+<dl>
+   <dt>exit</dt>
+     <dd>The example terminates.</dd>
+    <dt>put</dt>
+     <dd>A channel put is requested</dd>
+   <dt>get</dt>
+     <dd>A PvaChannelPut::get is requested. The results are displayed.</dd>
+</dl>
+
+<p>
+Note that if a channel disconnects and reconnects between gets the example should continuue
+to work.
+</p>
+<h3>putGet</h3>
+<p>This example uses pvaClientPutGet. It supports help as follows:</p>
 <pre>
-mrk> bin/linux-x86_64/putNoBlock -help
-providerName channelName request debug
+mrk> bin/linux-x86_64/putGet -help
+-p provider -r request -d debug channelNames
 default
-pva PVRdouble "value" false
+-p pva -r putField(argument)getField(result) -d false PVRhelloPutGet
+mrk> 
 </pre>
 The arguments are:
 <dl>
@@ -154,31 +177,106 @@ The arguments are:
       <b>ca</b> only works if channelName is a accessable via the ca network protocol,
       e. g. it is the name of a DBRecord in a V3 IOC.
      </dd>
-   <dt>channelName</dt>
-     <dd>
-       The name of the channel.
-     </dd>
    <dt>request</dt>
-     <dd>A request as defined in the convert facility of pvData</dd>
+     <dd>
+      The request for creating the channel putGet,
+     </dd>
    <dt>debug</dt>
      <dd>
-      If true then debug messages are displayed/
+      If true then debug messages are displayed.
      </dd>
+   <dt>channelNames</dt>
+     <dd>
+       A list of channel names.
+     </dd>
+
 </dl>
-<p>Note that the example can only do a put to a single field, which
-most be either a scalar or scalarArray.
+
+<p>
+When the example is started a PvaClientChannel is created and issueConnect is called.
+The first time the channel connects a PvaChannelGet is created and issueConnect is called.
+</p>
+<p>The example then enters a forever loop the lets the client enter commands.
+Two commands are accepted:</p>
+<dl>
+   <dt>exit</dt>
+     <dd>The example terminates.</dd>
+   <dt>putGet</dt>
+     <dd>A putGet is requested. The results are displayed.</dd>
+   <dt>getPut</dt>
+     <dd>A getPut is requested. The results are displayed.</dd>
+   <dt>getGet</dt>
+     <dd>A getGet is requested. The results are displayed.</dd>
+</dl>
+
+<p>
+Note that if a channel disconnects and reconnects between gets the example should continuue
+to work.
+</p>
+<h3>monitor</h3>
+<p>This example uses pvaClientMonitor. It supports help as follows:</p>
+<pre>
+mrk> bin/linux-x86_64/monitor -help
+-p provider -r request -d debug channelNames
+default
+-p pva -r value,alarm,timeStamp -d false PVRdouble
+mrk> 
+</pre>
+The arguments are:
+<dl>
+   <dt>provider</dt>
+     <dd>
+      This can be either <b>pva</b> or <b>ca</b>.
+      <b>ca</b> only works if channelName is a accessable via the ca network protocol,
+      e. g. it is the name of a DBRecord in a V3 IOC.
+     </dd>
+   <dt>request</dt>
+     <dd>
+      The request for creating the channel get,
+     </dd>
+   <dt>debug</dt>
+     <dd>
+      If true then debug messages are displayed.
+     </dd>
+   <dt>channelNames</dt>
+     <dd>
+       A list of channel names.
+     </dd>
+
+</dl>
+
+<p>
+When the example is started a PvaClientChannel is created and issueConnect is called.
+The first time the channel connects a PvaChannelMonitor is created and issueConnect is called.
+</p>
+<p>The example then enters a forever loop the lets the client enter commands.
+Two commands are accepted:</p>
+<dl>
+   <dt>exit</dt>
+     <dd>The example terminates.</dd>
+   <dt>stop</dt>
+     <dd>A stop request is issued</dd>
+    <dt>start</dt>
+     <dd>The client is asked to enter a new request and then
+       PvaChannelMonitor::start is called with the new request.
+    </dd>
+</dl>
+
+<p>
+Note that if a channel disconnects and reconnects between gets the example should continuue
+to work.
 </p>
 
-<h3>getFieldNoBlock.</h3>
+<h3>getField.</h3>
 <p>This is an example that calls <b>Channel::getField</b> , i. e.
 it gets the introspection interface for a field of a channel.
 </p>
 <p>This example supports help as follows:</p>
 <pre>
-mrk> bin/linux-x86_64/getFieldNoBlock -help
-providerName channelName request debug
+mrk> bin/linux-x86_64/getField -help
+ -h -p provider - d debug channelNames 
 default
-pva PVRdouble false
+-p pva -d false PVRdouble
 </pre>
 <p>After it is started than each time you enter a field name
 the introspection interface for the specified field is displayed.
@@ -189,9 +287,9 @@ When <b>exit</b> is entered the example terminates.
 An example is:
 </p>
 <pre>
-mrk> bin/linux-x86_64/getFieldNoBlock ca DBRdouble00
+mrk> bin/linux-x86_64/getField -p ca DBRdouble00
 providerName ca debug false
-_____getFieldNoBlock starting__
+_____getField starting__
 Type exit, or a fieldname, or just enter return
 getDone
 epics:nt/NTScalar:1.0
@@ -257,9 +355,9 @@ This example must be connected to a field that has type <b>pvUnion</b>.
 <p>This example supports help as follows:</p>
 <pre>
 mrk> bin/linux-x86_64/putUnion -help
-channelName request debug
+ -h -p provider -r request - d debug channelNames 
 default
-PVRrestrictedUnion  "value" debug false
+-p pva -r value -d false PVRrestrictedUnion
 </pre>
 The arguments are:
 <dl>
