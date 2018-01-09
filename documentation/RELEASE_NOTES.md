@@ -1,6 +1,13 @@
 
-EPICS V4 release 4.7
+EPICS 7 release 4.7
 ====================
+
+* exampleClient: getNoBlock, putNoBlock, monitorNoBlock, and getFieldNoBlock no longer exist.
+  These are replaced by get, put, putGet, monitor, and getField.
+  All work even if channel is not connected when server is started.
+* exampleLink: This now has examples for a get, put, and monitor link.
+  Each works even if linked channel does not exist when server is started.
+
 
 exampleCPP release 4.3
 ----------------------

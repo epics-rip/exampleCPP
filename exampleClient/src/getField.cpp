@@ -9,7 +9,7 @@
 
 /* Author: Marty Kraimer */
 #include <iostream>
-
+#include <epicsGetopt.h>
 #include <pv/pvaClient.h>
 #include <pv/convert.h>
 
@@ -77,32 +77,61 @@ public:
 
 int main(int argc,char *argv[])
 {
-    string providerName("pva");
+    string provider("pva");
     string channelName("PVRdouble");
+    string debugString;
     bool debug(false);
-    if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "providerName channelName request debug" << endl;
-        cout << "default" << endl;
-        cout << providerName << " " <<  channelName
-             << " " << (debug ? "true" : "false") << endl;
-        return 0;
+    int opt;
+    while((opt = getopt(argc, argv, "hp:d:")) != -1) {
+        switch(opt) {
+            case 'p':
+                provider = optarg;
+                break;
+            case 'h':
+             cout << " -h -p provider - d debug channelNames " << endl;
+             cout << "default" << endl;
+             cout << "-p " << provider 
+                  << " -d " << (debug ? "true" : "false") 
+                  << " " <<  channelName
+                  << endl;           
+                return 0;
+            case 'd' :
+               debugString =  optarg;
+               if(debugString=="true") debug = true;
+               break;
+            default:
+                std::cerr<<"Unknown argument: "<<opt<<"\n";
+                return -1;
+        }
     }
-    if(argc>1) providerName = argv[1];
-    if(argc>2) channelName = argv[2];
-    if(argc>3) {
-        string value(argv[3]);
-        if(value=="true") debug = true;
+    bool pvaSrv(((provider.find("pva")==string::npos) ? false : true));
+    bool caSrv(((provider.find("ca")==string::npos) ? false : true));
+    if(pvaSrv&&caSrv) {
+        cerr<< "multiple providers are not allowed\n";
+        return 1;
     }
-    cout << "providerName " << providerName
+    cout << "provider " << provider
+         << " channelName " <<  channelName
          << " debug " << (debug ? "true" : "false") << endl;
 
-    cout << "_____getFieldNoBlock starting__\n";
+    cout << "_____getField starting__\n";
     
     try {   
         if(debug) PvaClient::setDebug(true);
-        ConvertPtr convert = getConvert();
-        PvaClientPtr pva= PvaClient::get(providerName);
-        ClientGetFieldPtr clientGetField(ClientGetField::create(pva,channelName,providerName));
+        vector<string> channelNames;
+        vector<ClientGetFieldPtr> clientGetFields;
+        int nPvs = argc - optind;       /* Remaining arg list are PV names */
+        if (nPvs==0)
+        {
+            channelNames.push_back(channelName);
+            nPvs = 1;
+        } else {
+            for (int n = 0; optind < argc; n++, optind++) channelNames.push_back(argv[optind]);
+        }
+        PvaClientPtr pva= PvaClient::get(provider);
+        for(int i=0; i<nPvs; ++i) {
+            clientGetFields.push_back(ClientGetField::create(pva,channelNames[i],provider));
+        }
         while(true) {
             cout << "Type exit, or a fieldname, or just enter return\n";
             int c = std::cin.peek();  // peek character
@@ -110,7 +139,13 @@ int main(int argc,char *argv[])
             string str;
             getline(cin,str);
             if(str.compare("exit")==0) break;
-            clientGetField->getField(str);
+            for(int i=0; i<nPvs; ++i) {
+                try {
+                    clientGetFields[i]->getField(str);
+                } catch (std::runtime_error e) {
+                   cerr << "exception " << e.what() << endl;
+                }
+            }
         }
     } catch (std::runtime_error e) {
         cerr << "exception " << e.what() << endl;

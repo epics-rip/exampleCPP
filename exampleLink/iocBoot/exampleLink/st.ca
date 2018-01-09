@@ -12,5 +12,5 @@ dbLoadRecords("db/dbArray.db","name=doubleArray,type=DOUBLE");
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
 exampleMonitorLinkCreateRecord ca exampleMonitorLink doubleArray
-exampleGetLinkCreateRecord ca
-examplePutLinkCreateRecord ca
+exampleGetLinkCreateRecord ca exampleGetLink doubleArray
+examplePutLinkCreateRecord ca examplePutLink doubleArray

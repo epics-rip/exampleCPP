@@ -4,21 +4,25 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 
-PROD_HOST += getNoBlock
-getNoBlock_SRCS += getNoBlock.cpp
-getNoBlock_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+PROD_HOST += get
+get_SRCS += get.cpp
+get_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
 
-PROD_HOST += putNoBlock
-putNoBlock_SRCS += putNoBlock.cpp
-putNoBlock_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+PROD_HOST += put
+put_SRCS += put.cpp
+put_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
 
-PROD_HOST += monitorNoBlock
-monitorNoBlock_SRCS += monitorNoBlock.cpp
-monitorNoBlock_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+PROD_HOST += putGet
+putGet_SRCS += putGet.cpp
+putGet_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
 
-PROD_HOST += getFieldNoBlock
-getFieldNoBlock_SRCS += getFieldNoBlock.cpp
-getFieldNoBlock_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+PROD_HOST += monitor
+monitor_SRCS += monitor.cpp
+monitor_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+
+PROD_HOST += getField
+getField_SRCS += getField.cpp
+getField_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
 
 PROD_HOST += examplePvaClientProcess
 examplePvaClientProcess_SRCS += examplePvaClientProcess.cpp

@@ -9,8 +9,9 @@
 
 /* Author: Marty Kraimer */
 #include <iostream>
-
+#include <epicsGetopt.h>
 #include <pv/pvaClient.h>
+
 
 using namespace std;
 using namespace epics::pvData;
@@ -27,7 +28,7 @@ class ClientGet :
 {
 private:
     string channelName;
-    string providerName;
+    string provider;
     string request;
     bool channelConnected;
     bool getConnected;
@@ -37,7 +38,7 @@ private:
 
     void init(PvaClientPtr const &pvaClient)
     {
-        pvaClientChannel = pvaClient->createChannel(channelName,providerName);
+        pvaClientChannel = pvaClient->createChannel(channelName,provider);
         pvaClientChannel->setStateChangeRequester(shared_from_this());
         pvaClientChannel->issueConnect();
     }
@@ -46,10 +47,10 @@ public:
     POINTER_DEFINITIONS(ClientGet);
     ClientGet(
         const string &channelName,
-        const string &providerName,
+        const string &provider,
         const string &request)
     : channelName(channelName),
-      providerName(providerName),
+      provider(provider),
       request(request),
       channelConnected(false),
       getConnected(false)
@@ -59,11 +60,11 @@ public:
     static ClientGetPtr create(
         PvaClientPtr const &pvaClient,
         const string & channelName,
-        const string & providerName,
+        const string & provider,
         const string  & request)
     {
        ClientGetPtr client(ClientGetPtr(
-             new ClientGet(channelName,providerName,request)));
+             new ClientGet(channelName,provider,request)));
         client->init(pvaClient);
         return client;
     }
@@ -121,53 +122,81 @@ public:
 
 int main(int argc,char *argv[])
 {
-    string providerName("pva");
+    string provider("pva");
     string channelName("PVRdouble");
     string request("value,alarm,timeStamp");
+    string debugString;
     bool debug(false);
-    if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "providerName channelName request debug" << endl;
-        cout << "default" << endl;
-        cout << providerName << " " <<  channelName
-             << " " << '"' << request << '"'
-             << " " << (debug ? "true" : "false") << endl;
-        return 0;
+    int opt;
+    while((opt = getopt(argc, argv, "hp:r:d:")) != -1) {
+        switch(opt) {
+            case 'p':
+                provider = optarg;
+                break;
+            case 'r':
+                request = optarg;
+                break;
+            case 'h':
+             cout << " -h -p provider -r request - d debug channelNames " << endl;
+             cout << "default" << endl;
+             cout << "-p " << provider 
+                  << " -r " << request
+                  << " -d " << (debug ? "true" : "false") 
+                  << " " <<  channelName
+                  << endl;           
+                return 0;
+            case 'd' :
+               debugString =  optarg;
+               if(debugString=="true") debug = true;
+               break;
+            default:
+                std::cerr<<"Unknown argument: "<<opt<<"\n";
+                return -1;
+        }
     }
-    if(argc>1) providerName = argv[1];
-    if(argc>2) channelName = argv[2];
-    if(argc>3) request = argv[3];
-    if(argc>4) {
-        string value(argv[4]);
-        if(value=="true") debug = true;
-    }
-    bool pvaSrv(((providerName.find("pva")==string::npos) ? false : true));
-    bool caSrv(((providerName.find("ca")==string::npos) ? false : true));
+    bool pvaSrv(((provider.find("pva")==string::npos) ? false : true));
+    bool caSrv(((provider.find("ca")==string::npos) ? false : true));
     if(pvaSrv&&caSrv) {
-        cerr<< "multiple providerNames are not allowed\n";
+        cerr<< "multiple providers are not allowed\n";
         return 1;
     }
-    cout << "providerName " << providerName
-         << " pvaSrv " << (pvaSrv ? "true" : "false")
-         << " caSrv " << (caSrv ? "true" : "false")
+    cout << "provider " << provider
          << " channelName " <<  channelName
          << " request " << request
          << " debug " << (debug ? "true" : "false") << endl;
 
-    cout << "_____getNoBlock starting__\n";
+    cout << "_____get starting__\n";
     
     try {   
         if(debug) PvaClient::setDebug(true);
-        PvaClientPtr pva= PvaClient::get(providerName);
-        ClientGetPtr clientGet(ClientGet::create(pva,channelName,providerName,request));
+        vector<string> channelNames;
+        vector<ClientGetPtr> clientGets;
+        int nPvs = argc - optind;       /* Remaining arg list are PV names */
+        if (nPvs==0)
+        {
+            channelNames.push_back(channelName);
+            nPvs = 1;
+        } else {
+            for (int n = 0; optind < argc; n++, optind++) channelNames.push_back(argv[optind]);
+        }
+        PvaClientPtr pva= PvaClient::get(provider);
+        for(int i=0; i<nPvs; ++i) {
+            clientGets.push_back(ClientGet::create(pva,channelNames[i],provider,request));
+        }
         while(true) {
+            cout << "Type exit to stop: \n";
             int c = std::cin.peek();  // peek character
             if ( c == EOF ) continue;
-            cout << "Type exit to stop: \n";
             string str;
             getline(cin,str);
             if(str.compare("exit")==0) break;
-            clientGet->get();
-            
+            for(int i=0; i<nPvs; ++i) {
+                try {
+                    clientGets[i]->get();
+                } catch (std::runtime_error e) {
+                   cerr << "exception " << e.what() << endl;
+                }
+            }
         }
     } catch (std::runtime_error e) {
         cerr << "exception " << e.what() << endl;

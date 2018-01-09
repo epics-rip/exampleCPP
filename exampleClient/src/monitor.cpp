@@ -10,7 +10,7 @@
 /* Author: Marty Kraimer */
 
 #include <iostream>
-
+#include <epicsGetopt.h>
 #include <pv/pvaClient.h>
 
 using namespace std;
@@ -144,34 +144,64 @@ int main(int argc,char *argv[])
     string provider("pva");
     string channelName("PVRdouble");
     string request("value,alarm,timeStamp");
+    string debugString;
     bool debug(false);
-    if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "provider channelName request debug" << endl;
-        cout << "default" << endl;
-        cout << provider << " " <<  channelName
-             << " " << '"' << request << '"'
-             << " " << (debug ? "true" : "false")
-             << endl;
-        return 0;
+    int opt;
+    while((opt = getopt(argc, argv, "hp:r:d:")) != -1) {
+        switch(opt) {
+            case 'p':
+                provider = optarg;
+                break;
+            case 'r':
+                request = optarg;
+                break;
+            case 'h':
+             cout << " -h -p provider -r request - d debug channelNames " << endl;
+             cout << "default" << endl;
+             cout << "-p " << provider 
+                  << " -r " << request
+                  << " -d " << (debug ? "true" : "false")
+                  << " " <<  channelName
+                  << endl;           
+                return 0;
+            case 'd' :
+               debugString =  optarg;
+               if(debugString=="true") debug = true;
+               break;
+            default:
+                std::cerr<<"Unknown argument: "<<opt<<"\n";
+                return -1;
+        }
     }
-    if(argc>1) provider = argv[1];
-    if(argc>2) channelName = argv[2];
-    if(argc>3) request = argv[3];
-    if(argc>4) {
-        string value(argv[4]);
-        if(value=="true") debug = true;
+    bool pvaSrv(((provider.find("pva")==string::npos) ? false : true));
+    bool caSrv(((provider.find("ca")==string::npos) ? false : true));
+    if(pvaSrv&&caSrv) {
+        cerr<< "multiple providers are not allowed\n";
+        return 1;
     }
-    cout << "provider \"" << provider << "\""
+    cout << "provider " << provider
          << " channelName " <<  channelName
          << " request " << request
          << " debug " << (debug ? "true" : "false") << endl;
 
-    cout << "_____monitorNoBlock starting_______\n";
-    cout << "Type help for help\n"; 
-    try {
+    cout << "_____get starting__\n";
+    
+    try {   
         if(debug) PvaClient::setDebug(true);
-        PvaClientPtr pva = PvaClient::get(provider);
-        ClientMonitorPtr clientMonitor = ClientMonitor::create(pva,channelName,provider,request);
+        vector<string> channelNames;
+        vector<ClientMonitorPtr> ClientMonitors;
+        int nPvs = argc - optind;       /* Remaining arg list are PV names */
+        if (nPvs==0)
+        {
+            channelNames.push_back(channelName);
+            nPvs = 1;
+        } else {
+            for (int n = 0; optind < argc; n++, optind++) channelNames.push_back(argv[optind]);
+        }
+        PvaClientPtr pva= PvaClient::get(provider);
+        for(int i=0; i<nPvs; ++i) {
+            ClientMonitors.push_back(ClientMonitor::create(pva,channelNames[i],provider,request));
+        }
         while(true) {
             string str;
             getline(cin,str);
@@ -182,23 +212,32 @@ int main(int argc,char *argv[])
             if(str.compare("start")==0){
                  cout << "request?\n";
                  getline(cin,request);
-                 clientMonitor->start(request);
+                 for(int i=0; i<nPvs; ++i) {
+                    try {
+                       ClientMonitors[i]->start(request);
+                    } catch (std::runtime_error e) {
+                       cerr << "exception " << e.what() << endl;
+                    }
+                 }
                  continue;
             }
             if(str.compare("stop")==0){
-                 clientMonitor->stop();
+                 for(int i=0; i<nPvs; ++i) {
+                    try {
+                       ClientMonitors[i]->stop();
+                    } catch (std::runtime_error e) {
+                       cerr << "exception " << e.what() << endl;
+                    }
+                 }
                  continue;
             }
             if(str.compare("exit")==0){
                  break;
             }
-            bool isConnected = clientMonitor->
-                getPvaClientMonitor()->getPvaClientChannel()->getChannel()->isConnected();
-            cout << "isConnected " << (isConnected ? "true" : "false") << endl;
         }
     } catch (std::runtime_error e) {
-            cerr << "exception " << e.what() << endl;
-            return 1;
+        cerr << "exception " << e.what() << endl;
+        return 1;
     }
     return 0;
 }

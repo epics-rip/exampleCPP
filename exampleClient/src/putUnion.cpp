@@ -9,7 +9,7 @@
 
 /* Author: Marty Kraimer */
 #include <iostream>
-
+#include <epicsGetopt.h>
 #include <pv/pvaClient.h>
 #include <pv/convert.h>
 
@@ -177,42 +177,76 @@ int main(int argc,char *argv[])
     string provider("pva");
     string channelName("PVRrestrictedUnion");
     string request("value");
+    string debugString;
     bool debug(false);
-    if(argc==2 && string(argv[1])==string("-help")) {
-        cout << "channelName request debug" << endl;
-        cout << "default" << endl;
-        cout <<  channelName << " " 
-             << " " << '"' << request << '"'
-             << " " << (debug ? "true" : "false") << endl;
-        return 0;
+    int opt;
+    while((opt = getopt(argc, argv, "hp:r:d:")) != -1) {
+        switch(opt) {
+            case 'p':
+                provider = optarg;
+                break;
+            case 'r':
+                request = optarg;
+                break;
+            case 'h':
+             cout << " -h -p provider -r request - d debug channelNames " << endl;
+             cout << "default" << endl;
+             cout << "-p " << provider 
+                  << " -r " << request
+                  << " -d " << (debug ? "true" : "false")
+                  << " " <<  channelName
+                  << endl;           
+                return 0;
+            case 'd' :
+               debugString =  optarg;
+               if(debugString=="true") debug = true;
+               break;
+            default:
+                std::cerr<<"Unknown argument: "<<opt<<"\n";
+                return -1;
+        }
     }
-    if(argc>1) channelName = argv[1];
-    if(argc>2) request = argv[2];
-    if(argc>3) {
-        string value(argv[3]);
-        if(value=="true") debug = true;
+    bool pvaSrv(((provider.find("pva")==string::npos) ? false : true));
+    bool caSrv(((provider.find("ca")==string::npos) ? false : true));
+    if(pvaSrv&&caSrv) {
+        cerr<< "multiple providers are not allowed\n";
+        return 1;
     }
-    cout << " channelName " <<  channelName 
+    cout << "provider " << provider
+         << " channelName " <<  channelName
          << " request " << request
-         << " debug " << (debug ? "true" : "false") 
-         << endl;
-    cout << "_____PutUnionForever starting__\n";
-    try {
+         << " debug " << (debug ? "true" : "false") << endl;
+
+    cout << "_____putUnion starting__\n";
+    try {   
         if(debug) PvaClient::setDebug(true);
+        vector<string> channelNames;
+        vector<ClientPutPtr> ClientPuts;
+        int nPvs = argc - optind;       /* Remaining arg list are PV names */
+        if (nPvs==0)
+        {
+            channelNames.push_back(channelName);
+            nPvs = 1;
+        } else {
+            for (int n = 0; optind < argc; n++, optind++) channelNames.push_back(argv[optind]);
+        }
         PvaClientPtr pva= PvaClient::get(provider);
-        ClientPutPtr clientPut(ClientPut::create(pva,channelName,provider,request));
+        for(int i=0; i<nPvs; ++i) {
+            ClientPuts.push_back(ClientPut::create(pva,channelNames[i],provider,request));
+        }
         while(true) {
+            cout << "Type exit to stop: \n";
             int c = std::cin.peek();  // peek character
             if ( c == EOF ) continue;
-            cout << "Type exit to stop: \n";
             string str;
             getline(cin,str);
             if(str.compare("exit")==0) break;
-            try {
-                clientPut->put(str);
-            } catch (std::runtime_error e) {
-                cerr << "exception " << e.what() << endl;
-                continue;
+            for(int i=0; i<nPvs; ++i) {
+                try {
+                    ClientPuts[i]->put(str);
+                } catch (std::runtime_error e) {
+                   cerr << "exception " << e.what() << endl;
+                }
             }
         }
     } catch (std::runtime_error e) {
