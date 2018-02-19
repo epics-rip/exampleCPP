@@ -31,24 +31,30 @@ record(longout,"DBRint01") {
     field(HSV,"MINOR")
 }
 
-record(ao,"DBRdouble00") {
-}
 
-record(ao,"DBRdouble01") {
-    field(PREC,"4")
+record(ao,"DBRdouble") {
+    field(PREC,"2")
     field(EGUF,"11.0")
     field(EGUL,"0.0")
-        field(EGU, "increment")
-        field(HIHI, "8")
-        field(HIGH, "6")
-        field(LOW, "4")
-        field(LOLO, "2")
-        field(HHSV, "MAJOR")
-        field(HSV, "MINOR")
-        field(LSV, "MINOR")
-        field(LLSV, "MAJOR")
+    field(EGU, "increment")
+    field(HIHI, "8")
+    field(HIGH, "6")
+    field(LOW, "4")
+    field(LOLO, "2")
+    field(HHSV, "MAJOR")
+    field(HSV, "MINOR")
+    field(LSV, "MINOR")
+    field(LLSV, "MAJOR")
+    field(DRVH, "11.0")
+    field(DRVL, "0.0")
+    field(HIGH, "11.0")
+    field(LOW, "0.0")
+    field(HOPR, "11.0")
+    field(LOPR, "0.0")
 }
 
+record(ao,"DBRdouble00") { }
+record(ao,"DBRdouble01") { }
 record(ao,"DBRdouble02") { }
 record(ao,"DBRdouble03") { }
 record(ao,"DBRdouble04") { }
