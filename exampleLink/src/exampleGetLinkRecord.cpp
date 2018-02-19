@@ -66,9 +66,7 @@ public:
         const Status& status,
         PvaClientGetPtr const & clientGet) 
     {
-        ExampleGetLinkRecordPtr getLinkRecord(exampleGetLinkRecord.lock());
-        if(!getLinkRecord) return;
-        getLinkRecord->getDone(status,clientGet);  
+// nothing to do
     }
 
 };
@@ -95,9 +93,7 @@ ExampleGetLinkRecord::ExampleGetLinkRecord(
     PVStructurePtr const & pvStructure)
 : PVRecord(recordName,pvStructure),
   channelConnected(false),
-  isGetConnected(false),
-  isGetDone(true),
-  setAlarmGood(false)
+  isGetConnected(false)
 {
 }
 
@@ -121,6 +117,10 @@ bool ExampleGetLinkRecord::init(
     if(!pvAlarm.attach(pvAlarmField)) {
         throw std::runtime_error(string("bad alarm field"));
     }
+    alarm.setMessage("never connected");
+    alarm.setSeverity(invalidAlarm);
+    alarm.setStatus(clientStatus);
+    pvAlarm.set(alarm);
     pvaClientChannel = pvaClient->createChannel(channelName,providerName);
     pvaClientChannel->setStateChangeRequester(linkRecordRequester);
     pvaClientChannel->issueConnect();
@@ -134,36 +134,43 @@ void ExampleGetLinkRecord::process()
         alarm.setMessage("disconnected");
         alarm.setSeverity(invalidAlarm);
         pvAlarm.set(alarm);
-        setAlarmGood = true;
     } else if(!isGetConnected) 
     {
         alarm.setMessage("channelGet not connected");
         alarm.setSeverity(invalidAlarm);
         pvAlarm.set(alarm);
-        setAlarmGood = true;
-    } else if(!isGetDone) 
-    {
-        alarm.setMessage("previous get not done");
-        alarm.setSeverity(invalidAlarm);
-        pvAlarm.set(alarm);
-        setAlarmGood = true;
     } else {
         try {
-            if(setAlarmGood) {
-                setAlarmGood = false;
-                alarm.setMessage("connected");
-                alarm.setSeverity(noAlarm);
-                pvAlarm.set(alarm);
-            }
-            isGetDone = false;
             pvaClientGet->get();
+            PVStructurePtr pvStructure = pvaClientGet->getData()->getPVStructure();
             shared_vector<const double> value = pvaClientGet->getData()->getDoubleArray();
             pvValue->replace(value);
+            bool setAlarm = false;
+            PVStructurePtr linkAlarmField = pvStructure->getSubField<PVStructure>("alarm");
+            if(linkAlarmField && linkPVAlarm.attach(linkAlarmField)) {
+                linkPVAlarm.get(linkAlarm);
+            } else {
+                linkAlarm.setMessage("connected");
+                linkAlarm.setSeverity(noAlarm);
+                linkAlarm.setStatus(clientStatus);
+            }
+            if(alarm.getMessage()!=linkAlarm.getMessage()) {
+                alarm.setMessage(linkAlarm.getMessage());
+                setAlarm = true;
+            }
+            if(alarm.getSeverity()!=linkAlarm.getSeverity()) {
+                alarm.setSeverity(linkAlarm.getSeverity());
+                setAlarm = true;
+            }
+            if(alarm.getStatus()!=linkAlarm.getStatus()) {
+                alarm.setStatus(linkAlarm.getStatus());
+                setAlarm = true;
+             }
+            if(setAlarm) pvAlarm.set(alarm);
         } catch (std::runtime_error e) {
             alarm.setMessage(e.what());
             alarm.setSeverity(invalidAlarm);
             pvAlarm.set(alarm);
-            setAlarmGood = true;
         }
     }
     PVRecord::process();
@@ -175,9 +182,8 @@ void ExampleGetLinkRecord::channelStateChange(
 {
     channelConnected = isConnected;
     if(isConnected) {
-        setAlarmGood = true;
         if(!pvaClientGet) {
-            pvaClientGet = pvaClientChannel->createGet("value");
+            pvaClientGet = pvaClientChannel->createGet("value,alarm");
             pvaClientGet->setRequester(linkRecordRequester);
             pvaClientGet->issueConnect();
         }
@@ -215,27 +221,5 @@ void ExampleGetLinkRecord::channelGetConnect(
         }
     unlock();
 }
-
-void ExampleGetLinkRecord::getDone(
-    const Status& status,
-    PvaClientGetPtr const & clientGet)
-{
-    if(status.isOK()) {
-        isGetDone = true;
-        return;
-    }
-    lock();
-        isGetDone = false;
-        try {
-            beginGroupPut();
-            process();
-            endGroupPut();
-        } catch(...) {
-           unlock();
-           throw;
-        }
-    unlock();
-}
-
 
 }}}

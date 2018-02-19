@@ -55,12 +55,12 @@ private:
         epics::pvData::PVStructurePtr const & pvStructure);
     bool channelConnected;
     bool isGetConnected;
-    bool isGetDone;
-    bool setAlarmGood;
     epics::pvData::PVDoubleArrayPtr pvValue;
     epics::pvData::PVStructurePtr pvAlarmField;
     epics::pvData::PVAlarm pvAlarm;
     epics::pvData::Alarm alarm;
+    epics::pvData::PVAlarm linkPVAlarm;
+    epics::pvData::Alarm linkAlarm;
     epics::pvaClient::PvaClientChannelPtr pvaClientChannel;
     GetLinkRecordRequesterPtr linkRecordRequester;
     epics::pvaClient::PvaClientGetPtr pvaClientGet;
@@ -69,9 +69,6 @@ public:
          epics::pvaClient::PvaClientChannelPtr const & channel,
          bool isConnected);
     void channelGetConnect(
-        const epics::pvData::Status& status,
-        epics::pvaClient::PvaClientGetPtr const & clientGet);
-    void getDone(
         const epics::pvData::Status& status,
         epics::pvaClient::PvaClientGetPtr const & clientGet);
 };

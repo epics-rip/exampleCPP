@@ -55,14 +55,14 @@ private:
     ExampleMonitorLinkRecord(
         std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure);
-    
     bool channelConnected;
-    bool monitorConnected;
-    bool setAlarmGood;
+    bool isMonitorConnected;
     epics::pvData::PVDoubleArrayPtr pvValue;
     epics::pvData::PVStructurePtr pvAlarmField;
     epics::pvData::PVAlarm pvAlarm;
     epics::pvData::Alarm alarm;
+    epics::pvData::PVAlarm linkPVAlarm;
+    epics::pvData::Alarm linkAlarm;
     epics::pvaClient::PvaClientChannelPtr pvaClientChannel;
     MonitorLinkRecordRequesterPtr linkRecordRequester;
     epics::pvaClient::PvaClientMonitorPtr pvaClientMonitor;
