@@ -102,6 +102,7 @@ public:
     
     virtual void event(PvaClientMonitorPtr const & monitor)
     {
+        cout << "event " << channelName << endl;
         while(monitor->poll()) {
             PvaClientMonitorDataPtr monitorData = monitor->getData();
             cout << "monitor " << endl;
