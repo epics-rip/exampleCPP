@@ -92,8 +92,9 @@ static StructureConstPtr makeRecordStructure()
 
 
 
-PVStructurePtr AbortService::request(
-    PVStructure::shared_pointer const & args
+void AbortService::request(
+    PVStructure::shared_pointer const & args,
+    epics::pvAccess::RPCResponseCallback::shared_pointer const & callback
 )
 {
     try {
@@ -103,12 +104,13 @@ PVStructurePtr AbortService::request(
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
-    return getPVDataCreate()->createPVStructure(makeResultStructure());
+    callback->requestDone(Status::Ok,getPVDataCreate()->createPVStructure(makeResultStructure()));
 }
 
 
-PVStructurePtr ConfigureService::request(
-    PVStructure::shared_pointer const & args
+void ConfigureService::request(
+    PVStructure::shared_pointer const & args,
+    epics::pvAccess::RPCResponseCallback::shared_pointer const & callback
 )
 {
     PVStructureArrayPtr valueField = args->getSubField<PVStructureArray>("value");
@@ -148,11 +150,12 @@ PVStructurePtr ConfigureService::request(
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
-    return getPVDataCreate()->createPVStructure(makeResultStructure());
+    callback->requestDone(Status::Ok,getPVDataCreate()->createPVStructure(makeResultStructure()));
 }
 
-PVStructurePtr RunService::request(
-    PVStructure::shared_pointer const & args
+void RunService::request(
+    PVStructure::shared_pointer const & args,
+    epics::pvAccess::RPCResponseCallback::shared_pointer const & callback
 )
 {
     try {
@@ -162,12 +165,13 @@ PVStructurePtr RunService::request(
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
-    return getPVDataCreate()->createPVStructure(makeResultStructure());
+    callback->requestDone(Status::Ok,getPVDataCreate()->createPVStructure(makeResultStructure()));
 }
 
 
-PVStructurePtr PauseService::request(
-    PVStructure::shared_pointer const & args
+void PauseService::request(
+    PVStructure::shared_pointer const & args,
+    epics::pvAccess::RPCResponseCallback::shared_pointer const & callback
 )
 {
     try {
@@ -177,11 +181,12 @@ PVStructurePtr PauseService::request(
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
-    return getPVDataCreate()->createPVStructure(makeResultStructure());
+    callback->requestDone(Status::Ok,getPVDataCreate()->createPVStructure(makeResultStructure()));
 }
 
-PVStructurePtr ResumeService::request(
-    PVStructure::shared_pointer const & args
+void ResumeService::request(
+    PVStructure::shared_pointer const & args,
+    epics::pvAccess::RPCResponseCallback::shared_pointer const & callback
 )
 {
     try {
@@ -191,11 +196,12 @@ PVStructurePtr ResumeService::request(
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
-    return getPVDataCreate()->createPVStructure(makeResultStructure());
+    callback->requestDone(Status::Ok,getPVDataCreate()->createPVStructure(makeResultStructure()));
 }
 
-PVStructurePtr StopService::request(
-    PVStructure::shared_pointer const & args
+void StopService::request(
+    PVStructure::shared_pointer const & args,
+    epics::pvAccess::RPCResponseCallback::shared_pointer const & callback
 )
 {
     try {
@@ -205,7 +211,7 @@ PVStructurePtr StopService::request(
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
-    return getPVDataCreate()->createPVStructure(makeResultStructure());
+    callback->requestDone(Status::Ok,getPVDataCreate()->createPVStructure(makeResultStructure()));
 }
 
 
@@ -219,8 +225,9 @@ int RewindService::getRequestedSteps(PVStructurePtr const & args)
     return valueField->get();
 }
 
-PVStructurePtr RewindService::request(
-    PVStructure::shared_pointer const & args
+void RewindService::request(
+    PVStructure::shared_pointer const & args,
+    epics::pvAccess::RPCResponseCallback::shared_pointer const & callback
 )
 {
     int n = getRequestedSteps(args);
@@ -231,7 +238,7 @@ PVStructurePtr RewindService::request(
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
-    return getPVDataCreate()->createPVStructure(makeResultStructure());
+    callback->requestDone(Status::Ok,getPVDataCreate()->createPVStructure(makeResultStructure()));
 }
 
 
@@ -414,7 +421,7 @@ void ExampleRPC::initPvt()
     process();
 }
 
-epics::pvAccess::Service::shared_pointer ExampleRPC::getService(
+epics::pvAccess::RPCServiceAsync::shared_pointer ExampleRPC::getService(
         PVStructurePtr const & pvRequest)
 {
     PVStringPtr methodField = pvRequest->getSubField<PVString>("method");
@@ -471,7 +478,7 @@ epics::pvAccess::Service::shared_pointer ExampleRPC::getService(
                  shared_from_this()));
         }
     }
-    return epics::pvAccess::Service::shared_pointer();
+    return epics::pvAccess::RPCService::shared_pointer();
 }
 
 void ExampleRPC::process()
