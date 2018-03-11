@@ -142,6 +142,7 @@ public:
                 pos = offset+1;
                 n++;    
             }
+            pvScalarArray->setLength(n);
             convert->fromStringArray(pvScalarArray,0,n,values,0);        
         }
         pvaClientPut->put();

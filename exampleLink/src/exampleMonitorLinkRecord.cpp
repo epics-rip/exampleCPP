@@ -95,8 +95,7 @@ ExampleMonitorLinkRecord::ExampleMonitorLinkRecord(
     PVStructurePtr const & pvStructure)
 : PVRecord(recordName,pvStructure),
   channelConnected(false),
-  monitorConnected(false),
-  setAlarmGood(false)
+  isMonitorConnected(false)
 {
 }
 
@@ -119,6 +118,10 @@ bool ExampleMonitorLinkRecord::init(
     if(!pvAlarm.attach(pvAlarmField)) {
         throw std::runtime_error(string("bad alarm field"));
     }
+    alarm.setMessage("never connected");
+    alarm.setSeverity(invalidAlarm);
+    alarm.setStatus(clientStatus);
+    pvAlarm.set(alarm);
     pvaClientChannel = pvaClient->createChannel(channelName,providerName);
     pvaClientChannel->setStateChangeRequester(linkRecordRequester);
     pvaClientChannel->issueConnect();
@@ -127,6 +130,19 @@ bool ExampleMonitorLinkRecord::init(
 
 void ExampleMonitorLinkRecord::process()
 {
+    if(!channelConnected)
+    {
+        alarm.setMessage("disconnected");
+        alarm.setSeverity(invalidAlarm);
+        alarm.setStatus(clientStatus);
+        pvAlarm.set(alarm);
+    } else if(!isMonitorConnected) 
+    {
+        alarm.setMessage("monitor not connected");
+        alarm.setSeverity(invalidAlarm);
+        alarm.setStatus(clientStatus);
+        pvAlarm.set(alarm);
+    }
     PVRecord::process();
 }
 
@@ -135,9 +151,8 @@ void ExampleMonitorLinkRecord::channelStateChange(
 {
     channelConnected = isConnected;
     if(isConnected) {
-        setAlarmGood = true;
         if(!pvaClientMonitor) {
-            pvaClientMonitor = pvaClientChannel->createMonitor("value");
+            pvaClientMonitor = pvaClientChannel->createMonitor("value,alarm");
             pvaClientMonitor->setRequester(linkRecordRequester);
             pvaClientMonitor->issueConnect();
         }
@@ -146,9 +161,6 @@ void ExampleMonitorLinkRecord::channelStateChange(
     lock();
     try {
         beginGroupPut();
-        alarm.setMessage("disconnected");
-        alarm.setSeverity(invalidAlarm);
-        pvAlarm.set(alarm);
         process();
         endGroupPut();
     } catch(...) {
@@ -164,16 +176,13 @@ void ExampleMonitorLinkRecord::monitorConnect(
     StructureConstPtr const & structure)
 {
     if(status.isOK()) {
-        monitorConnected = true;
+        isMonitorConnected = true;
         return;
     }
     lock();
-        monitorConnected = false;
         try {
+            isMonitorConnected = false;
             beginGroupPut();
-            alarm.setMessage(status.getMessage());
-            alarm.setSeverity(invalidAlarm);
-            pvAlarm.set(alarm);
             process();
             endGroupPut();
         } catch(...) {
@@ -192,13 +201,29 @@ void ExampleMonitorLinkRecord::event(PvaClientMonitorPtr const & monitor)
         lock();
         try {
             beginGroupPut();
-            if(setAlarmGood) {
-                setAlarmGood = false;
-                alarm.setMessage("connected");
-                alarm.setSeverity(noAlarm);
-                pvAlarm.set(alarm);
-            }
             pvValue->replace(pvDoubleArray->view());
+            bool setAlarm = false;
+            PVStructurePtr linkAlarmField = pvStructure->getSubField<PVStructure>("alarm");
+            if(linkAlarmField && linkPVAlarm.attach(linkAlarmField)) {
+                linkPVAlarm.get(linkAlarm);
+            } else {
+                linkAlarm.setMessage("connected");
+                linkAlarm.setSeverity(noAlarm);
+                linkAlarm.setStatus(clientStatus);
+            }
+            if(alarm.getMessage()!=linkAlarm.getMessage()) {
+                alarm.setMessage(linkAlarm.getMessage());
+                setAlarm = true;
+            }
+            if(alarm.getSeverity()!=linkAlarm.getSeverity()) {
+                alarm.setSeverity(linkAlarm.getSeverity());
+                setAlarm = true;
+            }
+            if(alarm.getStatus()!=linkAlarm.getStatus()) {
+                alarm.setStatus(linkAlarm.getStatus());
+                setAlarm = true;
+             }
+            if(setAlarm) pvAlarm.set(alarm);
             process();
             endGroupPut();
         } catch(...) {
