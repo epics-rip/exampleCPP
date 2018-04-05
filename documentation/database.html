@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/database</h1>
-<h2 class="nocount">2017.10.21</h2>
+<h2 class="nocount">2018.04.05</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>database provides an IOC with a combination of V3 DBRecords, PVRecords, and also starts qsrv.
@@ -167,8 +167,9 @@ DBRmbbo02
 DBRbo00
 DBRbo01
 DBRmbbiwierd
-DBRbusy
 </pre>
+<h3>New DBRecord types for testing</h3>
+<p>These are described in the last section below.</p>
 <h2>database/src/pv</h2>
 <p>This directory has the following files:</p>
 <dl>
@@ -181,6 +182,7 @@ DBRbusy
    <dt>exampleDatabase.h</dt> 
      <dd>Header file for exampleDatabase.cpp</dd>
 </dl>
+
 <h2>database/src</h2>
 <p>This directory has the following files:</p>
 <dl>
@@ -431,19 +433,6 @@ They are used when the example database is started as part of a V3 IOC.</p>
         <dl>
            <dt>include "base.dbd"</dt>
               <dd>This is from iocCore</dd>
-           <dt>include "simpleBusyRecord.dbd"</dt>
-              <dd>
-                 <p>
-                 This is a DBRecord that is a simplified version of the synapps busy record.
-                 It is a record that sets pact=True when a 1 is written to it and to False when
-                 a 0 is written to it.
-                 </p>
-                 <p>
-                 It can be used to test the ca provider from both pvAccessCPP and pvAccessJava.
-                 It can also be used to test qsrv from pva2pva.
-                 Each of these implements put with and without callback.  
-                 </p>
-              </dd>
            <dt>include "PVAServerRegister.dbd"</dt>
               <dd>This is to create the iocsh commmand <b>startPVAServer</b></dd>
            <dt>include "registerChannelProviderLocal.dbd"</dt>
@@ -452,6 +441,23 @@ They are used when the example database is started as part of a V3 IOC.</p>
                <dd>This is to start <b>qsrv</b></dd>
            <dt>include "exampleDatabaseRegister.dbd"</dt>
                 <dd>This is to create the iocsh commmand <b>exampleDatabase</b></dd>
+        </dl>
+        The following are for the new DBRecord types described in the last section.
+        <dl>
+            <dt>include "simpleBusyRecord.dbd"</dt>
+              <dd>
+                Simplified version of the synapps busy record.
+              </dd>
+           <dt>include "charoutRecord.dbd"</dt>
+             <dd>DBRecord with value type DBF_CHAR.</dd>
+           <dt>include "shortoutRecord.dbd"</dt>
+             <dd>DBRecord with value type DBF_SHORT.</dd>
+           <dt>include "ucharoutRecord.dbd"</dt>
+             <dd>DBRecord with value type DBF_UCHAR.</dd>
+           <dt>include "ushortoutRecord.dbd"</dt>
+             <dd>DBRecord with value type DBF_USHORT.</dd>
+           <dt>include "ulongoutRecord.dbd"</dt>
+             <dd>DBRecord with value type DBF_ULONG.</dd>
         </dl>
       </dd>
    <dt>exampleDatabaseMain.cpp</dt>
@@ -464,8 +470,86 @@ They are used when the example database is started as part of a V3 IOC.</p>
    <dt>exampleDatabase</dt>
      <dd>This creates the PVRecords.</dd>
 </dl>
-
-
+<h2>New DBRecord types</h2>
+<h3>Starting example database</h3>
+<p>Directory <b>exampleCPP/database/iocBoot/exampleDatabase</b> has an additional file
+<b>st.cmdtypes</b>.
+When this is started via:</p>
+<pre>
+mrk&gt; pwd
+/home/epicsv4/masterCPP/exampleCPP/database/iocBoot/exampleDatabase
+mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmdtypes
+</pre>
+<p>The following records are present:</p>
+<pre>
+epics> dbl
+DBRai
+DBRlongout
+DBRstringin
+DBRcalcout
+DBRshortout           // record with value of type DBF_SHORT
+DBRucharout           // record with value of type DBF_UCHAR
+DBRushortout          // record with value of type DBF_USHORT
+DBRmbbo
+DBRbi
+DBRstringout
+DBRulongout           // record with value of type DBF_ULONG
+DBRbusy               // simple busy record
+DBRcharout            // record with value of type DBF_CHAR
+DBRmbbi
+DBRmbbiwierd
+DBRbyteArray
+DBRshortArray
+DBRintArray
+DBRubyteArray
+DBRushortArray
+DBRuintArray
+DBRstringArray
+DBRfloatArray
+DBRdoubleArray
+DBRlongin
+DBRcalcin
+DBRao
+DBRbo
+</pre>
+<h3>Testing DBRbusy</h3>
+<p>
+This is a DBRecord that is a simplified version of the synapps busy record.
+It is a record that sets <b>pact=true</b> when a 1 is written to it and to <b>pact=false</b> when
+a 0 is written to it.
+</p>
+<p>
+It can be used to test the ca and pva providers from both pvAccessCPP and pvAccessJava.
+It can also be used to test qsrv from pva2pva.
+Each of these implements put with and without callback.
+</p>
+<p> The <b>get</b>, <b>put</b>, and <b>monitor</b> example in <b>exampleCPP/exampleClient</b>
+can also be used to test the ca and pva providers.
+</p>
+<h3>Testing various record types</h3>
+<p>Sample configured records are available for various record types.
+Since epics-base does not provide scalar records of type
+DBF_CHAR, DBF_UCHAR, DBF_SHORT, DBF_USHORT, or DBF_ULONG,
+<b>database/ioc</b> provides a simplified implementation for each of these types.
+NOTE that the implementations do not allow attached device support.
+</p>
+<p>These can be used to test:</p>
+<dl>
+   <dt>caget, caput, and camonitor</dt>
+     <dd>many possibilities</dd>
+   <dt>pvget and pvput</dt>
+     <dd>
+        Provider <b>pva</b> has proper support for all DBF types.<br />
+        Provider <b>ca</b> has support similar to caget, caput, and camonitor.
+        Note that uint16 and uint32 are prompted to another type.
+        This is the behavior forced by channel access.
+     </dd>
+   <dt>exampleClient</dt>
+      <dd>
+       <b>get</b>, <b>put</b> , and <b>monitor</b> provide
+       another way to test providers <b>pva</b> and <b>ca</b>.
+      </dd>
+</dl>
 </div> <!-- class="contents" -->
 </body>
 </html>

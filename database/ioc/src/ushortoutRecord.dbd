@@ -1,0 +1,136 @@
+#*************************************************************************
+# Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+#     National Laboratory.
+# Copyright (c) 2002 The Regents of the University of California, as
+#     Operator of Los Alamos National Laboratory.
+# EPICS BASE is distributed subject to a Software License Agreement found
+# in file LICENSE that is included with this distribution.
+#*************************************************************************
+recordtype(ushortout) {
+	include "dbCommon.dbd" 
+	field(VAL,DBF_USHORT) {
+		prompt("Desired Output")
+		promptgroup("50 - Output")
+		asl(ASL0)
+		pp(TRUE)
+	}
+	field(EGU,DBF_STRING) {
+		prompt("Engineering Units")
+		promptgroup("80 - Display")
+		interest(1)
+		size(16)
+		prop(YES)
+	}
+	field(DRVH,DBF_USHORT) {
+		prompt("Drive High Limit")
+		promptgroup("30 - Action")
+		pp(TRUE)
+		interest(1)
+		prop(YES)
+	}
+	field(DRVL,DBF_USHORT) {
+		prompt("Drive Low Limit")
+		promptgroup("30 - Action")
+		pp(TRUE)
+		interest(1)
+		prop(YES)
+	}
+	field(HOPR,DBF_USHORT) {
+		prompt("High Operating Range")
+		promptgroup("80 - Display")
+		interest(1)
+		prop(YES)
+	}
+	field(LOPR,DBF_USHORT) {
+		prompt("Low Operating Range")
+		promptgroup("80 - Display")
+		interest(1)
+		prop(YES)
+	}
+	field(HIHI,DBF_USHORT) {
+		prompt("Hihi Alarm Limit")
+		promptgroup("70 - Alarm")
+		pp(TRUE)
+		interest(1)
+		prop(YES)
+	}
+	field(LOLO,DBF_USHORT) {
+		prompt("Lolo Alarm Limit")
+		promptgroup("70 - Alarm")
+		pp(TRUE)
+		interest(1)
+		prop(YES)
+	}
+	field(HIGH,DBF_USHORT) {
+		prompt("High Alarm Limit")
+		promptgroup("70 - Alarm")
+		pp(TRUE)
+		interest(1)
+		prop(YES)
+	}
+	field(LOW,DBF_USHORT) {
+		prompt("Low Alarm Limit")
+		promptgroup("70 - Alarm")
+		pp(TRUE)
+		interest(1)
+		prop(YES)
+	}
+	field(HHSV,DBF_MENU) {
+		prompt("Hihi Severity")
+		promptgroup("70 - Alarm")
+		pp(TRUE)
+		interest(1)
+		menu(menuAlarmSevr)
+	}
+	field(LLSV,DBF_MENU) {
+		prompt("Lolo Severity")
+		promptgroup("70 - Alarm")
+		pp(TRUE)
+		interest(1)
+		menu(menuAlarmSevr)
+	}
+	field(HSV,DBF_MENU) {
+		prompt("High Severity")
+		promptgroup("70 - Alarm")
+		pp(TRUE)
+		interest(1)
+		menu(menuAlarmSevr)
+	}
+	field(LSV,DBF_MENU) {
+		prompt("Low Severity")
+		promptgroup("70 - Alarm")
+		pp(TRUE)
+		interest(1)
+		menu(menuAlarmSevr)
+	}
+	field(HYST,DBF_USHORT) {
+		prompt("Alarm Deadband")
+		promptgroup("70 - Alarm")
+		interest(1)
+	}
+	field(ADEL,DBF_USHORT) {
+		prompt("Archive Deadband")
+		promptgroup("80 - Display")
+		interest(1)
+	}
+	field(MDEL,DBF_USHORT) {
+		prompt("Monitor Deadband")
+		promptgroup("80 - Display")
+		interest(1)
+	}
+	field(LALM,DBF_USHORT) {
+		prompt("Last Value Alarmed")
+		special(SPC_NOMOD)
+		interest(3)
+	}
+	field(ALST,DBF_USHORT) {
+		prompt("Last Value Archived")
+		special(SPC_NOMOD)
+		interest(3)
+	}
+	field(MLST,DBF_USHORT) {
+		prompt("Last Val Monitored")
+		special(SPC_NOMOD)
+		interest(3)
+	}
+}

@@ -1,0 +1,18 @@
+< envPaths
+
+cd ${TOP}
+
+## Register all support components
+dbLoadDatabase("dbd/exampleDatabase.dbd")
+exampleDatabase_registerRecordDeviceDriver(pdbbase)
+
+## Load record instances
+
+dbLoadRecords("db/testtypes.db")
+dbLoadRecords("db/dbSimpleBusy.db","name=DBRbusy")
+
+
+
+cd ${TOP}/iocBoot/${IOC}
+iocInit()
+exampleDatabase

@@ -19,6 +19,7 @@ DB += dbEnum.db
 DB += dbCounter.db
 DB += dbDouble.db
 DB += test.db
+DB += testtypes.db
 DB += dbSimpleBusy.db
 
 #----------------------------------------------------
