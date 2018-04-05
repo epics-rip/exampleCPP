@@ -458,6 +458,8 @@ They are used when the example database is started as part of a V3 IOC.</p>
              <dd>DBRecord with value type DBF_USHORT.</dd>
            <dt>include "ulongoutRecord.dbd"</dt>
              <dd>DBRecord with value type DBF_ULONG.</dd>
+           <dt>include "floatRecord.dbd"</dt>
+             <dd>DBRecord with value type DBF_Float.</dd>
         </dl>
       </dd>
    <dt>exampleDatabaseMain.cpp</dt>
@@ -483,21 +485,25 @@ mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmdtypes
 <p>The following records are present:</p>
 <pre>
 epics> dbl
-DBRai
-DBRlongout
-DBRstringin
-DBRcalcout
 DBRshortout           // record with value of type DBF_SHORT
-DBRucharout           // record with value of type DBF_UCHAR
-DBRushortout          // record with value of type DBF_USHORT
-DBRmbbo
-DBRbi
 DBRstringout
-DBRulongout           // record with value of type DBF_ULONG
+DBRmbbout
+DBRbinaryin
+DBRcalcout
 DBRbusy               // simple busy record
-DBRcharout            // record with value of type DBF_CHAR
-DBRmbbi
+DBRcalcin
+DBRulongout           // record with value of type DBF_ULONG
+DBRucharout           // record with value of type DBF_UCHAR
+DBRmbbin
 DBRmbbiwierd
+DBRdoublein
+DBRdoubleout
+DBRlongout
+DBRbinaryout
+DBRushortout           // record with value of type DBF_USHORT
+DBRcharout             // record with value of type DBF_CHAR
+DBRstringin
+DBRfloatout            // record with value of type DBF_FLOAT
 DBRbyteArray
 DBRshortArray
 DBRintArray
@@ -508,9 +514,6 @@ DBRstringArray
 DBRfloatArray
 DBRdoubleArray
 DBRlongin
-DBRcalcin
-DBRao
-DBRbo
 </pre>
 <h3>Testing DBRbusy</h3>
 <p>
@@ -529,7 +532,7 @@ can also be used to test the ca and pva providers.
 <h3>Testing various record types</h3>
 <p>Sample configured records are available for various record types.
 Since epics-base does not provide scalar records of type
-DBF_CHAR, DBF_UCHAR, DBF_SHORT, DBF_USHORT, or DBF_ULONG,
+DBF_CHAR, DBF_UCHAR, DBF_SHORT, DBF_USHORT, DBF_ULONG, or DBF_FLOAT.
 <b>database/ioc</b> provides a simplified implementation for each of these types.
 NOTE that the implementations do not allow attached device support.
 </p>

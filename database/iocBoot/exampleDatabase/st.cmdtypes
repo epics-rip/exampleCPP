@@ -15,4 +15,3 @@ dbLoadRecords("db/dbSimpleBusy.db","name=DBRbusy")
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
-exampleDatabase

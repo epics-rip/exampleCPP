@@ -17,6 +17,7 @@ DBDINC += shortoutRecord
 DBDINC += ucharoutRecord
 DBDINC += ushortoutRecord
 DBDINC += ulongoutRecord
+DBDINC += floatoutRecord
 
 
 example_SRCS += simpleBusyRecord.c
@@ -25,6 +26,7 @@ example_SRCS += shortoutRecord.c
 example_SRCS += ucharoutRecord.c
 example_SRCS += ushortoutRecord.c
 example_SRCS += ulongoutRecord.c
+example_SRCS += floatoutRecord.c
 example_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #=============================

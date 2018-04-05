@@ -40,25 +40,6 @@ record(calc, "DBRcalcin")
     field(LLSV, "MAJOR")
 }
 
-record(longout,"DBRlongout") {
-    field(DESC, "longout")
-    field(OUT, "DBRlongin.VAL PP NMS")
-    field(EGU, "volts")
-    field(HIHI, "80")
-    field(HIGH, "60")
-    field(LOW, "-60")
-    field(LOLO, "-80")
-    field(HYST, "2")
-    field(HHSV, "MAJOR")
-    field(HSV, "MINOR")
-    field(LSV, "MINOR")
-    field(LLSV, "MAJOR")
-    field(HOPR, "100")
-    field(LOPR, "-100")
-    field(DRVH, "90")
-    field(DRVL, "-90")     
-}
-
 record(charout,"DBRcharout") {
     field(DESC, "charout")
     field(EGU, "volts")
@@ -147,6 +128,24 @@ record(longin,"DBRlongin") {
     field(LOPR, "-100")  
 }
 
+record(longout,"DBRlongout") {
+    field(DESC, "longout")
+    field(EGU, "volts")
+    field(HIHI, "80")
+    field(HIGH, "60")
+    field(LOW, "-60")
+    field(LOLO, "-80")
+    field(HYST, "2")
+    field(HHSV, "MAJOR")
+    field(HSV, "MINOR")
+    field(LSV, "MINOR")
+    field(LLSV, "MAJOR")
+    field(HOPR, "100")
+    field(LOPR, "-100")
+    field(DRVH, "90")
+    field(DRVL, "-90")     
+}
+
 record(ulongout,"DBRulongout") {
     field(DESC, "ulongout")
     field(EGU, "volts")
@@ -165,7 +164,26 @@ record(ulongout,"DBRulongout") {
     field(DRVL, "10")     
 }
 
-record(ao,"DBRao") {
+record(floatout,"DBRfloatout") {
+    field(DESC, "floatout")
+    field(EGU, "volts")
+    field(HIHI, "80")
+    field(HIGH, "60")
+    field(LOW, "-60")
+    field(LOLO, "-80")
+    field(HYST, "2")
+    field(HHSV, "MAJOR")
+    field(HSV, "MINOR")
+    field(LSV, "MINOR")
+    field(LLSV, "MAJOR")
+    field(HOPR, "100")
+    field(LOPR, "-100")
+    field(DRVH, "90")
+    field(DRVL, "-90")     
+}
+
+
+record(ao,"DBRdoubleout") {
     field(DESC, "ao")
     field(OUT, "DBRai.VAL PP NMS")
     field(PREC,"2")
@@ -187,8 +205,8 @@ record(ao,"DBRao") {
     field(DRVL, "-9.0")
 }
 
-record(ai,"DBRai") {
-    field(DESC, "a1")
+record(ai,"DBRdoublein") {
+    field(DESC, "ai")
     field(PREC,"2")
     field(EGUF,"10.0")
     field(EGUL,"-10.0")
@@ -217,20 +235,20 @@ record(stringin,"DBRstringin") {
 }
 
 
-record(bo,"DBRbo") {
+record(bo,"DBRbinaryout") {
     field(DESC, "bo")
     field(OUT, "DBRbi.VAL PP NMS")
     field(ZNAM,"zero")
     field(ONAM,"one")
 }
-record(bi,"DBRbi") {
+record(bi,"DBRbinaryin") {
+    field(DESC, "bi")
     field(ZNAM,"zero")
     field(ONAM,"one")
 }
 
-record(mbbo,"DBRmbbo") {
+record(mbbo,"DBRmbbout") {
     field(DESC, "mbbo")
-    field(OUT, "DBRmbbi.VAL PP NMS")
     field(VAL,"1")
     field(ZRVL,"0")
     field(ONVL,"1")
@@ -266,7 +284,7 @@ record(mbbo,"DBRmbbo") {
     field(FFST,"fifteen")
 }
 
-record(mbbi,"DBRmbbi") {
+record(mbbi,"DBRmbbin") {
     field(DESC, "mbbi")
     field(VAL,"1")
     field(ZRVL,"0")
@@ -303,6 +321,7 @@ record(mbbi,"DBRmbbi") {
     field(FFST,"fifteen")   
 }
 record(mbbi,"DBRmbbiwierd") {
+    field(DESC, "mbbi but wierd")
     field(VAL,"1")
     field(ZRST,"1")
     field(ONST,"10")
@@ -314,7 +333,6 @@ record(mbbi,"DBRmbbiwierd") {
     field(SVST,"10000000")
 }
 
-
 record(waveform,"DBRbyteArray") {
     field(DESC, "byteArray")
     field(NELM,"10")
@@ -322,7 +340,6 @@ record(waveform,"DBRbyteArray") {
     field(HOPR, "127")
     field(LOPR, "-128")
 }
-
 
 record(waveform,"DBRshortArray") {
     field(DESC, "shortArray")
