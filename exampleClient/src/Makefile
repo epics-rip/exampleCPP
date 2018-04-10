@@ -3,6 +3,10 @@ TOP=..
 include $(TOP)/configure/CONFIG
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
+PROD_HOST += testRequest
+testRequest_SRCS += testRequest.cpp
+testRequest_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+
 
 PROD_HOST += get
 get_SRCS += get.cpp
@@ -61,8 +65,6 @@ helloWorldRPC_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
 PROD_HOST += helloWorldPutGet
 helloWorldPutGet_SRCS += helloWorldPutGet.cpp
 helloWorldPutGet_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
-
-
 
 PROD_HOST += putUnion
 putUnion_SRCS += putUnion.cpp

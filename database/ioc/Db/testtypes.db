@@ -353,8 +353,8 @@ record(waveform,"DBRintArray") {
     field(DESC, "intArray")
     field(NELM,"10")
     field(FTVL,"LONG")
-    field(HOPR, "0xefffffff")
-    field(LOPR, "0x80000000")
+    field(HOPR, "2147483647")
+    field(LOPR, "-2147483648")
 }
 
 record(waveform,"DBRubyteArray") {
@@ -378,8 +378,8 @@ record(waveform,"DBRuintArray") {
     field(DESC, "uintArray")
     field(NELM,"10")
     field(FTVL,"ULONG")
-    field(HOPR, "0xffffffff")
-    field(LOPR, "0")
+    field(HOPR, "2147483647")
+    field(LOPR, "-2147483648")
 }
 
 

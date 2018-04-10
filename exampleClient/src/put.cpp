@@ -96,6 +96,20 @@ public:
          cout << "putDone " << channelName << " status " << status << endl;
     }
 
+    
+    virtual void getDone(
+        const epics::pvData::Status& status,
+        PvaClientPutPtr const & clientPut)
+    {
+         cout << "getDone " << channelName << " status " << status << endl;
+          if(status.isOK()) {
+             cout << pvaClientPut->getData()->getPVStructure() << endl;
+         } else {
+             cout << "getGetDone " << channelName << " status " << status << endl;
+         }
+    }
+
+
     void put(const string & value)
     {
         if(!channelConnected) {
@@ -146,6 +160,19 @@ public:
             convert->fromStringArray(pvScalarArray,0,n,values,0);        
         }
         pvaClientPut->put();
+    }
+
+    void get()
+    {
+        if(!channelConnected) {
+            cout << channelName << " channel not connected\n";
+            return;
+        }
+        if(!putConnected) {
+            cout << channelName << " channelPut not connected\n";
+            return;
+        }
+        pvaClientPut->issueGet();
     }
 };
 
@@ -214,12 +241,25 @@ int main(int argc,char *argv[])
             ClientPuts.push_back(ClientPut::create(pva,channelNames[i],provider,request));
         }
         while(true) {
-            cout << "Type exit to stop: \n";
+            cout << "enter one of: exit put get\n";
             int c = std::cin.peek();  // peek character
             if ( c == EOF ) continue;
             string str;
             getline(cin,str);
             if(str.compare("exit")==0) break;
+            if(str.compare("get")==0) {
+                 for(int i=0; i<nPvs; ++i) {
+                    try {
+                         ClientPuts[i]->get();
+                    } catch (std::runtime_error e) {
+                       cerr << "exception " << e.what() << endl;
+                    }
+                 }
+                 continue;
+            }
+            if(str.compare("put")!=0) continue;
+            cout << "enter value or values to put\n";
+            getline(cin,str);
             for(int i=0; i<nPvs; ++i) {
                 try {
                     ClientPuts[i]->put(str);
