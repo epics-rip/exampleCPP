@@ -43,73 +43,73 @@ record(calc, "DBRcalcin")
 record(charout,"DBRcharout") {
     field(DESC, "charout")
     field(EGU, "volts")
-    field(HIHI, "80")
-    field(HIGH, "60")
-    field(LOW, "-60")
-    field(LOLO, "-80")
+    field(HIHI, "100")
+    field(HIGH, "80")
+    field(LOW, "-80")
+    field(LOLO, "-100")
     field(HYST, "2")
     field(HHSV, "MAJOR")
     field(HSV, "MINOR")
     field(LSV, "MINOR")
     field(LLSV, "MAJOR")
-    field(HOPR, "100")
-    field(LOPR, "-100")
-    field(DRVH, "90")
-    field(DRVL, "-90")     
+    field(HOPR, "127")
+    field(LOPR, "-128")
+    field(DRVH, "127")
+    field(DRVL, "-128")     
 }
 
 record(ucharout,"DBRucharout") {
     field(DESC, "ucharout")
     field(EGU, "volts")
-    field(HIHI, "80")
-    field(HIGH, "60")
-    field(LOW, "40")
+    field(HIHI, "200")
+    field(HIGH, "150")
+    field(LOW, "50")
     field(LOLO, "20")
     field(HYST, "2")
     field(HHSV, "MAJOR")
     field(HSV, "MINOR")
     field(LSV, "MINOR")
     field(LLSV, "MAJOR")
-    field(HOPR, "100")
+    field(HOPR, "255")
     field(LOPR, "0")
-    field(DRVH, "90")
-    field(DRVL, "10")     
+    field(DRVH, "255")
+    field(DRVL, "0")     
 }
 
 record(shortout,"DBRshortout") {
     field(DESC, "shortout")
     field(EGU, "volts")
-    field(HIHI, "80")
-    field(HIGH, "60")
-    field(LOW, "-60")
-    field(LOLO, "-80")
+    field(HIHI, "20000")
+    field(HIGH, "10000")
+    field(LOW, "-10000")
+    field(LOLO, "-20000")
     field(HYST, "2")
     field(HHSV, "MAJOR")
     field(HSV, "MINOR")
     field(LSV, "MINOR")
     field(LLSV, "MAJOR")
-    field(HOPR, "100")
-    field(LOPR, "-100")
-    field(DRVH, "90")
-    field(DRVL, "-90")     
+    field(HOPR, "32767")
+    field(LOPR, "-32768")
+    field(DRVH, "32767")
+    field(DRVL, "-32768")     
 }
 
 record(ushortout,"DBRushortout") {
     field(DESC, "ushortout")
     field(EGU, "volts")
-    field(HIHI, "80")
-    field(HIGH, "60")
-    field(LOW, "40")
-    field(LOLO, "20")
+    field(HIHI, "50000")
+    field(HIGH, "40000")
+    field(LOW, "10000")
+    field(LOLO, "5000")
     field(HYST, "2")
     field(HHSV, "MAJOR")
     field(HSV, "MINOR")
     field(LSV, "MINOR")
     field(LLSV, "MAJOR")
-    field(HOPR, "100")
+    field(HOPR, "65535")
     field(LOPR, "0")
-    field(DRVH, "90")
-    field(DRVL, "10")     
+    field(DRVH, "65535")
+    field(DRVL, "0")     
 }
 
 record(longin,"DBRlongin") {
@@ -140,10 +140,10 @@ record(longout,"DBRlongout") {
     field(HSV, "MINOR")
     field(LSV, "MINOR")
     field(LLSV, "MAJOR")
-    field(HOPR, "100")
-    field(LOPR, "-100")
-    field(DRVH, "90")
-    field(DRVL, "-90")     
+    field(HOPR, "2147483647")
+    field(LOPR, "-2147483648")
+    field(DRVH, "2147483647")
+    field(DRVL, "-2147483648")     
 }
 
 record(ulongout,"DBRulongout") {
@@ -158,10 +158,10 @@ record(ulongout,"DBRulongout") {
     field(HSV, "MINOR")
     field(LSV, "MINOR")
     field(LLSV, "MAJOR")
-    field(HOPR, "100")
+    field(HOPR, "4294967295")
     field(LOPR, "0")
-    field(DRVH, "90")
-    field(DRVL, "10")     
+    field(DRVH, "4294967295")
+    field(DRVL, "0")     
 }
 
 record(floatout,"DBRfloatout") {
@@ -335,7 +335,7 @@ record(mbbi,"DBRmbbiwierd") {
 
 record(waveform,"DBRbyteArray") {
     field(DESC, "byteArray")
-    field(NELM,"10")
+    field(NELM,"5")
     field(FTVL,"CHAR")
     field(HOPR, "127")
     field(LOPR, "-128")
@@ -343,7 +343,7 @@ record(waveform,"DBRbyteArray") {
 
 record(waveform,"DBRshortArray") {
     field(DESC, "shortArray")
-    field(NELM,"10")
+    field(NELM,"5")
     field(FTVL,"SHORT")
     field(HOPR, "32767")
     field(LOPR, "-32768")
@@ -351,7 +351,7 @@ record(waveform,"DBRshortArray") {
 
 record(waveform,"DBRintArray") {
     field(DESC, "intArray")
-    field(NELM,"10")
+    field(NELM,"5")
     field(FTVL,"LONG")
     field(HOPR, "2147483647")
     field(LOPR, "-2147483648")
@@ -359,7 +359,7 @@ record(waveform,"DBRintArray") {
 
 record(waveform,"DBRubyteArray") {
     field(DESC, "ubyteArray")
-    field(NELM,"10")
+    field(NELM,"5")
     field(FTVL,"UCHAR")
     field(HOPR, "255")
     field(LOPR, "0")
@@ -368,7 +368,7 @@ record(waveform,"DBRubyteArray") {
 
 record(waveform,"DBRushortArray") {
     field(DESC, "ushortArray")
-    field(NELM,"10")
+    field(NELM,"5")
     field(FTVL,"USHORT")
     field(HOPR, "65535")
     field(LOPR, "0")
@@ -376,7 +376,7 @@ record(waveform,"DBRushortArray") {
 
 record(waveform,"DBRuintArray") {
     field(DESC, "uintArray")
-    field(NELM,"10")
+    field(NELM,"5")
     field(FTVL,"ULONG")
     field(HOPR, "2147483647")
     field(LOPR, "-2147483648")
@@ -385,13 +385,13 @@ record(waveform,"DBRuintArray") {
 
 record(waveform,"DBRstringArray") {
     field(DESC, "stringArray")
-    field(NELM,"10")
+    field(NELM,"5")
     field(FTVL,"STRING")
 }
 
 record(waveform,"DBRfloatArray") {
     field(DESC, "floatArray")
-    field(NELM,"10")
+    field(NELM,"5")
     field(FTVL,"FLOAT")
     field(HOPR, "1000")
     field(LOPR, "-1000")
@@ -399,7 +399,7 @@ record(waveform,"DBRfloatArray") {
 
 record(waveform,"DBRdoubleArray") {
     field(DESC, "doubleArray")
-    field(NELM,"10")
+    field(NELM,"5")
     field(FTVL,"DOUBLE")
     field(HOPR, "1000")
     field(LOPR, "-1000")

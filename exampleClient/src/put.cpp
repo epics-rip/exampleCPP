@@ -159,7 +159,7 @@ public:
             pvScalarArray->setLength(n);
             convert->fromStringArray(pvScalarArray,0,n,values,0);        
         }
-        pvaClientPut->put();
+        pvaClientPut->issuePut();
     }
 
     void get()
