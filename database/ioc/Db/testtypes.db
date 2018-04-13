@@ -2,7 +2,6 @@
 record(calcout, "DBRcalcout")
 {
     field(DESC, "calcout")
-    field(OUT, "DBRcalcin.VAL PP NMS")
     field(CALC, "(A<B)?(A+C):D")
     field(INPA, "DBRcalcout.VAL  NPP NMS")
     field(INPB, "9")
@@ -185,7 +184,6 @@ record(floatout,"DBRfloatout") {
 
 record(ao,"DBRdoubleout") {
     field(DESC, "ao")
-    field(OUT, "DBRai.VAL PP NMS")
     field(PREC,"2")
     field(EGUF,"10.0")
     field(EGUL,"-10.0")
@@ -227,7 +225,6 @@ record(ai,"DBRdoublein") {
 
 record(stringout,"DBRstringout") {
     field(DESC, "stringout")
-    field(OUT, "DBRstringin.VAL PP NMS")
 }
 
 record(stringin,"DBRstringin") {
