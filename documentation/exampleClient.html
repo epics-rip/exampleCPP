@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/exampleClient</h1>
-<h2 class="nocount">2018.01.05</h2>
+<h2 class="nocount">2018.04.06</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -52,6 +52,33 @@ Many of the examples are adapted from exampleClient.
 <div id="contents" class="contents">	  
 <hr />
 
+<h2>testRequest</h2>
+<p>This provides a way to run <b>CreateRequest</b> by providing a string that is passed to
+createRequest.</p>
+<p>Some examples are:</p>
+<pre>
+mrk> pwd
+/home/epicsv4/masterCPP/exampleCPP/exampleClient
+mrk> bin/linux-x86_64/testRequest
+enter a string to pass to createRequest
+mrk> bin/linux-x86_64/testRequest value
+pvRequest
+structure 
+    structure field
+        structure value
+mrk> bin/linux-x86_64/testRequest "record[block=true],field(value[max_elem=1],alarm.timeStamp)"
+pvRequest
+structure 
+    structure record
+        structure _options
+            string block true
+    structure field
+        structure value
+            structure _options
+                string max_elem 1
+        structure alarm
+            structure timeStamp
+</pre>
 <h2>Non-blocking Examples</h2>
 <p>These are examples that never block while waiting for a channel to connect.
 They are good examples for use by display manager tools that want to access channels

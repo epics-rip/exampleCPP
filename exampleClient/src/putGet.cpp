@@ -129,7 +129,7 @@ public:
             return;
         }
         if(!putGetConnected) {
-            cout << channelName << " channelPut not connected\n";
+            cout << channelName << " channelPutGet not connected\n";
             return;
         }
         PvaClientPutDataPtr putData = pvaClientPutGet->getPutData();
@@ -180,7 +180,7 @@ public:
             return;
         }
         if(!putGetConnected) {
-            cout << channelName << " channelPut not connected\n";
+            cout << channelName << " channelPutGet not connected\n";
             return;
         }
         pvaClientPutGet->issueGetPut();
@@ -193,7 +193,7 @@ public:
             return;
         }
         if(!putGetConnected) {
-            cout << channelName << " channelPut not connected\n";
+            cout << channelName << " channelPutGet not connected\n";
             return;
         }
         pvaClientPutGet->issueGetGet();

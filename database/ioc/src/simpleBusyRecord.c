@@ -7,12 +7,10 @@
 * in file LICENSE that is included with this distribution. 
 \*************************************************************************/
 
-/* Revision-Id: anj@aps.anl.gov-20131120222110-3o0wgh76u652ad4e */
 
-/* recLongin.c - Record Support Routines for Longin records */
 /*
- *      Author: 	Janet Anderson
- *      Date:   	9/23/91
+ *      Author: 	Marty Kraimer
+ *      Date:   	2018.04
  */
 
 #include <stddef.h>
@@ -91,14 +89,13 @@ static long init_record(simpleBusyRecord *prec, int pass)
 
 static long process(simpleBusyRecord *prec)
 {
-    unsigned short monitor_mask = DBE_VALUE;
-    recGblGetTimeStamp(prec);
-    db_post_events(prec, &prec->val, monitor_mask);
     if(prec->val!=0) {
         prec->pact = TRUE;
         return 0;
     }
-    recGblFwdLink(prec);
+    unsigned short monitor_mask = DBE_VALUE;
+    monitor_mask |= DBE_VALUE;
+    db_post_events(prec, &prec->val, monitor_mask);
     prec->pact=FALSE;
     return 0;
 }

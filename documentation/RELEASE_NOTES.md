@@ -1,4 +1,10 @@
 
+GITHUB Main
+===========
+
+* Code has been added to database to test all DBF types.
+* testRequest has been added to exampleClient.
+
 EPICS 7 release 4.7
 ====================
 
