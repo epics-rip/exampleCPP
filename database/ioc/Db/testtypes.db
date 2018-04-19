@@ -123,8 +123,8 @@ record(longin,"DBRlongin") {
     field(HSV, "MINOR")
     field(LSV, "MINOR")
     field(LLSV, "MAJOR")
-    field(HOPR, "100")
-    field(LOPR, "-100")  
+    field(HOPR, "2147483647")
+    field(LOPR, "-2147483648")
 }
 
 record(longout,"DBRlongout") {
@@ -165,6 +165,7 @@ record(ulongout,"DBRulongout") {
 
 record(floatout,"DBRfloatout") {
     field(DESC, "floatout")
+    field(PREC,"2")
     field(EGU, "volts")
     field(HIHI, "80")
     field(HIGH, "60")
@@ -177,8 +178,8 @@ record(floatout,"DBRfloatout") {
     field(LLSV, "MAJOR")
     field(HOPR, "100")
     field(LOPR, "-100")
-    field(DRVH, "90")
-    field(DRVL, "-90")     
+    field(DRVH, "1e29")
+    field(DRVL, "-1e29")     
 }
 
 
@@ -199,8 +200,8 @@ record(ao,"DBRdoubleout") {
     field(LLSV, "MAJOR")
     field(HOPR, "10.0")
     field(LOPR, "-10.0")
-    field(DRVH, "9.0")
-    field(DRVL, "-9.0")
+    field(DRVH, "1e29")
+    field(DRVL, "-1e29")
 }
 
 record(ai,"DBRdoublein") {
@@ -389,6 +390,7 @@ record(waveform,"DBRstringArray") {
 record(waveform,"DBRfloatArray") {
     field(DESC, "floatArray")
     field(NELM,"5")
+    field(PREC,"2")
     field(FTVL,"FLOAT")
     field(HOPR, "1000")
     field(LOPR, "-1000")
@@ -397,6 +399,7 @@ record(waveform,"DBRfloatArray") {
 record(waveform,"DBRdoubleArray") {
     field(DESC, "doubleArray")
     field(NELM,"5")
+    field(PREC,"2")
     field(FTVL,"DOUBLE")
     field(HOPR, "1000")
     field(LOPR, "-1000")

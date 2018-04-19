@@ -14,6 +14,12 @@ recordtype(floatout) {
 		asl(ASL0)
 		pp(TRUE)
 	}
+        field(PREC,DBF_SHORT) {
+		prompt("Display Precision")
+		promptgroup("80 - Display")
+		interest(1)
+		prop(YES)
+	}
 	field(EGU,DBF_STRING) {
 		prompt("Engineering Units")
 		promptgroup("80 - Display")
