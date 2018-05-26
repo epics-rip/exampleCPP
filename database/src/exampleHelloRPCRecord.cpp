@@ -51,7 +51,7 @@ private:
     {
     }
 
-    epics::pvDatabase::PVRecordPtr pvRecord;
+    epics::pvDatabase::PVRecordWPtr pvRecord;
 };
 
 void HelloService::request(
@@ -66,21 +66,28 @@ void HelloService::request(
             ss << " expected string subfield named value. got\n" << pvArgument;
             Status status(Status::STATUSTYPE_ERROR,ss.str());
             callback->requestDone(status,PVStructurePtr());
+            return;
         }
-        epicsThreadSleep(5.0);  // simulate service that takes time
-        pvRecord->lock();
-        pvRecord->beginGroupPut();
-        PVStringPtr pvTo = pvRecord->getPVStructure()->getSubField<PVString>("value");
+        epics::pvDatabase::PVRecordPtr record(pvRecord.lock());
+        if(!record) {
+            Status status(Status::STATUSTYPE_ERROR,"pvRecord was destroyed");
+            callback->requestDone(status,PVStructurePtr());
+            return;
+        }
+        epicsThreadSleep(2.0);  // simulate service that takes time
+        record->lock();
+        record->beginGroupPut();
+        PVStringPtr pvTo = record->getPVStructure()->getSubField<PVString>("value");
         pvTo->put("Hello " + pvFrom->get());
-        pvRecord->process();
-        pvRecord->endGroupPut();
+        record->process();
+        record->endGroupPut();
         NTScalarBuilderPtr ntScalarBuilder = NTScalar::createBuilder();
         PVStructurePtr pvResult = ntScalarBuilder->
             value(pvString)->
             createPVStructure(); 
         PVStringPtr pvValue(pvResult->getSubField<PVString>("value"));
         pvValue->put(pvTo->get());
-        pvRecord->unlock();
+        record->unlock();
         callback->requestDone(Status(), pvResult);
     }
     catch (std::runtime_error & e) {

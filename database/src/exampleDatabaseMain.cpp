@@ -42,10 +42,15 @@ int main(int argc,char *argv[])
     cout << "exampleDatabase\n";
     string str;
     while(true) {
-        cout << "Type exit to stop: \n";
+        cout << "enter: pvdbl or exit \n";
         getline(cin,str);
         if(str.compare("exit")==0) break;
-
+        if(str.compare("pvdbl")==0) {
+            PVDatabasePtr master = PVDatabase::getMaster();
+            PVStringArrayPtr pvNames = master->getRecordNames();
+            PVStringArray::const_svector xxx = pvNames->view();
+            for(size_t i=0; i<xxx.size(); ++i) cout<< xxx[i] << endl;
+        }
     }
     return 0;
 }
