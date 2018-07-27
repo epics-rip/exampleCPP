@@ -17,6 +17,5 @@ dbLoadRecords("db/test.db")
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
-refshow
 exampleDatabase
 refshow
