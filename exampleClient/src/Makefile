@@ -20,6 +20,10 @@ PROD_HOST += put
 put_SRCS += put.cpp
 put_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
+PROD_HOST += getputmonitor
+getputmonitor_SRCS += getputmonitor.cpp
+getputmonitor_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+
 PROD_HOST += putGet
 putGet_SRCS += putGet.cpp
 putGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
