@@ -50,6 +50,9 @@ record(ao,"DBRdouble") {
     field(LOPR, "-10.0")
     field(DRVH, "9.0")
     field(DRVL, "-9.0")
+    field(MDEL, ".1")
+    field(ADEL, ".2")
+
 }
 
 record(ao,"DBRdouble00") { }
