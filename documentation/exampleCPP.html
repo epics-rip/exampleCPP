@@ -6,9 +6,9 @@
   <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
   <title>EPICS exampleCPP</title>
   <link rel="stylesheet" type="text/css"
-  href="http://epics-pvdata.sourceforge.net/base.css" />
+  href="https://mrkraimer.github.io/website/css/base.css" />
   <link rel="stylesheet" type="text/css"
-  href="http://epics-pvdata.sourceforge.net/epicsv4.css" />
+  href="https://mrkraimer.github.io/website/css/epicsv4.css" />
   <style type="text/css">
 /*<![CDATA[*/
      .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
@@ -18,7 +18,7 @@
 /*]]>*/</style>
 
  <!-- Script that generates the Table of Contents -->
-  <script type="text/javascript" src="http://epics-pvdata.sourceforge.net/script/tocgen.js"></script>
+  <script type="text/javascript" src="https://mrkraimer.github.io/website/css/tocgen.js"></script>
 
 </head>
 
@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP</h1>
-<h2 class="nocount">Release 4.3 - 2017.10.09</h2>
+<h2 class="nocount">master branch - 2018.10.17</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -35,7 +35,7 @@ This project provides a set of examples of client and server code for the PVA co
 
   <!-- last para of Abstract is boilerplate reference to EPICS -->
       <p>For more information about EPICS generally, please refer to the home page of the <a
-       href="http://www.aps.anl.gov/epics/">Experimental Physics and Industrial
+       href="https://epics-controls.org">Experimental Physics and Industrial
       Control System</a>.</p>
 
 
@@ -153,10 +153,64 @@ The complete set of examples, except for ChannelArchiverService can also be buil
 This document assumes that the reader also looks at the source code for the examples.
 The reader should also be familiar with
 <a
-      href="http://epics-pvdata.sourceforge.net/informative/developerGuide/developerGuide.html">
+      href="https://mrkraimer.github.io/website/css/informative/developerGuide/developerGuide.html">
       developerGuide
 </a> 
 </p> 
+<h2>Building</h2>
+
+
+<h3>Building via exampleCPP</h3>
+<h4>Preparation</h4>
+<p>
+make requires:
+<ul>
+ <li>
+ A proper <b>RELEASE.local</b> is present one directory level above <b>exampleCPP</b>.
+ </li>
+ <li>
+ Either <b>ExampleRELEASE.local</b> or <b>MasterRELEASE.local</b> is used.
+ </li>
+</ul>
+<p><b>ExampleRELEASE.local</b> is used to build via an official <b>EPICS 7</b>
+release.
+<br />
+<b>MasterRELEASE.local</b> is used to build via V4 modules that have been cloned from github.
+</p>
+<p>In either case the file chosen is copied to configure, renamed, and edited.
+For example:
+<p>
+<pre>
+cp ExampleRELEASE.local configure/RELEASE.local
+gedit configure/RELEASE.local   // change EPICS7_DIR and possibly EPICS_BASE
+</pre>
+<p>
+The definition of <b>EPICS7_DIR</b> must be changed to the location where You 
+installed and built a version of <b>EPICS7</b>.
+</p>
+<p>
+There is also a file <b>MasterRELEASE.local</b> that can be used if the V4 modules were
+obtained from github.
+</p>
+</p>
+<h4>Build</h4>
+<p>
+To build just type:
+</p>
+<pre>
+make
+</pre>
+
+<h3>Building an individual example</h3>
+<p>
+In the example directory just type:
+</p>
+<pre>
+make
+</pre>
+<p>
+Each example has a <b>README.md</b> file.
+</p>
 <h3>Each example is a template</h3>
 <p>
 Each example can be used as a template for building other applications:
@@ -164,47 +218,9 @@ Each example can be used as a template for building other applications:
 <ul>
   <li>Choose an example that is similar to the desired application.</li>
   <li>Copy the complete example to where the desired application should reside.</li>
+  <li>Also copy <b>ExampleRELEASE.local</b> and <b>MasterRELEASE.local</b>.</li>
   <li>Edit the new application</li>
 </ul>
-
-<h3>Building via exampleCPP</h3>
-<p>
-This works if a proper <b>RELEASE.local</b> is present one directory level above <b>exampleCPP</b>.
-</p>
-<p>
-Just type:
-</p>
-<pre>
-make
-</pre>
-<p>
-An example of a proper <b>RELEASE.local</b> is:
-</p>
-<pre>
-EPICS4_DIR=/home/epicsv4/release4_7
-EXAMPLE=${EPICS4_DIR}/exampleCPP
-PVDATABASE=${EPICS4_DIR}/pvDatabaseCPP
-PVACLIENT=${EPICS4_DIR}/pvaClientCPP
-PVA2PVA=${EPICS4_DIR}/pva2pva
-PVACCESS=${EPICS4_DIR}/pvAccessCPP
-NORMATIVETYPES=${EPICS4_DIR}/normativeTypesCPP
-PVDATA=${EPICS4_DIR}/pvDataCPP
-EPICS_BASE=/home/install/epics/base
-</pre>
-
-
-<h3>Building an individual example</h3>
-<p>
-If a proper <b>RELEASE.local</b> is present one directory level above <b>exampleCPP</b> then in the example directory just type:
-</p>
-<pre>
-make
-</pre>
-<p>
-Each example has a <b>README.md</b> file. See it for how to build the example if a proper <b>RELEASE.local</b>
-does not exist or if the example has special requirements.
-</p>
-
 
 <h2>Brief summary of examples and links to documentation</h2>
 <h3>database and exampleClient</h3>

@@ -8,26 +8,12 @@ In order to run the examples, **database** must also be built and then the IOC d
     /home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
     mrk> ../../bin/$EPICS_HOST_ARCH/exampleDatabase st.cmd
 
-[developerGuide.html ](http://epics-pvdata.sourceforge.net/informative/developerGuide/developerGuide.html)provides tututorial information on how to use pvaClient
+[developerGuide.html ](https://mrkraimer.github.io/website/developerGuide/developerGuide.html)provides tututorial information on how to use pvaClient
 
 
 ## Building
 
-If a proper RELEASE.local file exists two directory levels above **exampleClient**,
-or in **../configure/RELEASE.local** then just type:
-
-    make
-
-It can also be built by:
-
-    cp configure/ExampleRELEASE.local configure/RELEASE.local
-    edit file configure/RELEASE.local
-    make
-
-In **configure/RELEASE.local** it may only be necessary to change the definitions
-of **EPICS4_DIR** and **EPICS_BASE**.
-
-
+Read exampleCPP/documentation/exampleCPP.html.
 
 ## examplePvaClientGet
 

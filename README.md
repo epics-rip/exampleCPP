@@ -1,16 +1,28 @@
 # exampleCPP
 
-This project provides a set of examples of client and server code for 
-pvAccess.
-Each example can be built separately by building in the example subdirectory.
-The complete set of examples, except for ChannelArchiverService can also be
-built by building in exampleCPP itself.
+This project provides a set of examples of client and server code for V4.
 
-Each example can be used as a template for building other applications:
+## obtaining and building examples.
 
-* Choose an example that is similar to the desired application.
-* Copy the complete example to where the desired application should reside.
-* Edit the new application.
+The examples can be cloned from github and built as follows:
+
+    git clone  https://github.com/epics-base/exampleCPP.git
+    cd exampleCPP
+    cp ExampleRELEASE.local configure/RELEASE.local
+    gedit configure/RELEASE.local  // change EPICS7_DIR
+    make
+
+The definition of **EPICS7_DIR** must be changed to the location where You 
+installed and built a version of **EPICS7**.
+
+There is also a file **MasterRELEASE.local** that can be used if the V4 modules were
+obtained from github.
+
+## Description of examples
+
+To see a brief description of each example see documentation/exampleCPP.html.
+
+## test
 
 There is also a test that supports:
 
@@ -18,11 +30,6 @@ There is also a test that supports:
 
 This test requires that at least **database** is built.
 
-## Building examples
 
-To see how to build individual examples or all examples see documentation/exampleCPP.html.
 
-## Examples
-
-To see a brief description of the examples see documentation/exampleCPP.html.
 
