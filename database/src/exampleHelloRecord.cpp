@@ -10,7 +10,7 @@
 
 #include <pv/standardField.h>
 
-#define epicsExportSharedSymbols
+#include <epicsExport.h>
 #include <pv/exampleHelloRecord.h>
 
 using namespace epics::pvData;

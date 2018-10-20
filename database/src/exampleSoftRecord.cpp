@@ -11,7 +11,7 @@
 #include <pv/standardField.h>
 #include <pv/ntscalar.h>
 
-#define epicsExportSharedSymbols
+#include <epicsExport.h>
 #include <pv/exampleSoftRecord.h>
 
 

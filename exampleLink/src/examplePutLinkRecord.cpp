@@ -12,7 +12,7 @@
 #include <pv/ntscalar.h>
 #include <pv/pvaClient.h>
 
-#define epicsExportSharedSymbols
+#include <epicsExport.h>
 #include <pv/examplePutLinkRecord.h>
 
 using namespace epics::pvData;

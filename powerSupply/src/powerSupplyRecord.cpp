@@ -13,7 +13,7 @@
 #include <pv/standardField.h>
 #include <pv/standardPVField.h>
 
-#define epicsExportSharedSymbols
+#include <epicsExport.h>
 #include <pv/powerSupplyRecord.h>
 
 using namespace epics::pvData;

@@ -15,7 +15,7 @@
 #include <cmath>
 #include <sstream>
 
-#define epicsExportSharedSymbols
+#include <epicsExport.h>
 #include <pv/exampleRPC.h>
 
 namespace epics { namespace exampleCPP { namespace exampleRPC {

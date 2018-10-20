@@ -29,7 +29,7 @@
 #include <pv/ntunion.h>
 #include <pv/ntenum.h>
 
-#define epicsExportSharedSymbols
+#include <epicsExport.h>
 #include <pv/exampleDatabase.h>
 #include <pv/exampleHelloRecord.h>
 #include <pv/exampleSoftRecord.h>
