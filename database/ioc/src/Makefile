@@ -29,6 +29,8 @@ example_SRCS += ulongoutRecord.c
 example_SRCS += floatoutRecord.c
 example_LIBS += $(EPICS_BASE_IOC_LIBS)
 
+USR_CPPFLAGS += -DUSE_TYPED_RSET
+
 #=============================
 # build an ioc application
 

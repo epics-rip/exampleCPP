@@ -39,8 +39,8 @@
 /* Create RSET - Record Support Entry Table*/
 #define report NULL
 #define initialize NULL
-static long init_record(simpleBusyRecord *, int);
-static long process(simpleBusyRecord *);
+static long init_record(struct dbCommon *, int);
+static long process(struct dbCommon *);
 static long special(struct dbAddr *paddr, int after);
 #define get_value NULL
 #define cvt_dbaddr NULL
@@ -79,23 +79,25 @@ rset simpleBusyRSET={
 epicsExportAddress(rset,simpleBusyRSET);
 
 
-static long init_record(simpleBusyRecord *prec, int pass)
+static long init_record(struct dbCommon *pcommon, int pass)
 {
+    simpleBusyRecord *prec = (simpleBusyRecord *) pcommon;
+
     prec->val = 0;
     prec->udf = FALSE;
     recGblResetAlarms(prec);
-    return(0);
+    return 0;
 }
 
-static long process(simpleBusyRecord *prec)
+static long process(struct dbCommon *pcommon)
 {
+    simpleBusyRecord *prec = (simpleBusyRecord *) pcommon;
     unsigned short monitor_mask = DBE_VALUE;
 
     if(prec->val!=0) {
         prec->pact = TRUE;
         return 0;
     }
-    monitor_mask |= DBE_VALUE;
     db_post_events(prec, &prec->val, monitor_mask);
     prec->pact=FALSE;
     return 0;
