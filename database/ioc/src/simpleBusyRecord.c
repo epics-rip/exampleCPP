@@ -89,11 +89,12 @@ static long init_record(simpleBusyRecord *prec, int pass)
 
 static long process(simpleBusyRecord *prec)
 {
+    unsigned short monitor_mask = DBE_VALUE;
+
     if(prec->val!=0) {
         prec->pact = TRUE;
         return 0;
     }
-    unsigned short monitor_mask = DBE_VALUE;
     monitor_mask |= DBE_VALUE;
     db_post_events(prec, &prec->val, monitor_mask);
     prec->pact=FALSE;
