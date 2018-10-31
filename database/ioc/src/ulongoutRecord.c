@@ -91,18 +91,18 @@ static long init_record(struct dbCommon *pcommon, int pass)
 static long process(struct dbCommon *pcommon)
 {
     struct ulongoutRecord *prec = (struct ulongoutRecord *)pcommon;
-    long status = 0;
+    unsigned short monitor_mask;
+
     if(prec->drvh!=prec->drvl) {
         if(prec->val>prec->drvh) prec->val = prec->drvh;
         if(prec->val<prec->drvl) prec->val = prec->drvl;
     }
     checkAlarms(prec);
     recGblGetTimeStamp(prec);
-    unsigned short monitor_mask = recGblResetAlarms(prec);
-    monitor_mask |= DBE_VALUE;
+    monitor_mask = recGblResetAlarms(prec) | DBE_VALUE;
     db_post_events(prec, &prec->val, monitor_mask);
     prec->pact=FALSE;
-    return(status);
+    return 0;
 }
 
 #define indexof(field) ulongoutRecord##field
