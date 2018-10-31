@@ -8,7 +8,7 @@
  * @date 2013.08.09
  */
 
-#define epicsExportSharedSymbols
+#include <epicsExport.h>
 #include <pv/longArrayPut.h>
 
 namespace epics { namespace exampleCPP { namespace arrayPerformance { 

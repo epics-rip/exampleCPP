@@ -12,7 +12,7 @@
 #include <pv/standardField.h>
 #include <pv/ntscalar.h>
 #include <sstream>
-#define epicsExportSharedSymbols
+#include <epicsExport.h>
 #include <pv/exampleHelloRPCRecord.h>
 
 using namespace epics::pvData;

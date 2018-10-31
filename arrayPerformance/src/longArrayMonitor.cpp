@@ -11,7 +11,7 @@
 #include <epicsThread.h>
 #include <pv/pvaClient.h>
 
-#define epicsExportSharedSymbols
+#include <epicsExport.h>
 #include <pv/longArrayMonitor.h>
 
 

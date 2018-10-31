@@ -3,72 +3,80 @@ TOP=..
 include $(TOP)/configure/CONFIG
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
+
+EPICS_BASE_PVA_CORE_LIBS = pvaClient pvAccess pvAccessCA nt pvData ca Com
+#EPICS_BASE_PVA_CORE_LIBS = pvaClient pvAccess pva2ca nt pvData ca Com
+
 PROD_HOST += testRequest
 testRequest_SRCS += testRequest.cpp
-testRequest_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+testRequest_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 
 PROD_HOST += get
 get_SRCS += get.cpp
-get_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+get_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += put
 put_SRCS += put.cpp
-put_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+put_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+
+PROD_HOST += getputmonitor
+getputmonitor_SRCS += getputmonitor.cpp
+getputmonitor_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += putGet
 putGet_SRCS += putGet.cpp
-putGet_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+putGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += monitor
 monitor_SRCS += monitor.cpp
-monitor_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+monitor_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += getField
 getField_SRCS += getField.cpp
-getField_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+getField_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += examplePvaClientProcess
 examplePvaClientProcess_SRCS += examplePvaClientProcess.cpp
-examplePvaClientProcess_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
+examplePvaClientProcess_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 
 PROD_HOST += examplePvaClientGet
 examplePvaClientGet_SRCS += examplePvaClientGet.cpp
-examplePvaClientGet_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
+examplePvaClientGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += examplePvaClientPut
 examplePvaClientPut_SRCS += examplePvaClientPut.cpp
-examplePvaClientPut_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
+examplePvaClientPut_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 
 PROD_HOST += examplePvaClientMonitor
 examplePvaClientMonitor_SRCS += examplePvaClientMonitor.cpp
-examplePvaClientMonitor_LIBS += pvaClient pvAccess pvAccessCA pvData ca Com
+examplePvaClientMonitor_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 
 PROD_HOST += examplePvaClientMultiDouble
 examplePvaClientMultiDouble_SRCS += examplePvaClientMultiDouble.cpp
-examplePvaClientMultiDouble_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+examplePvaClientMultiDouble_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 
 PROD_HOST += examplePvaClientNTMulti
 examplePvaClientNTMulti_SRCS += examplePvaClientNTMulti.cpp
-examplePvaClientNTMulti_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+examplePvaClientNTMulti_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 
 PROD_HOST += helloWorldRPC
 helloWorldRPC_SRCS += helloWorldRPC.cpp
-helloWorldRPC_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+helloWorldRPC_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 
 PROD_HOST += helloWorldPutGet
 helloWorldPutGet_SRCS += helloWorldPutGet.cpp
-helloWorldPutGet_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+helloWorldPutGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += putUnion
 putUnion_SRCS += putUnion.cpp
-putUnion_LIBS += pvaClient pvAccess pvAccessCA nt pvData ca Com
+putUnion_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 
 PROD_SYS_LIBS_WIN32 += ws2_32

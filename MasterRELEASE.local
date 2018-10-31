@@ -1,0 +1,15 @@
+# This is a an  example RELEASE.local file for use with V4 modules cloned from github
+# Copy this file to configure/RELEASE.local.
+# Change the first line and also EPICS_BASE and also possibly EPICS_BASE
+# type make at top level
+EPICS7_DIR=/home/epicsv4/masterCPP
+PVDATABASE=${EPICS7_DIR}/pvDatabaseCPP
+PVACLIENT=${EPICS7_DIR}/pvaClientCPP
+PVA2PVA=${EPICS7_DIR}/pva2pva
+PVACCESS=${EPICS7_DIR}/pvAccessCPP
+NORMATIVETYPES=${EPICS7_DIR}/normativeTypesCPP
+PVDATA=${EPICS7_DIR}/pvDataCPP
+PVCOMMON=${EPICS7_DIR}/pvCommonCPP
+EPICS_BASE=${EPICS7_DIR}/epics-base
+TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
+

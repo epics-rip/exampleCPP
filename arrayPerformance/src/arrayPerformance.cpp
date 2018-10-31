@@ -12,7 +12,7 @@
 #include <pv/pvData.h>
 #include <pv/timeStamp.h>
 
-#define epicsExportSharedSymbols
+#include <epicsExport.h>
 #include <pv/arrayPerformance.h>
 
 
