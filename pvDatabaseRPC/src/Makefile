@@ -4,7 +4,7 @@ include $(TOP)/configure/CONFIG
 
 exampleRPCSRC = $(TOP)/src
 
-EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvAccess pvAccessCA pvData Com
+EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvAccess pvAccessCA pvData ca Com
 
 INC += pv/exampleRPC.h
 //INC += pv/device.h

@@ -8,7 +8,7 @@ INC+= pv/longArrayMonitor.h
 INC+= pv/longArrayGet.h
 INC+= pv/longArrayPut.h
 
-EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvaClient pvAccess pvAccessCA pvData Com
+EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvaClient pvAccess pvAccessCA pvData ca Com
 
 LIBRARY = arrayPerform
 LIBSRCS += arrayPerformance.cpp
