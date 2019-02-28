@@ -13,7 +13,7 @@
 #include <pv/pvDatabase.h>
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
-#include <pv/point.h>
+#include "pv/point.h"
 
 #include <shareLib.h>
 
