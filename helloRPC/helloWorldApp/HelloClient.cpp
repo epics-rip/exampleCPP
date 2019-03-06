@@ -62,11 +62,10 @@ int main (int argc, char *argv[])
         arguments->getSubField<PVStructure>("query")->
                 getSubField<PVString>("personsname")->
                 put(name);
-        std::string pvname = "helloService";
 
         // Create an RPC client to the "helloService" service
         epics::pvAccess::RPCClient::shared_pointer client
-             = epics::pvAccess::RPCClient::create(pvname);
+             = epics::pvAccess::RPCClient::create("helloService");
 
         // Create an RPC request and block until response is received. There is
         // no need to explicitly wait for connection; this method takes care of it.
