@@ -7,8 +7,9 @@
 
 using namespace epics::pvAccess;
 
-// Main is the entry point of the HelloService server side executable.
-
+/**
+ * Main is the entry point of the HelloService server side executable.
+ */
 int main(int argc,char *argv[])
 {
     RPCServer server;
