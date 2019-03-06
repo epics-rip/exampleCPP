@@ -2,6 +2,7 @@
 // found in the file LICENSE that is included with the distribution
 
 #include <pv/rpcServer.h>
+#include <pv/pvDatabase.h>
 #include "HelloService.h"
 
 using namespace epics::pvData;
@@ -36,9 +37,15 @@ epics::pvData::PVStructurePtr HelloService::request(
     epics::pvData::PVStructurePtr const & pvArgument
     ) throw (pvAccess::RPCRequestException)
 {
-    // Extract the arguments. Just one in this case.
-    // Report an error by throwing a RPCRequestException 
-    epics::pvData::PVStringPtr nameField = pvArgument->getSubField<PVString>("personsname");
+    // Extract the arguments. First get the "query" structure as specifed by NTURI.
+    // Report errors by throwing a RPCRequestException.
+    PVStructurePtr queryPtr = pvArgument->getSubField<PVStructure>("query");
+    if (!queryPtr)
+    {
+        throw epics::pvAccess::RPCRequestException(Status::STATUSTYPE_ERROR,
+                                                   "Malformed RPC stub. Expecting query struct.");
+    }
+    epics::pvData::PVStringPtr nameField = queryPtr->getSubField<PVString>("personsname");
     if (!nameField)
     {
         throw pvAccess::RPCRequestException(Status::STATUSTYPE_ERROR,

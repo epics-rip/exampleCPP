@@ -12,19 +12,22 @@
 using namespace epics::pvData;
 
 
-// Create the "data interface" required to send data to the hello service. That is,
-// define the client side API of the hello service.
+/**
+ * Create the "data interface" required to send data to the hello service. That is,
+ * define the client side API of the hello service.
+ * This effectively creates an NTURI; presumably one could do this directly.
+ */
 static StructureConstPtr makeRequestStructure()
 {
     FieldCreatePtr factory = getFieldCreate();
 
-    FieldConstPtrArray fields;
-    StringArray names;
-
-    names.push_back("personsname");
-    fields.push_back(factory->createScalar(pvString));
-
-    return factory->createStructure(names, fields);
+    static StructureConstPtr requestStructure = factory->
+            createFieldBuilder()->
+            addNestedStructure("query")->
+            add("personsname", pvString)->
+            endNested()->
+            createStructure();
+    return requestStructure;
 }
 
 // Set a pvAccess connection timeout, after which the client gives up trying 
@@ -55,11 +58,15 @@ int main (int argc, char *argv[])
         // Get the value of the first input argument to this executable and use it 
         // to set the data to be sent to the server through the introspection interface. 
         std::string name = (argc > 1) ? argv[1] : "anonymous";
-	    arguments->getSubField<PVString>("personsname")->put(name);
+
+        arguments->getSubField<PVStructure>("query")->
+                getSubField<PVString>("personsname")->
+                put(name);
+        std::string pvname = "helloService";
 
         // Create an RPC client to the "helloService" service
         epics::pvAccess::RPCClient::shared_pointer client
-             = epics::pvAccess::RPCClient::create("helloService");
+             = epics::pvAccess::RPCClient::create(pvname);
 
         // Create an RPC request and block until response is received. There is
         // no need to explicitly wait for connection; this method takes care of it.
