@@ -2,7 +2,6 @@
 // found in the file LICENSE that is included with the distribution
 
 #include <pv/rpcServer.h>
-#include <pv/pvDatabase.h>
 #include "HelloService.h"
 
 using namespace epics::pvData;
