@@ -16,7 +16,7 @@
 #include <sstream>
 
 #include <epicsExport.h>
-#include <pv/exampleRPC.h>
+#include "pv/exampleRPC.h"
 
 namespace epics { namespace exampleCPP { namespace exampleRPC {
 

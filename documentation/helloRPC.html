@@ -30,7 +30,8 @@
 
 <h2 class="nocount">Abstract</h2>
 <p>
-<b>helloRPC</b> implements a simple channelRPC service.
+<b>helloRPC</b> implements a simple channelRPC service. It conforms to the convention that the request should
+  be an NTURI so that pvcall can be used to call the service.
 </p>
  
 </div> <!-- head -->
@@ -60,6 +61,12 @@ mrk> pwd
 /home/epicsv4/masterCPP/exampleCPP/helloRPC
 mrk> bin/linux-x86_64/HelloClient
 Hello anonymous
+</pre>
+<p>It is also possible to call the service using pvcall:</p>
+<pre>
+mrk> pvcall helloservice personsname=Marty
+structure
+    string greeting Hello Marty
 </pre>
 <h2>Some Details</h2>
 <p>This is a starting point for writing an RPC service without using

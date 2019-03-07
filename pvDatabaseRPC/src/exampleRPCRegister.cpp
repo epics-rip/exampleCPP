@@ -32,7 +32,7 @@
 #include <pv/pvDatabase.h>
 
 #include <epicsExport.h>
-#include <pv/exampleRPC.h>
+#include "pv/exampleRPC.h"
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;

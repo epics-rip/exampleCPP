@@ -5,6 +5,7 @@
 #include <pv/rpcService.h>
 #include <pv/clientFactory.h>
 #include <pv/rpcClient.h>
+#include <pv/nturi.h>
 
 #include <string>
 #include <iostream>
@@ -12,19 +13,22 @@
 using namespace epics::pvData;
 
 
-// Create the "data interface" required to send data to the hello service. That is,
-// define the client side API of the hello service.
+/**
+ * Create the "data interface" required to send data to the hello service. That is,
+ * define the client side API of the hello service.
+ * This creates an NTURI.
+ */
 static StructureConstPtr makeRequestStructure()
 {
     FieldCreatePtr factory = getFieldCreate();
 
-    FieldConstPtrArray fields;
-    StringArray names;
+    epics::nt::NTURIBuilderPtr builder = epics::nt::NTURI::createBuilder();
 
-    names.push_back("personsname");
-    fields.push_back(factory->createScalar(pvString));
+    static StructureConstPtr requestStructure = builder->
+            addQueryString("personsname")->
+            createStructure();
 
-    return factory->createStructure(names, fields);
+    return requestStructure;
 }
 
 // Set a pvAccess connection timeout, after which the client gives up trying 
@@ -55,7 +59,8 @@ int main (int argc, char *argv[])
         // Get the value of the first input argument to this executable and use it 
         // to set the data to be sent to the server through the introspection interface. 
         std::string name = (argc > 1) ? argv[1] : "anonymous";
-	    arguments->getSubField<PVString>("personsname")->put(name);
+        // Put the name string to the personsname field of the NTURI.
+        arguments->getSubField<PVString>("query.personsname")->put(name);
 
         // Create an RPC client to the "helloService" service
         epics::pvAccess::RPCClient::shared_pointer client

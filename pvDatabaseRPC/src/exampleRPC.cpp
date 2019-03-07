@@ -16,7 +16,7 @@
 #include <epicsThread.h>
 
 #include <epicsExport.h>
-#include <pv/exampleRPC.h>
+#include "pv/exampleRPC.h"
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
