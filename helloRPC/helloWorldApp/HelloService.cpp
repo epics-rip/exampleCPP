@@ -37,19 +37,13 @@ epics::pvData::PVStructurePtr HelloService::request(
     epics::pvData::PVStructurePtr const & pvArgument
     ) throw (pvAccess::RPCRequestException)
 {
-    // Extract the arguments. First get the "query" structure as specifed by NTURI.
+    // Extract the argument from the personsname field of the NTURI.
     // Report errors by throwing a RPCRequestException.
-    PVStructurePtr queryPtr = pvArgument->getSubField<PVStructure>("query");
-    if (!queryPtr)
-    {
-        throw epics::pvAccess::RPCRequestException(Status::STATUSTYPE_ERROR,
-                                                   "Malformed RPC stub. Expecting query struct.");
-    }
-    epics::pvData::PVStringPtr nameField = queryPtr->getSubField<PVString>("personsname");
+    PVStringPtr nameField = pvArgument->getSubField<PVString>("query.personsname");
     if (!nameField)
     {
-        throw pvAccess::RPCRequestException(Status::STATUSTYPE_ERROR,
-            "PVString field with name 'personsname' expected.");
+        throw epics::pvAccess::RPCRequestException(
+            Status::STATUSTYPE_ERROR, "Malformed RPC stub. Expecting NTURI containing string personsname.");
     }
 
     // Create the result structure of the data interface.

@@ -59,10 +59,8 @@ int main (int argc, char *argv[])
         // Get the value of the first input argument to this executable and use it 
         // to set the data to be sent to the server through the introspection interface. 
         std::string name = (argc > 1) ? argv[1] : "anonymous";
-
-        arguments->getSubField<PVStructure>("query")->
-                getSubField<PVString>("personsname")->
-                put(name);
+        // Put the name string to the personsname field of the NTURI.
+        arguments->getSubField<PVString>("query.personsname")->put(name);
 
         // Create an RPC client to the "helloService" service
         epics::pvAccess::RPCClient::shared_pointer client
