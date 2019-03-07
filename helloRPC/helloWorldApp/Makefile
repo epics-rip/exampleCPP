@@ -9,7 +9,7 @@ HelloService_LIBS += pvAccess pvData Com
 
 PROD_HOST += HelloClient
 HelloClient_SRCS += HelloClient.cpp
-HelloClient_LIBS += pvAccess pvData Com
+HelloClient_LIBS += pvAccess pvData Com nt
 
 include $(TOP)/configure/RULES
 #----------------------------------------

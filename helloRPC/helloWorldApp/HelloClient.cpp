@@ -5,6 +5,7 @@
 #include <pv/rpcService.h>
 #include <pv/clientFactory.h>
 #include <pv/rpcClient.h>
+#include <pv/nturi.h>
 
 #include <string>
 #include <iostream>
@@ -15,18 +16,18 @@ using namespace epics::pvData;
 /**
  * Create the "data interface" required to send data to the hello service. That is,
  * define the client side API of the hello service.
- * This effectively creates an NTURI; presumably one could do this directly.
+ * This creates an NTURI.
  */
 static StructureConstPtr makeRequestStructure()
 {
     FieldCreatePtr factory = getFieldCreate();
 
-    static StructureConstPtr requestStructure = factory->
-            createFieldBuilder()->
-            addNestedStructure("query")->
-            add("personsname", pvString)->
-            endNested()->
+    epics::nt::NTURIBuilderPtr builder = epics::nt::NTURI::createBuilder();
+
+    static StructureConstPtr requestStructure = builder->
+            addQueryString("personsname")->
             createStructure();
+
     return requestStructure;
 }
 
