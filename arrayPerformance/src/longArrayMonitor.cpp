@@ -30,7 +30,7 @@ LongArrayMonitor::LongArrayMonitor(
   channelName(channelName),
   queueSize(queueSize)
 {
-     thread = std::auto_ptr<epicsThread>(new epicsThread(
+     thread = EpicsThreadPtr(new epicsThread(
         *this,
         "longArrayMonitor",
         epicsThreadGetStackSize(epicsThreadStackSmall),

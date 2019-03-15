@@ -59,7 +59,7 @@ int main(int argc,char *argv[])
         putVoltage->put(0.0);
         cout << "NOTE!!! an exception will be thrown because voltage is 0\n";
         putGet->putGet();
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         cout << "exception " << e.what() << endl;
         exit(1);
     }

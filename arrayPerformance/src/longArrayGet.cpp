@@ -30,7 +30,7 @@ LongArrayGet::LongArrayGet(
   iterBetweenCreateChannelGet(iterBetweenCreateChannelGet),
   delayTime(delayTime)
 {
-     thread = std::auto_ptr<epicsThread>(new epicsThread(
+     thread = EpicsThreadPtr(new epicsThread(
         *this,
         "longArrayGet",
         epicsThreadGetStackSize(epicsThreadStackSmall),

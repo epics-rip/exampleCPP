@@ -18,6 +18,7 @@
 
 namespace epics { namespace exampleCPP { namespace arrayPerformance {
 
+typedef std::tr1::shared_ptr<epicsThread> EpicsThreadPtr;
 
 class LongArrayMonitor;
 typedef std::tr1::shared_ptr<LongArrayMonitor> LongArrayMonitorPtr;
@@ -34,7 +35,7 @@ public:
 private:
     std::string channelName;
     int queueSize;
-    std::auto_ptr<epicsThread> thread;
+    EpicsThreadPtr thread;
     epics::pvData::Event runStop;
     epics::pvData::Event runReturn;
 };

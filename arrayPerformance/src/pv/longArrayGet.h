@@ -18,6 +18,7 @@
 
 namespace epics { namespace exampleCPP { namespace arrayPerformance {
 
+typedef std::tr1::shared_ptr<epicsThread> EpicsThreadPtr;
 
 class LongArrayGet;
 typedef std::tr1::shared_ptr<LongArrayGet> LongArrayGetPtr;
@@ -40,7 +41,7 @@ private:
     int iterBetweenCreateChannel;
     int iterBetweenCreateChannelGet;
     double delayTime;
-    std::auto_ptr<epicsThread> thread;
+    EpicsThreadPtr thread;
     epics::pvData::Event runStop;
     epics::pvData::Event runReturn;
 };

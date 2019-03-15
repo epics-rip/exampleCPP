@@ -20,6 +20,8 @@
 
 namespace epics { namespace exampleCPP { namespace exampleRPC { 
 
+typedef std::tr1::shared_ptr<epicsThread> EpicsThreadPtr;
+
 class Device;
 typedef std::tr1::shared_ptr<Device> DevicePtr;
 
@@ -107,7 +109,7 @@ private:
     std::vector<Point> points;
 
     epics::pvData::Mutex mutex;
-    std::auto_ptr<epicsThread> thread;
+    EpicsThreadPtr thread;
 };
 
 class AbortService;

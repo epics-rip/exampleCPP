@@ -30,7 +30,7 @@ static void example(PvaClientPtr const &pvaClient)
         pvaChannel = pvaClient->createChannel("PVRhelloPutGet");
         pvaChannel->connect(2.0);
         testDiag("channel connected");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testAbort("channel connection exception '%s'", e.what());
     }
 
@@ -44,7 +44,7 @@ static void example(PvaClientPtr const &pvaClient)
         getData = putGet->getGetData();
         if (!putData || !getData)
             testAbort("NULL data pointer from putGet");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testAbort("putGet connection exception '%s'", e.what());
     }
 
@@ -54,7 +54,7 @@ static void example(PvaClientPtr const &pvaClient)
         pvStructure = putData->getPVStructure();
         putValue = pvStructure->getSubField<PVString>("argument.value");
         testOk(!!putValue, "putField value exists");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testAbort("structure connection exception '%s'", e.what());
     }
 
@@ -62,7 +62,7 @@ static void example(PvaClientPtr const &pvaClient)
         testDiag("Setting value to Marty");
         putValue->put("Marty");
         putGet->putGet();
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testAbort("putGet exception '%s'", e.what());
     }
 
@@ -79,7 +79,7 @@ static void example(PvaClientPtr const &pvaClient)
         pvStructure = getData->getPVStructure();
         gotValue = pvStructure->getSubField<PVString>("result.value");
         testOk(gotValue && gotValue->get() == std::string("Hello World"), "returned correct value");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testAbort("exception '%s'", e.what());
     }
 }

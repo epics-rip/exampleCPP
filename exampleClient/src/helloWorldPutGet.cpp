@@ -40,7 +40,7 @@ int main(int argc,char *argv[])
     try {
         PvaClientPtr pva = PvaClient::get("pva");
         example(pva);
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         cerr << "exception " << e.what() << endl;
         return 1;
     }

@@ -100,7 +100,7 @@ void AbortService::request(
     try {
         pvRecord->getDevice()->abort();
     }
-    catch (std::runtime_error & e) {
+    catch (std::exception& e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -146,7 +146,7 @@ void ConfigureService::request(
     try {
         pvRecord->getDevice()->configure(newPoints);
     }
-    catch (std::runtime_error & e) {
+    catch (std::exception& e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -161,7 +161,7 @@ void RunService::request(
     try {
         pvRecord->getDevice()->runScan();
     }
-    catch (std::runtime_error & e) {
+    catch (std::exception& e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -177,7 +177,7 @@ void PauseService::request(
     try {
         pvRecord->getDevice()->pause();
     }
-    catch (std::runtime_error & e) {
+    catch (std::exception& e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -192,7 +192,7 @@ void ResumeService::request(
     try {
         pvRecord->getDevice()->resume();
     }
-    catch (std::runtime_error & e) {
+    catch (std::exception& e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -207,7 +207,7 @@ void StopService::request(
     try {
         pvRecord->getDevice()->stopScan();
     }
-    catch (std::runtime_error & e) {
+    catch (std::exception& e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -234,7 +234,7 @@ void RewindService::request(
     try {
         pvRecord->getDevice()->rewind(n);
     }
-    catch (std::runtime_error & e) {
+    catch (std::exception& e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }
@@ -497,7 +497,7 @@ void ExampleRPC::process()
             pvTimeStamp_sp.set(timeStamp);
         }
     }
-    catch (std::runtime_error & o)
+    catch (std::exception& o)
     {
         // If write to device fails restore values
         Point sp = device->getPositionSetpoint();

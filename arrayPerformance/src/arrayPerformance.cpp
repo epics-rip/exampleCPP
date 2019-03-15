@@ -38,7 +38,7 @@ ArrayPerformancePtr ArrayPerformance::create(
 
 void ArrayPerformance::startThread()
 {
-    thread =  std::auto_ptr<epicsThread>(new epicsThread(
+    thread = EpicsThreadPtr(new epicsThread(
         *this,
         "arrayPerformance",
         epicsThreadGetStackSize(epicsThreadStackSmall),
@@ -137,7 +137,7 @@ void ArrayPerformance::run()
             pvValue->replace(data);
             process();
             endGroupPut();
-        } catch(...) {
+        } catch(std::exception& e) {
            unlock();
            throw;
         }

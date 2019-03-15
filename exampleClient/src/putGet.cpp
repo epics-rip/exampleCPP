@@ -277,7 +277,7 @@ int main(int argc,char *argv[])
                  for(int i=0; i<nPvs; ++i) {
                     try {
                          ClientPutGets[i]->putGet(str);
-                    } catch (std::runtime_error e) {
+                    } catch (std::exception& e) {
                        cerr << "exception " << e.what() << endl;
                     }
                  }
@@ -287,7 +287,7 @@ int main(int argc,char *argv[])
                  for(int i=0; i<nPvs; ++i) {
                     try {
                          ClientPutGets[i]->getPut();
-                    } catch (std::runtime_error e) {
+                    } catch (std::exception& e) {
                        cerr << "exception " << e.what() << endl;
                     }
                  }
@@ -297,14 +297,14 @@ int main(int argc,char *argv[])
                  for(int i=0; i<nPvs; ++i) {
                     try {
                          ClientPutGets[i]->getGet();
-                    } catch (std::runtime_error e) {
+                    } catch (std::exception& e) {
                        cerr << "exception " << e.what() << endl;
                     }
                  }
                  continue;
             }
         }
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         cerr << "exception " << e.what() << endl;
         return 1;
     }

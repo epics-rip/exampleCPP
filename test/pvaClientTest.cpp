@@ -87,7 +87,7 @@ static void example(PvaClientPtr const &pva)
         pvaGet->get();
         testOk(pvaGet->getData()->getString() == "test", "string round-trip");
         testOk(pva->cacheSize()==2,"cacheSize should be 2");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testAbort("channel example exception '%s'", e.what());
     }
 }

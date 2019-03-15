@@ -94,7 +94,7 @@ int main(int argc,char *argv[])
             longArrayMonitor[i]->stop();
         }
         arrayPerformance->stop();
-    } catch (std::runtime_error e) {
+    } catch(std::exception& e) {
         cerr << "exception " << e.what() << endl;
         return 1;
     }

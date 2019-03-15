@@ -167,7 +167,7 @@ void ExampleGetLinkRecord::process()
                 setAlarm = true;
              }
             if(setAlarm) pvAlarm.set(alarm);
-        } catch (std::runtime_error e) {
+        } catch (std::exception& e) {
             alarm.setMessage(e.what());
             alarm.setSeverity(invalidAlarm);
             pvAlarm.set(alarm);

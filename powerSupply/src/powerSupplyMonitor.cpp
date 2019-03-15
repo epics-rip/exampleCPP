@@ -38,7 +38,7 @@ int main(int argc,char *argv[])
             monitorData->showOverrun(cout);
             monitor->releaseEvent();
         }
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
             cout << "exception " << e.what() << endl;
             exit(1);
     }

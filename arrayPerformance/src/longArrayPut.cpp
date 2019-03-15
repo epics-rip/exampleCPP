@@ -33,7 +33,7 @@ LongArrayPut::LongArrayPut(
   iterBetweenCreateChannelPut(iterBetweenCreateChannelPut),
   delayTime(delayTime)
 {
-     thread = std::auto_ptr<epicsThread>(new epicsThread(
+     thread = EpicsThreadPtr(new epicsThread(
         *this,
         "longArrayPut",
         epicsThreadGetStackSize(epicsThreadStackSmall),
