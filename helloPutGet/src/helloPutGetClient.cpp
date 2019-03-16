@@ -33,7 +33,7 @@ int main(int argc,char *argv[])
         putGet->putGet();
         PvaClientGetDataPtr getData = putGet->getGetData();
         cout << getData->getPVStructure() << endl;
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         cout << "exception " << e.what() << endl;
         return 1;
     }

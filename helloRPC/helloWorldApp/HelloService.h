@@ -23,7 +23,7 @@ public:
 
     epics::pvData::PVStructurePtr request(
         epics::pvData::PVStructurePtr const & args
-            ) throw (epics::pvAccess::RPCRequestException);
+            );
 };
 
 }

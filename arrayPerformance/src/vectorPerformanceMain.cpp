@@ -23,6 +23,7 @@
 #include <pv/timeStamp.h>
 #include <pv/lock.h>
 
+typedef std::tr1::shared_ptr<epicsThread> EpicsThreadPtr;
 
 using namespace std;
 using std::tr1::static_pointer_cast;
@@ -50,7 +51,7 @@ private:
     double delay;
     Mutex mutex;
     std::vector<int64> vector;
-    std::auto_ptr<epicsThread> thread;
+    EpicsThreadPtr thread;
 };
 
 VectorPerformanceThread::VectorPerformanceThread(
@@ -67,7 +68,7 @@ VectorPerformanceThread::VectorPerformanceThread(
 void VectorPerformanceThread::init()
 {
      vector.resize(size);
-     thread = std::auto_ptr<epicsThread>(new epicsThread(
+     thread = EpicsThreadPtr(new epicsThread(
         *this,
         "vectorPerform",
         epicsThreadGetStackSize(epicsThreadStackSmall),
@@ -179,9 +180,7 @@ int main(int argc,char *argv[])
 
     }
     for(size_t i=0; i<nThread; ++i) {
-cout << "" << i << " calling destroy" << endl;
         threads[i]->destroy();
-        threads[i].reset();
     }
     return 0;
 }

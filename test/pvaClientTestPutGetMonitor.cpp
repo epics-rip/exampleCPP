@@ -57,7 +57,7 @@ static void exampleDouble(PvaClientPtr const &pvaClient)
         pvaChannel = pvaClient->createChannel("PVRdouble");
         pvaChannel->connect(2.0);
         testDiag("channel connected");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testAbort("channel connection exception '%s'", e.what());
     }
 
@@ -69,7 +69,7 @@ static void exampleDouble(PvaClientPtr const &pvaClient)
         testDiag("put connected");
         if (!putData)
             testAbort("NULL data pointer from putGet");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testAbort("put connection exception '%s'", e.what());
     }
 
@@ -81,7 +81,7 @@ static void exampleDouble(PvaClientPtr const &pvaClient)
         testDiag("get connected");
         if (!getData)
             testAbort("NULL data pointer from putGet");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testAbort("get connection exception '%s'", e.what());
     }
 
@@ -90,7 +90,7 @@ static void exampleDouble(PvaClientPtr const &pvaClient)
     try {
         monitor = pvaChannel->monitor(requester);
         testDiag("monitor connected");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testAbort("monitor connection exception '%s'", e.what());
     }
     epicsThreadSleep(0.1);  // Allow connection monitor event to fire
@@ -114,7 +114,7 @@ static void exampleDouble(PvaClientPtr const &pvaClient)
         testDiag("= process =");
         expectValueChange = false;
         process->process();
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testAbort("exception '%s'", e.what());
     }
 }

@@ -120,13 +120,13 @@ static void exampleEvenMore(PvaClientPtr const &pva,string const & channelName)
     try {
         rpc->request(pvRequest, requester);
         requester->waitResponse();
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
           cerr << "Expected exception " << e.what() << endl;  
     }
     try {
         rpc->request(pvRequest, requester);
         rpc->request(pvRequest, requester);
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
           cerr << "Expected exception " << e.what() << endl;  
     }
 }
@@ -142,7 +142,7 @@ int main(int argc,char *argv[])
         exampleMore(pva,channelName);
         exampleEvenMore(pva,channelName);
         cout << "_____HelloWorldRPC done_______\n";
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         cerr << "exception " << e.what() << endl;
         return 1;
     }

@@ -90,7 +90,7 @@ void HelloService::request(
         record->unlock();
         callback->requestDone(Status(), pvResult);
     }
-    catch (std::runtime_error & e) {
+    catch (std::exception& e) {
         throw epics::pvAccess::RPCRequestException(
             Status::STATUSTYPE_ERROR,e.what());
     }

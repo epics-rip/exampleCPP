@@ -122,7 +122,7 @@ int main(int argc,char *argv[])
         exampleSimple(pva,channelName,pvArgument);
         exampleLonger(pva,channelName,pvArgument);
         exampleRequester(pva,channelName,pvArgument);
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         cerr << "exception " << e.what() << endl;
         return 1;
     }

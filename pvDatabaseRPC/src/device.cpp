@@ -94,7 +94,7 @@ void Device::update()
 Device::Device()
 : state(IDLE), index(0)
 {
-   thread =  std::auto_ptr<epicsThread>(new epicsThread(
+   thread = EpicsThreadPtr(new epicsThread(
         *this,
         "device",
         epicsThreadGetStackSize(epicsThreadStackSmall),

@@ -81,7 +81,7 @@ int main(int argc,char *argv[])
                  break;
             }
         }
-    } catch (std::runtime_error e) {
+    } catch(std::exception& e) {
         cout << "exception " << e.what() << endl;
         exit(1);
     }

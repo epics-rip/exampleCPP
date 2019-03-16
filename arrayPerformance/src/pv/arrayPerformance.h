@@ -21,6 +21,8 @@
 
 namespace epics { namespace exampleCPP { namespace arrayPerformance { 
 
+typedef std::tr1::shared_ptr<epicsThread> EpicsThreadPtr;
+
 class ArrayPerformance;
 typedef std::tr1::shared_ptr<ArrayPerformance> ArrayPerformancePtr;
 
@@ -45,7 +47,7 @@ private:
         double delay);
     size_t size;
     double delay;
-    std::auto_ptr<epicsThread> thread;
+    EpicsThreadPtr thread;
     epics::pvData::Event runStop;
     epics::pvData::Event runReturn;
 };

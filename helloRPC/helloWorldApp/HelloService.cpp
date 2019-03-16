@@ -34,7 +34,7 @@ StructureConstPtr makeResponseStructure()
  */
 epics::pvData::PVStructurePtr HelloService::request(
     epics::pvData::PVStructurePtr const & pvArgument
-    ) throw (pvAccess::RPCRequestException)
+    ) 
 {
     // Extract the argument from the personsname field of the NTURI.
     // Report errors by throwing a RPCRequestException.

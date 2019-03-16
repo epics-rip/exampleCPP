@@ -153,7 +153,7 @@ public:
                 data->showChanged(cout);
                 cout << "bitSet " << *bitSet << endl;
             }
-        } catch (std::runtime_error e) {
+        } catch (std::exception& e) {
             cerr << "exception " << e.what() << endl;
         }
     }
@@ -390,7 +390,7 @@ int main(int argc,char *argv[])
             if(str.compare("exit")==0) break;
             cout << "illegal command\n";
         }
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         cerr << "exception " << e.what() << endl;
         return 1;
     }

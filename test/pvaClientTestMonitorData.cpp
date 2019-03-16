@@ -59,47 +59,47 @@ static void testDouble()
 
     try {
         testOk(!!pvaData->getValue(), "getValue");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testFail("getValue exception '%s'", e.what());
     }
 
     try {
         testOk(!!pvaData->getScalarValue(), "getScalarValue");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testFail("getScalarValue exception '%s'", e.what());
     }
     try {
         testOk(!pvaData->getArrayValue(), "!getArrayValue");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testPass("getArrayValue exception '%s'", e.what());
     }
     try {
         testOk(!pvaData->getScalarArrayValue(), "!getScalarArrayValue");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testPass("getScalarArrayValue exception '%s'", e.what());
     }
 
     try {
         testOk(pvaData->getDouble() == 5.0, "getDouble value");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testFail("getDouble exception '%s'", e.what());
     }
     try {
         testOk(pvaData->getString() == "5", "getString value");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testFail("getString exception '%s'", e.what());
     }
 
     try {
         shared_vector<const double> value = pvaData->getDoubleArray();
         testFail("getDoubleArray");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testPass("getDoubleArray exception '%s'", e.what());
     }
     try {
         shared_vector<const string> value = pvaData->getStringArray();
         testFail("getStringArray");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testPass("getStringArray exception '%s'", e.what());
     }
 }
@@ -139,46 +139,46 @@ static void testDoubleArray()
 
     try {
         testOk(!!pvaData->getValue(), "getValue");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testFail("getValue exception '%s'", e.what());
     }
 
     try {
         testOk(!pvaData->getScalarValue(), "!getScalarValue");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testPass("getScalarValue exception '%s'", e.what());
     }
     try {
         testOk(!!pvaData->getArrayValue(), "getArrayValue");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testFail("getArrayValue exception '%s'", e.what());
     }
     try {
         testOk(!!pvaData->getScalarArrayValue(), "getScalarArrayValue");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testPass("getScalarArrayValue exception '%s'", e.what());
     }
 
     try {
         testFail("getDouble %g", pvaData->getDouble());
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testPass("getDouble exception '%s'", e.what());
     }
     try {
         testFail("getString %s", pvaData->getString().c_str());
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testPass("getString exception '%s'", e.what());
     }
 
     try {
         shared_vector<const double> value = pvaData->getDoubleArray();
         testPass("getDoubleArray");
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testFail("getDoubleArray exception '%s'", e.what());
     }
     try {
         shared_vector<const string> value = pvaData->getStringArray();
-    } catch (std::runtime_error e) {
+    } catch (std::exception& e) {
         testPass("getStringArray exception '%s'", e.what());
     }
 }
