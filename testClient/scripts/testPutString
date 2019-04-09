@@ -1,0 +1,8 @@
+#!/bin/sh
+source ./setEnv
+echo PVRdouble       should work
+${TESTCLIENT}/testPutString PVRdouble 1.0
+echo PVRlong       should work
+${TESTCLIENT}/testPutString PVRlong  1
+echo PVRstring       should work
+${TESTCLIENT}/testPutString PVRstring 1

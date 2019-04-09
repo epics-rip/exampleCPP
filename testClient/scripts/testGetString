@@ -1,0 +1,8 @@
+#!/bin/sh
+source ./setEnv
+echo PVRdouble       should work
+${TESTCLIENT}/testGetString PVRdouble
+echo PVRlong       should work
+${TESTCLIENT}/testGetString PVRlong
+echo PVRstring       should work
+${TESTCLIENT}/testGetString PVRstring

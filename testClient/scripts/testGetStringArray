@@ -1,0 +1,8 @@
+#!/bin/sh
+source ./setEnv
+echo PVRdoubleArray       should work
+${TESTCLIENT}/testGetStringArray PVRdoubleArray
+echo PVRlongArray       should work
+${TESTCLIENT}/testGetStringArray PVRlongArray
+echo PVRstringArray       should work
+${TESTCLIENT}/testGetStringArray PVRstringArray

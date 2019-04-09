@@ -1,0 +1,8 @@
+#!/bin/sh
+source ./setEnv
+echo PVRdoubleArray       should work
+${TESTCLIENT}/testPutDoubleArray PVRdoubleArray '1.0,2.2,3.4'
+echo PVRlongArray       should not work
+${TESTCLIENT}/testPutDoubleArray PVRlongArray  '1,2,3'
+echo PVRstringArray       should not work
+${TESTCLIENT}/testPutDoubleArray PVRstringArray '1,2,3'
