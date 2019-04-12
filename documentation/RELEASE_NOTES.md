@@ -1,3 +1,12 @@
+EPICS 7.0.2.2 April 2019
+====================
+
+Changes include examples and tests that for changes to **pvaClientCPP** and **pvDatabaseCPP**.
+This means that this release is not compatible with previous versions of **EPICS 7**.
+
+* helloRPC now uses NTURI for communication between client and server.
+* testClient is new. See testClient/scripts/README.md
+
 
 GITHUB Main
 ===========
