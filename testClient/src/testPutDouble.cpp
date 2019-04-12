@@ -76,7 +76,8 @@ int main(int argc,char *argv[])
     if(debug) PvaClient::setDebug(true);
     PvaClientPtr pva= PvaClient::get(provider);
     try {
-        double value = std::stod(string(argv[optind+1]));
+        string val(argv[optind+1]);
+        double value = std::stod(val);
         PvaClientChannelPtr channel = pva->channel(channelName,provider,2.0);
         PvaClientPutPtr clientPut = channel->put(request);
         PvaClientPutDataPtr putData = clientPut->getData();
