@@ -1,0 +1,26 @@
+#!/bin/sh
+source ./setEnv
+echo PVRbooleanArray       should not work
+${TESTCLIENT}/testPutDoubleArray PVRbooleanArray 'false,true.false'
+echo PVRbyteArray       should work
+${TESTCLIENT}/testPutDoubleArray PVRbyteArray  '1,2,3'
+echo PVRshortArray       should work
+${TESTCLIENT}/testPutDoubleArray PVRshortArray  '1,2,3'
+echo PVRintArray       should work
+${TESTCLIENT}/testPutDoubleArray PVRintArray  '1,2,3'
+echo PVRlongArray       should work
+${TESTCLIENT}/testPutDoubleArray PVRlongArray  '1,2,3'
+echo PVRubyteArray       should work
+${TESTCLIENT}/testPutDoubleArray PVRubyteArray  '1,2,3'
+echo PVRushortArray       should work
+${TESTCLIENT}/testPutDoubleArray PVRushortArray  '1,2,3'
+echo PVRuintArray       should work
+${TESTCLIENT}/testPutDoubleArray PVRuintArray  '1,2,3'
+echo PVRulongArray       should work
+${TESTCLIENT}/testPutDoubleArray PVRulongArray  '1,2,3'
+echo PVRfloatArray       should work
+${TESTCLIENT}/testPutDoubleArray PVRfloatArray '1.0,2.2,3.4'
+echo PVRdoubleArray       should work
+${TESTCLIENT}/testPutDoubleArray PVRdoubleArray '1.0,2.2,3.4'
+echo PVRstringArray       should not work
+${TESTCLIENT}/testPutDoubleArray PVRstringArray 'one,two,three'

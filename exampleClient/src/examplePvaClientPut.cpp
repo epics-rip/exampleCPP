@@ -26,6 +26,9 @@ static ConvertPtr convert = getConvert();
 static void exampleDouble(PvaClientPtr const &pva,string const & channelName,string const & providerName)
 {
     cout << "__exampleDouble__ channelName " << channelName << " providerName " << providerName << endl;
+    cout << "shortest way\n";
+    pva->channel(channelName,providerName)->putDouble(1.0);
+    cout << "longer way\n";
     PvaClientChannelPtr channel = pva->channel(channelName,providerName,2.0);
     PvaClientPutPtr put = channel->put();
     PvaClientPutDataPtr putData = put->getData();
@@ -48,14 +51,19 @@ static void exampleDouble(PvaClientPtr const &pva,string const & channelName,str
 static void exampleDoubleArray(PvaClientPtr const &pva,string const & channelName,string const & providerName)
 {
     cout << "__exampleDoubleArray__ channelName " << channelName << " providerName " << providerName << endl;
+    cout << "shortest way\n";
+    size_t num = 5;
+    shared_vector<double> data(num,0);
+    for(size_t i=0; i<num; ++i) data[i] = i;
+    pva->channel(channelName,providerName)->putDoubleArray(freeze(data));
+    cout << "longer way\n";
+    data = shared_vector<double>(num,0);
+    for(size_t i=0; i<num; ++i) data[i] = .1*i;
     PvaClientChannelPtr channel = pva->channel(channelName,providerName,2.0);
     PvaClientPutPtr put = channel->put();
     PvaClientPutDataPtr putData = put->getData();
     PvaClientMonitorPtr monitor = pva->channel(channelName,providerName,2.0)->monitor("value");
     PvaClientMonitorDataPtr monitorData = monitor->getData();
-    size_t num = 5;
-    shared_vector<double> data(num,0);
-    for(size_t i=0; i<num; ++i) data[i] = .1*i;
     putData->putDoubleArray(freeze(data)); put->put();
     channel->get("field(value)")->getData()->showChanged(cout) << endl;
     data = shared_vector<double>(num,0);

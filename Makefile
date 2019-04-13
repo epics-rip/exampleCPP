@@ -11,6 +11,7 @@ EMBEDDED_TOPS += $(TOP)/helloPutGet
 EMBEDDED_TOPS += $(TOP)/helloRPC
 EMBEDDED_TOPS += $(TOP)/pvDatabaseRPC
 EMBEDDED_TOPS += $(TOP)/arrayPerformance
+EMBEDDED_TOPS += $(TOP)/testClient
 
 DIRS := configure
 

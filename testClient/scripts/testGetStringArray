@@ -1,0 +1,26 @@
+#!/bin/sh
+source ./setEnv
+echo PVRbooleanArray       should work
+${TESTCLIENT}/testGetStringArray PVRbooleanArray
+echo PVRbyteArray       should work
+${TESTCLIENT}/testGetStringArray PVRbyteArray
+echo PVRshortArray       should work
+${TESTCLIENT}/testGetStringArray PVRshortArray
+echo PVRintArray       should work
+${TESTCLIENT}/testGetStringArray PVRintArray
+echo PVRlongArray       should work
+${TESTCLIENT}/testGetStringArray PVRlongArray
+echo PVRubyteArray       should work
+${TESTCLIENT}/testGetStringArray PVRubyteArray
+echo PVRushortArray       should work
+${TESTCLIENT}/testGetStringArray PVRushortArray
+echo PVRuintArray       should work
+${TESTCLIENT}/testGetStringArray PVRuintArray
+echo PVRulongArray       should work
+${TESTCLIENT}/testGetStringArray PVRulongArray
+echo PVRfloatArray       should work
+${TESTCLIENT}/testGetStringArray PVRfloatArray
+echo PVRdoubleArray       should work
+${TESTCLIENT}/testGetStringArray PVRdoubleArray
+echo PVRstringArray       should work
+${TESTCLIENT}/testGetStringArray PVRstringArray

@@ -181,8 +181,9 @@ static void testDoubleArray()
     }
     try {
         shared_vector<const string> value = pvaData->getStringArray();
+        testPass("getStringArray");
     } catch (std::exception& e) {
-        testPass("getStringArray exception '%s'", e.what());
+        testFail("getStringArray exception '%s'", e.what());
     }
 }
 

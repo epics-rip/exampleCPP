@@ -22,6 +22,8 @@ static void exampleDouble(PvaClientPtr const &pva,string const & channelName,str
 {
     cout << "__exampleDouble__ channelName " << channelName << " providerName " << providerName << endl;
     double value;
+    cout << "shortest way\n";
+    value =  pva->channel(channelName,providerName)->getDouble();
     cout << "short way\n";
     value =  pva->channel(channelName,providerName,2.0)->get()->getData()->getDouble();
     cout << "as double " << value << endl;
@@ -50,6 +52,8 @@ static void exampleDoubleArray(PvaClientPtr const &pva,string const & channelNam
          << " providerName " 
          << providerName << endl;
     shared_vector<const double> value;
+    cout << "shortest way\n";
+    value =  pva->channel(channelName,providerName)->getDoubleArray();
     cout << "short way\n";
     value =  pva->channel(channelName,providerName,2.0)->get()->getData()->getDoubleArray();
     cout << "as doubleArray " << value << endl;

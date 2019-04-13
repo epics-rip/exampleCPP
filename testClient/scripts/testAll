@@ -1,0 +1,18 @@
+#!/bin/sh
+source ./setEnv
+echo ___testPutDouble___
+./testPutDouble
+echo ___testGetDouble___
+./testGetDouble
+echo ___testPutString___
+./testPutString
+echo ___testGetString___
+./testGetString
+echo ___testPutDoubleArray___
+./testPutDoubleArray
+echo ___testGetDoubleArray___
+./testGetDoubleArray
+echo ___testPutStringArray___
+./testPutStringArray
+echo ___testGetStringArray___
+./testGetStringArray

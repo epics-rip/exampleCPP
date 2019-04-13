@@ -1,0 +1,28 @@
+#!/bin/sh
+source ./setEnv
+echo PVRboolean       should work
+${TESTCLIENT}/testPutString PVRboolean true
+echo PVRbyte       should work
+${TESTCLIENT}/testPutString PVRbyte 127
+echo PVRshort       should work
+${TESTCLIENT}/testPutString PVRshort 32767
+echo PVRint       should work
+${TESTCLIENT}/testPutString PVRint 100000
+echo PVRlong       should work
+${TESTCLIENT}/testPutString PVRlong 100000000000
+echo PVRubyte       should work
+${TESTCLIENT}/testPutString PVRubyte 255
+echo PVRushort       should work
+${TESTCLIENT}/testPutString PVRushort 65535
+echo PVRuint       should work
+${TESTCLIENT}/testPutString PVRuint 10000
+echo PVRulong       should work
+${TESTCLIENT}/testPutString PVRulong 10000000
+echo PVRfloat       should work
+${TESTCLIENT}/testPutString PVRfloat 1.0
+echo PVRdouble       should work
+${TESTCLIENT}/testPutString PVRdouble 1.235
+echo PVRstring       should work
+${TESTCLIENT}/testPutString PVRstring hello
+echo PVRdumbPowerSupply       should work
+${TESTCLIENT}/testPutString -r power.value PVRdumbPowerSupply 10.0

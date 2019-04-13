@@ -1,0 +1,300 @@
+___testPutDouble___
+PVRboolean should not work
+exception PvaClientData::putDouble() did not find a numeric scalar field
+PVRbyte should work
+result 127
+result short way -128
+PVRshort should work
+result 32767
+result short way -32768
+PVRint should work
+result 100000
+result short way 100001
+PVRlong should work
+result 1e+11
+result short way 1e+11
+PVRubyte should work
+result 255
+result short way 0
+PVRushort should work
+result 65535
+result short way 0
+PVRuint should work
+result 10000
+result short way 10001
+PVRulong should work
+result 1e+07
+result short way 1e+07
+PVRfloat should work
+result 1
+result short way 2
+PVRdouble should work
+result 1.235
+result short way 2.235
+PVRstring should not work
+exception PvaClientData::putDouble() did not find a numeric scalar field
+PVRdumbPowerSupply should work
+result 10
+result short way 11
+___testGetDouble___
+PVRboolean should not work
+exception PvaClientData::getDouble() did not find a numeric scalar field
+PVRbyte should work
+result -128
+result short way -128
+PVRshort should work
+result -32768
+result short way -32768
+PVRint should work
+result 100001
+result short way 100001
+PVRlong should work
+result 1e+11
+result short way 1e+11
+PVRubyte should work
+result 0
+result short way 0
+PVRushort should work
+result 0
+result short way 0
+PVRuint should work
+result 10001
+result short way 10001
+PVRulong should work
+result 1e+07
+result short way 1e+07
+PVRfloat should work
+result 2
+result short way 2
+PVRdouble should work
+result 2.235
+result short way 2.235
+PVRstring should not work
+exception PvaClientData::getDouble() did not find a numeric scalar field
+PVRdumbPowerSupply should work
+result 11
+result short way 11
+___testPutString___
+PVRboolean should work
+result true
+result short way true
+PVRbyte should work
+result 127
+result short way 127
+PVRshort should work
+result 32767
+result short way 32767
+PVRint should work
+result 100000
+result short way 100000
+PVRlong should work
+result 100000000000
+result short way 100000000000
+PVRubyte should work
+result 255
+result short way 255
+PVRushort should work
+result 65535
+result short way 65535
+PVRuint should work
+result 10000
+result short way 10000
+PVRulong should work
+result 10000000
+result short way 10000000
+PVRfloat should work
+result 1
+result short way 1
+PVRdouble should work
+result 1.235
+result short way 1.235
+PVRstring should work
+result hello
+result short way hello
+PVRdumbPowerSupply should work
+result 10
+result short way 10
+___testGetString___
+PVRboolean should work
+result true
+result short way true
+PVRbyte should work
+result 127
+result short way 127
+PVRshort should work
+result 32767
+result short way 32767
+PVRint should work
+result 100000
+result short way 100000
+PVRlong should work
+result 100000000000
+result short way 100000000000
+PVRubyte should work
+result 255
+result short way 255
+PVRushort should work
+result 65535
+result short way 65535
+PVRuint should work
+result 10000
+result short way 10000
+PVRulong should work
+result 10000000
+result short way 10000000
+PVRfloat should work
+result 1
+result short way 1
+PVRdouble should work
+result 1.235
+result short way 1.235
+PVRstring should work
+result hello
+result short way hello
+PVRdumbPowerSupply should work
+result 10
+result short way 10
+___testPutDoubleArray___
+PVRbooleanArray should not work
+exception PvaClientData::putDoubleArray() did not find a numeric scalarArray field
+PVRbyteArray should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+PVRshortArray should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+PVRintArray should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+PVRlongArray should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+PVRubyteArray should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+PVRushortArray should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+PVRuintArray should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+PVRulongArray should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+PVRfloatArray should work
+result {3}[1, 2.2, 3.4]
+result short way {3}[2, 3.2, 4.4]
+PVRdoubleArray should work
+result {3}[1, 2.2, 3.4]
+result short way {3}[2, 3.2, 4.4]
+PVRstringArray should not work
+exception PvaClientData::putDoubleArray() did not find a numeric scalarArray field
+___testGetDoubleArray___
+PVRbooleanArray should not work
+exception PvaClientData::getDoubleArray() did not find a numeric scalarArray field
+PVRbyteArray should work
+result {3}[2, 3, 4]
+result short way {3}[2, 3, 4]
+PVRshortArray should work
+result {3}[2, 3, 4]
+result short way {3}[2, 3, 4]
+PVRintArray should work
+result {3}[2, 3, 4]
+result short way {3}[2, 3, 4]
+PVRlongArray should work
+result {3}[2, 3, 4]
+result short way {3}[2, 3, 4]
+PVRubyteArray should work
+result {3}[2, 3, 4]
+result short way {3}[2, 3, 4]
+PVRushortArray should work
+result {3}[2, 3, 4]
+result short way {3}[2, 3, 4]
+PVRuintArray should work
+result {3}[2, 3, 4]
+result short way {3}[2, 3, 4]
+PVRulongArray should work
+result {3}[2, 3, 4]
+result short way {3}[2, 3, 4]
+PVRfloatArray should work
+result {3}[2, 3.2, 4.4]
+result short way {3}[2, 3.2, 4.4]
+PVRdoubleArray should work
+result {3}[2, 3.2, 4.4]
+result short way {3}[2, 3.2, 4.4]
+PVRstringArray should not work
+exception PvaClientData::getDoubleArray() did not find a numeric scalarArray field
+___testPutStringArray___
+PVRbooleanArray should work
+result {3}[false, true, false]
+result short way {3}[false, true, false]
+PVRbyteArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRshortArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRintArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRlongArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRubyteArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRushortArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRuintArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRulongArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRfloatArray should work
+result {3}[1, 2.2, 3.4]
+result short way {3}[1, 2.2, 3.4]
+PVRdoubleArray should work
+result {3}[1, 2.2, 3.4]
+result short way {3}[1, 2.2, 3.4]
+PVRstringArray should work
+result {3}[a a, bbb, c c]
+result short way {3}[a a, bbb, c c]
+___testGetStringArray___
+PVRbooleanArray should work
+result {3}[false, true, false]
+result short way {3}[false, true, false]
+PVRbyteArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRshortArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRintArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRlongArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRubyteArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRushortArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRuintArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRulongArray should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+PVRfloatArray should work
+result {3}[1, 2.2, 3.4]
+result short way {3}[1, 2.2, 3.4]
+PVRdoubleArray should work
+result {3}[1, 2.2, 3.4]
+result short way {3}[1, 2.2, 3.4]
+PVRstringArray should work
+result {3}[a a, bbb, c c]
+result short way {3}[a a, bbb, c c]
