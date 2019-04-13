@@ -11,7 +11,6 @@
 /* Author: Marty Kraimer */
 #include <iostream>
 #include <string>
-#include <stdlib.h>
 #include <epicsGetopt.h>
 #include <pv/pvaClient.h>
 #include <pv/convert.h>

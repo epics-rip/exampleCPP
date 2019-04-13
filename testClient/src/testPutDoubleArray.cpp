@@ -85,12 +85,12 @@ int main(int argc,char *argv[])
         {
             size_t offset = value.find(",",pos);
             if(offset==string::npos) {
-                valueArray.push_back(std::stod(value.substr(pos),NULL));
-                valueArrayShort.push_back(std::stod(value.substr(pos),NULL));
+                valueArray.push_back(atof(value.substr(pos).c_str()));
+                valueArrayShort.push_back(atof(value.substr(pos).c_str()));
                 break;
             }
-            valueArray.push_back(std::stod(value.substr(pos,offset-pos),NULL));
-            valueArrayShort.push_back(std::stod(value.substr(pos,offset-pos),NULL));
+            valueArray.push_back(atof(value.substr(pos,offset-pos).c_str()));
+            valueArrayShort.push_back(atof(value.substr(pos,offset-pos).c_str()));
             pos = offset+1;
             n++;    
         }
