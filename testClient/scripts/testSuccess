@@ -1,6 +1,6 @@
 ___testPutDouble___
 PVRboolean should not work
-exception stod
+exception PvaClientData::putDouble() did not find a numeric scalar field
 PVRbyte should work
 result 127
 result short way -128
@@ -156,7 +156,7 @@ result 10
 result short way 10
 ___testPutDoubleArray___
 PVRbooleanArray should not work
-exception stod
+exception PvaClientData::putDoubleArray() did not find a numeric scalarArray field
 PVRbyteArray should work
 result {3}[1, 2, 3]
 result short way {3}[2, 3, 4]
@@ -188,7 +188,7 @@ PVRdoubleArray should work
 result {3}[1, 2.2, 3.4]
 result short way {3}[2, 3.2, 4.4]
 PVRstringArray should not work
-exception stod
+exception PvaClientData::putDoubleArray() did not find a numeric scalarArray field
 ___testGetDoubleArray___
 PVRbooleanArray should not work
 exception PvaClientData::getDoubleArray() did not find a numeric scalarArray field
