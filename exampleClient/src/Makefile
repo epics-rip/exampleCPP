@@ -68,11 +68,13 @@ PROD_HOST += examplePvaClientNTMultiGet
 examplePvaClientNTMultiGet_SRCS += examplePvaClientNTMultiGet.cpp
 examplePvaClientNTMultiGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
-
 PROD_HOST += helloWorldRPC
 helloWorldRPC_SRCS += helloWorldRPC.cpp
 helloWorldRPC_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
+PROD_HOST += rpc
+rpc_SRCS += rpc.cpp
+rpc_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += helloWorldPutGet
 helloWorldPutGet_SRCS += helloWorldPutGet.cpp
