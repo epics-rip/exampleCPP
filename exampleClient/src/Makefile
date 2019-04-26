@@ -64,9 +64,14 @@ PROD_HOST += examplePvaClientNTMulti
 examplePvaClientNTMulti_SRCS += examplePvaClientNTMulti.cpp
 examplePvaClientNTMulti_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
-PROD_HOST += examplePvaClientNTMultiGet
-examplePvaClientNTMultiGet_SRCS += examplePvaClientNTMultiGet.cpp
-examplePvaClientNTMultiGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+
+PROD_HOST += ntMultiMonitor
+ntMultiMonitor_SRCS += ntMultiMonitor.cpp
+ntMultiMonitor_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+
+PROD_HOST += ntMultiGet
+ntMultiGet_SRCS += ntMultiGet.cpp
+ntMultiGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += helloWorldRPC
 helloWorldRPC_SRCS += helloWorldRPC.cpp
