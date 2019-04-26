@@ -60,6 +60,7 @@ private:
         }
         multiMonitor = 
              multiChannel->createNTMonitor(request);
+        multiMonitor->connect();
     }
 public:
     static MyMonitorPtr create(
