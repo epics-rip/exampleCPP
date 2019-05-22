@@ -18,4 +18,5 @@ dbLoadRecords("db/test.db")
 cd ${TOP}/iocBoot/${IOC}
 iocInit()
 exampleDatabase
+exampleSoftRecordCreate PVRsoft
 refshow
