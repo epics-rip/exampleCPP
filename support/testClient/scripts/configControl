@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [ $# -ne 4 ]; then
+    echo "recordName?"
+    read recordName
+    echo "limitLow"
+    read limitLow
+    echo "limitHigh"
+    read limitHigh
+    echo "minStep"
+    read minStep
+else
+    recordName=$1
+    limitLow=$2
+    limitHigh=$3
+    minStep=$4
+fi
+
+value=" control="
+value+="{\"limitLow\":\""
+value+=$limitLow
+value+="\",\"limitHigh\":\""
+value+=$limitHigh
+value+="\",\"minStep\":\""
+value+=$minStep
+value+="\"}"
+
+pvput -r "record[process=false]field(control)" $recordName $value
+
+
+
+

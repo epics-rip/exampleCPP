@@ -1,0 +1,9 @@
+include "base.dbd"
+include "PVAClientRegister.dbd"
+include "PVAServerRegister.dbd"
+include "registerChannelProviderLocal.dbd"
+include "qsrv.dbd"
+include "traceRecordRegister.dbd"
+include "removeRecordRegister.dbd"
+include "supportRecordRegister.dbd"
+

@@ -1,0 +1,47 @@
+#!/bin/bash
+
+if [ $# -ne 7 ]; then
+    echo "recordName?"
+    read recordName
+    echo "active"
+    read active
+    echo "lowAlarmLimit"
+    read lowAlarmLimit
+    echo "lowWarningLimit"
+    read lowWarningLimit
+    echo "highWarningLimit"
+    read highWarningLimit
+    echo "highAlarmLimit"
+    read highAlarmLimit
+    echo "hysteresis"
+    read hysteresis
+else
+    recordName=$1
+    active=$2
+    lowAlarmLimit=$3
+    lowWarningLimit=$4
+    highWarningLimit=$5
+    highAlarmLimit=$6
+    hysteresis=$7
+fi
+
+value=" scalarAlarm="
+value+="{\"active\":\""
+value+=$active
+value+="\",\"lowAlarmLimit\":\""
+value+=$lowAlarmLimit
+value+="\",\"lowWarningLimit\":\""
+value+=$lowWarningLimit
+value+="\",\"highWarningLimit\":\""
+value+=$highWarningLimit
+value+="\",\"highAlarmLimit\":\""
+value+=$highAlarmLimit
+value+="\",\"hysteresis\":\""
+value+=$hysteresis
+value+="\"}"
+
+pvput -r "record[process=false]field(scalarAlarm)" $recordName $value
+
+
+
+
