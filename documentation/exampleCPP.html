@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP</h1>
-<h2 class="nocount">master branch - 2018.10.17</h2>
+<h2 class="nocount">master branch - 2019.06.06</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -164,6 +164,7 @@ The reader should also be familiar with
 <h4>Preparation</h4>
 <p>
 make requires:
+</p>
 <ul>
  <li>
  A proper <b>RELEASE.local</b> is present one directory level above <b>exampleCPP</b>.
@@ -179,7 +180,7 @@ release.
 </p>
 <p>In either case the file chosen is copied to configure, renamed, and edited.
 For example:
-<p>
+</p>
 <pre>
 cp ExampleRELEASE.local configure/RELEASE.local
 gedit configure/RELEASE.local   // change EPICS7_DIR and possibly EPICS_BASE
@@ -191,7 +192,6 @@ installed and built a version of <b>EPICS7</b>.
 <p>
 There is also a file <b>MasterRELEASE.local</b> that can be used if the V4 modules were
 obtained from github.
-</p>
 </p>
 <h4>Build</h4>
 <p>
@@ -251,6 +251,12 @@ mrk&gt; pwd
 /home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
 mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
 </pre>
+<h3>support</h3>
+<p>
+This creates records that use the <b>support</b> provided by 
+<b>pvDatabaseCPP</b>.
+</p>
+<p>Documentation:<a href="./support.html">support</a></p>
 <h3>exampleLink</h3>
 <p>
 This implements a server that has records exampleGetLink, exampleMonitorLink, and examplePutLink.
