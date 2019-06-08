@@ -5,5 +5,6 @@ include "registerChannelProviderLocal.dbd"
 include "qsrv.dbd"
 include "traceRecordRegister.dbd"
 include "removeRecordRegister.dbd"
+include "processRecordRegister.dbd"
 include "supportRecordRegister.dbd"
 

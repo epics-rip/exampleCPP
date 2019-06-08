@@ -44,7 +44,7 @@ SupportRecordPtr SupportRecord::create(
         add("alarm",standardField->alarm()) ->
         add("timeStamp",standardField->timeStamp()) ->
         add("display",standardField->display()) ->
-        add("control",ControlSupport::controlField()) ->
+        add("control",ControlSupport::controlField(scalarType)) ->
         add("scalarAlarm",ScalarAlarmSupport::scalarAlarmField()) ->
         createStructure();
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
