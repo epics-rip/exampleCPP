@@ -7,7 +7,7 @@ dbLoadDatabase("dbd/support.dbd")
 support_registerRecordDeviceDriver(pdbbase)
 
 ## Load record instances
-dbLoadRecords("db/ai.db","name=helloPutGetAI");
+dbLoadRecords("db/ao.db","name=DBRsupportAo");
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit()

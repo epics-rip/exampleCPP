@@ -44,8 +44,8 @@ SupportRecordPtr SupportRecord::create(
         add("alarm",standardField->alarm()) ->
         add("timeStamp",standardField->timeStamp()) ->
         add("display",standardField->display()) ->
-        add("control",standardField->control()) ->
-        add("scalarAlarm",ScalarAlarmSupport::scalarAlarm()) ->
+        add("control",ControlSupport::controlField()) ->
+        add("scalarAlarm",ScalarAlarmSupport::scalarAlarmField()) ->
         createStructure();
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
     SupportRecordPtr pvRecord(
@@ -82,15 +82,16 @@ bool SupportRecord::init()
 
 void SupportRecord::process()
 {
+    bool wasChanged = false;
     if(pvReset->get()==true) {
         pvReset->put(false);
         controlSupport->reset();
         scalarAlarmSupport->reset();
     } else {
-        controlSupport->process();
-        scalarAlarmSupport->process();
+        if(controlSupport->process()) wasChanged = true;;
+        if(scalarAlarmSupport->process()) wasChanged = true;
     }
-    PVRecord::process();
+    if(wasChanged) PVRecord::process();
 }
 
 
