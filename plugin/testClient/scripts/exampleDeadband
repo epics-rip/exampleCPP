@@ -3,7 +3,7 @@
 if [ $# -ne 2 ]; then
     echo "recordName?"
     read recordName
-    echo "deadband"
+    echo "deadband?"
     read deadband
 else
     recordName=$1

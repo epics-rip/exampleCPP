@@ -1,4 +1,4 @@
-# support
+# plugin
 
 Creates a PVRecord that calls support code that is implemented by pvDatabaseCPP
 
@@ -10,22 +10,22 @@ Read exampleCPP/documentation/exampleCPP.html.
 ## To start the server as part of a V3 IOC
 
     mrk> pwd
-    /home/epicsv4/masterCPP/exampleCPP/support/iocBoot/support
-    mrk> ../../bin/$EPICS_HOST_ARCH/support st.cmd 
-
-## monitor changed
-    mrk> pvget -m -r "" -v  PVRsupportDouble PVRsupportUByte
+    /home/epicsv4/masterCPP/exampleCPP/plugin/iocBoot/support
+    mrk> ../../bin/$EPICS_HOST_ARCH/support st.cmd
 
 ## To start testing
 
     mrk> pwd
-    /home/epicsv4/masterCPP/exampleCPP/support/testClient/scripts
+    /home/epicsv4/masterCPP/exampleCPP/plugin/testClient/scripts
     mrk> ./configAll
+    mrk>./exampleDeadband
+    recordName?
+    PVRpluginDouble
+    deadband?
+    2
 
-## Try various tests
 
-    mrk> pvput PVRsupportUByte 14
-    mrk> pvput PVRsupportDouble 22
+
 
     
 
