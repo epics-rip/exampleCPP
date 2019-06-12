@@ -1,0 +1,3 @@
+#!/bin/sh
+./configControl PVRpluginDouble -10 10 .5
+

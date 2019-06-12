@@ -5,6 +5,7 @@ include $(TOP)/configure/CONFIG
 
 EMBEDDED_TOPS += $(TOP)/database
 EMBEDDED_TOPS += $(TOP)/support
+EMBEDDED_TOPS += $(TOP)/plugin
 EMBEDDED_TOPS += $(TOP)/exampleClient
 EMBEDDED_TOPS += $(TOP)/exampleLink
 EMBEDDED_TOPS += $(TOP)/powerSupply
