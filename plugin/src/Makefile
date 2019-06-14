@@ -9,10 +9,13 @@ EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvAccess pvAccessCA pvData ca Com
 INC += pv/pluginRecord.h
 
 DBD += pluginRecordRegister.dbd
+DBD += scalarArrayRecordRegister.dbd
 
 LIBRARY = plugin
 LIBSRCS += pluginRecord.cpp
 LIBSRCS += pluginRecordRegister.cpp
+LIBSRCS += scalarArrayRecord.cpp
+LIBSRCS += scalarArrayRecordRegister.cpp
 plugin_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 # shared library ABI version.

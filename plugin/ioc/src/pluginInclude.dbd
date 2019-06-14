@@ -7,4 +7,6 @@ include "traceRecordRegister.dbd"
 include "removeRecordRegister.dbd"
 include "processRecordRegister.dbd"
 include "pluginRecordRegister.dbd"
+include "scalarArrayRecordRegister.dbd"
+
 

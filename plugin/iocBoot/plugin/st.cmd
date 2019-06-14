@@ -16,5 +16,9 @@ removeRecordCreate PVRpluginRemoveRecord
 processRecordCreate PVRpluginProcessRecord .5
 pluginRecordCreate PVRpluginDouble
 pluginRecordCreate PVRpluginUByte pvUByte
+scalarArrayRecordCreate PVRscalarArrayDouble
+scalarArrayRecordCreate PVRscalarArrayUByte pvUByte
+scalarArrayRecordCreate PVRscalarArrayString pvString
+scalarArrayRecordCreate PVRscalarArrayBoolean pvBoolean
 
 

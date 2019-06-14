@@ -10,7 +10,7 @@ else
     deadband=$2
 fi
 
-request="timeStamp[ignore=true],alarm[ignore=true],value[deadband=abs:"
+request="timeStamp[ignore=true],alarm[ignore=true],value[deadband="
 request+=$deadband
 request+="]"
 
