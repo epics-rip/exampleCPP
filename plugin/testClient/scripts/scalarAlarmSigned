@@ -1,3 +1,0 @@
-#!/bin/sh
-./configScalarAlarm PVRpluginDouble true -8 -6 6 8 .1
-

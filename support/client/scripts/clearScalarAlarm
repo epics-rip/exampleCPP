@@ -6,7 +6,6 @@ else
     recordName=$1
 fi
 
-active=true
 lowAlarmLimit=0
 lowWarningLimit=0
 highWarningLimit=0
@@ -14,9 +13,7 @@ highAlarmLimit=0
 hysteresis=0
 
 value=" scalarAlarm="
-value+="{\"active\":\""
-value+=$active
-value+="\",\"lowAlarmLimit\":\""
+value+="{\"lowAlarmLimit\":\""
 value+=$lowAlarmLimit
 value+="\",\"lowWarningLimit\":\""
 value+=$lowWarningLimit

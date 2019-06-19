@@ -31,12 +31,12 @@
 #include <pv/pvDatabase.h>
 
 #include <epicsExport.h>
-#include <pv/pluginRecord.h>
+#include <pv/scalarArrayRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
-using namespace epics::exampleCPP::plugin;
+using namespace epics::exampleCPP::support;
 using namespace std;
 
 static const iocshArg testArg0 = { "recordName", iocshArgString };
@@ -44,13 +44,13 @@ static const iocshArg testArg1 = { "scalarType", iocshArgString };
 static const iocshArg *testArgs[] = {
     &testArg0,&testArg1};
 
-static const iocshFuncDef pluginRecordFuncDef = {"pluginRecordCreate", 2,testArgs};
+static const iocshFuncDef scalarArrayRecordFuncDef = {"scalarArrayRecordCreate", 2,testArgs};
 
-static void pluginRecordCallFunc(const iocshArgBuf *args)
+static void scalarArrayRecordCallFunc(const iocshArgBuf *args)
 {
     char *recordName = args[0].sval;
     if(!recordName) {
-        throw std::runtime_error("pluginRecordCreate invalid number of arguments");
+        throw std::runtime_error("scalarArrayRecordCreate invalid number of arguments");
     }
     char *stype = args[1].sval;
     epics::pvData::ScalarType scalarType  = epics::pvData::pvDouble;
@@ -76,25 +76,30 @@ static void pluginRecordCallFunc(const iocshArgBuf *args)
             scalarType = epics::pvData::pvUInt;
         } else if(val.compare("pvULong")==0) {
             scalarType = epics::pvData::pvULong;
+        } else if(val.compare("pvString")==0) {
+            scalarType = epics::pvData::pvString;
+        } else if(val.compare("pvBoolean")==0) {
+            scalarType = epics::pvData::pvBoolean;
         } else {
-             cout << val << " is not a support scalar type\n";
+             cout << val << " is not a scalar type\n";
              return; 
         }
     }
-    PluginRecordPtr record = PluginRecord::create(recordName,scalarType);
+    ScalarArrayRecordPtr record = ScalarArrayRecord::create(
+        recordName,scalarType);
     bool result = PVDatabase::getMaster()->addRecord(record);
     if(!result) cout << "recordname" << " not added" << endl;
 }
 
-static void pluginRecordRegister(void)
+static void scalarArrayRecordRegister(void)
 {
     static int firstTime = 1;
     if (firstTime) {
         firstTime = 0;
-        iocshRegister(&pluginRecordFuncDef, pluginRecordCallFunc);
+        iocshRegister(&scalarArrayRecordFuncDef, scalarArrayRecordCallFunc);
     }
 }
 
 extern "C" {
-    epicsExportRegistrar(pluginRecordRegister);
+    epicsExportRegistrar(scalarArrayRecordRegister);
 }

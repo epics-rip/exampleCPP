@@ -31,26 +31,29 @@
 #include <pv/pvDatabase.h>
 
 #include <epicsExport.h>
-#include <pv/scalarArrayRecord.h>
+#include <pv/scalarRecord.h>
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
-using namespace epics::exampleCPP::plugin;
+using namespace epics::exampleCPP::support;
 using namespace std;
 
 static const iocshArg testArg0 = { "recordName", iocshArgString };
 static const iocshArg testArg1 = { "scalarType", iocshArgString };
+static const iocshArg testArg2 = { "minValue", iocshArgDouble };
+static const iocshArg testArg3 = { "maxValue", iocshArgDouble };
+static const iocshArg testArg4 = { "stepSize", iocshArgDouble };
 static const iocshArg *testArgs[] = {
-    &testArg0,&testArg1};
+    &testArg0,&testArg1,&testArg2,&testArg3,&testArg4};
 
-static const iocshFuncDef scalarArrayRecordFuncDef = {"scalarArrayRecordCreate", 2,testArgs};
+static const iocshFuncDef scalarRecordFuncDef = {"scalarRecordCreate", 5,testArgs};
 
-static void scalarArrayRecordCallFunc(const iocshArgBuf *args)
+static void scalarRecordCallFunc(const iocshArgBuf *args)
 {
     char *recordName = args[0].sval;
     if(!recordName) {
-        throw std::runtime_error("scalarArrayRecordCreate invalid number of arguments");
+        throw std::runtime_error("scalarRecordCreate invalid number of arguments");
     }
     char *stype = args[1].sval;
     epics::pvData::ScalarType scalarType  = epics::pvData::pvDouble;
@@ -85,20 +88,24 @@ static void scalarArrayRecordCallFunc(const iocshArgBuf *args)
              return; 
         }
     }
-    ScalarArrayRecordPtr record = ScalarArrayRecord::create(recordName,scalarType);
+    double minValue = args[2].dval;
+    double maxValue = args[3].dval;
+    double stepSize = args[4].dval;
+    ScalarRecordPtr record = ScalarRecord::create(
+        recordName,scalarType,minValue,maxValue,stepSize);
     bool result = PVDatabase::getMaster()->addRecord(record);
     if(!result) cout << "recordname" << " not added" << endl;
 }
 
-static void scalarArrayRecordRegister(void)
+static void scalarRecordRegister(void)
 {
     static int firstTime = 1;
     if (firstTime) {
         firstTime = 0;
-        iocshRegister(&scalarArrayRecordFuncDef, scalarArrayRecordCallFunc);
+        iocshRegister(&scalarRecordFuncDef, scalarRecordCallFunc);
     }
 }
 
 extern "C" {
-    epicsExportRegistrar(scalarArrayRecordRegister);
+    epicsExportRegistrar(scalarRecordRegister);
 }

@@ -1,3 +1,0 @@
-#!/bin/sh
-./configControl PVRpluginUByte 1 20 2
-

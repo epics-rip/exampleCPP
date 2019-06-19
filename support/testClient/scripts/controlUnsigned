@@ -1,3 +1,0 @@
-#!/bin/sh
-./configControl PVRsupportUByte 1 20 2
-

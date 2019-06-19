@@ -13,10 +13,8 @@
 
 #include <shareLib.h>
 #include <pv/channelProviderLocal.h>
-#include <pv/controlSupport.h>
-#include <pv/scalarAlarmSupport.h>
 
-namespace epics { namespace exampleCPP { namespace plugin {
+namespace epics { namespace exampleCPP { namespace support {
 
 
 class ScalarArrayRecord;
@@ -40,12 +38,8 @@ public:
      * @return A shared pointer to ScalarArrayRecord..
      */
     static ScalarArrayRecordPtr create(
-        std::string const & recordName,epics::pvData::ScalarType scalarType);
-    /**
-     * standard init method required by PVRecord
-     * @return true unless record name already exists.
-     */
-    virtual bool init();
+        std::string const & recordName,
+        epics::pvData::ScalarType scalarType);
     ~ScalarArrayRecord();
 private:
     ScalarArrayRecord(

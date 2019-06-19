@@ -1,10 +1,8 @@
 #!/bin/bash
 
-if [ $# -ne 7 ]; then
+if [ $# -ne 6 ]; then
     echo "recordName?"
     read recordName
-    echo "active"
-    read active
     echo "lowAlarmLimit"
     read lowAlarmLimit
     echo "lowWarningLimit"
@@ -17,18 +15,15 @@ if [ $# -ne 7 ]; then
     read hysteresis
 else
     recordName=$1
-    active=$2
-    lowAlarmLimit=$3
-    lowWarningLimit=$4
-    highWarningLimit=$5
-    highAlarmLimit=$6
-    hysteresis=$7
+    lowAlarmLimit=$2
+    lowWarningLimit=$3
+    highWarningLimit=$4
+    highAlarmLimit=$5
+    hysteresis=$6
 fi
 
 value=" scalarAlarm="
-value+="{\"active\":\""
-value+=$active
-value+="\",\"lowAlarmLimit\":\""
+value+="{\"lowAlarmLimit\":\""
 value+=$lowAlarmLimit
 value+="\",\"lowWarningLimit\":\""
 value+=$lowWarningLimit

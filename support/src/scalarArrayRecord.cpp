@@ -11,8 +11,6 @@
 #include <pv/pvDatabase.h>
 #include <pv/convert.h>
 #include <pv/standardField.h>
-#include <pv/controlSupport.h>
-#include <pv/scalarAlarmSupport.h>
 
 #define epicsExportSharedSymbols
 
@@ -24,7 +22,7 @@ using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
 using namespace std;
 
-namespace epics { namespace exampleCPP { namespace plugin {
+namespace epics { namespace exampleCPP { namespace support {
 
 
 ScalarArrayRecord::~ScalarArrayRecord()
@@ -33,7 +31,8 @@ cout << "ScalarArrayRecord::~ScalarArrayRecord()\n";
 }
 
 ScalarArrayRecordPtr ScalarArrayRecord::create(
-    std::string const & recordName,epics::pvData::ScalarType scalarType)
+    string const & recordName,
+    epics::pvData::ScalarType scalarType)
 {
     FieldCreatePtr fieldCreate = getFieldCreate();
     PVDataCreatePtr pvDataCreate = getPVDataCreate();
@@ -45,7 +44,7 @@ ScalarArrayRecordPtr ScalarArrayRecord::create(
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
     ScalarArrayRecordPtr pvRecord(
         new ScalarArrayRecord(recordName,pvStructure));
-    if(!pvRecord->init()) pvRecord.reset();
+    pvRecord->init();
     return pvRecord;
 }
 
@@ -56,11 +55,6 @@ ScalarArrayRecord::ScalarArrayRecord(
 {
 }
 
-bool ScalarArrayRecord::init()
-{
-    initPVRecord();
-    return true;
-}
 
 }}}
 

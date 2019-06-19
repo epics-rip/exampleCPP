@@ -1,8 +1,0 @@
-#!/bin/bash
-
-./controlSigned
-./scalarAlarmSigned
-./controlUnsigned
-./scalarAlarmUnsigned
-./configProcessRecord PVRpluginProcessRecord add PVRpluginDouble
-./configProcessRecord PVRpluginProcessRecord add PVRpluginUByte

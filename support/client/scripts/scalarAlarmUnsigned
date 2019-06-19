@@ -1,0 +1,3 @@
+#!/bin/sh
+./configScalarAlarm PVRsupportUByte 2 4 16 18 1
+

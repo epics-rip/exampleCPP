@@ -16,5 +16,10 @@ removeRecordCreate PVRremoveRecord
 processRecordCreate PVRprocessRecord .5
 supportRecordCreate PVRsupportDouble
 supportRecordCreate PVRsupportUByte pvUByte
-
+scalarArrayRecordCreate PVRscalarArrayDouble pvDouble
+scalarArrayRecordCreate PVRscalarArrayUByte pvUByte
+scalarArrayRecordCreate PVRscalarArrayString pvString
+scalarArrayRecordCreate PVRscalarArrayBoolean pvBoolean
+scalarRecordCreate PVRscalarDouble pvDouble -10 10 .5
+scalarRecordCreate PVRscalarUByte pvUByte 0 20 1
 
