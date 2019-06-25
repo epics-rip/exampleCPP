@@ -34,8 +34,8 @@ ScalarRecordPtr ScalarRecord::create(
     string const & recordName,
     epics::pvData::ScalarType scalarType,
     double minValue,
-        double maxValue,
-        double stepSize)
+    double maxValue,
+    double stepSize)
 {
     FieldCreatePtr fieldCreate = getFieldCreate();
     PVDataCreatePtr pvDataCreate = getPVDataCreate();
