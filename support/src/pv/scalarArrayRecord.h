@@ -11,8 +11,8 @@
 #ifndef SCALARARRAY_RECORD_H
 #define SCALARARRAY_RECORD_H
 
-#include <shareLib.h>
 #include <pv/channelProviderLocal.h>
+#include <shareLib.h>
 
 namespace epics { namespace exampleCPP { namespace support {
 

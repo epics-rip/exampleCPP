@@ -11,9 +11,9 @@
 #include <pv/pvDatabase.h>
 #include <pv/convert.h>
 #include <pv/standardField.h>
+#include <pv/channelProviderLocal.h>
 
 #define epicsExportSharedSymbols
-
 #include <pv/scalarRecord.h>
 
 using std::tr1::static_pointer_cast;

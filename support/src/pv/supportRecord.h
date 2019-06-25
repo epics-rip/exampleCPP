@@ -11,11 +11,10 @@
 #ifndef SUPPORT_RECORD_H
 #define SUPPORT_RECORD_H
 
-#include <shareLib.h>
-
-#include <pv/channelProviderLocal.h>
 #include <pv/controlSupport.h>
 #include <pv/scalarAlarmSupport.h>
+#include <pv/channelProviderLocal.h>
+#include <shareLib.h>
 
 namespace epics { namespace exampleCPP { namespace support {
 

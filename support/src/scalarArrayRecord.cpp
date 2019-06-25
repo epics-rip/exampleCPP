@@ -9,12 +9,12 @@
  * @date 2019.06.01
  */
 #include <pv/pvDatabase.h>
-#include <pv/convert.h>
 #include <pv/standardField.h>
+#include <pv/channelProviderLocal.h>
 
 #define epicsExportSharedSymbols
 
-#include <pv/scalarArrayRecord.h>
+#include "pv/scalarArrayRecord.h"
 
 using std::tr1::static_pointer_cast;
 using namespace epics::pvData;

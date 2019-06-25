@@ -13,6 +13,7 @@
 #include <pv/standardField.h>
 #include <pv/controlSupport.h>
 #include <pv/scalarAlarmSupport.h>
+#include <pv/channelProviderLocal.h>
 
 #define epicsExportSharedSymbols
 
