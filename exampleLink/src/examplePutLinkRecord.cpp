@@ -10,10 +10,15 @@
 
 #include <pv/standardPVField.h>
 #include <pv/ntscalar.h>
+#include <pv/timeStamp.h>
+#include <pv/pvTimeStamp.h>
+#include <pv/alarm.h>
+#include <pv/pvAlarm.h>
+#include <pv/pvDatabase.h>
 #include <pv/pvaClient.h>
 
-#include <epicsExport.h>
-#include <pv/examplePutLinkRecord.h>
+#define epicsExportSharedSymbols
+#include "pv/examplePutLinkRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;

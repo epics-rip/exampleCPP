@@ -8,10 +8,12 @@
  * @date 2013.04.02
  */
 
+#include <pv/pvDatabase.h>
 #include <pv/standardField.h>
+#include <pv/channelProviderLocal.h>
 
-#include <epicsExport.h>
-#include <pv/helloPutGetRecord.h>
+#define epicsExportSharedSymbols
+#include "pv/helloPutGetRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;

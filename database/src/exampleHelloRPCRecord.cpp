@@ -7,13 +7,12 @@
  * @author mrk
  * @date 2013.04.02
  */
-
 #include <epicsThread.h>
-#include <pv/standardField.h>
+#include <pv/pvDatabase.h>
 #include <pv/ntscalar.h>
-#include <sstream>
-#include <epicsExport.h>
-#include <pv/exampleHelloRPCRecord.h>
+
+#define epicsExportSharedSymbols
+#include "pv/exampleHelloRPCRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::nt;
@@ -122,3 +121,4 @@ RPCServiceAsync::shared_pointer ExampleHelloRPCRecord::getService(PVStructurePtr
 }
 
 }}}
+#include <epicsThread.h>

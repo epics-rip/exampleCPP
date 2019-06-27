@@ -14,7 +14,7 @@
 #include <pv/channelProviderLocal.h>
 
 #define epicsExportSharedSymbols
-#include <pv/scalarRecord.h>
+#include "pv/scalarRecord.h"
 
 using std::tr1::static_pointer_cast;
 using namespace epics::pvData;

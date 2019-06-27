@@ -15,9 +15,7 @@
 #include <pv/scalarAlarmSupport.h>
 #include <pv/channelProviderLocal.h>
 
-#define epicsExportSharedSymbols
-
-#include <pv/supportRecord.h>
+#include "pv/supportRecord.h"
 
 using std::tr1::static_pointer_cast;
 using namespace epics::pvData;

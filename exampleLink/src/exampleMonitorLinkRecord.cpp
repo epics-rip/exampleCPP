@@ -10,10 +10,11 @@
 
 #include <pv/standardPVField.h>
 #include <pv/ntscalar.h>
+#include <pv/pvDatabase.h>
 #include <pv/pvaClient.h>
 
-#include <epicsExport.h>
-#include <pv/exampleMonitorLinkRecord.h>
+#define epicsExportSharedSymbols
+#include "pv/exampleMonitorLinkRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;

@@ -12,10 +12,13 @@
 
 #include <pv/standardField.h>
 #include <pv/standardPVField.h>
+#include <pv/pvDatabase.h>
+#include <pv/timeStamp.h>
+#include <pv/pvTimeStamp.h>
 
 #include <epicsThread.h>
 
-#include <epicsExport.h>
+#define epicsExportSharedSymbols
 #include "pv/exampleRPC.h"
 
 using namespace epics::pvData;

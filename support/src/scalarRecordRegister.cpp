@@ -16,7 +16,7 @@
 #include <pv/channelProviderLocal.h>
 
 #define epicsExportSharedSymbols
-#include <pv/scalarRecord.h>
+#include "pv/scalarRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;

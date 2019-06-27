@@ -8,13 +8,14 @@
  * @date 2013.04.02
  */
 
-#include <pv/pvData.h>
+#include <pv/pvDatabase.h>
 #include <pv/timeStamp.h>
 #include <pv/standardField.h>
-#include <pv/standardPVField.h>
+#include <pv/pvAlarm.h>
+#include <pv/channelProviderLocal.h>
 
-#include <epicsExport.h>
-#include <pv/powerSupplyRecord.h>
+#define epicsExportSharedSymbols
+#include "pv/powerSupplyRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
