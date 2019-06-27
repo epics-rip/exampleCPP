@@ -1,0 +1,18 @@
+#!/bin/sh
+
+if [ $# -ne 2 ]; then
+    echo "recordName?"
+    read recordName
+    echo "deadband?"
+    read deadband
+else
+    recordName=$1
+    deadband=$2
+fi
+
+request="timeStamp[ignore=true],alarm[ignore=true],value[deadband="
+request+=$deadband
+request+="]"
+
+pvget -m   -r $request -v  $recordName
+

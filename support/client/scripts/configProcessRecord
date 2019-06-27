@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ $# -ne 3 ]; then
+    echo "processRecordName"
+    read processRecordName
+    echo "command?"
+    read cmd
+    echo "recordName?"
+    read recordName
+else
+    processRecordName=$1
+    cmd=$2
+    recordName=$3
+fi
+
+value=" argument="
+value+="{\"command\":\""
+value+=$cmd
+value+="\",\"recordName\":\""
+value+=$recordName
+value+="\"}"
+
+echo $processRecordName
+echo $value
+pvput -r "field(argument,result)" $processRecordName $value
+
+
+
+

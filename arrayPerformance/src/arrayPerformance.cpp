@@ -7,13 +7,15 @@
  * @author mrk
  * @date 2013.08.08
  */
-
-#include <pv/lock.h>
-#include <pv/pvData.h>
+#include <epicsThread.h>
+#include <pv/event.h>
+#include <pv/standardPVField.h>
 #include <pv/timeStamp.h>
+#include <pv/pvTimeStamp.h>
+#include <pv/pvDatabase.h>
 
-#include <epicsExport.h>
-#include <pv/arrayPerformance.h>
+#define epicsExportSharedSymbols
+#include "pv/arrayPerformance.h"
 
 
 

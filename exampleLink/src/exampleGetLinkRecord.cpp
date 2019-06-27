@@ -8,12 +8,17 @@
  * @date 2013.08.02
  */
 
+#include <pv/timeStamp.h>
+#include <pv/pvTimeStamp.h>
+#include <pv/alarm.h>
+#include <pv/pvAlarm.h>
+#include <pv/pvDatabase.h>
+#include <pv/pvaClient.h>
 #include <pv/standardPVField.h>
 #include <pv/ntscalar.h>
-#include <pv/pvaClient.h>
 
-#include <epicsExport.h>
-#include <pv/exampleGetLinkRecord.h>
+#define epicsExportSharedSymbols
+#include "pv/exampleGetLinkRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;

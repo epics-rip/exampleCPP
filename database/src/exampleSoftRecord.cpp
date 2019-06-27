@@ -8,11 +8,11 @@
  * @date 2013.04.02
  */
 
-#include <pv/standardField.h>
 #include <pv/ntscalar.h>
+#include <pv/pvDatabase.h>
 
-#include <epicsExport.h>
-#include <pv/exampleSoftRecord.h>
+#define epicsExportSharedSymbols
+#include "pv/exampleSoftRecord.h"
 
 
 using namespace epics::pvData;

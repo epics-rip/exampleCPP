@@ -11,9 +11,10 @@
 #include <pv/standardPVField.h>
 #include <pv/ntscalar.h>
 #include <pv/pvaClient.h>
+#include <pv/pvDatabase.h>
 
-#include <epicsExport.h>
-#include <pv/doubleArrayRecord.h>
+#define epicsExportSharedSymbols
+#include "pv/doubleArrayRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;

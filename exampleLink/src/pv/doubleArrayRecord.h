@@ -10,12 +10,7 @@
 #ifndef DOUBLEARRAYRECORD_H
 #define DOUBLEARRAYRECORD_H
 
-#include <pv/timeStamp.h>
-#include <pv/pvTimeStamp.h>
-#include <pv/alarm.h>
-#include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
-#include <pv/pvaClient.h>
 
 #include <shareLib.h>
 

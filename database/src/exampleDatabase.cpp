@@ -9,33 +9,24 @@
  */
 
 /* Author: Marty Kraimer */
-
-#include <cstddef>
-#include <cstdlib>
-#include <cstddef>
-#include <string>
-#include <cstdio>
-#include <memory>
-#include <vector>
-#include <iostream>
-
+#include <pv/pvDatabase.h>
 #include <pv/standardField.h>
 #include <pv/standardPVField.h>
-#include <pv/channelProviderLocal.h>
-#include <pv/serverContext.h>
-#include <pv/traceRecord.h>
 #include <pv/ntscalar.h>
 #include <pv/ntscalarArray.h>
 #include <pv/ntunion.h>
 #include <pv/ntenum.h>
 
-#include <epicsExport.h>
-#include <pv/exampleDatabase.h>
-#include <pv/exampleHelloRecord.h>
-#include <pv/exampleSoftRecord.h>
-#include <pv/exampleHelloRPCRecord.h>
+#include <pv/channelProviderLocal.h>
 #include <pv/traceRecord.h>
 #include <pv/removeRecord.h>
+
+#define epicsExportSharedSymbols
+#include "pv/exampleDatabase.h"
+#include "pv/exampleHelloRecord.h"
+#include "pv/exampleSoftRecord.h"
+#include "pv/exampleHelloRPCRecord.h"
+
 
 using namespace std;
 using std::tr1::static_pointer_cast;

@@ -10,7 +10,7 @@
 
 
 /* Author: Marty Kraimer */
-
+#ifdef XXX
 #include <cstddef>
 #include <cstdlib>
 #include <cstddef>
@@ -36,7 +36,20 @@
 #include <pv/pvDatabase.h>
 
 #include <epicsExport.h>
-#include <pv/examplePutLinkRecord.h>
+#endif
+
+#include <epicsExport.h>
+#include <iocsh.h>
+#include <pv/channelProviderLocal.h>
+#include <pv/timeStamp.h>
+#include <pv/pvTimeStamp.h>
+#include <pv/alarm.h>
+#include <pv/pvAlarm.h>
+#include <pv/pvDatabase.h>
+#include <pv/pvaClient.h>
+
+#define epicsExportSharedSymbols
+#include "pv/examplePutLinkRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::nt;

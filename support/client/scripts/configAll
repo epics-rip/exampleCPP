@@ -1,0 +1,10 @@
+#!/bin/bash
+
+./controlSigned
+./scalarAlarmSigned
+./controlUnsigned
+./scalarAlarmUnsigned
+./configProcessRecord PVRprocessRecord add PVRsupportDouble
+./configProcessRecord PVRprocessRecord add PVRsupportUByte
+./configProcessRecord PVRprocessRecord add PVRscalarDouble
+./configProcessRecord PVRprocessRecord add PVRscalarUByte

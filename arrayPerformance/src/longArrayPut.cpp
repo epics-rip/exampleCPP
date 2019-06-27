@@ -8,8 +8,19 @@
  * @date 2013.08.09
  */
 
-#include <epicsExport.h>
-#include <pv/longArrayPut.h>
+#include <epicsThread.h>
+#include <pv/event.h>
+#include <pv/standardPVField.h>
+#include <pv/nt.h>
+#include <pv/pvTimeStamp.h>
+#include <pv/pvAlarm.h>
+#include <pv/pvControl.h>
+#include <pv/pvDisplay.h>
+#include <pv/pvDatabase.h>
+#include <pv/pvaClient.h>
+
+#define epicsExportSharedSymbols
+#include "pv/longArrayPut.h"
 
 namespace epics { namespace exampleCPP { namespace arrayPerformance { 
 

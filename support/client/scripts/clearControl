@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [ $# -ne 1 ]; then
+    echo "recordName?"
+    read recordName
+else 
+    recordName=$1
+fi
+
+limitLow=0
+limitHigh=0
+minStep=0
+
+value=" control="
+value+="{\"limitLow\":\""
+value+=$limitLow
+value+="\",\"limitHigh\":\""
+value+=$limitHigh
+value+="\",\"minStep\":\""
+value+=$minStep
+value+="\"}"
+
+pvput -r "record[process=false]field(control)" $recordName $value
+
+
+
+

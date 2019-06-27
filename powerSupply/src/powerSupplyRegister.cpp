@@ -10,29 +10,14 @@
 
 
 /* Author: Marty Kraimer */
-
-#include <cstddef>
-#include <cstdlib>
-#include <cstddef>
-#include <string>
-#include <cstdio>
-#include <memory>
-#include <iostream>
-
-#include <cantProceed.h>
-#include <epicsStdio.h>
-#include <epicsMutex.h>
-#include <epicsEvent.h>
-#include <epicsThread.h>
-#include <iocsh.h>
-
-#include <pv/pvIntrospect.h>
-#include <pv/pvData.h>
-#include <pv/pvAccess.h>
-#include <pv/pvDatabase.h>
-
 #include <epicsExport.h>
-#include <pv/powerSupplyRecord.h>
+#include <iocsh.h>
+#include <pv/pvDatabase.h>
+#include <pv/pvAlarm.h>
+#include <pv/channelProviderLocal.h>
+
+#define epicsExportSharedSymbols
+#include "pv/powerSupplyRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
