@@ -10,12 +10,13 @@
 
 
 /* Author: Marty Kraimer */
-#include <epicsExport.h>
 #include <iocsh.h>
 #include <pv/pvDatabase.h>
 #include <pv/pvAlarm.h>
 #include <pv/channelProviderLocal.h>
 
+// The following must be the last include for code powerSupply uses
+#include <epicsExport.h>
 #define epicsExportSharedSymbols
 #include "pv/powerSupplyRecord.h"
 
