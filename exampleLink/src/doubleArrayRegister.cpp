@@ -11,13 +11,14 @@
 
 /* Author: Marty Kraimer */
 
-#include <epicsExport.h>
 #include <iocsh.h>
 #include <pv/pvDatabase.h>
 #include <pv/channelProviderLocal.h>
 #include <pv/ntscalarArray.h>
 #include <pv/pvaClient.h>
 
+// The following must be the last include for code exampleLink uses
+#include <epicsExport.h>
 #define epicsExportSharedSymbols
 #include "pv/doubleArrayRecord.h"
 

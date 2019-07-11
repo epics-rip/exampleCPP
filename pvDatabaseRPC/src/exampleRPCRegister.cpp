@@ -11,10 +11,12 @@
 
 /* Author: Marty Kraimer */
 #include <epicsThread.h>
-#include <epicsExport.h>
 #include <iocsh.h>
+#include <pv/pvDatabase.h>
 #include <pv/channelProviderLocal.h>
 
+// The following must be the last include for code pvDatabaseRPC uses
+#include <epicsExport.h>
 #define epicsExportSharedSymbols
 #include "pv/exampleRPC.h"
 
