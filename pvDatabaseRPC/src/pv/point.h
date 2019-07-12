@@ -12,11 +12,10 @@
 #define EXAMPLERPC_POINT_H
 
 #include <pv/pvDatabase.h>
-
 #include <epicsThread.h>
-
 #include <iostream>
 
+#include <shareLib.h>
 
 namespace epics { namespace exampleCPP { namespace exampleRPC {
 

@@ -14,8 +14,11 @@
 
 #include <cmath>
 #include <sstream>
+#include <pv/pvDatabase.h>
 
+// The following must be the last include for code pvDatabaseRPC uses
 #include <epicsExport.h>
+#define epicsExportSharedSymbols
 #include "pv/exampleRPC.h"
 
 namespace epics { namespace exampleCPP { namespace exampleRPC {

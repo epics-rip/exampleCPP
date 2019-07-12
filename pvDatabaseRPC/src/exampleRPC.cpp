@@ -9,8 +9,6 @@
  */
 
 #include <pv/standardField.h>
-
-#include <pv/standardField.h>
 #include <pv/standardPVField.h>
 #include <pv/pvDatabase.h>
 #include <pv/timeStamp.h>
@@ -18,6 +16,8 @@
 
 #include <epicsThread.h>
 
+// The following must be the last include for code pvDatabaseRPC uses
+#include <epicsExport.h>
 #define epicsExportSharedSymbols
 #include "pv/exampleRPC.h"
 
