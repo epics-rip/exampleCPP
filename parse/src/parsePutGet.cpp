@@ -78,6 +78,8 @@ int main(int argc,char *argv[])
              PvaClientPutGetPtr putGet = channel->createPutGet(request);
              putGet->connect();
              PvaClientPutDataPtr putData(putGet->getPutData());
+             putData->zeroArrayLength();
+             putData->getChangedBitSet()->clear();
              putData->parse(args);
              putGet->putGet();
              PvaClientGetDataPtr getData = putGet->getGetData();

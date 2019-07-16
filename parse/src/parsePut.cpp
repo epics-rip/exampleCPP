@@ -77,6 +77,8 @@ int main(int argc,char *argv[])
              PvaClientChannelPtr channel = pva->channel(channelName,provider,2.0);
              PvaClientPutPtr put = channel->put(request);
              PvaClientPutDataPtr putData(put->getData());
+             putData->zeroArrayLength();
+             putData->getChangedBitSet()->clear();
              putData->parse(args);
              put->put();
         } catch (std::exception& e) {
