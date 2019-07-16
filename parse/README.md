@@ -1,6 +1,6 @@
-# exampleClient
+# parse
 
-Provides a set of examples that use pvaClientCPP.
+Provides a set of examples for put and putGet that use JASON syntax.
 
 In order to run the examples, **database** must also be built and then the IOC database must be started as follows:
 
@@ -8,79 +8,26 @@ In order to run the examples, **database** must also be built and then the IOC d
     /home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
     mrk> ../../bin/$EPICS_HOST_ARCH/exampleDatabase st.cmd
 
-[developerGuide.html ](https://mrkraimer.github.io/website/developerGuide/developerGuide.html)provides tututorial information on how to use pvaClient
 
 
 ## Building
 
 Read exampleCPP/documentation/exampleCPP.html.
 
-## examplePvaClientGet
+## scripts
 
-This has a number of examples.
+directory client/scripts has a number of examples.
 
-### exampleDouble
+### client/scripts/exampleScalarArray
 
-This shows both a short and long way to get data from a scalar channel.
-The short way throws an execption if the request fails.
-The long way allows the client more control of looking for problems and blocking.
+shows JSON syntax for scalar arrays.
 
 
-### exampleDoubleArray
+### client/scripts/exampleUnion
 
-Like exampleDouble except the data is a scalarArray.
+shows JSON syntax for restricted union field
 
-### exampleCADouble
+### client/scripts/exampleBigRecord
 
-This is like exampleDouble except it uses provider <b>ca</b>.
-
-### exampleCADoubleArray
-
-
-This is like exampleDoubleArray except it uses provider <b>ca</b>.
-
-
-
-## examplePvaClientMonitor
-
-This is an example of creating a monitor on a channel.
-It monitors a scalar double field.
-It also issues puts to the same channel so that it can make the monitors occur.
-
-
-## examplePvaClientPut
-
-This has the folllowing examples.
-
-### examplePut
-
-This shows use of get, put, and monitor.
-
-### examplePVFieldPut
-
-This does a put and then a get.
-
-## examplePvaClientProcess
-
-This example makes a process request to a channel
-
-## examplePvaClientMultiDouble
-
-This is an example of using pvaClientMultiChannel,
-pvaClientMultiGetDouble, pvaClientMultiPutDouble, and pvaClientMultiMonitorDouble.
-
-
-## examplePvaClientNTMulti
-
-This is an example of using pvaClientMultiChannel to get data as an NTMultiChannel
-
-## helloWorldPutGet
-
-This is an example of issuing a channelPutGet.
-
-## helloWorldRPC
-
-This is an example of issuing a channelRPC request.
-It does **not** use pva.
-
+shows JSON syntax for accessing subfields.
 
