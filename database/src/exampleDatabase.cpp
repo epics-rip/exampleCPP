@@ -61,9 +61,22 @@ static void createRestrictedUnionRecord(
     PVDatabasePtr const &master,
     string const &recordName)
 {
+    StructureConstPtr point = fieldCreate->createFieldBuilder()->
+         add("x",pvDouble)->
+         add("y",pvDouble)->
+         createStructure();
+    
+   UnionConstPtr union_t = getFieldCreate()->createFieldBuilder()->
+        add("string",pvString)->
+        addArray("stringArray",pvString)->
+        add("point",point) ->
+        createUnion();
+
     UnionConstPtr u = getFieldCreate()->createFieldBuilder()->
         add("string",pvString)->
         addArray("stringArray",pvString)->
+        add("point",point) ->
+        add("union_t",union_t) ->
         createUnion();
 
     PVStructurePtr pvStructure= NTUnion::createBuilder()->
