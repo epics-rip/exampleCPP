@@ -1,0 +1,9 @@
+#!/bin/sh
+source ./setEnv
+${PARSE}/parsePut -z false PVRenum value=one
+sleep .5
+${PARSE}/parsePut -z false DBRenum01 value=one
+sleep .5
+${PARSE}/parsePutGet -z false -r "putField(value)getField(value)" PVRenum value=zero
+sleep .5
+${PARSE}/parsePut -z false -p ca DBRenum01 value=zero

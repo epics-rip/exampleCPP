@@ -22,45 +22,40 @@ int main(int argc,char *argv[])
 {
     string provider("pva");
     string request("putField()getField()");
-    string debugString;
+    string argString;
+    bool zeroarray(true);
     bool debug(false);
     int opt;
-    while((opt = getopt(argc, argv, "hp:r:d:")) != -1) {
+        while((opt = getopt(argc, argv, "hp:r:z:d:")) != -1) {
         switch(opt) {
+            case 'h':
+             cout << " -h -p provider -r request - d debug channelName args " << endl;
+             cout << "default" << endl;
+             cout << "-p " << provider 
+                  << " -r " << request
+                  << " -z " << (zeroarray ? "true" : "false")
+                  << " -d " << (debug ? "true" : "false") 
+                  << endl;           
+                return 0;
             case 'p':
                 provider = optarg;
                 break;
             case 'r':
                 request = optarg;
                 break;
-            case 'h':
-             cout << " -h -p provider -r request - d debug channelName args " << endl;
-             cout << "default" << endl;
-             cout << "-p " << provider 
-                  << " -r " << request
-                  << " -d " << (debug ? "true" : "false") 
-                  << endl;           
-                return 0;
+            case 'z' :
+               argString =  optarg;
+               if(argString=="false") zeroarray = false;
+               break;
             case 'd' :
-               debugString =  optarg;
-               if(debugString=="true") debug = true;
+               argString =  optarg;
+               if(argString=="true") debug = true;
                break;
             default:
                 std::cerr<<"Unknown argument: "<<opt<<"\n";
                 return -1;
         }
     }
-    bool pvaSrv(((provider.find("pva")==string::npos) ? false : true));
-    bool caSrv(((provider.find("ca")==string::npos) ? false : true));
-    if(pvaSrv&&caSrv) {
-        cerr<< "multiple providers are not allowed\n";
-        return 1;
-    }
-    cout << "provider " << provider
-         << " request " << request
-         << " debug " << (debug ? "true" : "false")  << endl;
-
-    cout << "_____put starting__\n";
     
     try {   
         if(debug) PvaClient::setDebug(true);
@@ -70,6 +65,13 @@ int main(int argc,char *argv[])
              throw std::runtime_error("must provide channelName and at lease one argument");
         }
         string channelName(argv[optind++]);
+        cout << "_____parsePutGet"
+             << " channel" << channelName
+             << " provider " << provider
+             << " request " << request
+             << " zeroarray " << (zeroarray ? "true" : "false")
+             << " debug " << (debug ? "true" : "false")
+             << "\n";
         vector<string> args;
         for (int n = 0; optind < argc; n++, optind++) args.push_back(argv[optind]);
         PvaClientPtr pva= PvaClient::get(provider);
@@ -78,7 +80,7 @@ int main(int argc,char *argv[])
              PvaClientPutGetPtr putGet = channel->createPutGet(request);
              putGet->connect();
              PvaClientPutDataPtr putData(putGet->getPutData());
-             putData->zeroArrayLength();
+             if(zeroarray) putData->zeroArrayLength();
              putData->getChangedBitSet()->clear();
              putData->parse(args);
              putGet->putGet();
