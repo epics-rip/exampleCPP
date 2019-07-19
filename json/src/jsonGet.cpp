@@ -9,6 +9,7 @@
 
 /* Author: Marty Kraimer */
 #include <iostream>
+#include <sstream>
 #include <epicsGetopt.h>
 #include <pv/pvaClient.h>
 #include <pv/convert.h>
@@ -23,17 +24,17 @@ int main(int argc,char *argv[])
     string provider("pva");
     string request("");
     string argString;
-    bool zeroarray(true);
     bool debug(false);
+    bool multiline(false);
     int opt;
-    while((opt = getopt(argc, argv, "hp:r:z:d:")) != -1) {
+    while((opt = getopt(argc, argv, "hp:r:m:d:")) != -1) {
         switch(opt) {
             case 'h':
-             cout << " -h -p provider -r request  -z zeroarray - d debug channelName args " << endl;
+             cout << " -h -p provider -r request -m muiltline - d debug channelName args " << endl;
              cout << "default" << endl;
              cout << "-p " << provider 
                   << " -r " << request
-                  << " -z " << (zeroarray ? "true" : "false")
+                  << " -m " << (multiline ? "true" : "false") 
                   << " -d " << (debug ? "true" : "false") 
                   << endl;           
                 return 0;
@@ -43,9 +44,9 @@ int main(int argc,char *argv[])
             case 'r':
                 request = optarg;
                 break;
-            case 'z' :
+            case 'm' :
                argString =  optarg;
-               if(argString=="false") zeroarray = false;
+               if(argString=="true") multiline = true;
                break;
             case 'd' :
                argString =  optarg;
@@ -59,29 +60,25 @@ int main(int argc,char *argv[])
     try {   
         if(debug) PvaClient::setDebug(true);
         int nPvs = argc - optind;
-        if(nPvs<2)
+        if(nPvs<1)
         {
-             throw std::runtime_error("must provide channelName and at lease one argument");
+             throw std::runtime_error("must provide channelName");
         }
         string channelName(argv[optind++]);
         cout << "_____parsePut"
              << " channel" << channelName
              << " provider " << provider
              << " request " << request
-             << " zeroarray " << (zeroarray ? "true" : "false")
+             << " multiline " << (multiline ? "true" : "false")
              << " debug " << (debug ? "true" : "false")
              << "\n";
-        vector<string> args;
-        for (int n = 0; optind < argc; n++, optind++) args.push_back(argv[optind]);
         PvaClientPtr pva= PvaClient::get(provider);
         try {
-             PvaClientChannelPtr channel = pva->channel(channelName,provider,2.0);
-             PvaClientPutPtr put = channel->put(request);
-             PvaClientPutDataPtr putData(put->getData());
-             if(zeroarray) putData->zeroArrayLength();
-             putData->getChangedBitSet()->clear();
-             putData->parse(args);
-             put->put();
+             PvaClientGetDataPtr pvData =
+                 pva->channel(channelName,provider,2.0)->get(request)->getData();
+             std::ostringstream os;
+             pvData->streamJSON(os,true,multiline);
+             cout << os.str() << "\n";
         } catch (std::exception& e) {
                 cerr << "exception " << e.what() << endl;
         }

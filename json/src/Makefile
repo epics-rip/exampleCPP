@@ -7,6 +7,9 @@ include $(TOP)/configure/CONFIG
 EPICS_BASE_PVA_CORE_LIBS = pvaClient pvAccess pvAccessCA nt pvData ca Com
 #EPICS_BASE_PVA_CORE_LIBS = pvaClient pvAccess pva2ca nt pvData ca Com
 
+PROD_HOST += jsonGet
+jsonGet_SRCS += jsonGet.cpp
+jsonGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += parsePut
 parsePut_SRCS += parsePut.cpp

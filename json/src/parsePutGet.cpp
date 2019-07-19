@@ -29,7 +29,7 @@ int main(int argc,char *argv[])
         while((opt = getopt(argc, argv, "hp:r:z:d:")) != -1) {
         switch(opt) {
             case 'h':
-             cout << " -h -p provider -r request - d debug channelName args " << endl;
+             cout << " -h -p provider -r request -z zeroarray - d debug channelName args " << endl;
              cout << "default" << endl;
              cout << "-p " << provider 
                   << " -r " << request
