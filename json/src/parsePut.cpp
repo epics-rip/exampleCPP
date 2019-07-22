@@ -65,7 +65,7 @@ int main(int argc,char *argv[])
         }
         string channelName(argv[optind++]);
         cout << "_____parsePut"
-             << " channel" << channelName
+             << " channel " << channelName
              << " provider " << provider
              << " request " << request
              << " zeroarray " << (zeroarray ? "true" : "false")
