@@ -74,17 +74,13 @@ int main(int argc,char *argv[])
         vector<string> args;
         for (int n = 0; optind < argc; n++, optind++) args.push_back(argv[optind]);
         PvaClientPtr pva= PvaClient::get(provider);
-        try {
-             PvaClientChannelPtr channel = pva->channel(channelName,provider,2.0);
-             PvaClientPutPtr put = channel->put(request);
-             PvaClientPutDataPtr putData(put->getData());
-             if(zeroarray) putData->zeroArrayLength();
-             putData->getChangedBitSet()->clear();
-             putData->parse(args);
-             put->put();
-        } catch (std::exception& e) {
-                cerr << "exception " << e.what() << endl;
-        }
+        PvaClientChannelPtr channel = pva->channel(channelName,provider,2.0);
+        PvaClientPutPtr put = channel->put(request);
+        PvaClientPutDataPtr putData(put->getData());
+        if(zeroarray) putData->zeroArrayLength();
+        putData->getChangedBitSet()->clear();
+        putData->parse(args);
+        put->put();
     } catch (std::exception& e) {
         cerr << "exception " << e.what() << endl;
         return 1;

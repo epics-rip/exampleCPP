@@ -8,4 +8,4 @@ ${PARSE}/parsePutGet -z false -r "putField(value)getField(value)" PVRenum value=
 sleep .5
 ${PARSE}/parsePut -z false -p ca DBRenum01 value=zero
 sleep .5
-${PARSE}/parsePut PVRenum '{"value":{"index":"1"}}'
+${PARSE}/parsePut PVRenum '{"value":{"index":1}}'

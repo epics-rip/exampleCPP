@@ -75,20 +75,16 @@ int main(int argc,char *argv[])
         vector<string> args;
         for (int n = 0; optind < argc; n++, optind++) args.push_back(argv[optind]);
         PvaClientPtr pva= PvaClient::get(provider);
-        try {
-             PvaClientChannelPtr channel = pva->channel(channelName,provider,2.0);
-             PvaClientPutGetPtr putGet = channel->createPutGet(request);
-             putGet->connect();
-             PvaClientPutDataPtr putData(putGet->getPutData());
-             if(zeroarray) putData->zeroArrayLength();
-             putData->getChangedBitSet()->clear();
-             putData->parse(args);
-             putGet->putGet();
-             PvaClientGetDataPtr getData = putGet->getGetData();
-             cout << getData->getPVStructure() << endl;
-        } catch (std::exception& e) {
-                cerr << "exception " << e.what() << endl;
-        }
+        PvaClientChannelPtr channel = pva->channel(channelName,provider,2.0);
+        PvaClientPutGetPtr putGet = channel->createPutGet(request);
+        putGet->connect();
+        PvaClientPutDataPtr putData(putGet->getPutData());
+        if(zeroarray) putData->zeroArrayLength();
+        putData->getChangedBitSet()->clear();
+        putData->parse(args);
+        putGet->putGet();
+        PvaClientGetDataPtr getData = putGet->getGetData();
+        cout << getData->getPVStructure() << endl;
     } catch (std::exception& e) {
         cerr << "exception " << e.what() << endl;
         return 1;

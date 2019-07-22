@@ -30,7 +30,7 @@ int main(int argc,char *argv[])
     while((opt = getopt(argc, argv, "hp:r:m:d:")) != -1) {
         switch(opt) {
             case 'h':
-             cout << " -h -p provider -r request -m muiltline - d debug channelName args " << endl;
+             cout << " -h -p provider -r request -m multiline - d debug channelName " << endl;
              cout << "default" << endl;
              cout << "-p " << provider 
                   << " -r " << request
@@ -72,16 +72,12 @@ int main(int argc,char *argv[])
              << " multiline " << (multiline ? "true" : "false")
              << " debug " << (debug ? "true" : "false")
              << "\n";
-        PvaClientPtr pva= PvaClient::get(provider);
-        try {
-             PvaClientGetDataPtr pvData =
-                 pva->channel(channelName,provider,2.0)->get(request)->getData();
-             std::ostringstream os;
-             pvData->streamJSON(os,true,multiline);
-             cout << os.str() << "\n";
-        } catch (std::exception& e) {
-                cerr << "exception " << e.what() << endl;
-        }
+        PvaClientPtr pva(PvaClient::get(provider));
+        PvaClientGetDataPtr pvData =
+            pva->channel(channelName,provider,2.0)->get(request)->getData();
+        std::ostringstream os;
+        pvData->streamJSON(os,true,multiline);
+        cout << os.str() << "\n";
     } catch (std::exception& e) {
         cerr << "exception " << e.what() << endl;
         return 1;
