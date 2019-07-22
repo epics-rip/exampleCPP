@@ -65,7 +65,7 @@ int main(int argc,char *argv[])
              throw std::runtime_error("must provide channelName");
         }
         string channelName(argv[optind++]);
-        cout << "_____parsePut"
+        cout << "_____jsonGet"
              << " channel" << channelName
              << " provider " << provider
              << " request " << request
