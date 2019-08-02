@@ -1,0 +1,24 @@
+#!/bin/sh
+source ./setEnv
+${PARSE}/parsePut -r "" PVRdoubleArray value='[1,2,3]'
+sleep .5
+${PARSE}/parsePut -r "" DBRdoubleArray value='[1,2,3]'
+sleep .5
+${PARSE}/parsePut -r "" PVRdoubleArray '{"value":[10,20,30]}'
+sleep .5
+${PARSE}/parsePutGet -r "putField(value)getField(value)" PVRdoubleArray value='[100,200,300]'
+sleep .5
+${PARSE}/parsePut -r "" PVRstringArray value='["one","two","three"]'
+sleep .5
+${PARSE}/parsePut -r "" DBRstringArray01 value='["one","two","three"]'
+sleep .5
+${PARSE}/parsePut -r "" PVRstringArray '{"value":["one again","two again","three again"]}'
+sleep .5
+${PARSE}/parsePutGet -r "putField(value)getField(value)" PVRstringArray value='["once more","two again","three again"]'
+sleep .5
+${PARSE}/parsePut  -r "" PVRbooleanArray value='[true,false,true]'
+sleep .5
+${PARSE}/parsePut  -r "" PVRbooleanArray '{"value":[false,true,false]}'
+sleep .5
+${PARSE}/parsePutGet -r "putField(value)getField(value)" PVRbooleanArray value='[true,false,true]'
+

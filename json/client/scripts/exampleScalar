@@ -1,0 +1,29 @@
+#!/bin/sh
+source ./setEnv
+${PARSE}/parsePut -r "value" PVRdouble value=1
+sleep .5
+${PARSE}/parsePut -r "value" PVRdouble '{"value":2}'
+sleep .5
+${PARSE}/parsePutGet -r "putField(value)getField(value)" PVRdouble value=10
+sleep .5
+${PARSE}/parsePut -r "value" PVRstring value='"one"'
+sleep .5
+${PARSE}/parsePut -r "value" PVRstring '{"value":"two"}'
+sleep .5
+${PARSE}/parsePutGet -r "putField(value)getField(value)" PVRstring value='"three"'
+sleep .5
+${PARSE}/parsePut  -r "value" PVRboolean value=true
+sleep .5
+${PARSE}/parsePut  -r "value" PVRboolean '{"value":false}'
+sleep .5
+${PARSE}/parsePutGet -r "putField(value)getField(value)" PVRboolean value=true
+sleep .5
+${PARSE}/parsePut -r "value" DBRdouble value=1
+sleep .5
+${PARSE}/parsePut -r "value" -p ca DBRdouble value=5
+sleep .5
+${PARSE}/parsePut -r "value" DBRstring00 value='"one"'
+sleep .5
+${PARSE}/parsePut -r "value" -p ca DBRstring00 value='"two"'
+
+

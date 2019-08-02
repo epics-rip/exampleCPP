@@ -1,0 +1,12 @@
+#!/bin/sh
+source ./setEnv
+${PARSE}/parsePut PVRrestrictedUnion value='string="test string"'
+sleep .5
+${PARSE}/parsePut PVRrestrictedUnion value='stringArray=["test string","two"]'
+sleep .5
+${PARSE}/parsePut PVRrestrictedUnion value='point={"x":".1","y":".2"}'
+sleep .5
+${PARSE}/parsePut PVRrestrictedUnion value='union_t=string="test"'
+sleep .5
+${PARSE}/parsePut PVRrestrictedUnion value='union_t=point={"x":".1","y":".2"}'
+

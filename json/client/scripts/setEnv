@@ -1,0 +1,3 @@
+#!/bin/sh
+export PARSE=../../bin/${EPICS_HOST_ARCH}
+

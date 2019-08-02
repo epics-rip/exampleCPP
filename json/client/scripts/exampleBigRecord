@@ -1,0 +1,14 @@
+#!/bin/sh
+source ./setEnv
+${PARSE}/parsePut 
+sleep .5
+${PARSE}/parsePut -r "" PVRBigRecord scalar.double.value=10 scalarArray.double.value='[100,200]'
+sleep .5
+${PARSE}/parsePut -r "" PVRBigRecord '{"scalar":{"double":{"value":20}}}' '{"scalarArray":{"double":{"value":[1000,2000]}}}'
+sleep .5
+${PARSE}/parsePut -r "" PVRBigRecord scalar.double.value=10 scalar.string.value='" this is a string"'
+sleep .5
+${PARSE}/parsePut -r "" PVRBigRecord '{"scalar":{"double":{"value":20},"string":{"value":"this is also a string"}}}'
+sleep .5
+${PARSE}/parsePutGet -r "putField(),getField(scalar.double,scalarArray.double)" PVRBigRecord scalar.double.value=10 scalarArray.double.value='[100,200]'
+
