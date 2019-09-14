@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/database</h1>
-<h2 class="nocount">2018.04.05</h2>
+<h2 class="nocount">2019.09.11</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>database provides an IOC with a combination of V3 DBRecords, PVRecords, and also starts qsrv.
@@ -79,6 +79,7 @@ a main program or as part of a V3 IOC.</p>
 <p>The following are the PVRecords:</p>
 <pre>
 PVRBigRecord
+PVRaddRecord
 PVRboolean
 PVRbooleanArray
 PVRbyte
@@ -393,7 +394,9 @@ This is a static method of ExampleDatabase that creates all the PVRecords that m
    <dt>addRecord for PVRtraceRecord</dt>
       <dd>Creates <b>PVRtraceRecord</b> </dd>
    <dt>addRecord for PVRremoveRecord</dt>
-      <dd>Creates <b>PVRPVRremoveRecord</b> </dd>
+      <dd>Creates <b>PVRremoveRecord</b> </dd>
+   <dt>addRecord for PVRaddRecord</dt>
+      <dd>Creates <b>PVRaddRecord</b> </dd>
    <dt>addRecord for PVRenum</dt>
       <dd>Creates <b>PVRenum</b>
        It does this without using a private method.
