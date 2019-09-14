@@ -13,6 +13,7 @@ cd ${TOP}/iocBoot/${IOC}
 iocInit()
 traceRecordCreate PVRtraceRecord
 removeRecordCreate PVRremoveRecord
+addRecordCreate PVRaddRecord
 processRecordCreate PVRprocessRecord .5
 supportRecordCreate PVRsupportDouble
 supportRecordCreate PVRsupportUByte pvUByte
