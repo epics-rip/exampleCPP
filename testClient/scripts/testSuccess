@@ -298,3 +298,107 @@ result short way {3}[1, 2.2, 3.4]
 PVRstringArray should work
 result {3}[a a, bbb, c c]
 result short way {3}[a a, bbb, c c]
+___testPutDoubleBigRecord___
+scalarArray.byte.value should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+scalarArray.long.value should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+scalarArray.double.value should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+___testGetDoubleBigRecord___
+scalar.byte.value should work
+result 127
+result short way 127
+scalar.long.value should work
+result 32767
+result short way 32767
+scalar.double.value should work
+result 1.5
+result short way 1.5
+___testPutStringBigRecord___
+scalar.boolean.value should work
+result true
+result short way true
+scalar.byte.value should work
+result 127
+result short way 127
+scalar.long.value should work
+result 32767
+result short way 32767
+scalar.double.value should work
+result 1.5
+result short way 1.5
+scalar.string.value should work
+result hello
+result short way hello
+___testGetStringBigRecord___
+scalar.boolean.value should work
+result true
+result short way true
+scalar.byte.value should work
+result 127
+result short way 127
+scalar.long.value should work
+result 32767
+result short way 32767
+scalar.double.value should work
+result 1.5
+result short way 1.5
+scalar.string.value should work
+result hello
+result short way hello
+___testPutDoubleArrayBigRecord___
+scalarArray.byte.value should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+scalarArray.long.value should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+scalarArray.double.value should work
+result {3}[1, 2, 3]
+result short way {3}[2, 3, 4]
+___testGetDoubleArrayBigRecord___
+scalarArray.byte.value should work
+result {3}[2, 3, 4]
+result short way {3}[2, 3, 4]
+scalarArray.long.value should work
+result {3}[2, 3, 4]
+result short way {3}[2, 3, 4]
+scalarArray.double.value should work
+result {3}[2, 3, 4]
+result short way {3}[2, 3, 4]
+___testPutStringArrayBigRecord___
+scalarArray.boolean.value should work
+result {3}[false, true, false]
+result short way {3}[false, true, false]
+scalarArray.byte.value should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+scalarArray.long.value should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+scalarArray.double.value should work
+result {3}[1, 2.2, 3.4]
+result short way {3}[1, 2.2, 3.4]
+scalarArray.string.value should work
+result {3}[a a, bbb, c c]
+result short way {3}[a a, bbb, c c]
+___testGetStringArrayBigRecord___
+scalarArray.boolean.value should work
+result {3}[false, true, false]
+result short way {3}[false, true, false]
+scalarArray.byte.value should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+scalarArray.long.value should work
+result {3}[1, 2, 3]
+result short way {3}[1, 2, 3]
+scalarArray.double.value should work
+result {3}[1, 2.2, 3.4]
+result short way {3}[1, 2.2, 3.4]
+scalarArray.string.value should work
+result {3}[a a, bbb, c c]
+result short way {3}[a a, bbb, c c]

@@ -1,0 +1,10 @@
+#!/bin/sh
+source ./setEnv
+echo scalarArray.byte.value       should work
+${TESTCLIENT}/testGetDoubleArray -r scalarArray.byte.value PVRBigRecord
+echo scalarArray.long.value       should work
+${TESTCLIENT}/testGetDoubleArray -r scalarArray.long.value PVRBigRecord
+echo scalarArray.double.value       should work
+${TESTCLIENT}/testGetDoubleArray -r scalarArray.double.value PVRBigRecord
+
+

@@ -1,0 +1,14 @@
+#!/bin/sh
+source ./setEnv
+echo scalarArray.boolean.value       should work
+${TESTCLIENT}/testPutStringArray -r scalarArray.boolean.value PVRBigRecord 'false,true,false'
+echo scalarArray.byte.value       should work
+${TESTCLIENT}/testPutStringArray -r scalarArray.byte.value PVRBigRecord '1,2,3'
+echo scalarArray.long.value       should work
+${TESTCLIENT}/testPutStringArray -r scalarArray.long.value PVRBigRecord '1,2,3'
+echo scalarArray.double.value       should work
+${TESTCLIENT}/testPutStringArray -r scalarArray.double.value PVRBigRecord '1.0,2.2,3.4'
+echo scalarArray.string.value       should work
+${TESTCLIENT}/testPutStringArray -r scalarArray.string.value PVRBigRecord 'a a,bbb,c c'
+
+

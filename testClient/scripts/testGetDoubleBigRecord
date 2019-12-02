@@ -1,0 +1,10 @@
+#!/bin/sh
+source ./setEnv
+echo scalar.byte.value       should work
+${TESTCLIENT}/testGetDouble -r scalar.byte.value PVRBigRecord
+echo scalar.long.value       should work
+${TESTCLIENT}/testGetDouble -r scalar.long.value PVRBigRecord
+echo scalar.double.value       should work
+${TESTCLIENT}/testGetDouble -r scalar.double.value PVRBigRecord
+
+

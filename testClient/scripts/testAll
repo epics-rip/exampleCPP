@@ -16,3 +16,20 @@ echo ___testPutStringArray___
 ./testPutStringArray
 echo ___testGetStringArray___
 ./testGetStringArray
+
+echo ___testPutDoubleBigRecord___
+./testPutDoubleBigRecord
+echo ___testGetDoubleBigRecord___
+./testGetDoubleBigRecord
+echo ___testPutStringBigRecord___
+./testPutStringBigRecord
+echo ___testGetStringBigRecord___
+./testGetStringBigRecord
+echo ___testPutDoubleArrayBigRecord___
+./testPutDoubleArrayBigRecord
+echo ___testGetDoubleArrayBigRecord___
+./testGetDoubleArrayBigRecord
+echo ___testPutStringArrayBigRecord___
+./testPutStringArrayBigRecord
+echo ___testGetStringArrayBigRecord___
+./testGetStringArrayBigRecord

@@ -1,0 +1,14 @@
+#!/bin/sh
+source ./setEnv
+echo scalar.boolean.value       should work
+${TESTCLIENT}/testPutString -r scalar.boolean.value PVRBigRecord true
+echo scalar.byte.value       should work
+${TESTCLIENT}/testPutString -r scalar.byte.value PVRBigRecord 127
+echo scalar.long.value       should work
+${TESTCLIENT}/testPutString -r scalar.long.value PVRBigRecord 32767
+echo scalar.double.value       should work
+${TESTCLIENT}/testPutString -r scalar.double.value PVRBigRecord 1.5
+echo scalar.string.value       should work
+${TESTCLIENT}/testPutString -r scalar.string.value PVRBigRecord hello
+
+
