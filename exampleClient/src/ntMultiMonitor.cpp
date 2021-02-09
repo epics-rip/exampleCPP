@@ -56,10 +56,8 @@ private:
                  if(!isConnected[i]) cout << channelNames[i] << " ";
              }
              cout << endl;
-             throw std::runtime_error("did not connect");
         }
-        multiMonitor = 
-             multiChannel->createNTMonitor(request);
+        multiMonitor = multiChannel->createNTMonitor(request);
         multiMonitor->connect();
     }
 public:
@@ -93,9 +91,11 @@ public:
             if(pvUnion) {
                 PVFieldPtr pvField = pvUnion->get();
                 cout << channelNames[ind] << " = " << pvField << "\n";
+            } else  {
+                cout << channelNames[ind] << " no monitor event\n";
             }
-        }
-    }
+        } 
+    }         
 };
 
 
@@ -166,7 +166,7 @@ int main(int argc,char *argv[])
         shared_vector<const string> names(freeze(channelNames));
         MyMonitorPtr clientMonitor(MyMonitor::create(pva,provider,names,request,valueOnly));
         while(true) {
-            cout << "Type exit or return to poll\n";
+            cout << "Type exit or enter to poll\n";
             string str;
             getline(cin,str);
             if(str.compare("exit")==0) break;

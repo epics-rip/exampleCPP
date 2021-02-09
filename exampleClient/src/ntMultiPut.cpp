@@ -20,28 +20,47 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
-class MyGet;
-typedef std::tr1::shared_ptr<MyGet> MyGetPtr;
+static PVDataCreatePtr pvDataCreate = getPVDataCreate();
+static ConvertPtr convert = getConvert();
 
-class MyGet :
-    public std::tr1::enable_shared_from_this<MyGet>
+static void setValue(PVUnionPtr const &pvUnion, string value)
+{
+    UnionConstPtr u = pvUnion->getUnion();
+    FieldConstPtr field = u->getField(0);
+    Type type = field->getType();
+    if(type==scalar) {
+         ScalarConstPtr scalar = static_pointer_cast<const Scalar>(field);
+         PVScalarPtr pvScalar(pvDataCreate->createPVScalar(scalar));
+         convert->fromString(pvScalar,value);
+         pvUnion->set(0,pvScalar);
+         return;
+    }
+    if(type==scalarArray) {
+        ScalarArrayConstPtr scalarArray = static_pointer_cast<const ScalarArray>(field);
+         PVScalarArrayPtr pvScalarArray(pvDataCreate->createPVScalarArray(scalarArray));
+         convert->fromString(pvScalarArray,value);
+         pvUnion->set(0,pvScalarArray);
+         return;
+    }
+    throw std::runtime_error("only scalar and scalarArray are supported");
+}
+
+class MyPut;
+typedef std::tr1::shared_ptr<MyPut> MyPutPtr;
+
+class MyPut :
+    public std::tr1::enable_shared_from_this<MyPut>
 {
 private:
     PvaClientMultiChannelPtr multiChannel;
-    PvaClientNTMultiGetPtr multiGet;
+    PvaClientNTMultiPutPtr multiPut;
     epics::pvData::shared_vector<const std::string> const channelNames;
-    string request;
-    bool valueOnly;
 
-    MyGet(
-       shared_vector<const string> const &channelNames,
-       string const & request,
-       bool valueOnly
+    MyPut(
+       shared_vector<const string> const &channelNames
      )
     : 
-      channelNames(channelNames),
-      request(request),
-      valueOnly(valueOnly)
+      channelNames(channelNames)
     {}
 
     void init(PvaClientPtr const &pva,string const & provider)
@@ -57,40 +76,33 @@ private:
              }
              cout << endl;
         }
-        multiGet = multiChannel->createNTGet(request);
+        multiPut = multiChannel->createNTPut();
     }
 public:
-    static MyGetPtr create(
+    static MyPutPtr create(
         PvaClientPtr const &pva,
         string const & provider,
-        shared_vector<const string> const &channelNames,
-        string const & request,
-        bool valueOnly
+        shared_vector<const string> const &channelNames
         )
     {
         
-        MyGetPtr clientGet(MyGetPtr(new MyGet(channelNames,request,valueOnly)));
-        clientGet->init(pva,provider);
-        return clientGet;
+        MyPutPtr clientPut(MyPutPtr(new MyPut(channelNames)));
+        clientPut->init(pva,provider);
+        return clientPut;
     }
-    void get()
+    void put(string value)
     {
-        multiGet->get(valueOnly);
-        PvaClientNTMultiDataPtr multiData = multiGet->getData();
-        PVStructurePtr pvStructure = multiData->getNTMultiChannel()->getPVStructure();
-        PVUnionArrayPtr pvUnionArray = static_pointer_cast<PVUnionArray>(
-             pvStructure->getSubField("value"));
-        shared_vector<const PVUnionPtr> values = pvUnionArray->view();
-        for(size_t ind=0; ind < values.size(); ++ind)
+        shared_vector<epics::pvData::PVUnionPtr> data = multiPut->getValues();
+        shared_vector<epics::pvData::boolean> isConnected = multiChannel->getIsConnected();
+        for(size_t i=0; i<channelNames.size(); ++i)
         {
-            PVUnionPtr pvUnion = values[ind];
-            if(pvUnion) {
-                PVFieldPtr pvField = pvUnion->get();
-                cout << channelNames[ind] << " = " << pvField << "\n";
-            } else {
-                cout << channelNames[ind] << " is null\n";
+           if(isConnected[i])
+           {
+                PVUnionPtr pvUnion = data[i];
+                setValue(pvUnion,value);
             }
         }
+        multiPut->put();
     }
 };
 
@@ -99,31 +111,21 @@ int main(int argc,char *argv[])
 {
     string provider("pva");
     string channelName("PVRdouble");
-    string request("value,alarm,timeStamp");
     bool debug(false);
-    bool valueOnly(false);
     int opt;
-    while((opt = getopt(argc, argv, "hp:r:v:d:")) != -1) {
+    while((opt = getopt(argc, argv, "hp:d:")) != -1) {
         switch(opt) {
             case 'p':
                 provider = optarg;
                 break;
-            case 'r':
-                request = optarg;
-                break;
             case 'h':
-             cout << " -h -p provider -r request -v valueOnly - d debug channelNames " << endl;
+             cout << " -h -p provider - d debug channelNames " << endl;
              cout << "default" << endl;
              cout << "-p " << provider 
-                  << " -r " << request
-                  << " -v " << (valueOnly ? "true" : "false")
                   << " -d " << (debug ? "true" : "false")
                   << " " <<  channelName
                   << endl;           
                 return 0;
-           case 'v' :
-               if(string(optarg)=="true") valueOnly = true;
-               break;
             case 'd' :
                if(string(optarg)=="true") debug = true;
                break;
@@ -140,11 +142,9 @@ int main(int argc,char *argv[])
     }
     cout << "provider " << provider
          << " channelName " <<  channelName
-         << " request " << request
-         << " valueOnly " << (valueOnly ? "true" : "false")
          << " debug " << (debug ? "true" : "false")
          << endl;
-    cout << "_____ntMultiGet starting_______\n";
+    cout << "_____ntMultiPut starting_______\n";
     if(debug) PvaClient::setDebug(true);
     try {
         shared_vector<string> channelNames;
@@ -160,15 +160,17 @@ int main(int argc,char *argv[])
         }
         PvaClientPtr pva= PvaClient::get(provider);
         shared_vector<const string> names(freeze(channelNames));
-        MyGetPtr clientGet(MyGet::create(pva,provider,names,request,valueOnly));
+        MyPutPtr clientPut(MyPut::create(pva,provider,names));
         while(true) {
-            cout << "Type exit or enter to get\n";
+            cout << "Type exit or enter to pull\n";
             string str;
             getline(cin,str);
             if(str.compare("exit")==0) break;
-            clientGet->get();
+            cout  << "enter value\n";
+            getline(cin,str);
+            clientPut->put(str);
         }
-        cout << "_____examplePvaClientNTMultiMonitor done_______\n";
+        cout << "___ntMultiPut done_______\n";
     } catch (std::exception& e) {
         cout << "exception " << e.what() << endl;
         return 1;

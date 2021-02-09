@@ -77,6 +77,10 @@ PROD_HOST += ntMultiGet
 ntMultiGet_SRCS += ntMultiGet.cpp
 ntMultiGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
+PROD_HOST += ntMultiPut
+ntMultiPut_SRCS += ntMultiPut.cpp
+ntMultiPut_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+
 PROD_HOST += helloWorldRPC
 helloWorldRPC_SRCS += helloWorldRPC.cpp
 helloWorldRPC_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
