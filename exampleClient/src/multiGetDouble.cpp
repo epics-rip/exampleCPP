@@ -20,43 +20,18 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
-static PVDataCreatePtr pvDataCreate = getPVDataCreate();
-static ConvertPtr convert = getConvert();
+class MultiGetDouble;
+typedef std::tr1::shared_ptr<MultiGetDouble> MultiGetDoublePtr;
 
-static void setValue(PVUnionPtr const &pvUnion, string value)
-{
-    UnionConstPtr u = pvUnion->getUnion();
-    FieldConstPtr field = u->getField(0);
-    Type type = field->getType();
-    if(type==scalar) {
-         ScalarConstPtr scalar = static_pointer_cast<const Scalar>(field);
-         PVScalarPtr pvScalar(pvDataCreate->createPVScalar(scalar));
-         convert->fromString(pvScalar,value);
-         pvUnion->set(0,pvScalar);
-         return;
-    }
-    if(type==scalarArray) {
-        ScalarArrayConstPtr scalarArray = static_pointer_cast<const ScalarArray>(field);
-         PVScalarArrayPtr pvScalarArray(pvDataCreate->createPVScalarArray(scalarArray));
-         convert->fromString(pvScalarArray,value);
-         pvUnion->set(0,pvScalarArray);
-         return;
-    }
-    throw std::runtime_error("only scalar and scalarArray are supported");
-}
-
-class MyPut;
-typedef std::tr1::shared_ptr<MyPut> MyPutPtr;
-
-class MyPut :
-    public std::tr1::enable_shared_from_this<MyPut>
+class MultiGetDouble :
+    public std::tr1::enable_shared_from_this<MultiGetDouble>
 {
 private:
     PvaClientMultiChannelPtr multiChannel;
-    PvaClientNTMultiPutPtr multiPut;
-    epics::pvData::shared_vector<const std::string> const channelNames;
+    PvaClientMultiGetDoublePtr multiGetDouble;
+    shared_vector<const std::string> const channelNames;
 
-    MyPut(
+    MultiGetDouble(
        shared_vector<const string> const &channelNames
      )
     : 
@@ -66,7 +41,7 @@ private:
     void init(PvaClientPtr const &pva,string const & provider)
     {
         multiChannel = PvaClientMultiChannel::create(pva,channelNames,provider);
-        Status status = multiChannel->connect();     
+        Status status = multiChannel->connect();
         if(!status.isSuccess()) {
              cout << "Did not connect: ";
              shared_vector<epics::pvData::boolean> isConnected = multiChannel->getIsConnected();
@@ -76,33 +51,25 @@ private:
              }
              cout << endl;
         }
-        multiPut = multiChannel->createNTPut();
+        multiGetDouble = multiChannel->createGet();
+        multiGetDouble->connect();
     }
-public:
-    static MyPutPtr create(
+public:     
+    static MultiGetDoublePtr create(
         PvaClientPtr const &pva,
         string const & provider,
         shared_vector<const string> const &channelNames
-        )
+    )
     {
         
-        MyPutPtr clientPut(MyPutPtr(new MyPut(channelNames)));
-        clientPut->init(pva,provider);
-        return clientPut;
+        MultiGetDoublePtr clientGetDouble(MultiGetDoublePtr(new MultiGetDouble(channelNames)));
+        clientGetDouble->init(pva,provider);
+        return clientGetDouble;
     }
-    void put(string value)
+    void get()
     {
-        shared_vector<epics::pvData::PVUnionPtr> data = multiPut->getValues();
-        shared_vector<epics::pvData::boolean> isConnected = multiChannel->getIsConnected();
-        for(size_t i=0; i<channelNames.size(); ++i)
-        {
-           if(isConnected[i])
-           {
-                PVUnionPtr pvUnion = data[i];
-                setValue(pvUnion,value);
-            }
-        }
-        multiPut->put();
+        epics::pvData::shared_vector<double> data(multiGetDouble->get());
+        cout << "value=" << data << "\n";
     }
 };
 
@@ -121,36 +88,31 @@ int main(int argc,char *argv[])
     channelNames.push_back("PVRulong");
     channelNames.push_back("PVRfloat");
     channelNames.push_back("PVRdouble");
+    string debugString;
     bool debug(false);
     int opt;
     while((opt = getopt(argc, argv, "hp:d:")) != -1) {
         switch(opt) {
-            case 'p':
-                provider = optarg;
-                break;
             case 'h':
-             cout << " -h -p provider - d debug channelNames " << endl;
+             cout << " -h -p provider -d debug  channelNames " << endl;
              cout << "default" << endl;
-             cout << "-p " << provider 
-                  << " -d " << (debug ? "true" : "false")
+             cout << " -d " 
                   << " " <<  channelNames
                   << endl;           
                 return 0;
+            case 'p':
+                provider = optarg;
+                break;  
             case 'd' :
-               if(string(optarg)=="true") debug = true;
+               debugString =  optarg;
+               if(debugString=="true") debug = true;
                break;
             default:
                 std::cerr<<"Unknown argument: "<<opt<<"\n";
                 return -1;
         }
     }
-    bool pvaSrv(((provider.find("pva")==string::npos) ? false : true));
-    bool caSrv(((provider.find("ca")==string::npos) ? false : true));
-    if(pvaSrv&&caSrv) {
-        cerr<< "multiple providers are not allowed\n";
-        return 1;
-    }
-    cout << "_____ntMultiPut starting_______\n";
+    cout << "_____multiGetDouble starting_______\n";
     if(debug) PvaClient::setDebug(true);
     try {
         int nPvs = argc - optind;       /* Remaining arg list are PV names */
@@ -163,19 +125,17 @@ int main(int argc,char *argv[])
             }
         }
         cout << " channelNames " <<  channelNames << endl;
-        PvaClientPtr pva= PvaClient::get(provider);
+        PvaClientPtr pva= PvaClient::get("pva");
         shared_vector<const string> names(freeze(channelNames));
-        MyPutPtr clientPut(MyPut::create(pva,provider,names));
+        MultiGetDoublePtr clientGetDouble(MultiGetDouble::create(pva,provider,names));
         while(true) {
-            cout << "Type exit or enter to put\n";
+            cout << "Type exit or enter to get\n";
             string str;
             getline(cin,str);
             if(str.compare("exit")==0) break;
-            cout  << "enter value\n";
-            getline(cin,str);
-            clientPut->put(str);
+            clientGetDouble->get();
         }
-        cout << "___ntMultiPut done_______\n";
+        cout << "_____multiGetDouble done_______\n";
     } catch (std::exception& e) {
         cout << "exception " << e.what() << endl;
         return 1;

@@ -85,6 +85,7 @@ public:
         PVUnionArrayPtr pvUnionArray = static_pointer_cast<PVUnionArray>(
              pvStructure->getSubField("value"));
         shared_vector<const PVUnionPtr> values = pvUnionArray->view();
+#ifndef pvaClientMultiChannel_changes
         for(size_t ind=0; ind < values.size(); ++ind)
         {
             PVUnionPtr pvUnion = values[ind];
@@ -94,7 +95,23 @@ public:
             } else  {
                 cout << channelNames[ind] << " no monitor event\n";
             }
-        } 
+        }
+#else
+        shared_vector<boolean> changeFlags(multiData->getChannelChangeFlags());
+        shared_vector<boolean> isConnected(multiChannel->getIsConnected());
+        for(size_t ind=0; ind < values.size(); ++ind)
+        {
+            if(changeFlags[ind]) {
+                PVUnionPtr pvUnion = values[ind];
+                PVFieldPtr pvField = pvUnion->get();
+                cout << channelNames[ind] << " = " << pvField << "\n";
+            } else  {
+                string connected("false");
+                if(isConnected[ind]) connected = "true";
+                cout << channelNames[ind] << " no monitor event; isConnected=" << connected << "\n";
+            }
+        }
+#endif        
     }         
 };
 
@@ -102,7 +119,17 @@ public:
 int main(int argc,char *argv[])
 {
     string provider("pva");
-    string channelName("PVRdouble");
+    shared_vector<string> channelNames;
+    channelNames.push_back("PVRbyte");
+    channelNames.push_back("PVRshort");
+    channelNames.push_back("PVRint");
+    channelNames.push_back("PVRlong");
+    channelNames.push_back("PVRubyte");
+    channelNames.push_back("PVRushort");
+    channelNames.push_back("PVRuint");
+    channelNames.push_back("PVRulong");
+    channelNames.push_back("PVRfloat");
+    channelNames.push_back("PVRdouble");
     string request("value,alarm,timeStamp");
     bool debug(false);
     bool valueOnly(false);
@@ -122,7 +149,7 @@ int main(int argc,char *argv[])
                   << " -r " << request
                   << " -v " << (valueOnly ? "true" : "false")
                   << " -d " << (debug ? "true" : "false")
-                  << " " <<  channelName
+                  << " " <<  channelNames
                   << endl;           
                 return 0;
            case 'v' :
@@ -142,26 +169,19 @@ int main(int argc,char *argv[])
         cerr<< "multiple providers are not allowed\n";
         return 1;
     }
-    cout << "provider " << provider
-         << " channelName " <<  channelName
-         << " request " << request
-         << " valueOnly " << (valueOnly ? "true" : "false")
-         << " debug " << (debug ? "true" : "false")
-         << endl;
     cout << "_____ntMultiMonitor starting_______\n";
     if(debug) PvaClient::setDebug(true);
     try {
-        shared_vector<string> channelNames;
-        int nPvs = argc - optind;       /* Remaining arg list are PV names */
-        if (nPvs==0)
+        int nPvs = argc - optind;       /* Remaining arg list are PV names */      
+        if (nPvs!=0)
         {
-            channelNames.push_back(channelName);
-        } else {
+            channelNames.clear();
             while(optind < argc) {
                 channelNames.push_back(argv[optind]);
                 optind++;
             }
         }
+        cout << " channelNames " <<  channelNames << endl;
         PvaClientPtr pva= PvaClient::get(provider);
         shared_vector<const string> names(freeze(channelNames));
         MyMonitorPtr clientMonitor(MyMonitor::create(pva,provider,names,request,valueOnly));
@@ -172,7 +192,7 @@ int main(int argc,char *argv[])
             if(str.compare("exit")==0) break;
             clientMonitor->poll();
         }
-        cout << "_____examplePvaClientNTMultiMonitor done_______\n";
+        cout << "_____ntMultiMonitor done_______\n";
     } catch (std::exception& e) {
         cout << "exception " << e.what() << endl;
         return 1;

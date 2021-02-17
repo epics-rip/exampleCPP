@@ -130,6 +130,7 @@ public:
          if(!channelConnected || !monitorConnected)
          {
               cout << "notconnected\n";
+              return;
          }
          isStarted = true;
          pvaClientMonitor->start(request);
@@ -205,11 +206,8 @@ int main(int argc,char *argv[])
         }
         while(true) {
             string str;
+            cout << "Enter: exit start stop\n";
             getline(cin,str);
-            if(str.compare("help")==0){
-                 cout << "Type help exit status start stop\n";
-                 continue;
-            }
             if(str.compare("start")==0){
                  cout << "request?\n";
                  getline(cin,request);

@@ -81,6 +81,18 @@ PROD_HOST += ntMultiPut
 ntMultiPut_SRCS += ntMultiPut.cpp
 ntMultiPut_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
+PROD_HOST += multiGetDouble
+multiGetDouble_SRCS += multiGetDouble.cpp
+multiGetDouble_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+
+PROD_HOST += multiPutDouble
+multiPutDouble_SRCS += multiPutDouble.cpp
+multiPutDouble_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+
+PROD_HOST += multiMonitorDouble
+multiMonitorDouble_SRCS += multiMonitorDouble.cpp
+multiMonitorDouble_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+
 PROD_HOST += helloWorldRPC
 helloWorldRPC_SRCS += helloWorldRPC.cpp
 helloWorldRPC_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
