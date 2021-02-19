@@ -7,11 +7,6 @@ include $(TOP)/configure/CONFIG
 EPICS_BASE_PVA_CORE_LIBS = pvaClient pvAccess pvAccessCA nt pvData ca Com
 #EPICS_BASE_PVA_CORE_LIBS = pvaClient pvAccess pva2ca nt pvData ca Com
 
-PROD_HOST += testRequest
-testRequest_SRCS += testRequest.cpp
-testRequest_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
-
-
 PROD_HOST += get
 get_SRCS += get.cpp
 get_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
