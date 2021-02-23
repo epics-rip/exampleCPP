@@ -7,10 +7,15 @@ include $(TOP)/configure/CONFIG
 #EPICS_BASE_PVA_CORE_LIBS = pvaClient pvAccess pva2ca pvData ca Com
 EPICS_BASE_PVA_CORE_LIBS = pvaClient pvAccess pvAccessCA nt pvData ca Com
 
-PROD_HOST += pvaPutGet
-pvaPutGet_SRCS += pvaPutGet.cpp
-pvaPutGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
-pvaPutGet_LIBS += $(EPICS_BASE_IOC_LIBS)
+PROD_HOST += pvaPutGetSleep
+pvaPutGetSleep_SRCS += pvaPutGetSleep.cpp
+pvaPutGetSleep_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+pvaPutGetSleep_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+PROD_HOST += pvaPutGetMutex
+pvaPutGetMutex_SRCS += pvaPutGetMutex.cpp
+pvaPutGetMutex_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+pvaPutGetMutex_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 PROD_HOST += pvaClientPutGet
 pvaClientPutGet_SRCS += pvaClientPutGet.cpp
