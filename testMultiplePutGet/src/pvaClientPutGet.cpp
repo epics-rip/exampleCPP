@@ -8,8 +8,9 @@
  */
 
 #include <iostream>
-#include <epicsGetopt.h>
+#include <time.h>
 #include <unistd.h>
+#include <epicsGetopt.h>
 #include <pv/pvaClient.h>
 #include <pv/convert.h>
 
@@ -58,60 +59,102 @@ static void example(
             return;
         }
     }
-    int successPutCount = 0;
-    int failedPutCount = 0;
-    for(int value = 0; value< 10000; value+= 1) {
+    int successCount = 0;
+    int failedCount = 0;
+    clock_t startTime = clock();
+    int numiter = 10000;
+    int value = 0;
+    for(int i = 0; i< numiter; i+= 1) {
+        bool correctData = true;
+        value++;
+        if(value>127) value = 0;
         string strValue = to_string(value);
-        for(size_t i=0; i<num; i++) {
-            PvaClientPutDataPtr putData = pvaClientPuts[i]->getData();
+        for(size_t j=0; j<num; j++) {
+            PvaClientPutDataPtr putData = pvaClientPuts[j]->getData();
             PVStructurePtr pvStructure = putData->getPVStructure();
             PVScalarPtr pvScalar(pvStructure->getSubField<PVScalar>("value"));
             convert->fromString(pvScalar,strValue);
-            pvaClientPuts[i]->issuePut();
+            try {
+                pvaClientPuts[j]->issuePut();
+             } catch (std::exception& e) {
+                 cout << "i=" << i << " channelName=" << channelNames[j]
+                     << " issuePut exception " << e.what() << endl;
+                 correctData = false;    
+             }
         }
-        for(size_t i=0; i<num; i++) {
-            Status status = pvaClientPuts[i]->waitPut();
-            if(!status.isOK()) {
-                cout << "channel=" << channelNames[i] << " put failed " << status <<"\n";
-                return;
+        for(size_t j=0; j<num; j++) {
+            try {
+                Status status = pvaClientPuts[j]->waitPut();
+                if(!status.isOK()) {
+                    cout << "i=" << i << " channel=" << channelNames[j]
+                        << " waitPut failed " << status <<"\n";
+                    correctData = false;
+                }
+            } catch (std::exception& e) {
+                 cout << "i=" << i << " channelName=" << channelNames[j]
+                     << " waitPut exception " << e.what() << endl;
+                 correctData = false;
             }
         }
-        for(size_t i=0; i<num; i++) {
-            pvaClientGets[i]->issueGet();
-        }
-        bool correctData = true;
-        for(size_t i=0; i<num ; ++i) {
-            Status status = pvaClientGets[i]->waitGet();
-            if(!status.isOK()) {
-                cout << "channel=" << channelNames[i] << " get failed " << status <<"\n";
-                return;
+        for(size_t j=0; j<num; j++) {
+            try {
+                pvaClientGets[j]->issueGet();
+            } catch (std::exception& e) {
+                 cout << "i=" << i << " channelName=" << channelNames[j]
+                     << " issueGet exception " << e.what() << endl;
+                 correctData = false;    
             }
-            PvaClientGetDataPtr data = pvaClientGets[i]->getData();
+        }
+        for(size_t j=0; j<num ; ++j) {
+            try {
+                Status status = pvaClientGets[j]->waitGet();
+                if(!status.isOK()) {
+                    cout << "i=" << i << " channel=" << channelNames[j]
+                        << " waitGet failed " << status <<"\n";
+                    correctData = false;    
+                    continue;
+                }
+            } catch (std::exception& e) {
+                 cout << "i=" << i << " channelName=" << channelNames[j]
+                     << " waitGet exception " << e.what() << endl;
+                 correctData = false;    
+                 continue;    
+            }
+            PvaClientGetDataPtr data = pvaClientGets[j]->getData();
             PVScalarPtr pvScalar = data->getPVStructure()->getSubField<PVScalar>("value");
             string getValue = convert->toString(pvScalar);
             if(strValue!=getValue){
-                 cout << channelNames[i] << " expected=" << strValue << " got=" << getValue << "\n";
+                 cout << "i=" << i << " channelName=" << channelNames[j]
+                     << " expected=" << strValue << " got=" << getValue << "\n";
                  correctData = false;
             }  
         }
         if(correctData) {
-            successPutCount++;
+            successCount++;
         }
         else {
-            failedPutCount++;
+            failedCount++;
         }
     }
-    cout << "SUCCESS PUT COUNT: " << successPutCount << endl;
-    cout << "FAILED  PUT COUNT: " << failedPutCount << endl;
+    double seconds = (double)(clock() - startTime)/CLOCKS_PER_SEC;
+    cout << "time=" << seconds << " per interation=" << seconds/numiter << "\n";
+    cout << "SUCCESS COUNT: " << successCount << endl;
+    cout << "FAILED COUNT: " << failedCount << endl;
 }
 
 int main(int argc,char *argv[])
 {
     string provider("pva");
     shared_vector<string> channelNames;
+    channelNames.push_back("PVRbyte");
     channelNames.push_back("PVRshort");
     channelNames.push_back("PVRint");
     channelNames.push_back("PVRlong");
+    channelNames.push_back("PVRubyte");
+    channelNames.push_back("PVRushort");
+    channelNames.push_back("PVRuint");
+    channelNames.push_back("PVRulong");
+    channelNames.push_back("PVRfloat");
     channelNames.push_back("PVRdouble");
     int opt;
     while((opt = getopt(argc, argv, "hp:")) != -1) {
@@ -137,7 +180,7 @@ int main(int argc,char *argv[])
         cerr<< "multiple providers are not allowed\n";
         return 1;
     }      
-    cout << "_____testNTMultiPutGet starting_______\n";
+    cout << "_____pvaClientPutGet starting_______\n";
     try {
         int nPvs = argc - optind;       /* Remaining arg list are PV names */
         if (nPvs!=0)
@@ -152,7 +195,7 @@ int main(int argc,char *argv[])
         PvaClientPtr pva= PvaClient::get(provider);
         shared_vector<const string> names(freeze(channelNames));
         example(pva,provider,names);
-        cout << "_____testNTMultiPutGet done_______\n";
+        cout << "_____pvaClientPutGet done_______\n";
     } catch (std::exception& e) {
         cout << "exception " << e.what() << endl;
         return 1;
