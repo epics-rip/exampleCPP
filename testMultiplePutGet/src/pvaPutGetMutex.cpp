@@ -4,7 +4,8 @@
  */
 
 /**
- * @author Sinisa Veseli and Marty Kraimer
+ * @author Marty Kraimer
+ * @date 2021.02
  */
 
 #include <iostream>
@@ -107,7 +108,7 @@ public:
         }
         string message = string("channel ") + channelName
            + " channelPutConnect status=" + status.getMessage();
-        throw std::runtime_error(message);       
+        throw std::runtime_error(message);  
     }
     virtual void putDone(
         const Status& status,
@@ -265,8 +266,7 @@ static void example(
         }
         if(correctData) {
             successCount++;
-        }
-        else {
+        } else {
             failedCount++;
         }
     }

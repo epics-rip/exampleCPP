@@ -5,6 +5,7 @@
 
 /**
  * @author Sinisa Veseli and Marty Kraimer
+ * @date 2021.02
  */
 
 #include <iostream>
@@ -106,8 +107,7 @@ static void example(
         }
         if(correctData) {
             successCount++;
-        }
-        else {
+        } else {
             failedCount++;
         }
     }

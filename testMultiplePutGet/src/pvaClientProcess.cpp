@@ -21,18 +21,14 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
-static PVDataCreatePtr pvDataCreate = getPVDataCreate();
-static ConvertPtr convert = getConvert();
-
 static void example(
      PvaClientPtr const &pvaClient,
      string provider,
-     string request,
      shared_vector<const string> const &channelNames)
 {
     size_t num = channelNames.size();
     shared_vector<PvaClientChannelPtr> pvaClientChannels(num);
-    shared_vector<PvaClientPutGetPtr> pvaClientPutGets(num);
+    shared_vector<PvaClientProcessPtr> pvaClientProcesss(num);
     for(size_t i=0; i<num; i++) {
         pvaClientChannels[i] = pvaClient->createChannel(channelNames[i],provider);
         pvaClientChannels[i]->issueConnect();
@@ -43,13 +39,13 @@ static void example(
             cout << "channel=" << channelNames[i] << " connect failed " << status <<"\n";
             return;
         }
-        pvaClientPutGets[i] = pvaClientChannels[i]->createPutGet(request);
-        pvaClientPutGets[i]->issueConnect();
+        pvaClientProcesss[i] = pvaClientChannels[i]->createProcess();
+        pvaClientProcesss[i]->issueConnect();
     }
     for(size_t i=0; i<num; i++) {
-        Status status = pvaClientPutGets[i]->waitConnect();
+        Status status = pvaClientProcesss[i]->waitConnect();
         if(!status.isOK()) {
-            cout << "channel=" << channelNames[i] << " putGet connect failed " << status <<"\n";
+            cout << "channel=" << channelNames[i] << " put connect failed " << status <<"\n";
             return;
         }
     }
@@ -57,46 +53,30 @@ static void example(
     int failedCount = 0;
     clock_t startTime = clock();
     int numiter = 10000;
-    int value = 0;
     for(int i = 0; i< numiter; i+= 1) {
         bool correctData = true;
-        value++;
-        if(value>127) value = 0;
-        string strValue = to_string(value);
         for(size_t j=0; j<num; j++) {
-            PvaClientPutDataPtr putData = pvaClientPutGets[j]->getPutData();
-            PVStructurePtr pvStructure = putData->getPVStructure();
-            PVScalarPtr pvScalar(pvStructure->getSubField<PVScalar>("value"));
-            convert->fromString(pvScalar,strValue);
             try {
-                pvaClientPutGets[j]->issuePutGet();
+                pvaClientProcesss[j]->issueProcess();
              } catch (std::exception& e) {
-                    cout << " issuePutGet exception " << e.what() << endl;
+                    cout << " issueProcess exception " << e.what() << endl;
                  correctData = false;    
              }
         }
         for(size_t j=0; j<num; j++) {
             try {
-                Status status = pvaClientPutGets[j]->waitPutGet();
-                if(status.isOK()) {
-                    PvaClientGetDataPtr data = pvaClientPutGets[j]->getGetData();
-                    PVScalarPtr pvScalar = data->getPVStructure()->getSubField<PVScalar>("value");
-                    string getValue = convert->toString(pvScalar);
-                    if(strValue!=getValue){
-                        cout << "i=" << i << " channelName=" << channelNames[j]
-                              << " expected=" << strValue << " got=" << getValue << "\n";
-                        correctData = false;
-                     }
-                } else {
+                Status status = pvaClientProcesss[j]->waitProcess();
+                if(!status.isOK()) {
                     cout << "i=" << i << " channel=" << channelNames[j]
-                        << " waitPutGet failed " << status <<"\n";
+                        << " waitProcess failed " << status <<"\n";
                     correctData = false;
                 }
             } catch (std::exception& e) {
-                 cout << "i=" << i << " waitPutGet exception " << e.what() << endl;
+                 cout << "i=" << i << " waitPut exception " << e.what() << endl;
                  correctData = false;
             }
         }
+        
         if(correctData) {
             successCount++;
         } else {
@@ -112,7 +92,6 @@ static void example(
 int main(int argc,char *argv[])
 {
     string provider("pva");
-    string request("putField(value)getField(value)");
     shared_vector<string> channelNames;
     channelNames.push_back("PVRbyte");
     channelNames.push_back("PVRshort");
@@ -162,7 +141,7 @@ int main(int argc,char *argv[])
         cout << " channelNames " <<  channelNames << endl;
         PvaClientPtr pva= PvaClient::get(provider);
         shared_vector<const string> names(freeze(channelNames));
-        example(pva,provider,request,names);
+        example(pva,provider,names);
         cout << "_____pvaClientPutGet done_______\n";
     } catch (std::exception& e) {
         cout << "exception " << e.what() << endl;

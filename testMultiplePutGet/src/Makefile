@@ -21,6 +21,14 @@ PROD_HOST += pvaClientPutGet
 pvaClientPutGet_SRCS += pvaClientPutGet.cpp
 pvaClientPutGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
+PROD_HOST += pvaClientPutClientGet
+pvaClientPutClientGet_SRCS += pvaClientPutClientGet.cpp
+pvaClientPutClientGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+
+PROD_HOST += pvaClientProcess
+pvaClientProcess_SRCS += pvaClientProcess.cpp
+pvaClientProcess_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+
 PROD_HOST += pvaClientPutputPutget
 pvaClientPutputPutget_SRCS += pvaClientPutputPutget.cpp
 pvaClientPutputPutget_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)

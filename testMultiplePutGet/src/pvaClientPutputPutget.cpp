@@ -4,7 +4,8 @@
  */
 
 /**
- * @author Sinisa Veseli and Marty Kraimer
+ * @author Marty Kraimer
+ * @date 2021.02
  */
 
 #include <iostream>
