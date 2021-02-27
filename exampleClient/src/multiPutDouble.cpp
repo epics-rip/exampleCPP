@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <epicsGetopt.h>
+#include <stdlib.h>
 #include <pv/pvaClientMultiChannel.h>
 #include <pv/convert.h>
 
@@ -137,13 +138,13 @@ int main(int argc,char *argv[])
             int num = names.size();
             cout << "first element\n";
             getline(cin,str);
-            double value= std::stod(str);
+            double value= strtod(str.c_str(),NULL);
             shared_vector<double> data(num,0);
             for(int i=0; i<num; ++i) data[i] = value + i;
             cout << "data=" << data << "\n";
             clientPutDouble->put(data);
         }
-        cout << "_____multiPutDoublel done_______\n";
+        cout << "_____multiPutDouble done_______\n";
     } catch (std::exception& e) {
         cout << "exception " << e.what() << endl;
         return 1;
