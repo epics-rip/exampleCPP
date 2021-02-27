@@ -22,14 +22,3 @@ obtained from github.
 
 To see a brief description of each example see documentation/exampleCPP.html.
 
-## test
-
-There is also a test that supports:
-
-    make runtests
-
-This test requires that at least **database** is built.
-
-
-
-

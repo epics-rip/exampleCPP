@@ -1,3 +1,0 @@
-#!/bin/sh
-export TESTCLIENT=../bin/linux-x86_64/
-

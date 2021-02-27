@@ -26,7 +26,7 @@
 
 <div class="head">
 <h1>EPICS exampleCPP</h1>
-<h2 class="nocount">master branch - 2019.07.17</h2>
+<h2 class="nocount">master branch - 2021.02.28</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -70,7 +70,7 @@ Examples are alarm and timeStamp.
 </p>
 <h3>EPICS 7 adds PVA</h3>
 <p>
-EPICS 7 adds PVA, which is support for structure data.
+EPICS 7 adds PVA, which is support for structured data.
 PVA consists of the following components:
 </p>
 <dl>
@@ -153,7 +153,7 @@ The complete set of examples, except for ChannelArchiverService can also be buil
 This document assumes that the reader also looks at the source code for the examples.
 The reader should also be familiar with
 <a
-      href="https://mrkraimer.github.io/website/css/informative/developerGuide/developerGuide.html">
+      href="https://mrkraimer.github.io/website/developerGuide/developerGuide.html">
       developerGuide
 </a> 
 </p> 
@@ -176,7 +176,7 @@ make requires:
 <p><b>ExampleRELEASE.local</b> is used to build via an official <b>EPICS 7</b>
 release.
 <br />
-<b>MasterRELEASE.local</b> is used to build via V4 modules that have been cloned from github.
+<b>MasterRELEASE.local</b> is used to build via modules that have been cloned from github.
 </p>
 <p>In either case the file chosen is copied to configure, renamed, and edited.
 For example:
@@ -188,10 +188,6 @@ gedit configure/RELEASE.local   // change EPICS7_DIR and possibly EPICS_BASE
 <p>
 The definition of <b>EPICS7_DIR</b> must be changed to the location where You 
 installed and built a version of <b>EPICS7</b>.
-</p>
-<p>
-There is also a file <b>MasterRELEASE.local</b> that can be used if the V4 modules were
-obtained from github.
 </p>
 <h4>Build</h4>
 <p>
@@ -337,24 +333,6 @@ issuing a pvAccess RPC request, such as eget. Requests and responses use EPICS V
 normative types. Requests are in the form of an NTURI normative type and the results are returned as an NTTable. 
 </p>
 <p>Documentation:<a href="./ChannelArchiverService.html">channelArchiverService</a></p>
-
-
-<h3>test</h3>
-<p>
-This is <b>not</b> an embeded top level but just a subdirectory of exampleCPP.
-</p>
-<p>
-This is an example that tests pvDatabase and pvaClient.   
-This example requires that database must also be built. 
-</p>
-<p>
-It is meant to be used to execute:</p>
-<pre>
-make runtests
-</pre>
-<p>
-The test starts the example database and then executes various client tests.
-</p>
 
 </div> <!-- class="contents" -->
 </body>

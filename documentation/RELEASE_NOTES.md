@@ -1,3 +1,13 @@
+
+
+EPICS 7.0.4 and later March 2020
+================================
+
+More tests are available in exampleClient.
+
+test and testClient have been moved to:
+[testClientCPP](https://github.com/mrkraimer/testClientCPP)
+
 EPICS 7.0.2.2 April 2019
 ====================
 
@@ -38,10 +48,6 @@ Summary of changes since release 4.2:
   * now works if linked channel is not available when ioc is started.
 
 * minor changes to other examples.
-
-
-
-
 
 EPICS V4 release 4.6
 ====================
