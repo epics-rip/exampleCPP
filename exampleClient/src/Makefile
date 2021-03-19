@@ -15,6 +15,10 @@ PROD_HOST += put
 put_SRCS += put.cpp
 put_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
+PROD_HOST += process
+process_SRCS += process.cpp
+process_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+
 PROD_HOST += addRecord
 addRecord_SRCS += addRecord.cpp
 addRecord_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)

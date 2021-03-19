@@ -26,22 +26,12 @@
 
 <div class="head">
 <h1>EPICS exampleCPP/exampleLink</h1>
-<h2 class="nocount">2018.10.30</h2>
+<h2 class="nocount">2021.03.19</h2>
 
 <h2 class="nocount">Abstract</h2>
 <p>
-<b>exampleLink</b> implements PVRecords that link to another record..
-The following records are imlemented:
+<b>exampleLink</b> implements PVRecords that link to another record.
 </p>
-<dl>
-   <dt>exampleGetLink</dt>
-     <dd>A record that, when processed, executes a channelGet.</dd>
-   <dt>exampleMonitorLink</dt>
-     <dd>A record that creates a monitor to a monitor.
-       When a monitor event or connection state change occures it processes the record.</dd>
-   <dt>examplePutLink</dt>
-      <dd>A record that, when processed, executes a channelPut.</dd>
-</dl>
 
 </div> <!-- head -->
 
@@ -54,123 +44,237 @@ The following records are imlemented:
 <hr />
 
 <h2>Overview</h2>
-<p><b>exampleLink</b> implements PVRecords that use pvAccess to access a DBRecord
-that can resides in the same IOC or in another IOC.
-</p>
 <p>
-The example creates records named <b>exampleMonitorLink</b>, <b>exampleGetLink</b>, and <b>examplePutLink</b>.
-Each record uses <b>pvaChannelMonitor</b>, <b>pvaChannelGet</b>, or <b>pvaChannelPut</b>
-to connect to the channel.
+<b>exampleLink</b> implements PVRecords that link to another record.
+Each provides two ways to access the other record:
 </p>
+<dl>
+  <dt>client</dt>
+     <dd>
+     This uses <b>pvaClient</b> to connect to another record in the same or another <b>ioc</b>.
+     </dd>
+  <dt>database</dt>
+     <dd>
+     This uses <b>PVDatabase</b> to connect to another record in the same <b>ioc</b>.
+     </dd> 
+</dl>
 <p>
-Note that each example, instead of using pvAccess itself, makes pvaClient calls.
-Each implements a class that uses the non blocking features of pvaClientCPP.
-Each class could be used as a starting point for other PVRecord support that wants to use pvAccess.
+The following records are implemented:
 </p>
-<p>Each example handles change of connection state.
-The alarm field of the record shows the connection state.
-</p>
-<h2>Running the example as part of an IOC</h2>
-<h3>Start the example database</h3>
+<dl>
+   <dt>putLinkScalar</dt>
+     <dd>A record that, when processed, puts a value to another scalar record.</dd>
+   <dt>getLinkScalar</dt>
+     <dd>A record that, when processed, gets a value from another scalar record.</dd>  
+   <dt>putLinkScalarArray</dt>
+     <dd>A record that, when processed, puts a value to another scalar array record.</dd>
+   <dt>getLinkScalarArray</dt>
+     <dd>A record that, when processed, gets a value from another scalar array record.</dd>  
+</dl>
+
+<h2>Running the example</h2>
+<h4>Start the example database</h4>
 <p>In one window run:
 </p>
 <pre>
-mrk&gt; pwd
+mrk&gt;pwd
 /home/epicsv4/masterCPP/exampleCPP/exampleLink/iocBoot/exampleLink
-mrk&gt; ../../bin/linux-x86_64/exampleLink st.cmd
+../../bin/linux-x86_64/exampleLink st.cmd
 </pre>
-<h3>Start an example database that has record doubleArrayExternal.</h3>
+After the database has started:
+<pre>
+mrk&gt;pvdbl
+double
+doubleArray
+getLinkScalar
+getLinkScalarArray
+putLinkScalar
+putLinkScalarArray
+string
+stringArray
+</pre>
+<h4>Start monitoring all records</h4>
 <p>In another window run:
 </p>
 <pre>
-mrk&gt; pwd
-/home/epicsv4/masterCPP/exampleCPP/exampleLink/iocBoot/doubleArrayExternal
-mrk&gt; ../../bin/linux-x86_64/exampleLink st.cmd 
+pvget -m double doubleArray getLinkScalar getLinkScalarArray putLinkScalar putLinkScalarArray string stringArray
 </pre>
-<h3>Monitor all possible records that the example uses</h3>
-<p>In another window run:
-</p>
+<h4>Try some simple tests</h4>
+<p>Try the following:</p>
 <pre>
-mrk&gt; pvget -m -r "field(value,alarm,timeStamp)" exampleGetLink exampleMonitorLink examplePutLink doubleArray doubleArrayExternal
+pvput putLinkScalar 1
+Old : &lt;undefined&gt;               
+New : 2021-03-18 13:51:46.816  1 
+mrk> pvput putLinkScalar 1
+Old : 2021-03-18 13:51:46.816  1 
+New : 2021-03-18 13:52:01.997  1 
+pvput putLinkScalar 1
+Old : 2021-03-18 13:52:01.997  1 
+New : 2021-03-18 13:52:06.052  1 
+mrk> pvput putLinkScalarArray [1,2,3]
+Old : &lt;undefined&gt;              []
+New : 2021-03-18 13:52:23.698  [1, 2, 3]
 </pre>
-<h3>Cause record processing</h3>
+<p>Look at the the window where you are monitoring and see what happened.
+</p>
+<h2>fuctionalty</h2>
+<h3>record structure</h3>
 <p>
-The following writes to  record doubleArray.
-You will also see that exampleMonitorLink processes.
+The record being access must have a top level <b>value</b> field, which
+must be a scalar or scalar array.
+</p>
+<p>An example of a valid record is:
 </p>
 <pre>
-mrk&gt; pvput doubleArray 2 10 20
+pvinfo doubleArray
+doubleArray
+Server: 10.0.0.194:49943
+Type:
+    structure
+        double[] value
+        time_t timeStamp
+            long secondsPastEpoch
+            int nanoseconds
+            int userTag
+        alarm_t alarm
+            int severity
+            int status
+            string message
 </pre>
-<p>The following writes to record examplePutLink.
-It does a channelPut to record doubleArray.
-You will see that exampleMonitorLink and doubleArray also process.
+<p><b>putLinkScalar</b>, <b>putLinkScalarArray</b>, <b>getLinkScalar</b>, and <b>getLinkScalarArray</b>
+all have the same basic structure.
+For example:
 </p>
 <pre>
-mrk&gt; pvput  examplePutLink 5 10 20 30 40 50
-</pre>
+pvinfo putLinkScalar
+putLinkScalar
+Server: 10.0.0.194:49943
+Type:
+    structure
+        string value
+        string linkRecord
+        string accessMethod
+        time_t timeStamp
+            long secondsPastEpoch
+            int nanoseconds
+            int userTag
+        alarm_t alarm
+            int severity
+            int status
+            string message
+        boolean reconnect
 
-<h2>Various Ways To start example database</h2>
-<h3>st.cmd</h3>
-<p>This is what was described in the previous section.
-Channel provider <b>pva</b> is used to connect to record <b>doubleArray</b>,
-which is a DBRecord in the same IOC.
-It is started via:
-</p>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/masterCPP/exampleCPP/exampleLink/iocBoot/exampleLink
-mrk&gt; ../../bin/linux-x86_64/exampleLink st.cmd
 </pre>
-<h3>st.extpva</h3>
 <p>
-Channel provider <b>pva</b> is used to connect to record <b>doubleArrayExternal</b>,
-which is a DBRecord in another IOC .
-It is started via:
+The only difference is if <b>value</b> has type <b>string</b> or <b>string[]</b>.
 </p>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/masterCPP/exampleCPP/exampleLink/iocBoot/exampleLink
-mrk&gt; ../../bin/linux-x86_64/exampleLink st.extpva
-</pre>
-<p>The IOC holding record <b>doubleArrayExternal</b> is started as shown in the precious section.
-</p>
-<h3>st.extca</h3>
-<p>
-Channel provider <b>ca</b> is used to connect to record <b>doubleArrayExternal</b>,
-which is a DBRecord in another IOC .
-It is started via:
-</p>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/masterCPP/exampleCPP/exampleLink/iocBoot/exampleLink
-mrk&gt; ../../bin/linux-x86_64/exampleLink st.extca
-</pre>
-<p>The IOC holding record <b>doubleArrayExternal</b> is started as shown in the precious section.
-</p>
-<h3>st.ca</h3>
-<p>Channel provider <b>ca</b> is used to connect to record <b>doubleArray</b>,
-which is a DBRecord in the same IOC.
-It is started via:
-</p>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/masterCPP/exampleCPP/exampleLink/iocBoot/exampleLink
-mrk&gt; ../../bin/linux-x86_64/exampleLink st.ca
-</pre>
 
-<h2>Running the example as a main program</h2>
-<pre>
-mrk&gt; pwd
-/home/epicsv4/master/exampleCPP/exampleLink
-mrk&gt; bin/linux-x86_64/exampleLinkMain
-</pre>
-<p>Other options are also available:
+<h3>processing</h3>
+<p>
+<b>pvput</b> and <b>pvget</b> are used for examples that demonstrate how the link records work.
+They are all that is needed for the put records.
+They can also be used for the get records but if <b>pvput</b> changes field <b>value</b> 
+and processing is succesful, <b>value</b> will be replaced by the value obtained from the link record.
+Note that <b>exampleCPP/exampleClient</b> has an example that just asks for a record to process.
+</p>
+<p>
+The following is an example of how a client can specify all fields that are related to processing.
 </p>
 <pre>
-mrk&gt; bin/linux-x86_64/exampleLinkMain -help
-provider  linkedRecordName generateLinkedRecord
-default
-pva  doubleArray true
+pvput putLinkScalarArray '{"value":["1","2"],"linkRecord":"doubleArray","accessMethod":"client"}'
+</pre>
+<p>
+Thus a client can put values to the following:
+</p>
+<dl>
+   <dt>value</dt>
+      <dd>
+      The value field.
+      </dd>
+   <dt>linkRecord</dt>
+      <dd>
+      The name of the link record.
+      </dd>
+   <dt>accessMethod</dt>
+      <dd>
+      The method used to access the link record.
+      This must be <b>client</b> or <b>database</b>
+      </dd>   
+</dl>
+<p>
+This is actually the default for <b>linkRecord</b> and <b>accessMethod</b> when the ioc is started.
+</p>
+<p>
+Once the desired <b>linkRecord</b> and <b>accessMethod</b> have been specified the following will work.
+</p>
+<pre>
+pvput putLinkScalarArray ["100","200","300"]
+</pre>
+<p>
+For the get records the above will also work.
+But it is better to use <b>exampleClient/process</b> or the following:
+</p>
+<pre>
+pvput getLinkScalarArray '{"linkRecord":"doubleArray","accessMethod":"client"}'
+</pre>
+<h3>connection management</h3>
+<p>When the IOC is started
+<b>putLinkScalar</b>, <b>putLinkScalarArray</b>, <b>getLinkScalar</b>, and <b>getLinkScalarArray</b>
+are not connected to <b>linkRecord</b> for either <b>client</b> or <b>database</b> access.
+The first time <b>client</b> connects <b>PvaClientChannelPtr</b> and <b>PvaClientGetPtr</b>
+are saved.
+The first time <b>database</b> connects <b>PVRecordPtr</b> is saved.
+Thus initialization overhead is not incured during further processing.
+This also means that if the client specifies <b>linkRecord</b> it has no effect.
+</p>
+<p>There is an additional field that a client can access so that it can again put <b>linkRecord</b>
+An example is:
+</p>
+<pre>
+mrk&gt; pvput putLinkScalar reconnect="true"
+Old : &lt;undefined&gt;               
+New : 2021-03-19 10:53:26.708   MINOR reconnecting 
+mrk&gt; pvput putLinkScalar '{"value":"a value","linkRecord":"string","accessMethod":"client"}'
+Old : 2021-03-19 10:53:26.708   MINOR reconnecting 
+New : 2021-03-19 10:55:41.463  "a value" 
+</pre>
+<h3>more client examples</h3>
+<h4>st.cmd</h4>
+<p>
+This file could be changes to add additional scalar or scalarArray types.
+For example instead of:
+</p>
+<pre>
+scalar double double
+scalar string string
+scalarArray doubleArray double
+scalarArray stringArray string
+</pre>
+You could have:
+<pre>
+scalar double double
+scalar string string
+scalar booleanRecord boolean
+scalar byteRecord byte
+scalarArray doubleArray double
+scalarArray stringArray string
+scalarArray booleanArrayRecord boolean
+scalarArray byteArrayRecord byte
+</pre>
+<h4>additional pvput and pvget examples</h4>
+<pre>
+mrk&gt; pvput putLinkScalar '{"value":"a value","linkRecord":"string","accessMethod":"client"}'
+Old : &lt;undefined&gt;               
+New : 2021-03-19 11:20:29.381  "a value" 
+mrk&gt; pvput putLinkScalarArray '{"value":["a value","b value"],"linkRecord":"stringArray","accessMethod":"client"}'
+Old : &lt;undefined&gt;              []
+New : 2021-03-19 11:22:10.000  ["a value", "b value"]
+mrk&gt; pvput putLinkScalar '{"value":"a value","linkRecord":"string","accessMethod":"database"}'
+Old : 2021-03-19 11:20:29.381  "a value" 
+New : 2021-03-19 11:22:29.608  "a value" 
+mrk&gt; pvput putLinkScalarArray '{"value":["a value","b value"],"linkRecord":"stringArray","accessMethod":"database"}'
+Old : 2021-03-19 11:22:10.000  ["a value", "b value"]
+New : 2021-03-19 11:22:49.790  ["a value", "b value"]
 </pre>
 
 </div> <!-- class="contents" -->

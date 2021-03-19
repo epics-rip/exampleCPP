@@ -1,0 +1,4 @@
+ASG(DEFAULT) {
+    RULE(0,WRITE)
+    RULE(1,READ)
+}

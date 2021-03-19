@@ -7,16 +7,10 @@ This example implements a PVRecord that accesses another PVRecord.
 Read exampleCPP/documentation/exampleCPP.html.
 
 
-## To start the exampleLink as part of a V3 IOC
+## To start the exampleLink
 
     mrk> pwd
     /home/epicsv4/master/exampleLink/exampleLink/iocBoot/exampleLink
-    mrk> ../../bin/$EPICS_HOST_ARCH/exampleLink st.local
-
-or
- 
-mrk> pwd
-    /home/epicsv4/master/exampleLink/exampleLink/iocBoot/exampleLink
-    mrk> ../../bin/$EPICS_HOST_ARCH/exampleLink st.remote
+    mrk> ../../bin/$EPICS_HOST_ARCH/exampleLink st.cmd
 
 
