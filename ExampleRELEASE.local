@@ -5,12 +5,13 @@
 
 EPICS7_DIR=/home/install/epics/base-7.0.4
 
-PVDATABASE=${EPICS7_DIR}/modules/database
-PVACLIENT=${EPICS7_DIR}/modules/pvaClient
-PVA2PVA=${EPICS7_DIR}/modules/pva2pva
-PVACCESS=${EPICS7_DIR}/modules/pvAccess
-NORMATIVETYPES=${EPICS7_DIR}modules/normativeTypes
-PVDATA=${EPICS7_DIR}modules/pvData
-EPICS_BASE=${EPICS7_DIR}
+# Do not change these paths (or the order)
+EPICS_BASE=$(EPICS7_DIR)
+PVDATABASE=$(EPICS7_DIR)/modules/database
+PVACLIENT=$(EPICS7_DIR)/modules/pvaClient
+PVA2PVA=$(EPICS7_DIR)/modules/pva2pva
+PVACCESS=$(EPICS7_DIR)/modules/pvAccess
+NORMATIVETYPES=$(EPICS7_DIR)/modules/normativeTypes
+PVDATA=$(EPICS7_DIR)/modules/pvData
 TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
 
