@@ -8,10 +8,17 @@ exampleLink_registerRecordDeviceDriver(pdbbase)
 
 ## Load record instance
 dbLoadRecords("db/ai.db","name=exampleLinkAI");
-
 cd ${TOP}/iocBoot/${IOC}
+##asSetFilename(asconfig)
 iocInit()
-doubleArrayCreateRecord
-exampleMonitorLinkCreateRecord
-exampleGetLinkCreateRecord
-examplePutLinkCreateRecord
+scalar double double
+scalar string string
+scalarArray doubleArray double
+scalarArray stringArray string
+
+putLinkScalar putLinkScalar
+putLinkScalarArray putLinkScalarArray
+
+getLinkScalar getLinkScalar
+getLinkScalarArray getLinkScalarArray
+

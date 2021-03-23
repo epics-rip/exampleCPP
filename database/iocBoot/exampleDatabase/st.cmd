@@ -13,9 +13,8 @@ dbLoadRecords("db/dbCounter.db","name=DBRcounter01")
 dbLoadRecords("db/dbArray.db","name=DBRdoubleArray,type=DOUBLE")
 dbLoadRecords("db/test.db")
 
-
-
 cd ${TOP}/iocBoot/${IOC}
+asSetFilename(asconfig)
 iocInit()
 exampleDatabase
 exampleSoftRecordCreate PVRsoft
