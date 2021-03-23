@@ -16,7 +16,6 @@
 #include <pv/pvDatabase.h>
 #include <pv/pvaClient.h>
 #include <pv/convert.h>
-#include <epicsGuard.h>
 
 #define epicsExportSharedSymbols
 #include "pv/getLinkScalarRecord.h"

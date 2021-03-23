@@ -15,6 +15,7 @@
 #include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
 #include <pv/pvaClient.h>
+#include <epicsGuard.h>
 
 #define epicsExportSharedSymbols
 #include "pv/putLinkScalarRecord.h"
