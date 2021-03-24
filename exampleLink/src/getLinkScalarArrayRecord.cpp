@@ -32,12 +32,11 @@ using std::vector;
 
 namespace epics { namespace exampleCPP { namespace exampleLink {
 
-static FieldCreatePtr fieldCreate = getFieldCreate();
-static StandardFieldPtr standardField = getStandardField();
-static PVDataCreatePtr pvDataCreate = getPVDataCreate();
-
 GetLinkScalarArrayRecordPtr GetLinkScalarArrayRecord::create(std::string const & recordName)
 {
+    FieldCreatePtr fieldCreate = getFieldCreate();
+    StandardFieldPtr standardField = getStandardField();
+    PVDataCreatePtr pvDataCreate = getPVDataCreate();
     StructureConstPtr top = fieldCreate->createFieldBuilder()->
         addArray("value",pvString) ->
         add("linkRecord",pvString) ->

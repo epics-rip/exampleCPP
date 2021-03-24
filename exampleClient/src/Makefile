@@ -43,7 +43,6 @@ PROD_HOST += examplePvaClientProcess
 examplePvaClientProcess_SRCS += examplePvaClientProcess.cpp
 examplePvaClientProcess_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
-
 PROD_HOST += examplePvaClientGet
 examplePvaClientGet_SRCS += examplePvaClientGet.cpp
 examplePvaClientGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
@@ -52,21 +51,17 @@ PROD_HOST += examplePvaClientPut
 examplePvaClientPut_SRCS += examplePvaClientPut.cpp
 examplePvaClientPut_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
-
 PROD_HOST += examplePvaClientMonitor
 examplePvaClientMonitor_SRCS += examplePvaClientMonitor.cpp
 examplePvaClientMonitor_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
-
 
 PROD_HOST += examplePvaClientMultiDouble
 examplePvaClientMultiDouble_SRCS += examplePvaClientMultiDouble.cpp
 examplePvaClientMultiDouble_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
-
 PROD_HOST += examplePvaClientNTMulti
 examplePvaClientNTMulti_SRCS += examplePvaClientNTMulti.cpp
 examplePvaClientNTMulti_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
-
 
 PROD_HOST += ntMultiMonitor
 ntMultiMonitor_SRCS += ntMultiMonitor.cpp
