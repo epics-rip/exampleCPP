@@ -11,7 +11,12 @@
 
 /* Author: Marty Kraimer */
 #include <iocsh.h>
+#include <pv/timeStamp.h>
+#include <pv/pvTimeStamp.h>
+#include <pv/alarm.h>
+#include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
+#include <pv/pvaClient.h>
 // The following must be the last include for code exampleLink uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
