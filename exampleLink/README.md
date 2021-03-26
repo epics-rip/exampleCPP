@@ -1,6 +1,6 @@
 # exampleLink
 
-This example implements a PVRecord that accesses another PVRecord.
+This example implements PVRecords that access another PVRecord.
 
 ## Building
 
