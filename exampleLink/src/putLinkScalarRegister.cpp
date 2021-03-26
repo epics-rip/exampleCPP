@@ -16,6 +16,7 @@
 #include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
 #include <pv/pvaClient.h>
+#include <epicsGuard.h>
 // The following must be the last include for code exampleLink uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols

@@ -7,24 +7,124 @@
  * @author mrk
  * @date 2013.07.24
  */
-
-
-/* Author: Marty Kraimer */
-
 #include <iocsh.h>
+#include <pv/standardField.h>
+#include <pv/standardPVField.h>
+#include <pv/timeStamp.h>
+#include <pv/pvTimeStamp.h>
+#include <pv/alarm.h>
+#include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
-#include <pv/channelProviderLocal.h>
-
-// The following must be the last include for code support uses
+#include <pv/pvaClient.h>
+#include <pv/convert.h>
+// The following must be the last include for code exampleLink uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
-#include "pv/scalarRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
-using namespace epics::exampleCPP::support;
+using namespace epics::pvaClient;
 using namespace std;
+
+class ScalarRecord;
+typedef std::tr1::shared_ptr<ScalarRecord> ScalarRecordPtr;
+class epicsShareClass ScalarRecord :
+    public epics::pvDatabase::PVRecord
+{
+public:
+    POINTER_DEFINITIONS(ScalarRecord);
+    static ScalarRecordPtr create(
+        std::string const & recordName,
+        epics::pvData::ScalarType scalarType,
+        double minValue,
+        double maxValue,
+        double stepSize);
+    virtual bool init();
+    virtual void process();
+    ~ScalarRecord();
+private:
+    ScalarRecord(
+        std::string const & recordName,
+        epics::pvData::PVStructurePtr const & pvStructure,
+        double minValue,
+        double maxValue,
+        double stepSize);
+    epics::pvData::PVScalarPtr pvValue;
+    double minValue;
+    double maxValue;
+    double stepSize;
+    bool stepPositive;
+};
+
+ScalarRecord::~ScalarRecord()
+{
+cout << "ScalarRecord::~ScalarRecord()\n";
+}
+
+ScalarRecordPtr ScalarRecord::create(
+    string const & recordName,
+    epics::pvData::ScalarType scalarType,
+    double minValue,
+    double maxValue,
+    double stepSize)
+{
+    FieldCreatePtr fieldCreate = getFieldCreate();
+    PVDataCreatePtr pvDataCreate = getPVDataCreate();
+    StandardFieldPtr standardField = getStandardField();
+    StructureConstPtr  topStructure = fieldCreate->createFieldBuilder()->
+        add("value",scalarType) ->
+        add("timeStamp",standardField->timeStamp()) ->
+        createStructure();
+    PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
+    ScalarRecordPtr pvRecord(
+        new ScalarRecord(recordName,pvStructure,minValue,maxValue,stepSize));
+    if(!pvRecord->init()) pvRecord.reset();
+    return pvRecord;
+}
+
+ScalarRecord::ScalarRecord(
+    std::string const & recordName,
+    epics::pvData::PVStructurePtr const & pvStructure,
+    double minValue,
+    double maxValue,
+    double stepSize)
+: PVRecord(recordName,pvStructure),
+  minValue(minValue),
+  maxValue(maxValue),
+  stepSize(stepSize),
+  stepPositive(true)
+{
+}
+
+bool ScalarRecord::init()
+{
+    initPVRecord();
+    pvValue = getPVStructure()->getSubField<PVScalar>("value");
+    if(!pvValue) return false;
+    return true;
+}
+
+void ScalarRecord::process()
+{
+    ConvertPtr convert = getConvert();
+    double value = convert->toDouble(pvValue);
+    if(stepPositive) {
+        value = value + stepSize;
+        if(value>maxValue) {
+           stepPositive = false;
+           value = maxValue;
+        }
+    } else {
+        value = value - stepSize;
+        if(value<minValue) {
+             stepPositive = true;
+             value = minValue;
+        }
+    }
+    convert->fromDouble(pvValue,value);
+    PVRecord::process();
+}
 
 static const iocshArg testArg0 = { "recordName", iocshArgString };
 static const iocshArg testArg1 = { "scalarType", iocshArgString };

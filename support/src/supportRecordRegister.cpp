@@ -7,28 +7,117 @@
  * @author mrk
  * @date 2013.07.24
  */
-
-
-/* Author: Marty Kraimer */
-
 #include <iocsh.h>
-#include <pv/pvDatabase.h>
-#include <pv/convert.h>
 #include <pv/standardField.h>
+#include <pv/standardPVField.h>
+#include <pv/timeStamp.h>
+#include <pv/pvTimeStamp.h>
+#include <pv/alarm.h>
+#include <pv/pvAlarm.h>
+#include <pv/pvDatabase.h>
+#include <pv/pvaClient.h>
 #include <pv/controlSupport.h>
 #include <pv/scalarAlarmSupport.h>
-#include <pv/channelProviderLocal.h>
-
-// The following must be the last include for code support uses
+// The following must be the last include for code exampleLink uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
-#include "pv/supportRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
-using namespace epics::exampleCPP::support;
+using namespace epics::pvaClient;
 using namespace std;
+
+class SupportRecord;
+typedef std::tr1::shared_ptr<SupportRecord> SupportRecordPtr;
+class epicsShareClass SupportRecord :
+    public epics::pvDatabase::PVRecord
+{
+public:
+    POINTER_DEFINITIONS(SupportRecord);
+    static SupportRecordPtr create(
+        std::string const & recordName,epics::pvData::ScalarType scalarType);
+    virtual bool init();
+    virtual void process();
+    ~SupportRecord();
+private:
+    SupportRecord(
+        std::string const & recordName,
+        epics::pvData::PVStructurePtr const & pvStructure);
+    epics::pvDatabase::ControlSupportPtr controlSupport;
+    epics::pvDatabase::ScalarAlarmSupportPtr scalarAlarmSupport;
+    epics::pvData::PVBooleanPtr pvReset;
+};
+
+SupportRecord::~SupportRecord()
+{
+cout << "SupportRecord::~SupportRecord()\n";
+}
+
+SupportRecordPtr SupportRecord::create(
+    std::string const & recordName,epics::pvData::ScalarType scalarType)
+{
+    FieldCreatePtr fieldCreate = getFieldCreate();
+    PVDataCreatePtr pvDataCreate = getPVDataCreate();
+    StandardFieldPtr standardField = getStandardField();
+    StructureConstPtr  topStructure = fieldCreate->createFieldBuilder()->
+        add("value",scalarType) ->
+        add("reset",pvBoolean) ->
+        add("alarm",standardField->alarm()) ->
+        add("timeStamp",standardField->timeStamp()) ->
+        add("display",standardField->display()) ->
+        add("control",ControlSupport::controlField(scalarType)) ->
+        add("scalarAlarm",ScalarAlarmSupport::scalarAlarmField()) ->
+        createStructure();
+    PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
+    SupportRecordPtr pvRecord(
+        new SupportRecord(recordName,pvStructure));
+    if(!pvRecord->init()) pvRecord.reset();
+    return pvRecord;
+}
+
+SupportRecord::SupportRecord(
+    std::string const & recordName,
+    epics::pvData::PVStructurePtr const & pvStructure)
+: PVRecord(recordName,pvStructure)
+{
+}
+
+bool SupportRecord::init()
+{
+    initPVRecord();
+    PVRecordPtr pvRecord = shared_from_this();
+    PVStructurePtr pvStructure(getPVStructure());
+    PVStructurePtr pvControl = pvStructure->getSubField<PVStructure>("control");
+    pvControl->getSubField<PVDouble>("limitHigh")->put(100.0);
+    pvControl->getSubField<PVDouble>("minStep")->put(1.0);
+    controlSupport = ControlSupport::create(pvRecord);
+    bool result = controlSupport->init(
+       pvStructure->getSubField("value"),pvStructure->getSubField("control"));
+    if(!result) return false;
+    scalarAlarmSupport = ScalarAlarmSupport::create(pvRecord);
+    result = scalarAlarmSupport->init(
+       pvStructure->getSubField("value"),
+       pvStructure->getSubField<PVStructure>("alarm"),
+       pvStructure->getSubField("scalarAlarm"));
+    if(!result) return false;
+    pvReset = getPVStructure()->getSubField<PVBoolean>("reset");
+    return true;
+}
+
+void SupportRecord::process()
+{
+    bool wasChanged = false;
+    if(pvReset->get()==true) {
+        pvReset->put(false);
+        controlSupport->reset();
+        scalarAlarmSupport->reset();
+    } else {
+        if(controlSupport->process()) wasChanged = true;;
+        if(scalarAlarmSupport->process()) wasChanged = true;
+    }
+    if(wasChanged) PVRecord::process();
+}
 
 static const iocshArg testArg0 = { "recordName", iocshArgString };
 static const iocshArg testArg1 = { "scalarType", iocshArgString };
