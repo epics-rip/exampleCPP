@@ -5,26 +5,73 @@
 
 /**
  * @author mrk
- * @date 2013.07.24
+ * @date 2021.03.26
  */
-
-
-/* Author: Marty Kraimer */
-
 #include <iocsh.h>
+#include <pv/standardField.h>
+#include <pv/standardPVField.h>
+#include <pv/timeStamp.h>
+#include <pv/pvTimeStamp.h>
+#include <pv/alarm.h>
+#include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
-#include <pv/channelProviderLocal.h>
-
-// The following must be the last include for code support uses
+#include <pv/pvaClient.h>
+// The following must be the last include for code exampleLink uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
-#include "pv/scalarArrayRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
-using namespace epics::exampleCPP::support;
+using namespace epics::pvaClient;
 using namespace std;
+
+class ScalarArrayRecord;
+typedef std::tr1::shared_ptr<ScalarArrayRecord> ScalarArrayRecordPtr;
+class epicsShareClass ScalarArrayRecord :
+    public epics::pvDatabase::PVRecord
+{
+public:
+    POINTER_DEFINITIONS(ScalarArrayRecord);
+    static ScalarArrayRecordPtr create(
+        std::string const & recordName,
+        epics::pvData::ScalarType scalarType);
+    ~ScalarArrayRecord();
+private:
+    ScalarArrayRecord(
+        std::string const & recordName,
+        epics::pvData::PVStructurePtr const & pvStructure);
+};
+
+ScalarArrayRecord::~ScalarArrayRecord()
+{
+cout << "ScalarArrayRecord::~ScalarArrayRecord()\n";
+}
+
+ScalarArrayRecordPtr ScalarArrayRecord::create(
+    string const & recordName,
+    epics::pvData::ScalarType scalarType)
+{
+    FieldCreatePtr fieldCreate = getFieldCreate();
+    PVDataCreatePtr pvDataCreate = getPVDataCreate();
+    StandardFieldPtr standardField = getStandardField();
+    StructureConstPtr  topStructure = fieldCreate->createFieldBuilder()->
+        addArray("value",scalarType) ->
+        add("timeStamp",standardField->timeStamp()) ->
+        createStructure();
+    PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
+    ScalarArrayRecordPtr pvRecord(
+        new ScalarArrayRecord(recordName,pvStructure));
+    pvRecord->init();
+    return pvRecord;
+}
+
+ScalarArrayRecord::ScalarArrayRecord(
+    std::string const & recordName,
+    epics::pvData::PVStructurePtr const & pvStructure)
+: PVRecord(recordName,pvStructure)
+{
+}
 
 static const iocshArg testArg0 = { "recordName", iocshArgString };
 static const iocshArg testArg1 = { "scalarType", iocshArgString };
