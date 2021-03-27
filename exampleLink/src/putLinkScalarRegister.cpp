@@ -43,7 +43,7 @@ private:
     PVStructurePtr pvAlarmField;
     PVAlarm pvAlarm;
     Alarm alarm;
-    epics::pvDatabase::PVRecordPtr linkRecord;
+    epics::pvDatabase::PVRecordWPtr linkRecord;
     epics::pvaClient::PvaClientChannelPtr linkChannel;
     epics::pvaClient::PvaClientPutPtr clientPut;
     PVBooleanPtr pvReconnect;
@@ -104,7 +104,7 @@ void PutLinkScalarRecord::process()
 {
    bool reconnect = (pvReconnect->get() ? true : false);
    if(reconnect) {
-       linkRecord = PVRecordPtr();
+       linkRecord = PVRecordWPtr();
        clientPut = PvaClientPutPtr();
        linkChannel = PvaClientChannelPtr();
        pvReconnect->put(false);
@@ -178,16 +178,23 @@ void PutLinkScalarRecord::clientProcess()
 
 void PutLinkScalarRecord::databaseProcess()
 {
-    PVDatabasePtr pvDatabase = PVDatabase::getMaster();   
-    if(!linkRecord) linkRecord = pvDatabase->findRecord(pvLink->get());
-    if(!linkRecord) {
+    PVDatabasePtr pvDatabase = PVDatabase::getMaster();
+    {
+        PVRecordPtr pvRecord(linkRecord.lock());
+        if(!pvRecord) {  
+            PVRecordPtr pvRecord(pvDatabase->findRecord(pvLink->get()));
+            if(pvRecord) linkRecord= PVRecordWPtr(pvRecord);
+        }    
+    }
+    PVRecordPtr pvRecord(linkRecord.lock());
+    if(!pvRecord) {
         alarm.setMessage(string("record ") + pvLink->get() + string(" does not exist"));
         alarm.setSeverity(invalidAlarm);
         pvAlarm.set(alarm);
         PVRecord::process();
         return;
     }
-    PVScalarPtr pvScalar(linkRecord->getPVStructure()->getSubField<PVScalar>("value"));
+    PVScalarPtr pvScalar(pvRecord->getPVStructure()->getSubField<PVScalar>("value"));
     if(!pvScalar) {
         alarm.setMessage(string("record ")
            + pvLink->get()
@@ -200,8 +207,8 @@ void PutLinkScalarRecord::databaseProcess()
     alarm.setMessage("success");
     alarm.setSeverity(noAlarm);
     pvAlarm.set(alarm);
-    epicsGuard <PVRecord> guard(*linkRecord);
-    linkRecord->beginGroupPut();
+    epicsGuard <PVRecord> guard(*pvRecord);
+    pvRecord->beginGroupPut();
     try {
         pvScalar->putFrom(pvValue->get());
     } catch(std::exception& ex) {
@@ -210,8 +217,8 @@ void PutLinkScalarRecord::databaseProcess()
         alarm.setSeverity(invalidAlarm);
         pvAlarm.set(alarm);
     }
-    linkRecord->process();
-    linkRecord->endGroupPut();
+    pvRecord->process();
+    pvRecord->endGroupPut();
     PVRecord::process();
 }
 
