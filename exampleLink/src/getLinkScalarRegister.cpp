@@ -189,6 +189,7 @@ void GetLinkScalarRecord::databaseProcess()
     }
     PVRecordPtr pvRecord(linkRecord.lock());
     if(!pvRecord) {
+        linkRecord = PVRecordWPtr();
         alarm.setMessage(string("record ") + pvLink->get() + string(" does not exist"));
         alarm.setSeverity(invalidAlarm);
         pvAlarm.set(alarm);
