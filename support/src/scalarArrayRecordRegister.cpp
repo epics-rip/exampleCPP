@@ -82,6 +82,7 @@ static const iocshFuncDef scalarArrayRecordFuncDef = {"scalarArrayRecordCreate",
 
 static void scalarArrayRecordCallFunc(const iocshArgBuf *args)
 {
+    cerr << "DEPRECATED\n";
     char *recordName = args[0].sval;
     if(!recordName) {
         throw std::runtime_error("scalarArrayRecordCreate invalid number of arguments");

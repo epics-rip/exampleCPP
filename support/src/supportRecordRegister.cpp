@@ -88,9 +88,6 @@ bool SupportRecord::init()
     initPVRecord();
     PVRecordPtr pvRecord = shared_from_this();
     PVStructurePtr pvStructure(getPVStructure());
-    PVStructurePtr pvControl = pvStructure->getSubField<PVStructure>("control");
-    pvControl->getSubField<PVDouble>("limitHigh")->put(100.0);
-    pvControl->getSubField<PVDouble>("minStep")->put(1.0);
     controlSupport = ControlSupport::create(pvRecord);
     bool result = controlSupport->init(
        pvStructure->getSubField("value"),pvStructure->getSubField("control"));
@@ -128,6 +125,7 @@ static const iocshFuncDef supportRecordFuncDef = {"supportRecordCreate", 2,testA
 
 static void supportRecordCallFunc(const iocshArgBuf *args)
 {
+    cerr << "DEPRECATED\n";
     char *recordName = args[0].sval;
     if(!recordName) {
         throw std::runtime_error("supportRecordCreate invalid number of arguments");
