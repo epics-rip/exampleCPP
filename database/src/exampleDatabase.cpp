@@ -18,9 +18,6 @@
 #include <pv/ntenum.h>
 
 #include <pv/channelProviderLocal.h>
-#include <pv/traceRecord.h>
-#include <pv/removeRecord.h>
-#include <pv/addRecord.h>
 
 #define epicsExportSharedSymbols
 #include "pv/exampleDatabase.h"
@@ -264,12 +261,6 @@ void ExampleDatabase::create()
     createRecords(master,pvDouble,"PVRdouble03");
     createRecords(master,pvDouble,"PVRdouble04");
     createRecords(master,pvDouble,"PVRdouble05");
-    result = master->addRecord(TraceRecord::create("PVRtraceRecord"));
-    if(!result) cout<< "record PVRtraceRecord not added\n";
-    result = master->addRecord(RemoveRecord::create("PVRremoveRecord"));
-    if(!result) cout<< "record PVRremoveRecord not added\n";
-    result = master->addRecord(AddRecord::create("PVRaddRecord"));
-    if(!result) cout<< "record PVRaddRecord not added\n";
 
     NTEnumBuilderPtr ntEnumBuilder = NTEnum::createBuilder();
     PVStructurePtr pvStructure = ntEnumBuilder->

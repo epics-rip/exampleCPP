@@ -23,7 +23,6 @@
 
 #include <pv/standardField.h>
 #include <pv/standardPVField.h>
-#include <pv/traceRecord.h>
 #include <pv/channelProviderLocal.h>
 #include <pv/serverContext.h>
 #include <pv/clientFactory.h>
