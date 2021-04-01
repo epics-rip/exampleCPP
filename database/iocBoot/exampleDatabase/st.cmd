@@ -15,6 +15,9 @@ dbLoadRecords("db/test.db")
 
 cd ${TOP}/iocBoot/${IOC}
 asSetFilename(asconfig)
+pvdbcrTraceRecord PVRtraceRecord
+pvdbcrRemoveRecord PVRremoveRecord
+pvdbcrAddRecord PVRaddRecord
 iocInit()
 exampleDatabase
 exampleSoftRecordCreate PVRsoft

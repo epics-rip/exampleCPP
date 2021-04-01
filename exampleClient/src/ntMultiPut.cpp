@@ -20,11 +20,10 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvaClient;
 
-static PVDataCreatePtr pvDataCreate = getPVDataCreate();
-static ConvertPtr convert = getConvert();
-
 static void setValue(PVUnionPtr const &pvUnion, string value)
 {
+    PVDataCreatePtr pvDataCreate = getPVDataCreate();
+    ConvertPtr convert = getConvert();
     UnionConstPtr u = pvUnion->getUnion();
     FieldConstPtr field = u->getField(0);
     Type type = field->getType();
@@ -42,7 +41,15 @@ static void setValue(PVUnionPtr const &pvUnion, string value)
          pvUnion->set(0,pvScalarArray);
          return;
     }
-    throw std::runtime_error("only scalar and scalarArray are supported");
+    if(type==union_) {
+       PVUnionPtr pvu(pvDataCreate->createPVVariantUnion());
+       PVStringPtr pvString = pvDataCreate->createPVScalar<PVString>();
+       pvString->put(value);
+       pvu->set(pvString);
+       pvUnion->set(0,pvu);
+       return;
+    }
+    throw std::runtime_error("only scalar, scalarArray, and union are supported");
 }
 
 class MyPut;
@@ -112,15 +119,14 @@ int main(int argc,char *argv[])
     string provider("pva");
     shared_vector<string> channelNames;
     channelNames.push_back("PVRbyte");
-    channelNames.push_back("PVRshort");
+    channelNames.push_back("PVRshortArray");
     channelNames.push_back("PVRint");
-    channelNames.push_back("PVRlong");
+    channelNames.push_back("PVRlongArray");
     channelNames.push_back("PVRubyte");
-    channelNames.push_back("PVRushort");
-    channelNames.push_back("PVRuint");
-    channelNames.push_back("PVRulong");
-    channelNames.push_back("PVRfloat");
+    channelNames.push_back("PVRushortArray");
     channelNames.push_back("PVRdouble");
+    channelNames.push_back("PVRdoubleArray");
+    channelNames.push_back("PVRvariantUnion");
     bool debug(false);
     int opt;
     while((opt = getopt(argc, argv, "hp:d:")) != -1) {

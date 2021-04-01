@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title>EPICS exampleCPP/pvaClientMultiChannel</title>
+  <link rel="stylesheet" type="text/css"
+  href="https://mrkraimer.github.io/website/css/base.css" />
+  <link rel="stylesheet" type="text/css"
+  href="https://mrkraimer.github.io/website/css/epicsv4.css" />
+  <style type="text/css">
+/*<![CDATA[*/
+     .about { margin-left: 3em; margin-right: 3em; font-size: .83em}
+     table { margin-left: auto; margin-right: auto }
+     .diagram { text-align: center; margin: 2.5em 0 }
+     body { margin-right: 10% }
+/*]]>*/</style>
+
+ <!-- Script that generates the Table of Contents -->
+  <script type="text/javascript" src="https://mrkraimer.github.io/website/css/tocgen.js"></script>
+
+</head>
+
+<body>
+
+<div class="head">
+<h1>EPICS exampleCPP/pvaClientMultiChannel</h1>
+<h2 class="nocount">2021.03.30</h2>
+
+
+</div> <!-- head -->
+
+<div id="toc">
+  <h2 class="nocount">Table of Contents</h2>
+</div>
+
+<!-- Place what you would like in the Table of Contents, inside the contents div -->
+<div id="contents" class="contents">	  
+<hr />
+
+<h2>Overview</h2>
+<p>
+<b>pvaClientMultiChannel</b> provides examples of using <b>pvaClientMultiChannel.cpp</b>
+</p>
+<dl>
+  <dt>shortestPutGetDouble</dt>
+     <dd>
+     The least amount of code to get and put to a record with a scalar value field.
+     </dd>
+  <dt>longerPutGetDouble</dt>
+     <dd>
+     Get and put to a scalar value field without an exceptions or caching.
+     </dd>
+  <dt>shortestPutGetDoubleArray</dt>
+     <dd>
+     The least amount of code to get and put to a record with a scalar array value field.
+     </dd>
+  <dt>longerPutGetDoubleArray/dt>
+     <dd>
+     Get and put to a scalar array value field without an exceptions or caching.
+     </dd>
+</dl>
+<p>
+
+<h2>Running the example</h2>
+<h4>Start the example database</h4>
+<p>In one window run:
+</p>
+<pre>
+mrk&gt;pwd
+/home/epicsv4/masterCPP/exampleCPP/database/iocBoot/exampleDatabase
+../../bin/linux-x86_64/exampleDatabase st.cmd
+</pre>
+
+<h4>Start Clients</h4>
+<p>Go to directory</p>
+<pre>
+/home/epics7/modules/exampleCPP/pvaClientMultiChannel
+</pre>
+<p>Then in separate window start the following:</p>
+<pre>
+bin/linux-x86_64/multiMonitorDouble
+</pre>
+and
+<pre>
+bin/linux-x86_64/multiPutGetDouble
+</pre>
+and
+<pre>
+bin/linux-x86_64/ntMultiMonitor
+</pre>
+and
+<pre>
+bin/linux-x86_64/ntMultiPutGet
+</pre>
+
+</div> <!-- class="contents" -->
+</body>
+</html>

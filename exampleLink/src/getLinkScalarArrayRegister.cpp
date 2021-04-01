@@ -42,7 +42,7 @@ private:
     PVStructurePtr pvAlarmField;
     PVAlarm pvAlarm;
     Alarm alarm;
-    epics::pvDatabase::PVRecordPtr linkRecord;
+    epics::pvDatabase::PVRecordWPtr linkRecord;
     epics::pvaClient::PvaClientChannelPtr linkChannel;
     epics::pvaClient::PvaClientGetPtr clientGet;
     PVBooleanPtr pvReconnect;
@@ -105,7 +105,7 @@ void GetLinkScalarArrayRecord::process()
 {
    bool reconnect = (pvReconnect->get() ? true : false);
    if(reconnect) {
-       linkRecord = PVRecordPtr();
+       linkRecord = PVRecordWPtr();
        clientGet = PvaClientGetPtr();
        linkChannel = PvaClientChannelPtr();
        pvReconnect->put(false);
@@ -174,15 +174,23 @@ void GetLinkScalarArrayRecord::clientProcess()
 void GetLinkScalarArrayRecord::databaseProcess()
 {
     PVDatabasePtr pvDatabase = PVDatabase::getMaster();
-    if(!linkRecord) linkRecord = pvDatabase->findRecord(pvLink->get());
-    if(!linkRecord) {
+    {
+        PVRecordPtr pvRecord(linkRecord.lock());
+        if(!pvRecord) {  
+            PVRecordPtr pvRecord(pvDatabase->findRecord(pvLink->get()));
+            if(pvRecord) linkRecord= PVRecordWPtr(pvRecord);
+        }    
+    }
+    PVRecordPtr pvRecord(linkRecord.lock());
+    if(!pvRecord) {
+        linkRecord = PVRecordWPtr();
         alarm.setMessage(string("record ") + pvLink->get() + string(" does not exist"));
         alarm.setSeverity(invalidAlarm);
         pvAlarm.set(alarm);
         PVRecord::process();
         return;
     }
-    PVScalarArrayPtr pvScalarArray(linkRecord->getPVStructure()->getSubField<PVScalarArray>("value"));
+    PVScalarArrayPtr pvScalarArray(pvRecord->getPVStructure()->getSubField<PVScalarArray>("value"));
     if(!pvScalarArray) {
         alarm.setMessage(string("record ")
            + pvLink->get()

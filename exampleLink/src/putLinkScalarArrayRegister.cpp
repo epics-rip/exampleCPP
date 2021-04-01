@@ -44,7 +44,7 @@ private:
     PVStructurePtr pvAlarmField;
     PVAlarm pvAlarm;
     Alarm alarm;
-    epics::pvDatabase::PVRecordPtr linkRecord;
+    epics::pvDatabase::PVRecordWPtr linkRecord;
     epics::pvaClient::PvaClientChannelPtr linkChannel;
     epics::pvaClient::PvaClientPutPtr clientPut;
     PVBooleanPtr pvReconnect;
@@ -107,7 +107,7 @@ void PutLinkScalarArrayRecord::process()
 {
    bool reconnect = (pvReconnect->get() ? true : false);
    if(reconnect) {
-       linkRecord = PVRecordPtr();
+       linkRecord = PVRecordWPtr();
        clientPut = PvaClientPutPtr();
        linkChannel = PvaClientChannelPtr();
        pvReconnect->put(false);
@@ -176,15 +176,23 @@ void PutLinkScalarArrayRecord::clientProcess()
 void PutLinkScalarArrayRecord::databaseProcess()
 {
     PVDatabasePtr pvDatabase = PVDatabase::getMaster();
-    if(!linkRecord) linkRecord = pvDatabase->findRecord(pvLink->get());
-    if(!linkRecord) {
+    {
+        PVRecordPtr pvRecord(linkRecord.lock());
+        if(!pvRecord) {  
+            PVRecordPtr pvRecord(pvDatabase->findRecord(pvLink->get()));
+            if(pvRecord) linkRecord= PVRecordWPtr(pvRecord);
+        }    
+    }
+    PVRecordPtr pvRecord(linkRecord.lock());
+    if(!pvRecord) {
+        linkRecord = PVRecordWPtr();
         alarm.setMessage(string("record ") + pvLink->get() + string(" does not exist"));
         alarm.setSeverity(invalidAlarm);
         pvAlarm.set(alarm);
         PVRecord::process();
         return;
     }
-    PVScalarArrayPtr pvScalarArray(linkRecord->getPVStructure()->getSubField<PVScalarArray>("value"));
+    PVScalarArrayPtr pvScalarArray(pvRecord->getPVStructure()->getSubField<PVScalarArray>("value"));
     if(!pvScalarArray) {
         alarm.setMessage(string("record ")
            + pvLink->get()
@@ -201,11 +209,11 @@ void PutLinkScalarArrayRecord::databaseProcess()
     alarm.setSeverity(noAlarm);
     pvAlarm.set(alarm);
     try {
-        epicsGuard <PVRecord> guard(*linkRecord);
-        linkRecord->beginGroupPut();
+        epicsGuard <PVRecord> guard(*pvRecord);
+        pvRecord->beginGroupPut();
         pvScalarArray->putFrom(value);
-        linkRecord->process();
-        linkRecord->endGroupPut();
+        pvRecord->process();
+        pvRecord->endGroupPut();
     } catch(std::exception& ex) {
         Status status = Status(Status::STATUSTYPE_FATAL, ex.what());
         alarm.setMessage(status.getMessage());
