@@ -117,11 +117,11 @@ bool SupportRecord::init()
     initPVRecord();
     PVRecordPtr pvRecord = shared_from_this();
     PVStructurePtr pvStructure(getPVStructure());
-    controlSupport = ControlSupport::create(pvRecord);
+    controlSupport = epics::pvDatabase::ControlSupport::create(pvRecord);
     bool result = controlSupport->init(
        pvStructure->getSubField("value"),pvStructure->getSubField("control"));
     if(!result) return false;
-    scalarAlarmSupport = ScalarAlarmSupport::create(pvRecord);
+    scalarAlarmSupport = epics::pvDatabase::ScalarAlarmSupport::create(pvRecord);
     result = scalarAlarmSupport->init(
        pvStructure->getSubField("value"),
        pvStructure->getSubField<PVStructure>("alarm"),
@@ -163,8 +163,6 @@ int main(int argc,char *argv[])
     supportRecord = SupportRecord::create("PVRsupportUByte",scalarType);
     master->addRecord(supportRecord);
     
-
-
     ServerContext::shared_pointer ctx =
         startPVAServer("local",0,true,true);
     
