@@ -56,6 +56,7 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
 
+namespace epics { namespace exampleCPP { namespace support {
 class SupportRecord;
 typedef std::tr1::shared_ptr<SupportRecord> SupportRecordPtr;
 
@@ -144,6 +145,7 @@ void SupportRecord::process()
     }
     if(wasChanged) PVRecord::process();
 }
+}}}
 
 int main(int argc,char *argv[])
 {
@@ -157,10 +159,11 @@ int main(int argc,char *argv[])
     master->addRecord(record);
     
     epics::pvData::ScalarType scalarType  = epics::pvData::pvDouble;
-    SupportRecordPtr supportRecord = SupportRecord::create("PVRsupportDouble",scalarType);
+    epics::exampleCPP::support::SupportRecordPtr supportRecord
+       = epics::exampleCPP::support::SupportRecord::create("PVRsupportDouble",scalarType);
     master->addRecord(supportRecord);
     scalarType = epics::pvData::pvUByte;
-    supportRecord = SupportRecord::create("PVRsupportUByte",scalarType);
+    supportRecord = epics::exampleCPP::support::SupportRecord::create("PVRsupportUByte",scalarType);
     master->addRecord(supportRecord);
     
     ServerContext::shared_pointer ctx =
