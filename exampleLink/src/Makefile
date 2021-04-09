@@ -10,8 +10,6 @@ DBD += putLinkScalarRegister.dbd
 DBD += putLinkScalarArrayRegister.dbd
 DBD += getLinkScalarRegister.dbd
 DBD += getLinkScalarArrayRegister.dbd
-DBD += scalarRegister.dbd
-DBD += scalarArrayRegister.dbd
 
 LIBRARY = exampleLink
 
@@ -19,8 +17,6 @@ LIBSRCS += putLinkScalarRegister.cpp
 LIBSRCS += putLinkScalarArrayRegister.cpp
 LIBSRCS += getLinkScalarRegister.cpp
 LIBSRCS += getLinkScalarArrayRegister.cpp
-LIBSRCS += scalarRegister.cpp
-LIBSRCS += scalarArrayRegister.cpp
 exampleLink_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 # shared library ABI version.

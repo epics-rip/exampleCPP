@@ -10,8 +10,8 @@ Read exampleCPP/documentation/exampleCPP.html.
 ## To start the server as part of a V3 IOC
 
     mrk> pwd
-    /home/epicsv4/masterCPP/exampleCPP/support/iocBoot/support
-    mrk> ../../bin/$EPICS_HOST_ARCH/support st.cmd 
+    /home/epicsv4/masterCPP/exampleCPP
+    mrk> bin/$EPICS_HOST_ARCH/supportMain
 
 ## monitor changed
     mrk> pvget -m -r "" -v  PVRsupportDouble PVRsupportUByte

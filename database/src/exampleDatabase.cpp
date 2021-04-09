@@ -22,7 +22,6 @@
 #define epicsExportSharedSymbols
 #include "pv/exampleDatabase.h"
 #include "pv/exampleHelloRecord.h"
-#include "pv/exampleSoftRecord.h"
 #include "pv/exampleHelloRPCRecord.h"
 
 
@@ -212,56 +211,10 @@ static void createBigRecord(
     if(!result) cout<< "record " << recordName << " not added" << endl;
 }
 
-
-static void createRecords(
-    PVDatabasePtr const &master,
-    ScalarType scalarType,
-    string const &recordNamePrefix)
-{
-    string recordName = recordNamePrefix;
-    NTScalarBuilderPtr ntScalarBuilder = NTScalar::createBuilder();
-    PVStructurePtr pvStructure = ntScalarBuilder->
-        value(scalarType)->
-        addAlarm()->
-        addTimeStamp()->
-        createPVStructure();
-    PVRecordPtr pvRecord = PVRecord::create(recordName,pvStructure);
-    bool result = master->addRecord(pvRecord);
-    if(!result) cout<< "record " << recordName << " not added" << endl;
-    recordName += "Array";
-    NTScalarArrayBuilderPtr ntScalarArrayBuilder = NTScalarArray::createBuilder();
-    pvStructure = ntScalarArrayBuilder->
-        value(scalarType)->
-        addAlarm()->
-        addTimeStamp()->
-        createPVStructure();
-    pvRecord = PVRecord::create(recordName,pvStructure);
-    result = master->addRecord(pvRecord);
-}
-
 void ExampleDatabase::create()
 {
     PVDatabasePtr master = PVDatabase::getMaster();
     bool result(false);
-    createRecords(master,pvBoolean,"PVRboolean");
-    createRecords(master,pvByte,"PVRbyte");
-    createRecords(master,pvShort,"PVRshort");
-    createRecords(master,pvInt,"PVRint");
-    createRecords(master,pvLong,"PVRlong");
-    createRecords(master,pvUByte,"PVRubyte");
-    createRecords(master,pvUInt,"PVRuint");
-    createRecords(master,pvUShort,"PVRushort");
-    createRecords(master,pvULong,"PVRulong");
-    createRecords(master,pvFloat,"PVRfloat");
-    createRecords(master,pvDouble,"PVRdouble");
-    createRecords(master,pvString,"PVRstring");
-
-    createRecords(master,pvDouble,"PVRdouble01");
-    createRecords(master,pvDouble,"PVRdouble02");
-    createRecords(master,pvDouble,"PVRdouble03");
-    createRecords(master,pvDouble,"PVRdouble04");
-    createRecords(master,pvDouble,"PVRdouble05");
-
     NTEnumBuilderPtr ntEnumBuilder = NTEnum::createBuilder();
     PVStructurePtr pvStructure = ntEnumBuilder->
         addAlarm()->

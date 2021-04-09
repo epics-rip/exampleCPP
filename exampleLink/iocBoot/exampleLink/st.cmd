@@ -11,10 +11,10 @@ dbLoadRecords("db/ai.db","name=exampleLinkAI");
 cd ${TOP}/iocBoot/${IOC}
 ##asSetFilename(asconfig)
 iocInit()
-scalar double double
-scalar string string
-scalarArray doubleArray double
-scalarArray stringArray string
+pvdbcrScalar double double
+pvdbcrScalar string string
+pvdbcrScalarArray doubleArray double
+pvdbcrScalarArray stringArray string
 
 putLinkScalar putLinkScalar
 putLinkScalarArray putLinkScalarArray
