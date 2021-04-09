@@ -56,8 +56,8 @@ int main(int argc,char *argv[])
         PVUnionArrayPtr pvUnionArray = static_pointer_cast<PVUnionArray>(
              pvStructure->getSubField("value"));
         shared_vector<const PVUnionPtr> values = pvUnionArray->view();
-        shared_vector<boolean> changeFlags(multiData->getChannelChangeFlags());
-        shared_vector<boolean> isConnected(multiChannel->getIsConnected());
+        shared_vector<epics::pvData::boolean> changeFlags(multiData->getChannelChangeFlags());
+        shared_vector<epics::pvData::boolean> isConnected(multiChannel->getIsConnected());
         for(size_t ind=0; ind < values.size(); ++ind)
         {
             if(changeFlags[ind]) {
