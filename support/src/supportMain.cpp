@@ -159,12 +159,14 @@ int main(int argc,char *argv[])
     master->addRecord(record);
     
     epics::pvData::ScalarType scalarType  = epics::pvData::pvDouble;
-    epics::exampleCPP::support::SupportRecordPtr supportRecord
+    epics::exampleCPP::support::SupportRecordPtr supportRecordDouble
        = epics::exampleCPP::support::SupportRecord::create("PVRsupportDouble",scalarType);
-    master->addRecord(supportRecord);
+    master->addRecord(supportRecordDouble);
     scalarType = epics::pvData::pvUByte;
-    supportRecord = epics::exampleCPP::support::SupportRecord::create("PVRsupportUByte",scalarType);
-    master->addRecord(supportRecord);
+    epics::exampleCPP::support::SupportRecordPtr supportRecordUByte
+       = epics::exampleCPP::support::SupportRecord::create("PVRsupportUByte",scalarType);
+    master->addRecord(supportRecordUByte);
+    
     
     ServerContext::shared_pointer ctx =
         startPVAServer("local",0,true,true);
