@@ -35,6 +35,10 @@
 #include <pv/channelProviderLocal.h>
 #include <pv/serverContext.h>
 
+// The following must be the last include for code database uses
+#include <epicsExport.h>
+#define epicsExportSharedSymbols
+
 namespace epics { namespace pvDatabase {
 
 class PvdbcrProcessRecord;
@@ -61,7 +65,7 @@ class SupportRecord;
 typedef std::tr1::shared_ptr<SupportRecord> SupportRecordPtr;
 
 class epicsShareClass SupportRecord :
-    public epics::pvDatabase::PVRecord
+    public PVRecord
 {
 public:
     POINTER_DEFINITIONS(SupportRecord);
@@ -74,15 +78,12 @@ private:
     SupportRecord(
         std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure);
-    epics::pvDatabase::ControlSupportPtr controlSupport;
-    epics::pvDatabase::ScalarAlarmSupportPtr scalarAlarmSupport;
+    ControlSupportPtr controlSupport;
+    ScalarAlarmSupportPtr scalarAlarmSupport;
     epics::pvData::PVBooleanPtr pvReset;
 };
 
-SupportRecord::~SupportRecord()
-{
-cout << "SupportRecord::~SupportRecord()\n";
-}
+SupportRecord::~SupportRecord() {}
 
 SupportRecordPtr SupportRecord::create(
     std::string const & recordName,epics::pvData::ScalarType scalarType)
@@ -118,11 +119,11 @@ bool SupportRecord::init()
     initPVRecord();
     PVRecordPtr pvRecord = shared_from_this();
     PVStructurePtr pvStructure(getPVStructure());
-    controlSupport = epics::pvDatabase::ControlSupport::create(pvRecord);
+    controlSupport = ControlSupport::create(pvRecord);
     bool result = controlSupport->init(
        pvStructure->getSubField("value"),pvStructure->getSubField("control"));
     if(!result) return false;
-    scalarAlarmSupport = epics::pvDatabase::ScalarAlarmSupport::create(pvRecord);
+    scalarAlarmSupport = ScalarAlarmSupport::create(pvRecord);
     result = scalarAlarmSupport->init(
        pvStructure->getSubField("value"),
        pvStructure->getSubField<PVStructure>("alarm"),
@@ -150,12 +151,9 @@ void SupportRecord::process()
 int main(int argc,char *argv[])
 {
     PVDatabasePtr master = PVDatabase::getMaster();
-    cout << "master=" << master << "\n";
-    cout << "master.get()=" << master.get() << "\n";
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     
-    PVRecordPtr record =
-          epics::pvDatabase::PvdbcrProcessRecord::create("PVRsupportProcessRecord",.5);        
+    PVRecordPtr record = PvdbcrProcessRecord::create("PVRsupportProcessRecord",.5);        
     master->addRecord(record);
     
     epics::pvData::ScalarType scalarType  = epics::pvData::pvDouble;
@@ -166,12 +164,10 @@ int main(int argc,char *argv[])
     epics::exampleCPP::support::SupportRecordPtr supportRecordUByte
        = epics::exampleCPP::support::SupportRecord::create("PVRsupportUByte",scalarType);
     master->addRecord(supportRecordUByte);
-    
-    
+
     ServerContext::shared_pointer ctx =
         startPVAServer("local",0,true,true);
-    
-    master.reset();
+
     cout << "support\n";
     string str;
     while(true) {
@@ -179,7 +175,6 @@ int main(int argc,char *argv[])
         getline(cin,str);
         if(str.compare("exit")==0) break;
         if(str.compare("pvdbl")==0) {
-            PVDatabasePtr master = PVDatabase::getMaster();
             PVStringArrayPtr pvNames = master->getRecordNames();
             PVStringArray::const_svector xxx = pvNames->view();
             for(size_t i=0; i<xxx.size(); ++i) cout<< xxx[i] << endl;
