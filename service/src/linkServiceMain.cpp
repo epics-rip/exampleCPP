@@ -34,21 +34,72 @@
 #include <pv/rpcService.h>
 #include <pv/channelProviderLocal.h>
 #include <pv/serverContext.h>
+#include <pv/pvdbcrScalar.h>
+#include <pv/pvdbcrScalarArray.h>
+#include <pv/pvdbcrAddRecord.h>
+#include <pv/pvdbcrRemoveRecord.h>
 #include <pv/pvdbcrProcessRecord.h>
+#include <pv/pvdbcrTraceRecord.h>
 #include <pvsupport/supportRecord.h>
+// The following must be the last include for code database uses
+#include <epicsExport.h>
+#define epicsExportSharedSymbols
+//#include "linkservice"
 
 using namespace std;
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
 
+
 int main(int argc,char *argv[])
 {
     PVDatabasePtr master = PVDatabase::getMaster();
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
+ 
+    string recordName("PVLSdouble");
+    PVRecordPtr scalar = PvdbcrScalar::create(recordName,"double");
+    bool result = master->addRecord(scalar);      
+    if(!result) {
+         cerr << "record " << recordName << " not added to master\n";
+    }
+
+    recordName = string("PVLSdoubleArray");
+    PVRecordPtr doubleArray = PvdbcrScalarArray::create(recordName,"double");
+    result = master->addRecord(doubleArray);      
+    if(!result) {
+         cerr << "record " << recordName << " not added to master\n";
+    }
+
+    recordName = string("PVLSAddRecord");
+    PVRecordPtr addRecord = PvdbcrAddRecord::create(recordName);
+    result = master->addRecord(addRecord);      
+    if(!result) {
+         cerr << "record " << recordName << " not added to master\n";
+    }
     
-    PVRecordPtr record = PvdbcrProcessRecord::create("PVRsupportProcessRecord",.5);        
-    master->addRecord(record);
+    
+    recordName = string("PVLSRemoveRecord");
+    PVRecordPtr removeRecord = PvdbcrRemoveRecord::create(recordName);
+    result = master->addRecord(removeRecord);      
+    if(!result) {
+         cerr << "record " << recordName << " not added to master\n";
+    }
+    
+    
+    recordName = string("PVRsupportProcessRecord");
+    PvdbcrProcessRecordPtr processRecord = PvdbcrProcessRecord::create(recordName);
+    result = master->addRecord(processRecord);      
+    if(!result) {
+         cerr << "record " << recordName << " not added to master\n";
+    }
+    
+    recordName = string("PVLSTraceRecord");
+    PVRecordPtr traceRecord = PvdbcrTraceRecord::create(recordName);
+    result = master->addRecord(traceRecord);      
+    if(!result) {
+         cerr << "record " << recordName << " not added to master\n";
+    }
     
     epics::example::support::SupportRecordPtr supportRecordDouble
        = epics::example::support::SupportRecord::create("PVRsupportDouble","double");
@@ -56,11 +107,11 @@ int main(int argc,char *argv[])
     epics::example::support::SupportRecordPtr supportRecordUByte
        = epics::example::support::SupportRecord::create("PVRsupportUByte","ubyte");
     master->addRecord(supportRecordUByte);
+    
 
     ServerContext::shared_pointer ctx =
         startPVAServer("local",0,true,true);
 
-    cout << "support\n";
     string str;
     while(true) {
         cout << "enter: pvdbl or exit \n";
@@ -74,3 +125,4 @@ int main(int argc,char *argv[])
     }
     return 0;
 }
+
