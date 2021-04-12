@@ -34,26 +34,11 @@
 #include <pv/rpcService.h>
 #include <pv/channelProviderLocal.h>
 #include <pv/serverContext.h>
+#include <pv/pvdbcrProcessRecord.h>
 
 // The following must be the last include for code database uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
-
-namespace epics { namespace pvDatabase {
-
-class PvdbcrProcessRecord;
-typedef std::tr1::shared_ptr<PvdbcrProcessRecord> PvdbcrProcessRecordPtr;
-
-class epicsShareClass PvdbcrProcessRecord :
-    public PVRecord
-{
-public:
-    POINTER_DEFINITIONS(PvdbcrProcessRecord);
-    static PvdbcrProcessRecordPtr create(
-        std::string const & recordName,double delay);
-};
-}}
-
 
 using namespace std;
 using namespace epics::pvData;
