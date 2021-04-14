@@ -16,8 +16,8 @@ EMBEDDED_TOPS += $(TOP)/linkRecord
 EMBEDDED_TOPS += $(TOP)/powerSupply
 EMBEDDED_TOPS += $(TOP)/support
 # beginning of users of service support
-EMBEDDED_TOPS += $(TOP)/database
 EMBEDDED_TOPS += $(TOP)/service
+EMBEDDED_TOPS += $(TOP)/database
 
 DIRS := configure
 DIRS += $(EMBEDDED_TOPS)
