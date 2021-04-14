@@ -16,6 +16,7 @@
 #include <pv/alarm.h>
 #include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
+#include <pv/pvStructureCopy.h>
 #include <pv/pvaClient.h>
 #include <pv/controlSupport.h>
 #include <pv/scalarAlarmSupport.h>
@@ -114,7 +115,7 @@ static void supportRecordCallFunc(const iocshArgBuf *args)
         throw std::runtime_error("supportRecord recordName not specified");
     }
     string recordName = string(sval);
-    sval = args[2].sval;
+    sval = args[1].sval;
     if(!sval) {
         throw std::runtime_error("supportRecord scalarType not specified");
     }
@@ -132,7 +133,7 @@ static void supportRecordCallFunc(const iocshArgBuf *args)
     if(!result) cout << "recordname " << recordName << " not added" << endl;
 }
 
-static void supportRecordRegister(void)
+static void supportRecord(void)
 {
     static int firstTime = 1;
     if (firstTime) {
@@ -142,5 +143,5 @@ static void supportRecordRegister(void)
 }
 
 extern "C" {
-    epicsExportRegistrar(supportRecordRegister);
+    epicsExportRegistrar(supportRecord);
 }

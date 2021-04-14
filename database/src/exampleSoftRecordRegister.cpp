@@ -17,7 +17,7 @@
 #include <pv/controlSupport.h>
 #include <pv/scalarAlarmSupport.h>
 #include <pv/pvDatabase.h>
-
+#include <pv/pvStructureCopy.h>
 // The following must be the last include for code database uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols

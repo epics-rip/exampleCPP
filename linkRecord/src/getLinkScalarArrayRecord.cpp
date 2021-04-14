@@ -15,17 +15,18 @@
 #include <pv/alarm.h>
 #include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
+#include <pv/pvStructureCopy.h>
 #include <pv/pvaClient.h>
 // The following must be the last include for code exampleLink uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
-
+#include "linkRecord/getLinkScalarArrayRecord.h"
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
 using namespace epics::pvaClient;
 using namespace std;
-
+#ifdef XXX
 class GetLinkScalarArrayRecord;
 typedef std::tr1::shared_ptr<GetLinkScalarArrayRecord> GetLinkScalarArrayRecordPtr;
 
@@ -56,7 +57,9 @@ public:
     virtual bool init();
 
 };
+#endif
 
+namespace epics { namespace example { namespace linkRecord {
 GetLinkScalarArrayRecordPtr GetLinkScalarArrayRecord::create(std::string const & recordName)
 {
     FieldCreatePtr fieldCreate = getFieldCreate();
@@ -209,6 +212,7 @@ void GetLinkScalarArrayRecord::databaseProcess()
     pvAlarm.set(alarm);
     PVRecord::process();   
 }
+}}}
 
 static const iocshArg arg0 = { "recordName", iocshArgString };
 static const iocshArg *args[] = {&arg0};
@@ -222,7 +226,8 @@ static void getLinkScalarArrayCallFunc(const iocshArgBuf *args)
     if(sval) getLinkScalarArrayRecord = string(sval);
     PVDatabasePtr master = PVDatabase::getMaster();
     bool result(false);
-    GetLinkScalarArrayRecordPtr record = GetLinkScalarArrayRecord::create(getLinkScalarArrayRecord);
+    epics::example::linkRecord::GetLinkScalarArrayRecordPtr record 
+       = epics::example::linkRecord::GetLinkScalarArrayRecord::create(getLinkScalarArrayRecord);
     if(record) 
         result = master->addRecord(record);
     if(!result) cout << "recordname" << " not added" << endl;

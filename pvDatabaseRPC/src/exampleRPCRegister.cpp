@@ -13,6 +13,7 @@
 #include <epicsThread.h>
 #include <iocsh.h>
 #include <pv/pvDatabase.h>
+#include <pv/pvStructureCopy.h>
 #include <pv/timeStamp.h>
 #include <pv/pvTimeStamp.h>
 #include <pv/channelProviderLocal.h>

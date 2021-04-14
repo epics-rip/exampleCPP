@@ -4,25 +4,19 @@ include $(TOP)/configure/CONFIG
 
 powerSupplySRC = $(TOP)/src
 
-EPICS_BASE_PVA_CORE_LIBS = pvaClient pvDatabase pvAccess pvAccessCA pvData ca Com
+EPICS_BASE_PVA_CORE_LIBS = pvaClient pvDatabase pvAccess pvData Com
 
-INC += pv/powerSupplyRecord.h
+INC += powerSupply/powerSupplyRecord.h
 
-DBD += powerSupplyRegister.dbd
+DBD += powerSupplyRecord.dbd
 
-LIBRARY = powerSupply
+LIBRARY = powerSupplyRecord
 LIBSRCS += powerSupplyRecord.cpp
-LIBSRCS += powerSupplyRegister.cpp
 powerSupply_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 # shared library ABI version.
 SHRLIB_VERSION ?= 4.3.0
 
-PROD_HOST += powerSupplyMain
-powerSupplyMain_SRCS += powerSupplyMain.cpp
-powerSupplyMain_LIBS += powerSupply
-powerSupplyMain_LIBS += pvDatabase
-powerSupplyMain_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += powerSupplyClient
 powerSupplyClient_SRCS += powerSupplyClient.cpp

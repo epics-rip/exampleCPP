@@ -25,7 +25,7 @@ int main(int argc,char *argv[])
 {
     PvaClientPtr pva = PvaClient::get("pva");
     try {
-        PvaClientMonitorPtr monitor = pva->channel("powerSupply")->monitor("");
+        PvaClientMonitorPtr monitor = pva->channel("PVRpowerSupply")->monitor("");
         while(true) {
             if(!monitor->waitEvent()) {
                cout << "waitEvent returned false. Why???";

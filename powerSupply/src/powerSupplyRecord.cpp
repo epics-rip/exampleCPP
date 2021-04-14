@@ -7,15 +7,18 @@
  * @author mrk
  * @date 2013.04.02
  */
-
+#include <iocsh.h>
 #include <pv/pvDatabase.h>
+#include <pv/pvStructureCopy.h>
 #include <pv/timeStamp.h>
 #include <pv/standardField.h>
 #include <pv/pvAlarm.h>
 #include <pv/channelProviderLocal.h>
 
+// The following must be the last include for code database uses
+#include <epicsExport.h>
 #define epicsExportSharedSymbols
-#include "pv/powerSupplyRecord.h"
+#include "powerSupply/powerSupplyRecord.h"
 
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
@@ -24,7 +27,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-namespace epics { namespace exampleCPP {namespace powerSupply { 
+namespace epics { namespace example { namespace powerSupply {
 
 PowerSupplyRecordPtr PowerSupplyRecord::create(
     string const & recordName)
@@ -96,5 +99,35 @@ void PowerSupplyRecord::process()
     }
     PVRecord::process();
 }
-
 }}}
+
+static const iocshArg testArg0 = { "recordName", iocshArgString };
+static const iocshArg *testArgs[] = {
+    &testArg0};
+
+static const iocshFuncDef powerSupplyFuncDef = {
+    "powerSupplyRecord", 1, testArgs};
+static void powerSupplyCallFunc(const iocshArgBuf *args)
+{
+    char *recordName = args[0].sval;
+    if(!recordName) {
+        throw std::runtime_error("powerSupplyRecord invalid number of arguments");
+    }
+    epics::example::powerSupply::PowerSupplyRecordPtr record
+       = epics::example::powerSupply::PowerSupplyRecord::create(recordName);
+    bool result = PVDatabase::getMaster()->addRecord(record);
+    if(!result) cout << "recordname" << " not added" << endl;
+}
+
+static void powerSupplyRecord(void)
+{
+    static int firstTime = 1;
+    if (firstTime) {
+        firstTime = 0;
+        iocshRegister(&powerSupplyFuncDef, powerSupplyCallFunc);
+    }
+}
+
+extern "C" {
+    epicsExportRegistrar(powerSupplyRecord);
+}

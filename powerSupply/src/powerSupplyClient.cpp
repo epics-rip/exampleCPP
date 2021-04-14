@@ -22,7 +22,7 @@ int main(int argc,char *argv[])
 {
     PvaClientPtr pva = PvaClient::get("pva");
     try {
-        PvaClientChannelPtr pvaChannel = pva->channel("powerSupply"); 
+        PvaClientChannelPtr pvaChannel = pva->channel("PVRpowerSupply"); 
         PvaClientPutGetPtr putGet(pvaChannel->createPutGet(
                 "putField(power.value,voltage.value)getField()"));
         putGet->connect();

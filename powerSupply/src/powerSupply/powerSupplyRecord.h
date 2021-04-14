@@ -17,11 +17,9 @@
 #include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
 
-
 #include <shareLib.h>
 
-
-namespace epics { namespace exampleCPP {namespace powerSupply { 
+namespace epics { namespace example { namespace powerSupply {
 
 class PowerSupplyRecord;
 typedef std::tr1::shared_ptr<PowerSupplyRecord> PowerSupplyRecordPtr;

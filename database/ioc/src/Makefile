@@ -49,6 +49,10 @@ exampleDatabase_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
 exampleDatabase_LIBS += exampleDatabase
 exampleDatabase_LIBS += pvDatabase qsrv pvAccessIOC pvAccess pvAccessCA nt pvData
 exampleDatabase_LIBS += example
+
+exampleDatabase_LIBS += supportRecord
+exampleDatabase_LIBS += linkRecord
+exampleDatabase_LIBS += powerSupplyRecord
 exampleDatabase_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 PROD_SYS_LIBS_WIN32 += ws2_32

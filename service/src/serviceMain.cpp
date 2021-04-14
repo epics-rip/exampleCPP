@@ -34,13 +34,18 @@
 #include <pv/rpcService.h>
 #include <pv/channelProviderLocal.h>
 #include <pv/serverContext.h>
-#include <pv/pvdbcrScalar.h>
-#include <pv/pvdbcrScalarArray.h>
+#include <pv/pvdbcrScalarRecord.h>
+#include <pv/pvdbcrScalarArrayRecord.h>
 #include <pv/pvdbcrAddRecord.h>
 #include <pv/pvdbcrRemoveRecord.h>
 #include <pv/pvdbcrProcessRecord.h>
 #include <pv/pvdbcrTraceRecord.h>
 #include <pvsupport/supportRecord.h>
+#include <powerSupply/powerSupplyRecord.h>
+#include <linkRecord/getLinkScalarRecord.h>
+#include <linkRecord/getLinkScalarArrayRecord.h>
+#include <linkRecord/putLinkScalarRecord.h>
+#include <linkRecord/putLinkScalarArrayRecord.h>
 // The following must be the last include for code database uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
@@ -57,21 +62,21 @@ int main(int argc,char *argv[])
     PVDatabasePtr master = PVDatabase::getMaster();
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
  
-    string recordName("PVLSdouble");
-    PVRecordPtr scalar = PvdbcrScalar::create(recordName,"double");
+    string recordName("PVRdouble");
+    PVRecordPtr scalar = PvdbcrScalarRecord::create(recordName,"double");
     bool result = master->addRecord(scalar);      
     if(!result) {
          cerr << "record " << recordName << " not added to master\n";
     }
 
-    recordName = string("PVLSdoubleArray");
-    PVRecordPtr doubleArray = PvdbcrScalarArray::create(recordName,"double");
+    recordName = string("PVRdoubleArray");
+    PVRecordPtr doubleArray = PvdbcrScalarArrayRecord::create(recordName,"double");
     result = master->addRecord(doubleArray);      
     if(!result) {
          cerr << "record " << recordName << " not added to master\n";
     }
 
-    recordName = string("PVLSAddRecord");
+    recordName = string("PVRaddRecord");
     PVRecordPtr addRecord = PvdbcrAddRecord::create(recordName);
     result = master->addRecord(addRecord);      
     if(!result) {
@@ -79,7 +84,7 @@ int main(int argc,char *argv[])
     }
     
     
-    recordName = string("PVLSRemoveRecord");
+    recordName = string("PVRremoveRecord");
     PVRecordPtr removeRecord = PvdbcrRemoveRecord::create(recordName);
     result = master->addRecord(removeRecord);      
     if(!result) {
@@ -87,14 +92,14 @@ int main(int argc,char *argv[])
     }
     
     
-    recordName = string("PVRsupportProcessRecord");
+    recordName = string("PVRprocessRecord");
     PvdbcrProcessRecordPtr processRecord = PvdbcrProcessRecord::create(recordName);
     result = master->addRecord(processRecord);      
     if(!result) {
          cerr << "record " << recordName << " not added to master\n";
     }
     
-    recordName = string("PVLSTraceRecord");
+    recordName = string("PVRtraceRecord");
     PVRecordPtr traceRecord = PvdbcrTraceRecord::create(recordName);
     result = master->addRecord(traceRecord);      
     if(!result) {
@@ -107,7 +112,27 @@ int main(int argc,char *argv[])
     epics::example::support::SupportRecordPtr supportRecordUByte
        = epics::example::support::SupportRecord::create("PVRsupportUByte","ubyte");
     master->addRecord(supportRecordUByte);
-    
+        
+    epics::example::powerSupply::PowerSupplyRecordPtr powerSupply
+       = epics::example::powerSupply::PowerSupplyRecord::create("PVRpowerSupply");
+    master->addRecord(powerSupply);
+         
+    epics::example::linkRecord::GetLinkScalarRecordPtr getLinkScalar
+       = epics::example::linkRecord::GetLinkScalarRecord::create("PVRgetLinkScalar");
+    master->addRecord(getLinkScalar);
+         
+    epics::example::linkRecord::GetLinkScalarArrayRecordPtr getLinkScalarArray
+       = epics::example::linkRecord::GetLinkScalarArrayRecord::create("PVRgetLinkScalarArray");
+    master->addRecord(getLinkScalarArray);
+
+    epics::example::linkRecord::PutLinkScalarRecordPtr putLinkScalar
+       = epics::example::linkRecord::PutLinkScalarRecord::create("PVRputLinkScalar");
+    master->addRecord(putLinkScalar);
+         
+    epics::example::linkRecord::PutLinkScalarArrayRecordPtr putLinkScalarArray
+       = epics::example::linkRecord::PutLinkScalarArrayRecord::create("PVRputLinkScalarArray");
+    master->addRecord(putLinkScalarArray);    
+   
 
     ServerContext::shared_pointer ctx =
         startPVAServer("local",0,true,true);
