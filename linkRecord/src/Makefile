@@ -2,7 +2,7 @@ TOP=..
 
 include $(TOP)/configure/CONFIG
 
-EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvaClient pvData Com
+EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvaClient pvData ca Com
 
 INC += linkRecord/getLinkScalarRecord.h
 INC += linkRecord/getLinkScalarArrayRecord.h
