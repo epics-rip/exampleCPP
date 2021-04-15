@@ -19,7 +19,7 @@
 #     copy ExampleRELEASE.local to RELEASE.local
 #     edit RELEASE.local
 #     rebuild 
-
+include $(TOP)/RELEASE.support
 -include $(TOP)/../../RELEASE.local
 -include $(TOP)/../configure/RELEASE.local
 -include $(TOP)/configure/RELEASE.local

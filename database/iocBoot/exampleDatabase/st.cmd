@@ -15,7 +15,7 @@ dbLoadRecords("db/test.db")
 
 cd ${TOP}/iocBoot/${IOC}
 asSetFilename(asconfig)
-pvdbcrScalarRecordRecord PVRboolean boolean
+pvdbcrScalarRecord PVRboolean boolean
 pvdbcrScalarRecord PVRbyte byte
 pvdbcrScalarRecord PVRshort short
 pvdbcrScalarRecord PVRint int
