@@ -4,7 +4,7 @@ include $(TOP)/configure/CONFIG
 
 powerSupplySRC = $(TOP)/src
 
-EPICS_BASE_PVA_CORE_LIBS = pvaClient pvDatabase pvAccess pvAccessCA pvData Com
+EPICS_BASE_PVA_CORE_LIBS = pvaClient pvDatabase pvAccess pvAccessCA pvData ca Com
 
 INC += powerSupply/powerSupplyRecord.h
 
