@@ -1,3 +1,0 @@
-SUPPORTRECORD=$(TOP)/../support
-POWERSUPPLYRECORD=$(TOP)/../powerSupply
-LINKRECORD=$(TOP)/../linkRecord

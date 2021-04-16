@@ -9,7 +9,7 @@ EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvAccess pvAccessCA pvData  Com
 
 PROD_HOST += serviceMain
 serviceMain_SRCS += serviceMain.cpp
-serviceMain_LIBS += supportRecord
+serviceMain_LIBS += controlRecord
 serviceMain_LIBS += powerSupplyRecord
 serviceMain_LIBS += linkRecord
 serviceMain_LIBS +=  $(EPICS_BASE_PVA_CORE_LIBS)

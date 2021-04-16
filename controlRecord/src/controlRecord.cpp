@@ -26,15 +26,15 @@
 // The following must be the last include for code database uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
-#include "pvsupport/supportRecord.h"
+#include "pvcontrol/controlRecord.h"
 using namespace std;
 using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::pvDatabase;
 
-namespace epics { namespace example { namespace support {
+namespace epics { namespace example { namespace control {
 
-SupportRecordPtr SupportRecord::create(
+ControlRecordPtr ControlRecord::create(
     std::string const & recordName,std::string const &  scalarType,
     int asLevel,std::string const & asGroup)
 {
@@ -52,13 +52,13 @@ SupportRecordPtr SupportRecord::create(
         add("scalarAlarm",ScalarAlarmSupport::scalarAlarmField()) ->
         createStructure();
     PVStructurePtr pvStructure = pvDataCreate->createPVStructure(topStructure);
-    SupportRecordPtr pvRecord(
-        new SupportRecord(recordName,pvStructure,asLevel,asGroup));
+    ControlRecordPtr pvRecord(
+        new ControlRecord(recordName,pvStructure,asLevel,asGroup));
     if(!pvRecord->init()) pvRecord.reset();
     return pvRecord;
 }
 
-SupportRecord::SupportRecord(
+ControlRecord::ControlRecord(
     std::string const & recordName,
     epics::pvData::PVStructurePtr const & pvStructure,
     int asLevel,std::string const & asGroup)
@@ -66,7 +66,7 @@ SupportRecord::SupportRecord(
 {
 }
 
-bool SupportRecord::init()
+bool ControlRecord::init()
 {
     initPVRecord();
     PVRecordPtr pvRecord = shared_from_this();
@@ -85,7 +85,7 @@ bool SupportRecord::init()
     return true;
 }
 
-void SupportRecord::process()
+void ControlRecord::process()
 {
     bool wasChanged = false;
     if(pvReset->get()==true) {
@@ -106,18 +106,18 @@ static const iocshArg arg2 = { "asLevel", iocshArgInt };
 static const iocshArg arg3 = { "asGroup", iocshArgString };
 static const iocshArg *args[] = {&arg0,&arg1,&arg2,&arg3};
 
-static const iocshFuncDef supportRecordFuncDef = {"supportRecord", 4,args};
+static const iocshFuncDef controlRecordFuncDef = {"controlRecord", 4,args};
 
-static void supportRecordCallFunc(const iocshArgBuf *args)
+static void controlRecordCallFunc(const iocshArgBuf *args)
 {
     char *sval = args[0].sval;
     if(!sval) {
-        throw std::runtime_error("supportRecord recordName not specified");
+        throw std::runtime_error("controlRecord recordName not specified");
     }
     string recordName = string(sval);
     sval = args[1].sval;
     if(!sval) {
-        throw std::runtime_error("supportRecord scalarType not specified");
+        throw std::runtime_error("controlRecord scalarType not specified");
     }
     string scalarType = string(sval);
     int asLevel = args[2].ival;
@@ -126,22 +126,22 @@ static void supportRecordCallFunc(const iocshArgBuf *args)
     if(sval) {
         asGroup = string(sval);
     }
-    epics::example::support::SupportRecordPtr record
-        = epics::example::support::SupportRecord::create(recordName,scalarType,asLevel,asGroup);
+    epics::example::control::ControlRecordPtr record
+        = epics::example::control::ControlRecord::create(recordName,scalarType,asLevel,asGroup);
     epics::pvDatabase::PVDatabasePtr master = epics::pvDatabase::PVDatabase::getMaster();
     bool result =  master->addRecord(record);
     if(!result) cout << "recordname " << recordName << " not added" << endl;
 }
 
-static void supportRecord(void)
+static void controlRecord(void)
 {
     static int firstTime = 1;
     if (firstTime) {
         firstTime = 0;
-        iocshRegister(&supportRecordFuncDef, supportRecordCallFunc);
+        iocshRegister(&controlRecordFuncDef, controlRecordCallFunc);
     }
 }
 
 extern "C" {
-    epicsExportRegistrar(supportRecord);
+    epicsExportRegistrar(controlRecord);
 }

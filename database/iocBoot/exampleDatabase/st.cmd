@@ -54,8 +54,8 @@ pvdbcrRemoveRecord PVRremoveRecord
 pvdbcrAddRecord PVRaddRecord
 pvdbcrProcessRecord PVRprocessRecord .5
 powerSupplyRecord PVRpowerSupply
-supportRecord PVRsupportDouble double
-supportRecord PVRsupportUbyte ubyte
+controlRecord PVRcontrolDouble double
+controlRecord PVRcontrolUbyte ubyte
 getLinkScalar PVRgetLinkScalar
 getLinkScalarArray PVRgetLinkScalarArray
 putLinkScalar PVRputLinkScalar

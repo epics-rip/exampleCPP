@@ -7,8 +7,8 @@
  * @author mrk
  * @date 2021.04.16
  */
-#ifndef SUPPORTRECORD_H
-#define SUPPORTRECORD_H
+#ifndef CONTROLRECORD_H
+#define CONTROLRECORD_H
 
 #include <pv/pvDatabase.h>
 #include <pv/pvSupport.h>
@@ -16,24 +16,24 @@
 
 #include <shareLib.h>
 
-namespace epics { namespace example { namespace support {
+namespace epics { namespace example { namespace control {
 
-class SupportRecord;
-typedef std::tr1::shared_ptr<SupportRecord> SupportRecordPtr;
+class ControlRecord;
+typedef std::tr1::shared_ptr<ControlRecord> ControlRecordPtr;
 
-class epicsShareClass SupportRecord :
+class epicsShareClass ControlRecord :
     public epics::pvDatabase::PVRecord
 {
 public:
-    POINTER_DEFINITIONS(SupportRecord);
-    static SupportRecordPtr create(
+    POINTER_DEFINITIONS(ControlRecord);
+    static ControlRecordPtr create(
         std::string const & recordName,std::string const & scalarType,
         int asLevel=0,std::string const & asGroup=std::string("DEFAULT"));
     virtual bool init();
     virtual void process();
-    ~SupportRecord(){}
+    ~ControlRecord(){}
 private:
-    SupportRecord(
+    ControlRecord(
         std::string const & recordName,
         epics::pvData::PVStructurePtr const & pvStructure,
         int asLevel,std::string const & asGroup);

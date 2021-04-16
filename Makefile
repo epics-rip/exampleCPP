@@ -5,8 +5,8 @@ include $(TOP)/configure/CONFIG
 #EMBEDDED_TOPS += $(TOP)/ChannelArchiverService
 # beginning of service support
 EMBEDDED_TOPS += $(TOP)/linkRecord
-EMBEDDED_TOPS += $(TOP)/powerSupply
-EMBEDDED_TOPS += $(TOP)/support
+EMBEDDED_TOPS += $(TOP)/powerSupplyRecord
+EMBEDDED_TOPS += $(TOP)/controlRecord
 # beginning of non support
 EMBEDDED_TOPS += $(TOP)/exampleClient
 EMBEDDED_TOPS += $(TOP)/pvaClient
@@ -17,7 +17,7 @@ EMBEDDED_TOPS += $(TOP)/pvDatabaseRPC
 EMBEDDED_TOPS += $(TOP)/json
 EMBEDDED_TOPS += $(TOP)/arrayPerformance
 # beginning of users of service support
-EMBEDDED_TOPS += $(TOP)/service
+EMBEDDED_TOPS += $(TOP)/serviceMain
 EMBEDDED_TOPS += $(TOP)/database
 
 DIRS := configure
