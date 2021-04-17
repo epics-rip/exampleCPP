@@ -18,8 +18,8 @@ PROD_HOST += parsePutGet
 parsePutGet_SRCS += parsePutGet.cpp
 parsePutGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
-PROD_SYS_LIBS_WIN32 += ws2_32
-
+# needed for Windows
+LIB_SYS_LIBS_WIN32 += netapi32 ws2_32
 
 #===========================
 

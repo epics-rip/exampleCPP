@@ -1,10 +1,9 @@
 TOP=..
-
 include $(TOP)/configure/CONFIG
 
-helloPutGetSRC = $(TOP)/src
-
 EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvAccess pvAccessCA pvData ca Com
+
+helloPutGetSRC = $(TOP)/src
 
 INC += pv/helloPutGetRecord.h
 
@@ -14,9 +13,6 @@ LIBRARY = helloPutGet
 LIBSRCS += helloPutGetRecord.cpp
 LIBSRCS += helloPutGetRegister.cpp
 helloPutGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
-
-# shared library ABI version.
-SHRLIB_VERSION ?= 4.3.0
 
 PROD_HOST += helloPutGetMain
 helloPutGetMain_SRCS += helloPutGetMain.cpp
@@ -33,9 +29,8 @@ helloNoWaitPutGetClient_SRCS += helloNoWaitPutGetClient.cpp
 helloNoWaitPutGetClient_LIBS += pvaClient
 helloNoWaitPutGetClient_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
-
-PROD_SYS_LIBS_WIN32 += ws2_32
-
+# needed for Windows
+LIB_SYS_LIBS_WIN32 += netapi32 ws2_32
 
 include $(TOP)/configure/RULES
 
