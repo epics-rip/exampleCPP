@@ -47,7 +47,7 @@ exampleDatabase_SRCS_vxWorks += -nil-
 exampleDatabase_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
 
 exampleDatabase_LIBS += exampleDatabase
-exampleDatabase_LIBS += pvDatabase qsrv pvAccessIOC pvAccess pvAccessCA nt pvData
+exampleDatabase_LIBS += pvaClient pvDatabase qsrv pvAccessIOC pvAccess pvAccessCA nt pvData
 exampleDatabase_LIBS += example
 
 exampleDatabase_LIBS += controlRecord
