@@ -13,6 +13,8 @@
 #include <pv/pvDatabase.h>
 #include <pv/pvSupport.h>
 #include <pv/pvStructureCopy.h>
+#include <pv/controlSupport.h>
+#include <pv/scalarAlarmSupport.h>
 
 #include <shareLib.h>
 
