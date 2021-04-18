@@ -40,19 +40,14 @@ PROD_IOC += exampleDatabase
 # <name>_registerRecordDeviceDriver.cpp will be created from <name>.dbd
 exampleDatabase_SRCS += exampleDatabase_registerRecordDeviceDriver.cpp
 exampleDatabase_SRCS_DEFAULT += exampleDatabaseMain.cpp
-exampleDatabase_SRCS_vxWorks += -nil-
-
-
-# The following adds support from base/src/vxWorks
-exampleDatabase_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
 
 exampleDatabase_LIBS += exampleDatabase
-exampleDatabase_LIBS += pvaClient pvDatabase qsrv pvAccessIOC pvAccess pvAccessCA nt pvData
 exampleDatabase_LIBS += example
 
 exampleDatabase_LIBS += controlRecord
 exampleDatabase_LIBS += powerSupplyRecord
 exampleDatabase_LIBS += linkRecord
+exampleDatabase_LIBS += pvaClient pvDatabase qsrv pvAccessIOC pvAccess pvAccessCA nt pvData
 exampleDatabase_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 # needed for Windows
