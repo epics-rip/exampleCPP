@@ -49,7 +49,6 @@
 // The following must be the last include for code database uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
-//#include "linkservice"
 
 using namespace std;
 using namespace epics::pvData;
