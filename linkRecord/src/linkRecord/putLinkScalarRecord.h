@@ -15,7 +15,6 @@
 #include <pv/pvTimeStamp.h>
 #include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
-
 #include <shareLib.h>
 
 namespace epics { namespace example { namespace linkRecord {
