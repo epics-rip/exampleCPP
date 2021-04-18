@@ -15,44 +15,51 @@ dbLoadRecords("db/test.db")
 
 cd ${TOP}/iocBoot/${IOC}
 asSetFilename(asconfig)
-pvdbcrScalar PVRboolean boolean
-pvdbcrScalar PVRbyte byte
-pvdbcrScalar PVRshort short
-pvdbcrScalar PVRint int
-pvdbcrScalar PVRlong long
-pvdbcrScalar PVRubyte ubyte
-pvdbcrScalar PVRushort ushort 
-pvdbcrScalar PVRuint uint
-pvdbcrScalar PVRulong ulong
-pvdbcrScalar PVRfloat float
-pvdbcrScalar PVRdouble double
-pvdbcrScalar PVRstring string
-pvdbcrScalar PVRdouble01 double
-pvdbcrScalar PVRdouble02 double
-pvdbcrScalar PVRdouble03 double
-pvdbcrScalar PVRdouble04 double
-pvdbcrScalar PVRdouble05 double
-pvdbcrScalarArray PVRbooleanArray boolean
-pvdbcrScalarArray PVRbyteArray byte
-pvdbcrScalarArray PVRshortArray short
-pvdbcrScalarArray PVRintArray int
-pvdbcrScalarArray PVRlongArray long
-pvdbcrScalarArray PVRubyteArray ubyte
-pvdbcrScalarArray PVRushortArray ushort 
-pvdbcrScalarArray PVRuintArray uint
-pvdbcrScalarArray PVRulongArray ulong
-pvdbcrScalarArray PVRfloatArray float
-pvdbcrScalarArray PVRdoubleArray double
-pvdbcrScalarArray PVRstringArray string
-pvdbcrScalarArray PVRdouble01Array double
-pvdbcrScalarArray PVRdouble02Array double
-pvdbcrScalarArray PVRdouble03Array double
-pvdbcrScalarArray PVRdouble04Array double
-pvdbcrScalarArray PVRdouble05Array double
+pvdbcrScalarRecord PVRboolean boolean
+pvdbcrScalarRecord PVRbyte byte
+pvdbcrScalarRecord PVRshort short
+pvdbcrScalarRecord PVRint int
+pvdbcrScalarRecord PVRlong long
+pvdbcrScalarRecord PVRubyte ubyte
+pvdbcrScalarRecord PVRushort ushort 
+pvdbcrScalarRecord PVRuint uint
+pvdbcrScalarRecord PVRulong ulong
+pvdbcrScalarRecord PVRfloat float
+pvdbcrScalarRecord PVRdouble double
+pvdbcrScalarRecord PVRstring string
+pvdbcrScalarRecord PVRdouble01 double
+pvdbcrScalarRecord PVRdouble02 double
+pvdbcrScalarRecord PVRdouble03 double
+pvdbcrScalarRecord PVRdouble04 double
+pvdbcrScalarRecord PVRdouble05 double
+pvdbcrScalarArrayRecord PVRbooleanArray boolean
+pvdbcrScalarArrayRecord PVRbyteArray byte
+pvdbcrScalarArrayRecord PVRshortArray short
+pvdbcrScalarArrayRecord PVRintArray int
+pvdbcrScalarArrayRecord PVRlongArray long
+pvdbcrScalarArrayRecord PVRubyteArray ubyte
+pvdbcrScalarArrayRecord PVRushortArray ushort 
+pvdbcrScalarArrayRecord PVRuintArray uint
+pvdbcrScalarArrayRecord PVRulongArray ulong
+pvdbcrScalarArrayRecord PVRfloatArray float
+pvdbcrScalarArrayRecord PVRdoubleArray double
+pvdbcrScalarArrayRecord PVRstringArray string
+pvdbcrScalarArrayRecord PVRdouble01Array double
+pvdbcrScalarArrayRecord PVRdouble02Array double
+pvdbcrScalarArrayRecord PVRdouble03Array double
+pvdbcrScalarArrayRecord PVRdouble04Array double
+pvdbcrScalarArrayRecord PVRdouble05Array double
 pvdbcrTraceRecord PVRtraceRecord
 pvdbcrRemoveRecord PVRremoveRecord
 pvdbcrAddRecord PVRaddRecord
 pvdbcrProcessRecord PVRprocessRecord .5
+powerSupplyRecord PVRpowerSupply
+controlRecord PVRcontrolDouble double
+controlRecord PVRcontrolUbyte ubyte
+getLinkScalar PVRgetLinkScalar
+getLinkScalarArray PVRgetLinkScalarArray
+putLinkScalar PVRputLinkScalar
+putLinkScalarArray PVRputLinkScalarArray
 exampleDatabase
 exampleSoftRecordCreate PVRsoft
 iocInit()

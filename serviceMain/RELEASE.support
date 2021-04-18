@@ -1,0 +1,3 @@
+CONTROLRECORD=$(TOP)/../controlRecord
+POWERSUPPLYRECORD=$(TOP)/../powerSupplyRecord
+LINKRECORD=$(TOP)/../linkRecord

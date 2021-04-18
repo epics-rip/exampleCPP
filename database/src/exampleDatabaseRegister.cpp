@@ -13,6 +13,7 @@
 
 #include <iocsh.h>
 #include <pv/pvDatabase.h>
+#include <pv/pvStructureCopy.h>
 #include <pv/channelProviderLocal.h>
 
 // The following must be the last include for code database uses

@@ -1,6 +1,8 @@
 TOP = ..
 include $(TOP)/configure/CONFIG
 
+EPICS_BASE_PVA_CORE_LIBS = pvaClient  pvDatabase pvAccess pvAccessCA pvData ca Com
+
 arrayPerformanceSRC = $(TOP)/src
 
 INC+= pv/arrayPerformance.h
@@ -8,7 +10,6 @@ INC+= pv/longArrayMonitor.h
 INC+= pv/longArrayGet.h
 INC+= pv/longArrayPut.h
 
-EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvaClient pvAccess pvAccessCA pvData ca Com
 
 LIBRARY = arrayPerform
 LIBSRCS += arrayPerformance.cpp
@@ -16,10 +17,6 @@ LIBSRCS += longArrayGet.cpp
 LIBSRCS += longArrayMonitor.cpp
 LIBSRCS += longArrayPut.cpp
 arrayPerform_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
-
-# shared library ABI version.
-SHRLIB_VERSION ?= 4.3.0
-
 
 PROD_HOST += arrayPerformanceMain
 arrayPerformanceMain_SRCS += arrayPerformanceMain.cpp
@@ -47,9 +44,8 @@ PROD_HOST += vectorPerformanceMain
 vectorPerformanceMain_SRCS += vectorPerformanceMain.cpp
 vectorPerformanceMain_LIBS +=  pvData Com
 
-
-PROD_SYS_LIBS_WIN32 += ws2_32
-
+# needed for Windows
+LIB_SYS_LIBS_WIN32 += netapi32 ws2_32
 
 include $(TOP)/configure/RULES
 

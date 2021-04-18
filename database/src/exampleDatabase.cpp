@@ -129,32 +129,6 @@ static void createVariantUnionArrayRecord(
     if(!result) cout<< "record " << recordName << " not added" << endl;
 }
 
-static void createDumbPowerSupplyRecord(
-    PVDatabasePtr const &master,
-    string const &recordName)
-{
-     StructureConstPtr top = fieldCreate->createFieldBuilder()->
-         add("alarm",standardField->alarm()) ->
-            add("timeStamp",standardField->timeStamp()) ->
-            addNestedStructure("power") ->
-               add("value",pvDouble) ->
-               add("alarm",standardField->alarm()) ->
-               endNested()->
-            addNestedStructure("voltage") ->
-               add("value",pvDouble) ->
-               add("alarm",standardField->alarm()) ->
-               endNested()->
-            addNestedStructure("current") ->
-               add("value",pvDouble) ->
-               add("alarm",standardField->alarm()) ->
-               endNested()->
-            createStructure();
-    PVStructurePtr pvStructure = pvDataCreate->createPVStructure(top);
-    PVRecordPtr pvRecord = PVRecord::create(recordName,pvStructure);
-    bool result = master->addRecord(pvRecord);
-    if(!result) cout<< "record " << recordName << " not added" << endl;
-}
-
 static void createBigRecord(
     PVDatabasePtr const &master,
     string const &recordName)
@@ -233,7 +207,6 @@ void ExampleDatabase::create()
     createVariantUnionRecord(master,"PVRvariantUnion");
     createRestrictedUnionArrayRecord(master,"PVRrestrictedUnionArray");
     createVariantUnionArrayRecord(master,"PVRvariantUnionArray");
-    createDumbPowerSupplyRecord(master,"PVRdumbPowerSupply");
     createBigRecord(master,"PVRBigRecord");
 
     result = master->addRecord(ExampleHelloRecord::create("PVRhelloPutGet"));
