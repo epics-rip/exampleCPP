@@ -11,6 +11,7 @@
 #define EXAMPLEDATABASE_H
 
 #include <pv/pvDatabase.h>
+#include <pv/pvaClient.h>
 #include <pv/pvdbcrScalarRecord.h>
 #include <pv/pvdbcrScalarArrayRecord.h>
 #include <pv/pvdbcrAddRecord.h>
