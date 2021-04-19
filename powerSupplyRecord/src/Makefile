@@ -4,15 +4,13 @@ include $(TOP)/configure/CONFIG
 
 EPICS_BASE_PVA_CORE_LIBS = pvaClient  pvDatabase pvAccess pvAccessCA pvData ca Com
 
-powerSupplySRC = $(TOP)/src
-
 INC += powerSupply/powerSupplyRecord.h
 
 DBD += powerSupplyRecord.dbd
 
 LIBRARY = powerSupplyRecord
 LIBSRCS += powerSupplyRecord.cpp
-powerSupply_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+powerSupplyRecord_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += powerSupplyClient
 powerSupplyClient_SRCS += powerSupplyClient.cpp

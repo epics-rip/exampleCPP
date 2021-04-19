@@ -15,6 +15,7 @@
 #include <pv/alarm.h>
 #include <pv/pvAlarm.h>
 #include <pv/pvDatabase.h>
+#include <pv/controlSupport.h>
 #include <pv/pvStructureCopy.h>
 #include <pv/pvaClient.h>
 #include <pv/convert.h>
