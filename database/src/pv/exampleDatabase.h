@@ -11,18 +11,6 @@
 #define EXAMPLEDATABASE_H
 
 #include <pv/pvDatabase.h>
-#include <pv/pvaClient.h>
-#include <pv/pvdbcrScalarRecord.h>
-#include <pv/pvdbcrScalarArrayRecord.h>
-#include <pv/pvdbcrAddRecord.h>
-#include <pv/pvdbcrRemoveRecord.h>
-#include <pv/pvdbcrProcessRecord.h>
-#include <pv/pvdbcrTraceRecord.h>
-#include <powerSupply/powerSupplyRecord.h>
-#include <linkRecord/getLinkScalarRecord.h>
-#include <linkRecord/getLinkScalarArrayRecord.h>
-#include <linkRecord/putLinkScalarRecord.h>
-#include <linkRecord/putLinkScalarArrayRecord.h>
 #include <shareLib.h>
 
 namespace epics { namespace exampleCPP { namespace database {
