@@ -60,7 +60,8 @@ getLinkScalar PVRgetLinkScalar
 getLinkScalarArray PVRgetLinkScalarArray
 putLinkScalar PVRputLinkScalar
 putLinkScalarArray PVRputLinkScalarArray
+helloPutGetRecord PVRhelloPutGet
+helloRPCRecord PVRhelloRPC
 exampleDatabase
-exampleSoftRecordCreate PVRsoft
 iocInit()
 refshow

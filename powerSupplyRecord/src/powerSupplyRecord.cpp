@@ -23,9 +23,6 @@
 using namespace epics::pvData;
 using namespace epics::pvDatabase;
 using std::string;
-using std::cout;
-using std::cerr;
-using std::endl;
 
 namespace epics { namespace example { namespace powerSupply {
 
@@ -116,7 +113,7 @@ static void powerSupplyCallFunc(const iocshArgBuf *args)
     epics::example::powerSupply::PowerSupplyRecordPtr record
        = epics::example::powerSupply::PowerSupplyRecord::create(recordName);
     bool result = PVDatabase::getMaster()->addRecord(record);
-    if(!result) cout << "recordname" << " not added" << endl;
+    if(!result) std::cout << string(recordName) << " not added" << "\n";
 }
 
 static void powerSupplyRecord(void)
