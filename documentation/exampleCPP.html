@@ -26,7 +26,13 @@
 
 <div class="head">
 <h1>EPICS exampleCPP</h1>
-<h2 class="nocount">master branch - 2021.02.28</h2>
+<h2 class="nocount">editions</h2>
+<dl>
+  <dt>2015.11.01</dt>
+     <dd>Original</dd>
+  <dt>latest</dt>
+     <dd>2021.04.21</dd>
+</dl>
 
 <h2 class="nocount">Abstract</h2>
 <p>
@@ -219,71 +225,26 @@ Each example can be used as a template for building other applications:
 </ul>
 
 <h2>Brief summary of examples and links to documentation</h2>
-<h3>database and exampleClient</h3>
-<p>These two examples are closely related:
-<b>database</b> implements a server that is accessed by the examples in
-<b>exampleClient</b>
-</p>
-<h4>database</h4>
-<p>
-Provides an EPICS IOC that has both EPICS V3 DBRecords, V4 PVRecords, and qsrv for accessing the DBRecords.
-</p>
-<p>
-It can also create a standalone main that has a set of V4 PVRecords.
-</p>
-
-<p>Documentation:<a href="./database.html">database</a></p>
-
-<h4>exampleClient</h4>
-<p>
-Provides a set of examples that use pvaClientCPP.
-</p>
-<p>Documentation:<a href="./exampleClient.html">exampleClient</a></p>
-<p>
-In order to run the examples, <b>database</b> must also be built and then the IOC database must be started as follows:
-</p>
+<h3>Described elsewhere</h3>
+<p>For the following</p>
 <pre>
-mrk&gt; pwd
-/home/epicsv4/master/exampleCPP/database/iocBoot/exampleDatabase
-mrk&gt; ../../bin/linux-x86_64/exampleDatabase st.cmd
+arrayPerformance
+controlRecord
+database
+exampleClient
+helloPutGetRecord
+helloRPCRecord
+json
+linkRecord
+powerSupplyRecord
+pvaClient
+serviceMain
 </pre>
-<h3>support</h3>
 See:
 <a
-      href="https://mrkraimer.github.io/website/developerGuide/recordSupport/recordSupport.html">
-      developerGuide
+href="https://mrkraimer.github.io/website/developerGuide/pvService/pvService.html">
+pvService
 </a> 
-
-<h3>json</h3>
-<p>
-This creates records that use the <b>JSON</b> parser supported provided by 
-<b>pvaClientCPP</b>.
-</p>
-<p>Documentation:<a href="./json.html">json</a></p>
-
-<h3>exampleLink</h3>
-<p>
-This implements a server that has records exampleGetLink, exampleMonitorLink, and examplePutLink.
-Each has a link to another record.
-The other record can be in the same server or in another server including a V3 IOC DBRecord.
-</p>
-<p>
-The example records can use provider <b>pva</b> or <b>ca</b> to connect to the other record.
-</p>
-
-<p>Documentation:<a href="./exampleLink.html">exampleLink</a></p>
-
-<h3>helloPutGet</h3>
-<p>
-Implements a PVRecord that is an example of a PVRecord intended to ba accessed via channelPutGet.
-It is a simple HelloWorld example.
-</p>
-<p>Documentation:<a href="./helloPutGet.html">helloPutGet</a></p>
-<h3>helloRPC</h3>
-<p>
-This implements HelloWorld that is accessed via channelRPC.
-</p>
-<p>Documentation:<a href="./helloRPC.html">helloRPC</a></p>
 
 <h3>pvDatabaseRPC</h3>
 <p>
@@ -306,33 +267,11 @@ A client <b>control</b> for calling the services is supplied.
 
 <p>Documentation:<a href="./pvDatabaseRPC.html">pvDatabaseRPC</a></p>
 
-
-<h3>powerSupply</h3>
-<p>
-This is an example of creating a PVRecord that uses a somewhat complicated top level PVStructure.
-It simulates a power supply.
-</p>
-
-<p>Documentation:<a href="./powerSupply.html">powerSupply</a></p>
-
-
-
 <h3>arrayPerformance</h3>
 <p>
 This is an example that shows performance for an array of longs.
 </p>
 <p>Documentation:<a href="./arrayPerformance.html">arrayPerformance</a></p>
-
-<h3>ChannelArchiverService</h3>
-<p>
-The ChannelArchiver Service is an EPICS V4 client and server which can be used
-to query the data archived by an EPICS Channel Archiver. It includes a bash
-script, gethist, which can parse a wide range of dates and times and process
-the corresponding data. However the service can be queried by any client
-issuing a pvAccess RPC request, such as eget. Requests and responses use EPICS V4
-normative types. Requests are in the form of an NTURI normative type and the results are returned as an NTTable. 
-</p>
-<p>Documentation:<a href="./ChannelArchiverService.html">channelArchiverService</a></p>
 
 </div> <!-- class="contents" -->
 </body>
