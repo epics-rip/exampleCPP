@@ -10,6 +10,10 @@
 #include <iocsh.h>
 #include <epicsThread.h>
 #include <pv/pvDatabase.h>
+#include <pv/pvStructureCopy.h>
+#include <pv/timeStamp.h>
+#include <pv/pvAlarm.h>
+#include <pv/standardField.h>
 #include <pv/pvAccess.h>
 #include <pv/ntscalar.h>
 #include <pv/channelProviderLocal.h>

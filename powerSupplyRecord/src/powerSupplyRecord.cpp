@@ -11,8 +11,8 @@
 #include <pv/pvDatabase.h>
 #include <pv/pvStructureCopy.h>
 #include <pv/timeStamp.h>
-#include <pv/standardField.h>
 #include <pv/pvAlarm.h>
+#include <pv/standardField.h>
 #include <pv/channelProviderLocal.h>
 
 // The following must be the last include for code database uses
