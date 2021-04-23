@@ -1,11 +1,9 @@
 TOP=..
-
 include $(TOP)/configure/CONFIG
-
-EPICS_BASE_PVA_CORE_LIBS = pvaClient  pvDatabase pvAccess pvAccessCA pvData ca Com
+#NOTE order is important
+EPICS_BASE_PVA_CORE_LIBS = pvaClient  pvDatabase pvAccess pvAccessCA nt pvData ca Com
 
 INC += powerSupply/powerSupplyRecord.h
-
 DBD += powerSupplyRecord.dbd
 
 LIBRARY = powerSupplyRecord
@@ -15,7 +13,6 @@ powerSupplyRecord_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 PROD_HOST += powerSupplyClient
 powerSupplyClient_SRCS += powerSupplyClient.cpp
 powerSupplyClient_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
-
 
 PROD_HOST += powerSupplyMonitor
 powerSupplyMonitor_SRCS += powerSupplyMonitor.cpp

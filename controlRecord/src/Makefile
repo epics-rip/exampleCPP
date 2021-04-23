@@ -4,7 +4,7 @@ include $(TOP)/configure/CONFIG
 
 controlRecordSRC = $(TOP)/src
 
-EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvAccess pvAccessCA pvData ca Com
+EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvAccess pvAccessCA nt pvData ca Com
 
 INC += pvcontrol/controlRecord.h
 

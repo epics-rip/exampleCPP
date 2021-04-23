@@ -1,7 +1,7 @@
 TOP=..
 include $(TOP)/configure/CONFIG
 # NOTE: The order of the following is important
-EPICS_BASE_PVA_CORE_LIBS = pvaClient  pvDatabase pvAccess pvAccessCA pvData ca Com
+EPICS_BASE_PVA_CORE_LIBS = pvaClient  pvDatabase pvAccess pvAccessCA nt pvData ca Com
 
 PROD_HOST += serviceMain
 # NOTE: The order of the following is important

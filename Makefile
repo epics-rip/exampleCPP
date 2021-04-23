@@ -13,7 +13,6 @@ EMBEDDED_TOPS += $(TOP)/helloRPCRecord
 EMBEDDED_TOPS += $(TOP)/exampleClient
 EMBEDDED_TOPS += $(TOP)/pvaClient
 EMBEDDED_TOPS += $(TOP)/pvaClientMultiChannel
-EMBEDDED_TOPS += $(TOP)/pvDatabaseRPC
 EMBEDDED_TOPS += $(TOP)/json
 EMBEDDED_TOPS += $(TOP)/arrayPerformance
 # beginning of users of service support

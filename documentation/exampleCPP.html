@@ -228,50 +228,32 @@ Each example can be used as a template for building other applications:
 <h3>Described elsewhere</h3>
 <p>For the following</p>
 <pre>
-arrayPerformance
+powerSupplyRecord
 controlRecord
-database
-exampleClient
 helloPutGetRecord
 helloRPCRecord
-json
 linkRecord
-powerSupplyRecord
-pvaClient
 serviceMain
+database
+pvaClient
+json
 </pre>
 See:
 <a
-href="https://mrkraimer.github.io/website/developerGuide/pvService/pvService.html">
-pvService
-</a> 
+href="https://mrkraimer.github.io/website/developerGuide/index.html">
+developerGuide
+</a>
 
-<h3>pvDatabaseRPC</h3>
-<p>
-An example of a pvDatabase PVRecord which also supports multiple RPC services.
-</p>
-<p>It illustrates synchronous and asynchronous RPC services, selecting services
-based on the supplied pvRequest to talk to an existing
-object which has no knowledge of EPICS and call its methods, so creating 
-distributed objects.</p>
+<h3>pvaClientMultiChannel</h3>
+<p>This is an example of how to use pvaClientMultiChannel.</p>
 
-<p>It represents a device which has a 2D position setpoint and readback as well
-as a state. Each field has a time stamp, as does the record itself.
-The device can be controlled through a client using RPC commands
-to move through a sequence of points as well as conventionally by putting to
-the setpoint. Commands are: configuring the set of points, starting a scan
-(blocking or non-blocking), pausing and resuming, rewinding and stopping/aborting.</p>
-<p>
-A client <b>control</b> for calling the services is supplied.
-</p>
-
-<p>Documentation:<a href="./pvDatabaseRPC.html">pvDatabaseRPC</a></p>
+<p>Documentation: <a href="./pvaClientMultiChannel.html">pvaClientMultiChannel</a></p>
 
 <h3>arrayPerformance</h3>
 <p>
 This is an example that shows performance for an array of longs.
 </p>
-<p>Documentation:<a href="./arrayPerformance.html">arrayPerformance</a></p>
+<p>Documentation: <a href="./arrayPerformance.html">arrayPerformance</a></p>
 
 </div> <!-- class="contents" -->
 </body>

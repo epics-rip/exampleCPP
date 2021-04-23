@@ -1,7 +1,7 @@
 TOP=..
 include $(TOP)/configure/CONFIG
 
-EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvAccess pvAccessCA pvData ca Com
+EPICS_BASE_PVA_CORE_LIBS = pvDatabase pvAccess pvAccessCA nt pvData ca Com
 
 INC += helloPutGet/helloPutGetRecord.h
 
