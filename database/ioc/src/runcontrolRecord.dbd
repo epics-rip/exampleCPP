@@ -1,0 +1,101 @@
+recordtype(runcontrol) {
+	include "dbCommon.dbd" 
+	field(VAL,DBF_DOUBLE) {
+		prompt("Value")
+		special(SPC_MOD)
+	}
+	field(SEM,DBF_SHORT) {
+		prompt("Record Semaphore")
+		promptgroup(GUI_ALARMS)
+		special(SPC_MOD)
+		interest(1)
+	}
+	field(PID,DBF_STRING) {
+		prompt("Application Pid")
+		interest(1)
+		size(40)
+	}
+	field(STRT,DBF_STRING) {
+		prompt("Time of Start")
+		interest(1)
+		size(40)
+	}
+	field(HOST,DBF_STRING) {
+		prompt("Application Hostname")
+		interest(1)
+		size(40)
+	}
+	field(USER,DBF_STRING) {
+		prompt("Application Username")
+		interest(1)
+		size(40)
+	}
+	field(HBTO,DBF_ENUM) {
+		prompt("Heartbeat Timeout")
+		special(SPC_NOMOD)
+		interest(1)
+	}
+	field(RUN,DBF_SHORT) {
+		prompt("Running Indicator")
+		promptgroup(GUI_ALARMS)
+		special(SPC_NOMOD)
+		interest(1)
+	}
+	field(HBT,DBF_FLOAT) {
+		prompt("Heartbeat Timeout Val")
+		promptgroup(GUI_CLOCK)
+		interest(1)
+	}
+	field(ABRT,DBF_ENUM) {
+		prompt("Abort")
+		special(SPC_MOD)
+		interest(1)
+	}
+	field(SUSP,DBF_ENUM) {
+		prompt("Suspend")
+		special(SPC_MOD)
+		interest(1)
+	}
+	field(CLR,DBF_SHORT) {
+		prompt("Clear")
+		special(SPC_MOD)
+		interest(1)
+	}
+	field(MSG,DBF_STRING) {
+		prompt("Application Status Msg")
+		interest(1)
+		size(41)
+	}
+	field(ALRM,DBF_MENU) {
+		prompt("Alarm Request")
+		special(SPC_MOD)
+		menu(menuAlarmSevr)
+		initial("3")
+	}
+	field(LSEM,DBF_SHORT) {
+		prompt("Last Semaphore")
+		special(SPC_NOMOD)
+		interest(3)
+	}
+	field(LALM,DBF_SHORT) {
+		prompt("Last Alarm")
+		special(SPC_NOMOD)
+		interest(3)
+	}
+	field(CHBT,DBF_FLOAT) {
+		prompt("Current HB Timeout")
+		special(SPC_NOMOD)
+		interest(3)
+	}
+	field(LMSG,DBF_STRING) {
+		prompt("Last Status Msg")
+		special(SPC_NOMOD)
+		interest(3)
+		size(41)
+	}
+	field(AREQ,DBF_SHORT) {
+		prompt("Abort Requested")
+		special(SPC_NOMOD)
+		interest(3)
+	}
+}

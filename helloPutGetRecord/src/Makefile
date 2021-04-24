@@ -9,7 +9,7 @@ DBD += helloPutGetRecord.dbd
 
 LIBRARY = helloPutGetRecord
 LIBSRCS += helloPutGetRecord.cpp
-helloPutGet_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+helloPutGetRecord_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
 
 PROD_HOST += helloPutGetClient
 helloPutGetClient_SRCS += helloPutGetClient.cpp

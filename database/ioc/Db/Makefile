@@ -21,6 +21,7 @@ DB += dbDouble.db
 DB += test.db
 DB += testtypes.db
 DB += dbSimpleBusy.db
+DB += dbRuncontrol.db
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add

@@ -75,7 +75,12 @@ int main(int argc,char *argv[])
     recordNames.push_back("PVRuint"); valueType.push_back("uint"); 
     recordNames.push_back("PVRulong"); valueType.push_back("ulong");
     recordNames.push_back("PVRfloat"); valueType.push_back("float"); 
-    recordNames.push_back("PVRdouble"); valueType.push_back("double"); 
+    recordNames.push_back("PVRdouble"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble01"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble02"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble03"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble04"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble05"); valueType.push_back("double");
     recordNames.push_back("PVRstring"); valueType.push_back("string"); 
     for(size_t i=0;i<recordNames.size(); ++i)
     {
@@ -96,7 +101,12 @@ int main(int argc,char *argv[])
     recordNames.push_back("PVRuintArray"); valueType.push_back("uint"); 
     recordNames.push_back("PVRulongArray"); valueType.push_back("ulong");
     recordNames.push_back("PVRfloatArray"); valueType.push_back("float"); 
-    recordNames.push_back("PVRdoubleArray"); valueType.push_back("double"); 
+    recordNames.push_back("PVRdoubleArray"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble01Array"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble02Array"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble03Array"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble04Array"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble05Array"); valueType.push_back("double");
     recordNames.push_back("PVRstringArray"); valueType.push_back("string"); 
     for(size_t i=0;i<recordNames.size(); ++i)
     {
