@@ -14,7 +14,6 @@ dbLoadRecords("db/dbArray.db","name=DBRdoubleArray,type=DOUBLE")
 dbLoadRecords("db/test.db")
 dbLoadRecords("db/testtypes.db")
 dbLoadRecords("db/dbSimpleBusy.db","name=DBRbusy")
-dbLoadRecords("db/dbRuncontrol.db","name=DBRruncontrol")
 
 cd ${TOP}/iocBoot/${IOC}
 asSetFilename(asconfig)
