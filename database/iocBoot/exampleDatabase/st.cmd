@@ -12,6 +12,8 @@ dbLoadRecords("db/dbEnum.db","name=DBRenum01")
 dbLoadRecords("db/dbCounter.db","name=DBRcounter01")
 dbLoadRecords("db/dbArray.db","name=DBRdoubleArray,type=DOUBLE")
 dbLoadRecords("db/test.db")
+dbLoadRecords("db/testtypes.db")
+dbLoadRecords("db/dbSimpleBusy.db","name=DBRbusy")
 
 cd ${TOP}/iocBoot/${IOC}
 asSetFilename(asconfig)
@@ -60,7 +62,8 @@ getLinkScalar PVRgetLinkScalar
 getLinkScalarArray PVRgetLinkScalarArray
 putLinkScalar PVRputLinkScalar
 putLinkScalarArray PVRputLinkScalarArray
+helloPutGetRecord PVRhelloPutGet
+helloRPCRecord PVRhelloRPC
 exampleDatabase
-exampleSoftRecordCreate PVRsoft
 iocInit()
 refshow

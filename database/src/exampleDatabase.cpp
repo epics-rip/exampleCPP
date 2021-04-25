@@ -21,8 +21,6 @@
 
 #define epicsExportSharedSymbols
 #include "pv/exampleDatabase.h"
-#include "pv/exampleHelloRecord.h"
-#include "pv/exampleHelloRPCRecord.h"
 
 
 using namespace std;
@@ -208,10 +206,5 @@ void ExampleDatabase::create()
     createRestrictedUnionArrayRecord(master,"PVRrestrictedUnionArray");
     createVariantUnionArrayRecord(master,"PVRvariantUnionArray");
     createBigRecord(master,"PVRBigRecord");
-
-    result = master->addRecord(ExampleHelloRecord::create("PVRhelloPutGet"));
-    if(!result) cout<< "record PVRhelloPutGet not added\n";
-    result = master->addRecord(ExampleHelloRPCRecord::create("PVRhelloRPC"));
-    if(!result) cout<< "record PVRhelloRPC not added\n";
 }
 

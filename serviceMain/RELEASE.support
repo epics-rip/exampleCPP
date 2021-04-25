@@ -1,3 +1,5 @@
 CONTROLRECORD=$(TOP)/../controlRecord
 POWERSUPPLYRECORD=$(TOP)/../powerSupplyRecord
 LINKRECORD=$(TOP)/../linkRecord
+HELLOPUTGETRECORD=$(TOP)/../helloPutGetRecord
+HELLORPCRECORD=$(TOP)/../helloRPCRecord

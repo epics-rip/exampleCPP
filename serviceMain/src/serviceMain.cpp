@@ -46,6 +46,8 @@
 #include <linkRecord/getLinkScalarArrayRecord.h>
 #include <linkRecord/putLinkScalarRecord.h>
 #include <linkRecord/putLinkScalarArrayRecord.h>
+#include <helloPutGet/helloPutGetRecord.h>
+#include <helloRPC/helloRPCRecord.h>
 // The following must be the last include for code database uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
@@ -61,88 +63,135 @@ int main(int argc,char *argv[])
     PVDatabasePtr master = PVDatabase::getMaster();
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
     
-    std::vector<std::string> recordName;
+    std::vector<std::string> recordNames;
     std::vector<std::string> valueType;   
-    recordName.push_back("PVRboolean"); valueType.push_back("boolean");
-    recordName.push_back("PVRbyte"); valueType.push_back("byte"); 
-    recordName.push_back("PVRshort"); valueType.push_back("short"); 
-    recordName.push_back("PVRint"); valueType.push_back("int"); 
-    recordName.push_back("PVRlong"); valueType.push_back("long");
-    recordName.push_back("PVRubyte"); valueType.push_back("ubyte"); 
-    recordName.push_back("PVRushort"); valueType.push_back("ushort"); 
-    recordName.push_back("PVRuint"); valueType.push_back("uint"); 
-    recordName.push_back("PVRulong"); valueType.push_back("ulong");
-    recordName.push_back("PVRfloat"); valueType.push_back("float"); 
-    recordName.push_back("PVRdouble"); valueType.push_back("double"); 
-    recordName.push_back("PVRstring"); valueType.push_back("string"); 
-    for(size_t i=0;i<recordName.size(); ++i)
+    recordNames.push_back("PVRboolean"); valueType.push_back("boolean");
+    recordNames.push_back("PVRbyte"); valueType.push_back("byte"); 
+    recordNames.push_back("PVRshort"); valueType.push_back("short"); 
+    recordNames.push_back("PVRint"); valueType.push_back("int"); 
+    recordNames.push_back("PVRlong"); valueType.push_back("long");
+    recordNames.push_back("PVRubyte"); valueType.push_back("ubyte"); 
+    recordNames.push_back("PVRushort"); valueType.push_back("ushort"); 
+    recordNames.push_back("PVRuint"); valueType.push_back("uint"); 
+    recordNames.push_back("PVRulong"); valueType.push_back("ulong");
+    recordNames.push_back("PVRfloat"); valueType.push_back("float"); 
+    recordNames.push_back("PVRdouble"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble01"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble02"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble03"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble04"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble05"); valueType.push_back("double");
+    recordNames.push_back("PVRstring"); valueType.push_back("string"); 
+    for(size_t i=0;i<recordNames.size(); ++i)
     {
-        if(!master->addRecord(PvdbcrScalarRecord::create(recordName[i],valueType[i]))) { 
-            cerr << "record " << recordName[i] << " not added to master\n";
+        if(!master->addRecord(PvdbcrScalarRecord::create(recordNames[i],valueType[i]))) { 
+            cerr << "record " << recordNames[i] << " not added to master\n";
         }
     }
     
-    recordName.clear();
+    recordNames.clear();
     valueType.clear();
-    recordName.push_back("PVRbooleanArray"); valueType.push_back("boolean");
-    recordName.push_back("PVRbyteArray"); valueType.push_back("byte"); 
-    recordName.push_back("PVRshortArray"); valueType.push_back("short"); 
-    recordName.push_back("PVRintArray"); valueType.push_back("int"); 
-    recordName.push_back("PVRlongArray"); valueType.push_back("long");
-    recordName.push_back("PVRubyteArray"); valueType.push_back("ubyte"); 
-    recordName.push_back("PVRushortArray"); valueType.push_back("ushort"); 
-    recordName.push_back("PVRuintArray"); valueType.push_back("uint"); 
-    recordName.push_back("PVRulongArray"); valueType.push_back("ulong");
-    recordName.push_back("PVRfloatArray"); valueType.push_back("float"); 
-    recordName.push_back("PVRdoubleArray"); valueType.push_back("double"); 
-    recordName.push_back("PVRstringArray"); valueType.push_back("string"); 
-    for(size_t i=0;i<recordName.size(); ++i)
+    recordNames.push_back("PVRbooleanArray"); valueType.push_back("boolean");
+    recordNames.push_back("PVRbyteArray"); valueType.push_back("byte"); 
+    recordNames.push_back("PVRshortArray"); valueType.push_back("short"); 
+    recordNames.push_back("PVRintArray"); valueType.push_back("int"); 
+    recordNames.push_back("PVRlongArray"); valueType.push_back("long");
+    recordNames.push_back("PVRubyteArray"); valueType.push_back("ubyte"); 
+    recordNames.push_back("PVRushortArray"); valueType.push_back("ushort"); 
+    recordNames.push_back("PVRuintArray"); valueType.push_back("uint"); 
+    recordNames.push_back("PVRulongArray"); valueType.push_back("ulong");
+    recordNames.push_back("PVRfloatArray"); valueType.push_back("float"); 
+    recordNames.push_back("PVRdoubleArray"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble01Array"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble02Array"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble03Array"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble04Array"); valueType.push_back("double");
+    recordNames.push_back("PVRdouble05Array"); valueType.push_back("double");
+    recordNames.push_back("PVRstringArray"); valueType.push_back("string"); 
+    for(size_t i=0;i<recordNames.size(); ++i)
     {
-        if(!master->addRecord(PvdbcrScalarArrayRecord::create(recordName[i],valueType[i]))) { 
-            cerr << "record " << recordName[i] << " not added to master\n";
+        if(!master->addRecord(PvdbcrScalarArrayRecord::create(recordNames[i],valueType[i]))) { 
+            cerr << "record " << recordNames[i] << " not added to master\n";
         }
     }
     
-    if(!master->addRecord(PvdbcrAddRecord::create("PVRaddRecord"))) { 
-        cerr << "record " << "PVRaddRecord" << " not added to master\n";
+    std::string recordName;
+    recordName = "PVRaddRecord";
+    if(!master->addRecord(PvdbcrAddRecord::create(recordName))) { 
+        cerr << "record " << recordName << " not added to master\n";
     }
-    if(!master->addRecord(PvdbcrRemoveRecord::create("PVRremoveRecord"))) { 
-        cerr << "record " << "PVRaddRecord" << " not added to master\n";
+    recordName = "PVRremoveRecord";
+    if(!master->addRecord(PvdbcrRemoveRecord::create(recordName))) { 
+        cerr << "record " << recordName << " not added to master\n";
     }
-    if(!master->addRecord(PvdbcrProcessRecord::create("PVRprocessRecord"))) { 
-        cerr << "record " << "PVRaddRecord" << " not added to master\n";
+    recordName = "PVRprocessRecord";
+    if(!master->addRecord(PvdbcrProcessRecord::create(recordName))) { 
+        cerr << "record " << recordName << " not added to master\n";
     }
-    if(!master->addRecord(PvdbcrTraceRecord::create("PVRtraceRecord"))) { 
-        cerr << "record " << "PVRaddRecord" << " not added to master\n";
+    recordName = "PVRtraceRecord";
+    if(!master->addRecord(PvdbcrTraceRecord::create(recordName))) { 
+        cerr << "record " << recordName << " not added to master\n";
     }
 
+    recordName = "PVRcontrolDouble";
     epics::example::control::ControlRecordPtr controlRecordDouble
-       = epics::example::control::ControlRecord::create("PVRcontrolDouble","double");
-    master->addRecord(controlRecordDouble);
+       = epics::example::control::ControlRecord::create(recordName,"double");
+    if(!master->addRecord(controlRecordDouble)) {
+        cerr << "record " << recordName << " not added to master\n";
+    }
+    recordName = "PVRcontrolUByte";
     epics::example::control::ControlRecordPtr controlRecordUByte
-       = epics::example::control::ControlRecord::create("PVRcontrolUByte","ubyte");
+       = epics::example::control::ControlRecord::create(recordName,"ubyte");
     master->addRecord(controlRecordUByte);
-        
-    epics::example::powerSupply::PowerSupplyRecordPtr powerSupply
-       = epics::example::powerSupply::PowerSupplyRecord::create("PVRpowerSupply");
-    master->addRecord(powerSupply);
-         
-    epics::example::linkRecord::GetLinkScalarRecordPtr getLinkScalar
-       = epics::example::linkRecord::GetLinkScalarRecord::create("PVRgetLinkScalar");
-    master->addRecord(getLinkScalar);
-         
-    epics::example::linkRecord::GetLinkScalarArrayRecordPtr getLinkScalarArray
-       = epics::example::linkRecord::GetLinkScalarArrayRecord::create("PVRgetLinkScalarArray");
-    master->addRecord(getLinkScalarArray);
 
+    recordName = "PVRpowerSupply";
+    epics::example::powerSupply::PowerSupplyRecordPtr powerSupply
+       = epics::example::powerSupply::PowerSupplyRecord::create(recordName);
+    if(!master->addRecord(powerSupply)) {
+        cerr << "record " << recordName << " not added to master\n";
+    }
+
+    recordName = "PVRgetLinkScalar";  
+    epics::example::linkRecord::GetLinkScalarRecordPtr getLinkScalar
+       = epics::example::linkRecord::GetLinkScalarRecord::create(recordName);
+    if(!master->addRecord(getLinkScalar)) {
+        cerr << "record " << recordName << " not added to master\n";
+    }
+
+    recordName = "PVRgetLinkScalarArray";
+    epics::example::linkRecord::GetLinkScalarArrayRecordPtr getLinkScalarArray
+       = epics::example::linkRecord::GetLinkScalarArrayRecord::create(recordName);
+    if(!master->addRecord(getLinkScalarArray)) {
+        cerr << "record " << recordName << " not added to master\n";
+    }
+
+    recordName = "PVRputLinkScalar";
     epics::example::linkRecord::PutLinkScalarRecordPtr putLinkScalar
-       = epics::example::linkRecord::PutLinkScalarRecord::create("PVRputLinkScalar");
-    master->addRecord(putLinkScalar);
-         
+       = epics::example::linkRecord::PutLinkScalarRecord::create(recordName);
+    if(!master->addRecord(putLinkScalar)) {
+        cerr << "record " << recordName << " not added to master\n";
+    }
+
+    recordName = "PVRputLinkScalarArray";
     epics::example::linkRecord::PutLinkScalarArrayRecordPtr putLinkScalarArray
-       = epics::example::linkRecord::PutLinkScalarArrayRecord::create("PVRputLinkScalarArray");
-    master->addRecord(putLinkScalarArray);    
-   
+       = epics::example::linkRecord::PutLinkScalarArrayRecord::create(recordName);
+    if(!master->addRecord(putLinkScalarArray)) {
+        cerr << "record " << recordName << " not added to master\n";
+    }
+
+    recordName = "PVRhelloPutGet";
+    epics::example::helloPutGet::HelloPutGetRecordPtr helloPutGet
+       = epics::example::helloPutGet::HelloPutGetRecord::create(recordName);
+    if(!master->addRecord(helloPutGet)) { 
+        cerr << recordName << " not added to master\n";
+    }
+
+    recordName = "PVRhelloRPC";
+    epics::example::helloRPC::HelloRPCRecordPtr helloRPC
+       = epics::example::helloRPC::HelloRPCRecord::create(recordName);
+    if(!master->addRecord(helloRPC)) { 
+        cerr << recordName << " not added to master\n";
+    }
 
     ServerContext::shared_pointer ctx =
         startPVAServer("local",0,true,true);

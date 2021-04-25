@@ -3,6 +3,9 @@ dist: trusty
 language: c++
 compiler:
   - gcc
+branches:
+  only:
+    - master
 addons:
   apt:
     packages:
