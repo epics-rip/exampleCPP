@@ -40,7 +40,7 @@
 #include <pv/pvdbcrRemoveRecord.h>
 #include <pv/pvdbcrProcessRecord.h>
 #include <pv/pvdbcrTraceRecord.h>
-#include <pvcontrol/controlRecord.h>
+#include <scalarLimit/scalarLimitRecord.h>
 #include <powerSupply/powerSupplyRecord.h>
 #include <linkRecord/getLinkScalarRecord.h>
 #include <linkRecord/getLinkScalarArrayRecord.h>
@@ -48,7 +48,7 @@
 #include <linkRecord/putLinkScalarArrayRecord.h>
 #include <helloPutGet/helloPutGetRecord.h>
 #include <helloRPC/helloRPCRecord.h>
-#include <scalarLimit/scalarLimitRecord.h>
+#include <pvcontrol/controlRecord.h>
 // The following must be the last include for code database uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
