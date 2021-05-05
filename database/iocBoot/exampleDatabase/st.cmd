@@ -64,6 +64,8 @@ putLinkScalar PVRputLinkScalar
 putLinkScalarArray PVRputLinkScalarArray
 helloPutGetRecord PVRhelloPutGet
 helloRPCRecord PVRhelloRPC
+scalarLimitRecord PVRscalarLimitUbyte ubyte
+scalarLimitRecord PVRscalarLimitDouble double
 exampleDatabase
 iocInit()
 refshow

@@ -1,5 +1,6 @@
-CONTROLRECORD=$(TOP)/../controlRecord
+SCALARLIMITRECORD=$(TOP)/../scalarLimit
 POWERSUPPLYRECORD=$(TOP)/../powerSupplyRecord
 LINKRECORD=$(TOP)/../linkRecord
 HELLOPUTGETRECORD=$(TOP)/../helloPutGetRecord
 HELLORPCRECORD=$(TOP)/../helloRPCRecord
+CONTROLRECORD=$(TOP)/../controlRecord

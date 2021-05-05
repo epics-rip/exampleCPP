@@ -4,11 +4,12 @@ TOP = .
 include $(TOP)/configure/CONFIG
 #EMBEDDED_TOPS += $(TOP)/ChannelArchiverService
 # beginning of service support
-EMBEDDED_TOPS += $(TOP)/linkRecord
+EMBEDDED_TOPS += $(TOP)/scalarLimit
 EMBEDDED_TOPS += $(TOP)/powerSupplyRecord
 EMBEDDED_TOPS += $(TOP)/controlRecord
 EMBEDDED_TOPS += $(TOP)/helloPutGetRecord
 EMBEDDED_TOPS += $(TOP)/helloRPCRecord
+EMBEDDED_TOPS += $(TOP)/linkRecord
 # beginning of non support
 EMBEDDED_TOPS += $(TOP)/exampleClient
 EMBEDDED_TOPS += $(TOP)/pvaClient
