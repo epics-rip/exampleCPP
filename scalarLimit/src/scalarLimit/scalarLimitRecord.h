@@ -7,8 +7,8 @@
  * @author mrk
  * @date 2021.05.03
  */
-#ifndef PVDBCRSCALARLIMITRECORD_H
-#define PVDBCRSCALARLIMITRECORD_H
+#ifndef SCALARLIMITRECORDCREATE_H
+#define SCALARLIMITRECORDCREATE_H
 
 namespace epics { namespace scalarLimit {
 
@@ -33,4 +33,4 @@ public:
 
 }}
 
-#endif  /* PVDBCRSCALARLIMITRECORD_H */
+#endif  /* SCALARLIMITRECORDCREATE_H */
