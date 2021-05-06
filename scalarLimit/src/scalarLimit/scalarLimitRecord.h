@@ -17,7 +17,7 @@ namespace epics { namespace scalarLimit {
 class ScalarLimitRecord;
 typedef std::tr1::shared_ptr<ScalarLimitRecord> ScalarLimitRecordPtr;
 
-class ScalarLimitRecordCreate
+class epicsShareClass ScalarLimitRecordCreate
 {
 public:
     /**
