@@ -68,6 +68,10 @@ void ScalarLimitRecord::process()
     
     double valNow = convert->toDouble(value);
     if((valNow!=this->desiredValue) && (valNow!=this->currentValue)) {
+        double low = convert->toDouble(limitLow);
+        double high = convert->toDouble(limitHigh);
+        if(valNow<low) valNow = low;
+        if(valNow>high) valNow = high;
         this->desiredValue = valNow;
     } else if(this->desiredValue==this->currentValue) {
         return;
@@ -76,7 +80,16 @@ void ScalarLimitRecord::process()
     bool move = !(this->desiredValue==this->currentValue);
     if(move) {
         double step = convert->toDouble(maxStep);
-        if(this->desiredValue<this->currentValue) step = -step;
+        double diff = this->desiredValue - this->currentValue;
+        if(diff>0.0) {
+            if(diff<step) step = diff;
+        } else {
+            if(-step<diff) {
+                step = diff;            
+            } else {
+                step = -step;
+            }
+        }
         double val = convert->toDouble(value) + step;
         double low = convert->toDouble(limitLow);
         double high = convert->toDouble(limitHigh);

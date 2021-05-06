@@ -10,6 +10,8 @@
 #ifndef SCALARLIMITRECORDCREATE_H
 #define SCALARLIMITRECORDCREATE_H
 
+#include <shareLib.h>
+
 namespace epics { namespace scalarLimit {
 
 class ScalarLimitRecord;
