@@ -1,4 +1,5 @@
 SCALARLIMITRECORD=$(TOP)/../scalarLimit
+SCALARLIMITRECORDCREATE=$(TOP)/../scalarLimit
 POWERSUPPLYRECORD=$(TOP)/../powerSupplyRecord
 LINKRECORD=$(TOP)/../linkRecord
 HELLOPUTGETRECORD=$(TOP)/../helloPutGetRecord

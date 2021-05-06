@@ -17,7 +17,7 @@
 #include <pv/convert.h>
 #include <pv/pvDatabase.h>
 
-// The following must be the last include for code pvDatabase implements
+// The following must be the last include for code scalarLimit implements
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
 #include "scalarLimit/scalarLimitRecord.h"

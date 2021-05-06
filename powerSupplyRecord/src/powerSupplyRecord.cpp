@@ -15,7 +15,7 @@
 #include <pv/standardField.h>
 #include <pv/channelProviderLocal.h>
 
-// The following must be the last include for code database uses
+// The following must be the last include for code powerSupply implements
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
 #include "powerSupply/powerSupplyRecord.h"
