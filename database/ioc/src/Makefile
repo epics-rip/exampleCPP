@@ -32,12 +32,13 @@ exampleDatabase_SRCS_DEFAULT += exampleDatabaseMain.cpp
 
 exampleDatabase_LIBS += exampleDatabase
 exampleDatabase_LIBS += example
-
-exampleDatabase_LIBS += controlRecord
+exampleDatabase_LIBS += scalarLimitRecord
 exampleDatabase_LIBS += powerSupplyRecord
 exampleDatabase_LIBS += linkRecord
 exampleDatabase_LIBS += helloPutGetRecord
 exampleDatabase_LIBS += helloRPCRecord
+exampleDatabase_LIBS += controlRecord
+
 exampleDatabase_LIBS += pvaClient pvDatabase qsrv pvAccessIOC pvAccess pvAccessCA nt pvData
 exampleDatabase_LIBS += $(EPICS_BASE_IOC_LIBS)
 

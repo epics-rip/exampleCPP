@@ -40,7 +40,7 @@
 #include <pv/pvdbcrRemoveRecord.h>
 #include <pv/pvdbcrProcessRecord.h>
 #include <pv/pvdbcrTraceRecord.h>
-#include <pvcontrol/controlRecord.h>
+#include <scalarLimit/scalarLimitRecord.h>
 #include <powerSupply/powerSupplyRecord.h>
 #include <linkRecord/getLinkScalarRecord.h>
 #include <linkRecord/getLinkScalarArrayRecord.h>
@@ -48,6 +48,7 @@
 #include <linkRecord/putLinkScalarArrayRecord.h>
 #include <helloPutGet/helloPutGetRecord.h>
 #include <helloRPC/helloRPCRecord.h>
+#include <pvcontrol/controlRecord.h>
 // The following must be the last include for code database uses
 #include <epicsExport.h>
 #define epicsExportSharedSymbols
@@ -192,6 +193,12 @@ int main(int argc,char *argv[])
     if(!master->addRecord(helloRPC)) { 
         cerr << recordName << " not added to master\n";
     }
+
+    recordName = "PVRscalarLimitUbyte";  
+    epics::scalarLimit::ScalarLimitRecordCreate::create(recordName,"ubyte");
+
+    recordName = "PVRscalarLimitDouble";  
+    epics::scalarLimit::ScalarLimitRecordCreate::create(recordName,"double");
 
     ServerContext::shared_pointer ctx =
         startPVAServer("local",0,true,true);

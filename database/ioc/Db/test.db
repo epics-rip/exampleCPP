@@ -54,6 +54,7 @@ record(ao,"DBRdoubleout") {
 
 }
 
+record(ao,"DBRdouble") { }
 record(ao,"DBRdouble00") { }
 record(ao,"DBRdouble01") { }
 record(ao,"DBRdouble02") { }
