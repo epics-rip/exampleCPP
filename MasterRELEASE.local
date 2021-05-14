@@ -2,9 +2,9 @@
 # Copy this file to configure/RELEASE.local.
 # Change the first line and also EPICS_BASE and also possibly EPICS_BASE
 # type make at top level
-EPICS7_DIR=/home/epics7
+EPICS7_DIR=/home/install/epics/base-7.0.5
 
-EPICS_BASE=$(EPICS7_DIR)/epics-base
+EPICS_BASE=$(EPICS7_DIR)/
 PVDATABASE=$(EPICS7_DIR)/modules/pvDatabaseCPP
 PVACLIENT=$(EPICS7_DIR)/modules/pvaClientCPP
 PVA2PVA=$(EPICS7_DIR)/modules/pva2pva
