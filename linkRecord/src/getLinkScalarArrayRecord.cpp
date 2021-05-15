@@ -95,7 +95,7 @@ bool GetLinkScalarArrayRecord::init()
     PVStructurePtr pvStructure = getPVRecordStructure()->getPVStructure();
     pvValue = pvStructure->getSubField<PVStringArray>("value");
     pvLink = pvStructure->getSubField<PVString>("linkRecord");
-    pvLink->put("doubleArray");
+    pvLink->put("PVRdoubleArray");
     pvReconnect = pvStructure->getSubField<PVBoolean>("reconnect");
     pvReconnect->put(false);
     pvAccessMethod = pvStructure->getSubField<PVString>("accessMethod");

@@ -1,3 +1,3 @@
 #!/bin/sh
-./configControl PVRsupportUByte 1 20 1
+./configControl PVRcontrolUbyte 1 20 1
 
