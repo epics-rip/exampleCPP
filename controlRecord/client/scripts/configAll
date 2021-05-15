@@ -4,5 +4,5 @@
 ./scalarAlarmSigned
 ./controlUnsigned
 ./scalarAlarmUnsigned
-./configProcessRecord PVRsupportProcessRecord add PVRsupportDouble
-./configProcessRecord PVRsupportProcessRecord add PVRsupportUByte
+./configProcessRecord PVRprocessRecord add PVRcontrolDouble
+./configProcessRecord PVRprocessRecord add PVRcontrolUbyte

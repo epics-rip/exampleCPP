@@ -1,3 +1,3 @@
 #!/bin/sh
-./configControl PVRsupportDouble -10 10 .5
+./configControl PVRcontrolDouble -10 10 .5
 
